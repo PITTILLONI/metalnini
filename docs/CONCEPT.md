@@ -3,6 +3,8 @@
 ## Positionnement
 Le "Panini du metal/rock" : une collection de cartes numériques d'artistes, à ouvrir en packs, collectionner et échanger — avec une couche vivante connectée à l'actualité réelle des artistes et à l'expérience vécue en concert. Cible : la communauté metal/rock, soudée, nerd, très attachée à l'authenticité et au vécu live.
 
+**Ligne édito : humour, fun, moderne, gamifié — sur de faux artistes.** Ce ton n'est pas décoratif, il traverse plusieurs décisions déjà actées : les noms de groupes détournés plutôt que les vrais (ci-dessous), le portrait de carte pensé pour porter un gag visible (voir `DA.md`), et un système de progression assumé comme du jeu plutôt qu'une simulation sérieuse (classeurs, paliers, récompenses garanties — voir `Classeurs & récompenses`).
+
 **En V1, les groupes/artistes ne sont pas les vrais noms/vraies photos** : noms détournés (parodiques, humoristiques) et portraits générés par IA dans un style homogène, le temps de sécuriser de vrais accords de licence (voir risques ci-dessous et `ROADMAP-IDEAS.md`). Les noms restent **volontairement reconnaissables** — jeu de mots proche du vrai nom plutôt qu'univers totalement abstrait (ex. "Sleeplot" pour Slipknot, "Knocked Foot" pour Bigfoot… liste à étoffer) — ce qui maximise l'effet clin d'œil pour la communauté mais renforce d'autant le risque de confusion évoqué plus bas. Chaque groupe fictif est **calqué en coulisses sur un vrai groupe/scène réel** (mapping interne, jamais exposé au joueur) dont Metalnini suit l'actualité réelle, pour que la mécanique d'évolution de carte reste basée sur de vrais événements et non sur un calendrier fabriqué (voir `Mécanique d'évolution des cartes`).
 
 ## Ce que Metalnini n'est pas
