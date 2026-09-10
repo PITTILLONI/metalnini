@@ -273,6 +273,36 @@
     position:absolute; left:0; color:var(--accent);
   }
 
+  /* ---------- Feedback form ---------- */
+  .feedback-form label{display:block; margin-top:18px;}
+  .feedback-form label:first-of-type{margin-top:0;}
+  .feedback-form .q{display:block; margin-bottom:7px; font-size:0.95rem;}
+  .feedback-form input[type="text"],
+  .feedback-form textarea{
+    width:100%; font-family:var(--font-body); font-size:0.95rem; line-height:1.5;
+    padding:11px 13px; background:var(--surface); border:1px solid var(--border);
+    border-radius:5px; color:var(--text); resize:vertical;
+  }
+  .feedback-form textarea{min-height:60px;}
+  .feedback-form input:focus-visible, .feedback-form textarea:focus-visible{
+    outline:2px solid var(--rarity-signature); outline-offset:1px;
+  }
+  .botcheck{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+  .voice-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .voice-btn{
+    font-family:var(--font-mono); font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase;
+    padding:10px 16px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); cursor:pointer; transition:background .2s ease, border-color .2s ease;
+  }
+  .voice-btn:hover{border-color:var(--accent);}
+  .voice-btn.is-recording{background:var(--accent); border-color:var(--accent);}
+  .voice-status{font-size:0.82rem; color:var(--text-muted);}
+  .voice-preview{display:block; margin-top:10px; width:100%; max-width:320px;}
+  .submit-row{margin-top:26px;}
+  .form-msg{margin-top:14px; font-size:0.9rem;}
+  .form-msg.success{color:var(--text);}
+  .form-msg.error{color:#e08a8a;}
+
   footer{
     padding:32px 0 60px;
     font-size:0.82rem;
@@ -504,13 +534,54 @@
   <div class="ask">
     <p class="eyebrow" style="margin-bottom:16px">On a besoin de vous</p>
     <h2 style="margin-bottom:8px">Ce qu'on aimerait savoir</h2>
-    <ul>
-      <li>Est-ce que t'ouvrirais un paquet de cartes régulièrement, ou ça te paraît gadget ?</li>
-      <li>Le troc sans jamais pouvoir vendre contre de l'argent — ça te semble juste, ou frustrant ?</li>
-      <li>L'idée d'un avatar qui évolue avec tes concerts, ça te parle ou c'est too much ?</li>
-      <li>Qu'est-ce qui te ferait le plus peur ou le plus hésiter dans un projet comme ça ?</li>
-      <li>Un truc qu'on n'a clairement pas pensé et qui te semble évident ?</li>
-    </ul>
+    <p style="color:var(--text-muted); font-size:0.92rem; margin:0 0 20px">Réponds à ce que tu veux, ignore le reste. Ça part directement par mail — pas besoin de créer de compte.</p>
+
+    <form id="feedback-form" class="feedback-form" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="access_key" value="32acdb51-a679-4ea0-8159-3e5dc3d544a0">
+      <input type="hidden" name="subject" value="Nouveau retour — page de pitch Metalnini">
+      <input type="hidden" name="from_name" value="Metalnini — page de pitch">
+      <input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+      <label>
+        <span class="q">Ton prénom (optionnel)</span>
+        <input type="text" name="name" placeholder="Pour qu'on sache qui a répondu">
+      </label>
+      <label>
+        <span class="q">Est-ce que t'ouvrirais un paquet de cartes régulièrement, ou ça te paraît gadget ?</span>
+        <textarea name="q1_pack" rows="2"></textarea>
+      </label>
+      <label>
+        <span class="q">Le troc sans jamais pouvoir vendre contre de l'argent — ça te semble juste, ou frustrant ?</span>
+        <textarea name="q2_troc" rows="2"></textarea>
+      </label>
+      <label>
+        <span class="q">L'idée d'un avatar qui évolue avec tes concerts, ça te parle ou c'est too much ?</span>
+        <textarea name="q3_avatar" rows="2"></textarea>
+      </label>
+      <label>
+        <span class="q">Qu'est-ce qui te ferait le plus peur ou le plus hésiter dans un projet comme ça ?</span>
+        <textarea name="q4_peur" rows="2"></textarea>
+      </label>
+      <label>
+        <span class="q">Un truc qu'on n'a clairement pas pensé et qui te semble évident ?</span>
+        <textarea name="q5_manque" rows="2"></textarea>
+      </label>
+
+      <label>
+        <span class="q">Ou dis-le de vive voix (optionnel)</span>
+        <div class="voice-row">
+          <button type="button" id="voice-btn" class="voice-btn">🎙 Enregistrer un vocal</button>
+          <span id="voice-status" class="voice-status"></span>
+        </div>
+        <audio id="voice-preview" class="voice-preview" controls hidden></audio>
+        <input type="file" name="attachment" id="voice-file" accept="audio/*" hidden>
+      </label>
+
+      <div class="submit-row">
+        <button type="submit" class="gate-submit" style="width:auto; padding:12px 28px;">Envoyer</button>
+      </div>
+      <p id="form-msg" class="form-msg" hidden></p>
+    </form>
   </div>
 </section>
 
@@ -574,5 +645,98 @@
       }
     });
   }
+})();
+</script>
+
+<script>
+(function(){
+  var form = document.getElementById('feedback-form');
+  if(!form) return;
+
+  var voiceBtn = document.getElementById('voice-btn');
+  var voiceStatus = document.getElementById('voice-status');
+  var voicePreview = document.getElementById('voice-preview');
+  var voiceFileInput = document.getElementById('voice-file');
+  var formMsg = document.getElementById('form-msg');
+
+  var mediaRecorder = null;
+  var chunks = [];
+  var recording = false;
+
+  function setStatus(text){ voiceStatus.textContent = text; }
+
+  function showMsg(text, kind){
+    formMsg.textContent = text;
+    formMsg.className = 'form-msg ' + kind;
+    formMsg.hidden = false;
+  }
+
+  if(voiceBtn && navigator.mediaDevices && window.MediaRecorder){
+    voiceBtn.addEventListener('click', function(){
+      if(recording){
+        mediaRecorder.stop();
+        return;
+      }
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream){
+        chunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.addEventListener('dataavailable', function(e){
+          if(e.data && e.data.size > 0) chunks.push(e.data);
+        });
+        mediaRecorder.addEventListener('stop', function(){
+          stream.getTracks().forEach(function(t){ t.stop(); });
+          var blob = new Blob(chunks, { type: 'audio/webm' });
+          var file = new File([blob], 'message-vocal.webm', { type: 'audio/webm' });
+          try{
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            voiceFileInput.files = dt.files;
+          }catch(e){}
+          voicePreview.src = URL.createObjectURL(blob);
+          voicePreview.hidden = false;
+          recording = false;
+          voiceBtn.classList.remove('is-recording');
+          voiceBtn.textContent = '🎙 Réenregistrer';
+          setStatus('Vocal prêt — envoyé avec le formulaire.');
+        });
+        mediaRecorder.start();
+        recording = true;
+        voiceBtn.classList.add('is-recording');
+        voiceBtn.textContent = '⏺ Arrêter';
+        setStatus('Enregistrement en cours…');
+      }).catch(function(){
+        setStatus("Micro indisponible ou refusé — pas grave, tu peux répondre par écrit.");
+      });
+    });
+  } else if(voiceBtn){
+    voiceBtn.hidden = true;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if(submitBtn) submitBtn.disabled = true;
+    formMsg.hidden = true;
+
+    var data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: data
+    }).then(function(res){ return res.json(); }).then(function(json){
+      if(json.success){
+        form.reset();
+        voicePreview.hidden = true;
+        setStatus('');
+        showMsg('Merci, c\'est bien envoyé !', 'success');
+      } else {
+        showMsg("Un souci à l'envoi — réessaie, ou écris directement à l'adresse qu'on t'a partagée.", 'error');
+      }
+    }).catch(function(){
+      showMsg("Un souci à l'envoi — réessaie, ou écris directement à l'adresse qu'on t'a partagée.", 'error');
+    }).finally(function(){
+      if(submitBtn) submitBtn.disabled = false;
+    });
+  });
 })();
 </script>
