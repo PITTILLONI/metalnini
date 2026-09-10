@@ -5,7 +5,7 @@
 Navigation basse à 5 entrées max :
 
 1. **Accueil** — feed : nouvelles évolutions de cartes débloquées, actu des artistes suivis, événements à venir près de l'utilisateur, rappels de pack disponible.
-2. **Collection** — l'album/binder : organisé par artiste, sous-genre, époque, festival. Barres de complétion par thème.
+2. **Collection** — l'album/binder : organisé par artiste, sous-genre, époque, festival. Barres de complétion par thème. Vues transversales par musicien et par instrument, indépendantes du regroupement par groupe.
 3. **Packs** — ouverture de pack (gratuit régulier + payant) et boutique.
 4. **Live** — carnet de concerts, avatar de fan, check-in événement, jauge d'ambiance, titres/achievements.
 5. **Communauté** — échanges (troc), guildes par sous-genre/artiste, classements, profils publics d'autres fans.
@@ -26,8 +26,12 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 
 **Collection**
 - Vue d'ensemble par thème (grille + % complétion)
+- Vue transversale "par musicien" — toutes les cartes Membre d'un même musicien, tous groupes confondus (side-projects, supergroupes)
+- Vue transversale "par instrument" — ex. tous les batteurs ou bassistes suivis, tous groupes confondus
 - Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention)
 - Vue "collections en cours" vs "complétées"
+
+*Point ouvert à trancher* : faut-il un binder unique filtrable par thème (structure actuelle), ou plusieurs classeurs distincts par sous-genre (ex. un classeur "Black metal", un classeur "Nu-metal") ? Un classeur par genre renforcerait l'identité de niche (cohérent avec les guildes par sous-genre) mais fragmenterait la vue d'ensemble et la lisibilité de la progression globale — à trancher avant maquettage de cet écran.
 
 **Packs**
 - Sélection de pack (gratuit du jour/semaine, payant, événementiel)

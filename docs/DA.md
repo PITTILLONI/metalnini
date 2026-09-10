@@ -39,7 +39,7 @@ Dark mode sobre, content-first, chrome plat sans effet (pas de skeuomorphisme, p
 ## Le vrai enjeu : générer des cartes à l'échelle, de façon homogène
 La réponse n'est pas "designer chaque carte à la main", c'est un **système de template paramétrique** :
 
-1. **Un gabarit fixe par type de carte** (Artiste / Live / Album / Riff / Collector) — 5 layouts maximum, avec des zones fixes : image, nom, artiste, tag genre, marqueur de rareté, numéro d'édition, ligne de contexte.
+1. **Un gabarit fixe par type de carte** (Artiste / Membre / Live / Album / Riff / Collector) — 6 layouts maximum, avec des zones fixes : image, nom, artiste, tag genre, marqueur de rareté, numéro d'édition, ligne de contexte. Le gabarit Membre ajoute une zone dédiée à l'instrument (guitare, basse, batterie, chant, clavier, etc.), qui sert aussi de méta pour le tri transversal par instrument.
 2. **La rareté = une couche d'overlay appliquée sur le même gabarit**, pas un redesign : bordure, texture, effet foil/shimmer changent, la structure ne change jamais. 5 presets de rareté, réutilisables sur tous les types.
 3. **Le sous-genre = un accent de cadre** (couleur de liseré + tag), pas un habillage différent.
 4. **Le seul asset réellement sur-mesure par carte = la photo/illustration de l'artiste.** Tout le reste (cadre, typo, effets de rareté, accent de genre) est systématique.

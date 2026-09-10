@@ -10,15 +10,19 @@ Le "Panini du metal/rock" : une collection de cartes numériques d'artistes, à 
 
 ## Boucle de jeu centrale (MVP)
 1. Ouvrir un pack (gratuit régulier + payant + gagné en event) → reveal animé.
-2. Compléter des collections thématiques (par artiste, sous-genre, époque, festival).
+2. Compléter des collections thématiques (par artiste, sous-genre, époque, festival) — et transversalement par musicien ou par instrument.
 3. Une carte peut **évoluer** quand un événement réel se produit chez l'artiste (sortie d'album, clip, date de concert, anniversaire).
 4. Échanger des cartes avec d'autres fans (troc pur, sans argent réel).
 5. Vivre un concert → nourrir son **avatar de fan** et son **carnet de concerts**.
 
 ## Système de cartes
-- **Types** : Artiste, Live, Album, Riff/Moment culte (clip, extrait), Collector (édition limitée événement).
+- **Types** : Artiste, Membre (musicien), Live, Album, Riff/Moment culte (clip, extrait), Collector (édition limitée événement).
 - **Rareté** : Commune → Rare → Holo/Prisme → Signature (numérotée) → Légendaire (série ultra-limitée).
 - Traitement graphique différencié par rareté (texture, foil, bordure), identité graphique déclinée par sous-genre.
+
+**Carte Membre (musicien)** — dédiée à un membre précis d'un groupe (nom, instrument, rôle). Elle porte une métadonnée `instrument` (guitare, basse, batterie, chant, clavier, etc.) et peut être rattachée à plusieurs groupes (side-projects, supergroupes, remplacements — fréquent dans le metal). Elle ouvre un axe de collection **transversal**, indépendant du regroupement par groupe :
+- Collection "par musicien" : retrouver toutes les cartes liées à un même musicien à travers ses différents groupes.
+- Collection "par instrument" : par exemple, collectionner les batteurs ou les bassistes suivis, tous groupes confondus.
 
 ## Mécanique d'évolution des cartes
 Les cartes changent d'état suite à un flux d'actualité artiste réel :
