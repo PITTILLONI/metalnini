@@ -2,8 +2,8 @@
 
 But de ce document : conserver toutes les idées évoquées qui ne font pas partie du MVP, pour ne rien perdre, sans polluer le concept de lancement (`CONCEPT.md`).
 
-## Phase 2 — Vrais noms de groupes et vraies photos
-En V1, les groupes sont des noms détournés (parodiques) avec des portraits générés par IA, pour éviter le risque droits à l'image/musicaux dès le lancement (voir `CONCEPT.md`). Une fois des accords de licence réels sécurisés avec labels/artistes, transition vers les vrais noms de groupes et de vraies photos — à envisager progressivement (par artiste/label partenaire) plutôt qu'en un seul big bang.
+## Phase 2 — Ouverture publique (droits à l'image/musicaux)
+Le concept utilise dès maintenant les vrais noms de groupes/musiciens et des portraits IA ressemblants, tolérable uniquement en usage privé (voir risques dans `CONCEPT.md`). Avant toute ouverture publique ou commerciale, il faut une solution sur ce point — pistes possibles à explorer avec un juriste : accords de licence par artiste/label (à envisager progressivement, pas en un seul big bang), ou repli sur des noms/portraits détournés (parodiques) si les accords ne sont pas atteignables à temps.
 
 ## Phase 2 — Hybride physique/digital
 - Packs physiques vendus en merch stand / disquaires / festival.
