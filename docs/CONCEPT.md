@@ -48,6 +48,7 @@ Les cartes changent d'état suite à un flux d'actualité artiste réel — dire
 - Guildes/clans par groupe ou sous-genre.
 - Classements de collection (par artiste, par festival, global).
 - Vitrine de profil public (le "book" à montrer), incluant les classeurs personnalisés mis en avant (voir `Classeurs & récompenses`).
+- **Cri enregistré** : un court enregistrement audio de son propre cri/growl metal, affiché comme signature vocale sur son profil public — purement cosmétique et social, sans aucune mécanique de jeu dessus. Dans la même veine "drôle" que la ligne édito (voir positionnement).
 
 ## Rencontres en concert (présence partagée)
 Le check-in concert (voir `Avatar de fan & carnet de concerts`) devient aussi un **levier social en direct**, pas seulement un marqueur pour l'avatar — c'est le pendant "IRL" du troc à distance déjà décrit dans `Volet social` :

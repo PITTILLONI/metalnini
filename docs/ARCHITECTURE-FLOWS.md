@@ -55,6 +55,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 
 **Profil (perso)**
 - Vitrine publique de collection, dont les classeurs personnalisés mis en avant
+- Enregistrement et lecture du "cri" signature (audio court, cosmétique)
 - Réglages, notifications, comptes liés
 
 ## 3. Parcours clés
