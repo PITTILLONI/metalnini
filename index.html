@@ -280,7 +280,45 @@
     section.reveal{opacity:1; transform:none; transition:none;}
     .card-chip{transition:none;}
   }
+
+  /* ---------- Rideau d'accès ---------- */
+  .gate{
+    position:fixed; inset:0; z-index:50;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg);
+    padding:24px;
+  }
+  .gate-form{max-width:360px; width:100%; text-align:center;}
+  .gate-title{font-size:clamp(2rem,7vw,2.6rem); text-transform:uppercase; margin:6px 0 14px;}
+  .gate-copy{color:var(--text-muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-input{
+    width:100%; font-family:var(--font-mono); font-size:1rem;
+    padding:12px 14px; background:var(--surface); border:1px solid var(--border);
+    border-radius:4px; color:var(--text); margin-bottom:12px;
+  }
+  .gate-input:focus-visible{outline:2px solid var(--rarity-signature); outline-offset:2px;}
+  .gate-submit{
+    width:100%; font-family:var(--font-display); text-transform:uppercase;
+    letter-spacing:0.04em; font-size:1rem; padding:12px 14px;
+    background:var(--accent); color:var(--text); border:none; border-radius:4px;
+    cursor:pointer; transition:background .2s ease;
+  }
+  .gate-submit:hover{background:#c24444;}
+  .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
 </style>
+
+<div id="gate" class="gate">
+  <form id="gate-form" class="gate-form">
+    <p class="eyebrow" style="margin-bottom:10px">Accès privé</p>
+    <h1 class="gate-title">Metalnini</h1>
+    <p class="gate-copy">Document de travail partagé avec des proches. Mot de passe requis.</p>
+    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" autocomplete="off" autofocus>
+    <button type="submit" class="gate-submit">Entrer</button>
+    <p id="gate-error" class="gate-error" hidden>Mot de passe incorrect.</p>
+  </form>
+</div>
+
+<div id="site-content" style="display:none">
 
 <div class="wrap hero">
   <p class="eyebrow">Projet en gestation — document de travail</p>
@@ -455,22 +493,59 @@
   Document de travail — à partager, commenter, démonter si besoin.
 </footer>
 
+</div>
+
 <script>
 (function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var els = document.querySelectorAll('.reveal');
-  if(!('IntersectionObserver' in window)){
-    els.forEach(function(el){ el.classList.add('is-visible'); });
-    return;
+  var PASS = 'metalnini';
+  var KEY = 'metalnini-unlocked';
+  var gate = document.getElementById('gate');
+  var content = document.getElementById('site-content');
+  var form = document.getElementById('gate-form');
+  var input = document.getElementById('gate-input');
+  var error = document.getElementById('gate-error');
+
+  function initReveal(){
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var els = document.querySelectorAll('.reveal');
+    if(reduced || !('IntersectionObserver' in window)){
+      els.forEach(function(el){ el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12});
+    els.forEach(function(el){ io.observe(el); });
   }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target);
+
+  function unlock(){
+    gate.style.display = 'none';
+    content.style.display = '';
+    initReveal();
+  }
+
+  var alreadyUnlocked = false;
+  try{ alreadyUnlocked = localStorage.getItem(KEY) === '1'; }catch(e){}
+
+  if(alreadyUnlocked){
+    unlock();
+  } else {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(input.value.trim().toLowerCase() === PASS){
+        try{ localStorage.setItem(KEY,'1'); }catch(e){}
+        unlock();
+      } else {
+        error.hidden = false;
+        input.value = '';
+        input.focus();
       }
     });
-  }, {threshold:0.12});
-  els.forEach(function(el){ io.observe(el); });
+  }
 })();
 </script>
