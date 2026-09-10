@@ -30,6 +30,8 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 - Vue transversale "par instrument" — ex. tous les batteurs ou bassistes suivis, tous groupes confondus
 - Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention) — pour une carte Membre : instrument et groupe(s) associés, avec lien direct vers les autres cartes de ce musicien
 - Vue "collections en cours" vs "complétées"
+- Écran de récompense de complétion d'un classeur officiel (carte Collector cosmétique + badge), dans l'esprit du reveal de pack
+- Création et gestion de classeurs personnalisés : sélection libre parmi ses cartes possédées, nommage, réordonnancement — sans mécanique de récompense propre (voir `CONCEPT.md`)
 
 *Point ouvert à trancher* : faut-il un binder unique filtrable par thème (structure actuelle), ou plusieurs classeurs distincts par sous-genre (ex. un classeur "Black metal", un classeur "Nu-metal") ? Un classeur par genre renforcerait l'identité de niche (cohérent avec les guildes par sous-genre) mais fragmenterait la vue d'ensemble et la lisibilité de la progression globale — à trancher avant maquettage de cet écran.
 
@@ -51,7 +53,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 - Classements globaux (collection, avatar, guildes)
 
 **Profil (perso)**
-- Vitrine publique de collection
+- Vitrine publique de collection, dont les classeurs personnalisés mis en avant
 - Réglages, notifications, comptes liés
 
 ## 3. Parcours clés
@@ -87,6 +89,12 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 3. Acceptation/refus par l'autre fan.
 4. Confirmation → mise à jour synchrone des deux collections + notification aux deux parties.
 
+### Flow F — Complétion de classeur officiel / palier avatar → récompense
+1. Dernière carte manquante d'un classeur officiel obtenue (pack ou échange), ou franchissement d'un palier XP avatar.
+2. Détection automatique → écran de récompense dédié (animé, dans l'esprit du reveal de pack) : carte Collector cosmétique + badge de profil pour un classeur complété ; déblocage cosmétique d'avatar pour un palier XP.
+3. Le classeur complété bascule dans "collections complétées" (Collection) ; le badge/trait reste visible en continu sur le profil et la fiche avatar.
+4. Aucune mécanique équivalente sur les classeurs personnalisés (non éligibles à la récompense, voir `CONCEPT.md`).
+
 ## 4. Mécaniques d'engagement (à pousser)
 
 - **FOMO authentique, pas artificiel** : les triggers d'évolution/urgence viennent de vrais événements (sortie d'album, concert réel), jamais de timers fabriqués — cohérent avec une communauté qui déteste le marketing malhonnête.
@@ -94,6 +102,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 - **Scarcité liée à la présence réelle**, pas au paiement : les cartes exclusives de concert récompensent le fait d'y être, pas de payer plus.
 - **Reconnaissance sociale par la niche** : guildes par sous-genre (le fan de black metal norvégien et le fan de nu-metal n'ont pas la même culture) → appartenance forte, classements internes valorisants même sans être "le meilleur" à l'échelle globale.
 - **Nudges de complétion** : mise en avant discrète des collections presque terminées, sans notification agressive.
+- **Récompense garantie à la complétion** : contrairement à l'ouverture de pack (aléatoire), finir un classeur officiel ou franchir un palier avatar rapporte une récompense certaine et non-aléatoire — renforce le sentiment de maîtrise sans reproduire une mécanique de loot-box.
 - **Réciprocité sociale immédiate** : un doublon obtenu propose tout de suite l'échange, réduisant la friction du flow E.
 
 ## 5. Anti-patterns à éviter explicitement
@@ -101,6 +110,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 - Pas de mécanique de perte punitive (streak qui pénalise fort une absence) — la communauté cible réagit mal à la pression commerciale.
 - Pas de notification spam sur les évolutions : un artiste suivi = pertinent, le reste doit rester silencieux par défaut.
 - Pas de mécanique de check-in concert qui capte des données de localisation en continu — check-in ponctuel et consenti uniquement.
+- Pas de récompense de complétion sur les classeurs personnalisés — évite qu'un utilisateur crée un classeur trivial (1 carte) pour farmer la récompense prévue pour les classeurs officiels.
 
 ## Statut
 Architecture et parcours posés comme base de travail. Prochaine étape suggérée : détailler un flow en particulier (wireframes bas-fidélité) ou challenger/amender cette structure avant tout maquettage visuel.

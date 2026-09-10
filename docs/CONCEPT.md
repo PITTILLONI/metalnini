@@ -26,6 +26,11 @@ Le "Panini du metal/rock" : une collection de cartes numériques d'artistes, à 
 - Collection "par musicien" : retrouver toutes les cartes liées à un même musicien à travers ses différents groupes.
 - Collection "par instrument" : par exemple, collectionner les batteurs ou les bassistes suivis, tous groupes confondus.
 
+## Classeurs & récompenses
+- **Classeurs officiels (thématiques)** — les collections de la boucle de jeu (par artiste, sous-genre, époque, festival). Compléter un classeur officiel déclenche une récompense **garantie, non aléatoire** : carte Collector cosmétique dédiée + badge de complétion visible sur le profil. Aucun avantage compétitif ni monétaire — uniquement cosmétique/statutaire, cohérent avec l'absence de marketplace.
+- **Paliers d'avatar (niveaux)** — franchir un palier d'XP avatar (cumulé sur les 3 sources : collection, vécu concert, profil de spectateur) débloque un nouveau trait/emplacement de personnalisation cosmétique de l'avatar, et occasionnellement un pack gratuit. Nombre de paliers et coût XP à calibrer en phase de game design, hors scope de ce document.
+- **Classeurs personnalisés** — en plus des classeurs officiels, chaque utilisateur peut créer ses propres classeurs libres : sélection manuelle parmi les cartes qu'il possède déjà, nommage libre, réordonnancement (ex. "Mes riffs cultes", "Ma tournée 2025"). Ils alimentent la vitrine de profil public (voir Volet social) mais ne déclenchent **aucune récompense de complétion propre** — un classeur custom étant défini par l'utilisateur lui-même (parfois réduit à une seule carte), le récompenser créerait une boucle triviale à exploiter. Seuls les classeurs officiels comptent pour les récompenses.
+
 ## Mécanique d'évolution des cartes
 Les cartes changent d'état suite à un flux d'actualité artiste réel — celle du **vrai groupe mappé** derrière chaque groupe fictif, retranscrite sur la carte sous son identité détournée (nom, portrait IA) :
 - Carte "Artiste" → devient carte "Album" à la sortie d'un nouvel album (celui du vrai groupe mappé).
@@ -38,7 +43,7 @@ Les cartes changent d'état suite à un flux d'actualité artiste réel — cell
 - Échange carte contre carte (1-to-1 ou en lot), avec éventuellement une valeur symbolique de rareté pour équilibrer les échanges — **jamais convertible en argent réel**.
 - Guildes/clans par groupe ou sous-genre.
 - Classements de collection (par artiste, par festival, global).
-- Vitrine de profil public (le "book" à montrer).
+- Vitrine de profil public (le "book" à montrer), incluant les classeurs personnalisés mis en avant (voir `Classeurs & récompenses`).
 
 ## Avatar de fan & carnet de concerts
 Chaque utilisateur a un avatar personnel qui évolue selon **trois sources combinées**, pas seulement le vécu live : sa collection de cartes, son vécu de concerts réels, et son profil de spectateur déclaré.
