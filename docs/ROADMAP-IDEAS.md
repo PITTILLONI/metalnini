@@ -2,6 +2,9 @@
 
 But de ce document : conserver toutes les idées évoquées qui ne font pas partie du MVP, pour ne rien perdre, sans polluer le concept de lancement (`CONCEPT.md`).
 
+## Phase 2 — Vrais noms de groupes et vraies photos
+En V1, les groupes sont des noms détournés (parodiques) avec des portraits générés par IA, pour éviter le risque droits à l'image/musicaux dès le lancement (voir `CONCEPT.md`). Une fois des accords de licence réels sécurisés avec labels/artistes, transition vers les vrais noms de groupes et de vraies photos — à envisager progressivement (par artiste/label partenaire) plutôt qu'en un seul big bang.
+
 ## Phase 2 — Hybride physique/digital
 - Packs physiques vendus en merch stand / disquaires / festival.
 - QR code ou tag NFC sur le pack physique → scan pour débloquer le jumeau numérique (la carte physique devient un objet d'affichage collector, la valeur "jeu" reste dans l'app).

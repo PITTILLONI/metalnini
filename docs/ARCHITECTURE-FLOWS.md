@@ -28,7 +28,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 - Vue d'ensemble par thème (grille + % complétion)
 - Vue transversale "par musicien" — toutes les cartes Membre d'un même musicien, tous groupes confondus (side-projects, supergroupes)
 - Vue transversale "par instrument" — ex. tous les batteurs ou bassistes suivis, tous groupes confondus
-- Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention)
+- Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention) — pour une carte Membre : instrument et groupe(s) associés, avec lien direct vers les autres cartes de ce musicien
 - Vue "collections en cours" vs "complétées"
 
 *Point ouvert à trancher* : faut-il un binder unique filtrable par thème (structure actuelle), ou plusieurs classeurs distincts par sous-genre (ex. un classeur "Black metal", un classeur "Nu-metal") ? Un classeur par genre renforcerait l'identité de niche (cohérent avec les guildes par sous-genre) mais fragmenterait la vue d'ensemble et la lisibilité de la progression globale — à trancher avant maquettage de cet écran.
@@ -41,7 +41,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 **Live**
 - Carnet de concerts (liste chronologique des shows vécus)
 - Check-in concert (avant/pendant/après)
-- Fiche avatar (traits débloqués, titres, XP par catégorie)
+- Fiche avatar (traits débloqués, titres, XP par catégorie : collection, vécu concert, profil de spectateur)
 - Détail d'un concert passé (note d'ambiance, carte exclusive obtenue le cas échéant)
 
 **Communauté**
