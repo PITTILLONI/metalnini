@@ -42,7 +42,8 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 
 **Live**
 - Carnet de concerts (liste chronologique des shows vécus)
-- Check-in concert (avant/pendant/après)
+- Check-in concert (avant/pendant/après), avec option "Visible aux autres fans ce soir" (opt-in, off par défaut)
+- Liste éphémère "Fans présents ce soir" — visible uniquement entre fans ayant mutuellement activé l'option pour ce concert ; disparaît après l'événement
 - Fiche avatar (traits débloqués, titres, XP par catégorie : collection, vécu concert, profil de spectateur)
 - Détail d'un concert passé (note d'ambiance, carte exclusive obtenue le cas échéant)
 
@@ -95,12 +96,20 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 3. Le classeur complété bascule dans "collections complétées" (Collection) ; le badge/trait reste visible en continu sur le profil et la fiche avatar.
 4. Aucune mécanique équivalente sur les classeurs personnalisés (non éligibles à la récompense, voir `CONCEPT.md`).
 
+### Flow G — Rencontre en concert (présence partagée → échange en direct)
+1. Check-in concert (Flow D) avec option "Visible aux autres fans ce soir" activée.
+2. L'utilisateur consulte la liste éphémère des fans présents ayant eux aussi activé l'option pour ce même concert.
+3. Proposition d'échange en direct à un fan de cette liste → même confirmation mutuelle que Flow E, sans repasser par la recherche globale de Communauté.
+4. Première rencontre confirmée mutuellement avec un fan lors d'un même concert (échange conclu, ou simple confirmation "on s'est croisés") → déblocage d'une carte bonus garantie, non aléatoire, et progression du titre avatar "Metal Corner".
+5. La liste "Fans présents ce soir" disparaît à la fin de l'événement ; seuls le résultat de l'échange et la carte bonus restent dans la Collection/le carnet.
+
 ## 4. Mécaniques d'engagement (à pousser)
 
 - **FOMO authentique, pas artificiel** : les triggers d'évolution/urgence viennent de vrais événements (sortie d'album, concert réel), jamais de timers fabriqués — cohérent avec une communauté qui déteste le marketing malhonnête.
 - **Progression à deux axes** : collection de cartes (objet) + avatar/carnet de concerts (vécu). Un utilisateur qui a "fini" de collectionner un artiste garde une raison de revenir via son avatar, et inversement.
 - **Scarcité liée à la présence réelle**, pas au paiement : les cartes exclusives de concert récompensent le fait d'y être, pas de payer plus.
 - **Reconnaissance sociale par la niche** : guildes par sous-genre (le fan de black metal norvégien et le fan de nu-metal n'ont pas la même culture) → appartenance forte, classements internes valorisants même sans être "le meilleur" à l'échelle globale.
+- **Reconnaissance sociale IRL, pas seulement en ligne** : la rencontre en concert (Flow G) transforme un moment social réel (croiser un autre fan, échanger sur place) en progression concrète — cohérent avec l'ADN "vécu réel" de l'app, pas un système social purement digital.
 - **Nudges de complétion** : mise en avant discrète des collections presque terminées, sans notification agressive.
 - **Récompense garantie à la complétion** : contrairement à l'ouverture de pack (aléatoire), finir un classeur officiel ou franchir un palier avatar rapporte une récompense certaine et non-aléatoire — renforce le sentiment de maîtrise sans reproduire une mécanique de loot-box.
 - **Réciprocité sociale immédiate** : un doublon obtenu propose tout de suite l'échange, réduisant la friction du flow E.
@@ -110,6 +119,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 - Pas de mécanique de perte punitive (streak qui pénalise fort une absence) — la communauté cible réagit mal à la pression commerciale.
 - Pas de notification spam sur les évolutions : un artiste suivi = pertinent, le reste doit rester silencieux par défaut.
 - Pas de mécanique de check-in concert qui capte des données de localisation en continu — check-in ponctuel et consenti uniquement.
+- Pas de liste "fans présents" visible par défaut ou à sens unique — uniquement opt-in et réciproque (voir Flow G), pour ne pas créer un risque de repérage/harcèlement.
 - Pas de récompense de complétion sur les classeurs personnalisés — évite qu'un utilisateur crée un classeur trivial (1 carte) pour farmer la récompense prévue pour les classeurs officiels.
 
 ## Statut

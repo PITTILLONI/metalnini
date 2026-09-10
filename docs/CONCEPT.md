@@ -45,6 +45,12 @@ Les cartes changent d'état suite à un flux d'actualité artiste réel — cell
 - Classements de collection (par artiste, par festival, global).
 - Vitrine de profil public (le "book" à montrer), incluant les classeurs personnalisés mis en avant (voir `Classeurs & récompenses`).
 
+## Rencontres en concert (présence partagée)
+Le check-in concert (voir `Avatar de fan & carnet de concerts`) devient aussi un **levier social en direct**, pas seulement un marqueur pour l'avatar — c'est le pendant "IRL" du troc à distance déjà décrit dans `Volet social` :
+- **Présence partagée, opt-in et réciproque** : au moment du check-in, l'utilisateur peut choisir d'apparaître dans une liste éphémère "Fans présents ce soir", visible uniquement par les autres fans ayant eux aussi activé cette option pour ce même concert. Pas de liste publique par défaut, pas d'historique de localisation conservé au-delà de l'événement — cohérent avec l'anti-pattern déjà posé sur la géolocalisation continue.
+- **Échange en direct** : depuis cette liste, un fan peut proposer un échange de cartes à un autre fan présent, sans repasser par la recherche globale de `Communauté` — même mécanique de confirmation mutuelle que l'échange classique, juste plus rapide d'accès sur place.
+- **Carte bonus de connexion** : la première rencontre confirmée mutuellement avec un autre fan lors d'un même concert (échange conclu, ou simple "on s'est croisés" confirmé des deux côtés) débloque une **carte bonus garantie, non aléatoire** — même logique de récompense que les classeurs/paliers (voir `Classeurs & récompenses`). Ça donne enfin un contenu concret au titre "Metal Corner" déjà prévu dans la progression d'avatar, qui restait jusque-là un intitulé sans mécanique derrière.
+
 ## Avatar de fan & carnet de concerts
 Chaque utilisateur a un avatar personnel qui évolue selon **trois sources combinées**, pas seulement le vécu live : sa collection de cartes, son vécu de concerts réels, et son profil de spectateur déclaré.
 
@@ -74,6 +80,7 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 - **Cadre légal loot-box** : mécaniques de pack aléatoire payant régulées dans certains pays — à valider par un juriste avant tout modèle payant.
 - **Droits à l'image / musicaux** : contournés en V1 par des noms de groupes détournés (parodiques) et des portraits générés par IA plutôt que de vraies photos — mais la parodie n'est pas un blanc-seing légal (risque de confusion/évocation trop proche d'un vrai groupe), **d'autant plus que chaque groupe fictif calque 1:1 le calendrier d'actu réel d'un vrai groupe** (mécanique d'évolution) : plus le mapping colle à l'actu réelle, plus l'argument "parodie/œuvre indépendante" s'affaiblit face à un usage non autorisé déguisé. À faire valider par un juriste avant lancement, y compris sur le degré de détournement acceptable. De vrais noms/photos sous licence restent l'objectif une fois des accords labels/artistes sécurisés (voir `ROADMAP-IDEAS.md`).
 - **Fiabilité de la détection capteur** : à valider par un spike technique avant de committer sur la jauge d'ambiance automatique ; le déclaratif doit rester le socle robuste dans tous les cas.
+- **Sécurité de la présence partagée en concert** : rendre visible qu'un utilisateur est physiquement présent à un endroit peut créer un risque de repérage/harcèlement s'il n'est pas encadré. Garde-fous déjà posés dans le concept (opt-in réciproque, éphémère, jamais de liste publique par défaut) — à faire challenger par un tiers compétent sur la sécurité/vie privée avant lancement, au même titre que les autres risques listés ici.
 
 ## Statut
 Concept validé comme base de travail pour la suite (direction visuelle, puis maquettage). Les idées écartées du MVP ou à explorer plus tard sont conservées dans `ROADMAP-IDEAS.md` pour ne rien perdre.
