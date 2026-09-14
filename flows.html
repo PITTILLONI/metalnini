@@ -234,6 +234,30 @@
   }
   .priority b{color:var(--text); font-weight:500;}
 
+  /* ---------- Missions ---------- */
+  :root{
+    --m-collection:#71717a; --m-echange:#5b8fd6; --m-concert:#b23a3a;
+    --m-social:#9b6fd6; --m-decouverte:#3ecbb0; --m-achat:#cda44e;
+  }
+  .mission-grid{display:grid; gap:14px; margin-top:24px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
+  .mission-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:6px;
+    padding:14px 16px; border-left:3px solid var(--t-system);
+  }
+  .mission-card[data-cat="collection"]{border-left-color:var(--m-collection);}
+  .mission-card[data-cat="echange"]{border-left-color:var(--m-echange);}
+  .mission-card[data-cat="concert"]{border-left-color:var(--m-concert);}
+  .mission-card[data-cat="social"]{border-left-color:var(--m-social);}
+  .mission-card[data-cat="decouverte"]{border-left-color:var(--m-decouverte);}
+  .mission-card[data-cat="achat"]{border-left-color:var(--m-achat);}
+  .mission-card .cat{
+    display:block; font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;
+  }
+  .mission-card ul{margin:0; padding-left:16px;}
+  .mission-card li{font-size:0.87rem; color:var(--text-muted); margin-bottom:5px;}
+  .mission-card li:last-child{margin-bottom:0;}
+
   /* ---------- Gate ---------- */
   .gate{
     position:fixed; inset:0; z-index:50; background:var(--bg);
@@ -271,7 +295,7 @@
 <div class="wrap head">
   <p class="eyebrow">Document de travail — conception</p>
   <h1>User flows</h1>
-  <p class="tagline">Les 7 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes — plus l'architecture des boucles de rétention qui les relie.</p>
+  <p class="tagline">Les 8 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes — plus l'architecture des boucles de rétention qui les relie.</p>
   <p class="meta">Basé sur docs/ARCHITECTURE-FLOWS.md · Motion : Rive · Aucun visuel de carte requis à ce stade</p>
 
   <div class="legend">
@@ -290,9 +314,10 @@
     <a href="#flow-b">B · Pack</a>
     <a href="#flow-c">C · Évolution</a>
     <a href="#flow-d">D · Concert</a>
-    <a href="#flow-e">E · Échange</a>
+    <a href="#flow-e">E · Découverte échange</a>
     <a href="#flow-f">F · Récompense</a>
-    <a href="#flow-g">G · Rencontre</a>
+    <a href="#flow-g">G · Échange & rencontre</a>
+    <a href="#flow-h">H · Missions</a>
     <a href="#retention">Rétention</a>
     <a href="#trancher">À trancher</a>
   </div>
@@ -466,7 +491,7 @@
       <h4>Résumé post-ouverture</h4>
       <p>Trois blocs : nouvelles cartes, doublons, progression. Sur chaque nouvelle carte, l'impact chiffré sur le classeur concerné (« +12 % sur Early Years »). Sur chaque doublon, un bouton direct « Proposer en échange ».</p>
       <ul class="branches">
-        <li><b>Doublon</b>Le bouton entre dans le Flow E à l'étape de composition, sans passer par la recherche. C'est ce raccourci qui transforme une déception en action.</li>
+        <li><b>Doublon</b>Marqué « disponible à l'échange » immédiatement, visible par les autres fans (Flow E). La transaction elle-même attend une rencontre en présentiel (Flow G) — l'échange n'est plus possible à distance.</li>
         <li><b>Classeur complété</b>Enchaîne sur le Flow F (récompense) plutôt que de rester sur le résumé.</li>
         <li><b>Classeur presque complet</b>Nudge visuel sur le résumé uniquement. Aucune notification derrière.</li>
       </ul>
@@ -571,41 +596,41 @@
 <!-- ============ FLOW D ============ -->
 <section id="flow-d" class="wrap">
   <p class="eyebrow">Flow D</p>
-  <h2>Concert : check-in → avatar</h2>
-  <p class="flow-sub">Le flow qui relie l'app au vécu réel. Sa contrainte principale : ne rien demander pendant le concert.</p>
+  <h2>Concert : billet → avatar</h2>
+  <p class="flow-sub">Le flow qui relie l'app au vécu réel. Sa contrainte principale : ne rien demander pendant le concert. La détection se fait par le billet, pas par un croisement artistes suivis + agenda externe — plus simple, et le billet sert directement de preuve.</p>
 
   <dl class="facts">
     <div class="fact"><dt>Objectif</dt><dd>Transformer un concert vécu en progression, sans parasiter le concert lui-même.</dd></div>
-    <div class="fact"><dt>Déclencheur</dt><dd>Concert détecté à proximité, ou saisie manuelle par l'utilisateur.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Import d'un billet, électronique ou physique.</dd></div>
     <div class="fact"><dt>Sortie réussie</dt><dd>Une entrée de plus au carnet de concerts, et un avatar qui a bougé.</dd></div>
   </dl>
 
   <ol class="flow">
-    <li class="step" data-type="systeme">
-      <span class="tag">Système</span>
-      <h4>Détection d'un concert</h4>
-      <p>Croisement entre les artistes suivis et l'agenda. La géolocalisation est ponctuelle et consentie au moment du check-in — jamais un suivi en continu.</p>
-    </li>
-
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran — avant</span>
-      <h4>Fiche concert</h4>
-      <p>Date, lieu, artistes, et le bouton « J'y suis ». Accessible aussi par recherche manuelle pour un concert non détecté.</p>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Import du billet</h4>
+      <p>Scan du QR/code-barres via l'appareil photo — billet électronique affiché à l'écran ou billet physique imprimé, même mécanique dans les deux cas.</p>
     </li>
 
     <li class="step" data-type="decision">
-      <span class="tag">Décision — géolocalisation ?</span>
-      <h4>Le refus ne bloque jamais</h4>
+      <span class="tag">Décision — le code est-il exploitable ?</span>
+      <h4>Un billet non lisible ne bloque jamais</h4>
       <ul class="branches">
-        <li><b>Autorisée</b>Check-in vérifié automatiquement.</li>
-        <li><b>Refusée ou indisponible</b>Saisie manuelle du concert. L'entrée au carnet est identique ; seul le statut de vérification diffère.</li>
+        <li><b>Code lu</b>Artiste, date et lieu détectés automatiquement.</li>
+        <li><b>Code illisible ou absent</b>(pas de partenariat billetterie, accès guestlist, billet au nom d'un tiers) → photo du billet avec tentative de lecture automatique, ou saisie manuelle complète.</li>
       </ul>
     </li>
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
       <h4>Check-in confirmé</h4>
-      <p>Confirmation courte, plus un interrupteur « Visible aux autres fans ce soir », <b>désactivé par défaut</b>. C'est le seul point d'entrée du Flow G.</p>
+      <p>Confirmation courte, plus deux options indépendantes : « Visible aux autres fans ce soir » (opt-in, <b>désactivé par défaut</b> — seul point d'entrée du Flow G côté concert) et une géolocalisation ponctuelle du jour même, optionnelle.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Deux niveaux de preuve</h4>
+      <p>Le billet scanné suffit comme preuve <b>standard</b> (carnet, XP avatar). La géolocalisation ponctuelle du jour, si activée, apporte la preuve <b>renforcée</b> qui conditionne la carte Live exclusive — un billet peut être scanné sans y être allé, la géoloc du jour limite ce cas sans l'exclure.</p>
     </li>
 
     <li class="step" data-type="systeme">
@@ -629,7 +654,7 @@
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Attribution d'XP et de contenu</h4>
-      <p>XP réparti sur les trois sources de l'avatar, et carte Live exclusive liée à la date si l'événement en prévoit une. L'attribution se fait <b>au check-in</b>, pas à la rédaction du compte-rendu — la récompense ne doit pas être conditionnée au remplissage d'un formulaire.</p>
+      <p>XP réparti sur les trois sources de l'avatar, et carte Live exclusive si le niveau de preuve renforcé est atteint. L'attribution se fait <b>au check-in</b>, pas à la rédaction du compte-rendu — la récompense ne doit pas être conditionnée au remplissage d'un formulaire.</p>
     </li>
 
     <li class="step" data-type="ecran">
@@ -642,18 +667,18 @@
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Concert annulé après check-in</b> — l'entrée doit pouvoir être retirée du carnet, avec l'XP associé.</li>
-      <li><b>Check-in sur le mauvais concert</b> (deux salles proches, festival multi-scènes) — correction possible depuis la fiche.</li>
+      <li><b>Concert annulé après import du billet</b> — l'entrée doit pouvoir être retirée du carnet, avec l'XP associé.</li>
+      <li><b>Billet à un nom différent</b> (revente, cadeau, place offerte) — le check-in reste possible, c'est la personne qui scanne qui fait la preuve, pas le nom sur le billet.</li>
       <li><b>Compte-rendu jamais rempli</b> — l'entrée reste au carnet avec les informations factuelles. Un carnet rempli de brouillons vides serait pire que des entrées minimales assumées.</li>
-      <li><b>Festival sur plusieurs jours</b> — une entrée par jour, ou une entrée par festival ? Le carnet doit gérer les deux lectures.</li>
+      <li><b>Festival sur plusieurs jours</b> — un billet par jour ou par festival selon la billetterie ; le carnet doit gérer les deux lectures.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>La carte Live exclusive exige-t-elle un check-in vérifié ?</b> — si la saisie manuelle y donne droit, elle est déclarative et falsifiable ; si elle n'y donne pas droit, on pénalise tous ceux qui refusent la géolocalisation. Arbitrage à faire consciemment.</li>
       <li><b>Fiabilité de la jauge d'ambiance</b> — dépend d'un spike technique non réalisé. Tout le flow est conçu pour rester valable si elle n'existe jamais.</li>
+      <li><b>Formats de billetterie à couvrir en priorité</b> — la fiabilité de la lecture automatique du code dépend de la diversité des billetteries à supporter (PDF, wallet, appli tierce, papier) ; à cadrer avant développement plutôt qu'à découvrir en production.</li>
     </ul>
   </div>
 </section>
@@ -661,65 +686,47 @@
 <!-- ============ FLOW E ============ -->
 <section id="flow-e" class="wrap">
   <p class="eyebrow">Flow E</p>
-  <h2>Échange entre fans</h2>
-  <p class="flow-sub">Troc pur : aucune conversion en argent réel à aucune étape.</p>
+  <h2>Découverte d'échange</h2>
+  <p class="flow-sub"><b style="color:var(--text)">Décision actée : l'échange ne se fait qu'en présentiel.</b> Pas d'offre envoyée à un inconnu puis acceptée des heures plus tard ailleurs — deux fans doivent être physiquement réunis au même moment. Coût assumé : moins de partenaires d'échange accessibles à tout instant qu'un système à distance ; contrepartie : ça rapproche l'app du vécu réel de collection plutôt que d'une marketplace déguisée, et supprime tout le sujet colis/litige à distance. Ce flow ne fait donc que la <b style="color:var(--text)">préparation</b> — la transaction se conclut dans le Flow G.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Objectif</dt><dd>Donner un usage aux doublons et créer du lien entre collectionneurs.</dd></div>
-    <div class="fact"><dt>Entrées</dt><dd>Doublon après un pack (Flow B) · recherche d'une carte manquante · profil d'un autre fan · liste de présence en concert (Flow G).</dd></div>
-    <div class="fact"><dt>Sortie réussie</dt><dd>Deux collections mises à jour simultanément, deux fans notifiés.</dd></div>
+    <div class="fact"><dt>Objectif</dt><dd>Savoir avec qui échanger la prochaine fois qu'on le croise, pas conclure une transaction ici.</dd></div>
+    <div class="fact"><dt>Entrées</dt><dd>Doublon après un pack (Flow B) · recherche d'une carte manquante · profil d'un autre fan · fil de guilde.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Une carte repérée à demander, ou un fan cible identifié — aucune collection modifiée à ce stade.</dd></div>
   </dl>
 
   <ol class="flow">
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
       <h4>Recherche</h4>
-      <p>Par carte recherchée, par fan, ou par guilde. Étape court-circuitée quand on arrive depuis un doublon ou depuis la liste de présence en concert.</p>
+      <p>Par carte recherchée, par fan, ou par guilde. Chaque fan affiche ses doublons « disponibles à l'échange » et ses cartes « recherchées ».</p>
     </li>
 
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran</span>
-      <h4>Composition de la proposition</h4>
-      <p>Cartes offertes d'un côté, demandées de l'autre. Un indicateur d'équilibre de rareté, purement indicatif et non monétaire, aide à juger avant d'envoyer — sans jamais empêcher un échange volontairement déséquilibré.</p>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Ajout à sa liste de souhaits, ou repérage d'un fan cible</h4>
+      <p>Pas de proposition envoyée : juste de quoi se souvenir avec qui échanger. Un membre de sa propre guilde, plus susceptible d'être croisé en concert, est mis en avant.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Verrouillage des cartes engagées</h4>
-      <p>Les cartes incluses dans une proposition en attente sont verrouillées, pour éviter qu'une même carte soit promise à deux fans en parallèle. Le verrou doit être visible en Collection, sinon il ressemble à un bug.</p>
-    </li>
-
-    <li class="step" data-type="notif">
-      <span class="tag">Notification</span>
-      <h4>Proposition reçue</h4>
-      <p>Notification à l'autre fan, avec le contenu de l'offre lisible sans ouvrir l'app.</p>
-    </li>
-
-    <li class="step" data-type="decision">
-      <span class="tag">Décision — réponse du destinataire</span>
-      <h4>Trois issues</h4>
-      <ul class="branches">
-        <li><b>Accepte</b>Échange atomique : les deux collections changent en même temps, ou aucune. Notification aux deux parties.</li>
-        <li><b>Refuse</b>Notification à l'émetteur, cartes déverrouillées, contre-proposition possible en un geste.</li>
-        <li><b>Ne répond pas</b>Expiration après un délai fixe. Les cartes sont déverrouillées automatiquement — une proposition oubliée ne doit pas immobiliser une collection indéfiniment.</li>
-      </ul>
+      <h4>Aucune transaction, aucun verrouillage de carte</h4>
+      <p>Contrairement à un système d'échange à distance, rien n'est engagé ici : une carte "recherchée" par dix fans peut toujours être proposée à n'importe lequel d'entre eux, selon qui est croisé en premier.</p>
     </li>
   </ol>
 
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Carte échangée entre-temps</b> — la proposition est invalidée proprement, avec un message qui explique pourquoi plutôt qu'une erreur générique.</li>
-      <li><b>Fan indésirable</b> — blocage et signalement accessibles depuis la fiche d'échange et le profil, pas enfouis dans les réglages.</li>
-      <li><b>Échange très déséquilibré</b> — autorisé (un fan peut vouloir faire un cadeau), mais l'indicateur doit être affiché au moment de confirmer, pas après.</li>
+      <li><b>Carte recherchée par personne dans son entourage géographique</b> — reste possible, mais sans échange à distance en secours ; assumé comme la limite du choix du présentiel.</li>
+      <li><b>Fan indésirable</b> — blocage et signalement accessibles depuis le profil, pas enfouis dans les réglages.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Délai d'expiration d'une proposition</b> — assez long pour un usage occasionnel, assez court pour ne pas bloquer les cartes.</li>
-      <li><b>Nombre de propositions simultanées</b> — sans limite, on ouvre la porte au spam de propositions.</li>
+      <li><b>Visibilité des cartes "recherchées" par les guildes</b> — mise en avant systématique des membres de guilde dans la recherche, ou simple filtre optionnel ?</li>
     </ul>
   </div>
 </section>
@@ -782,67 +789,184 @@
 <!-- ============ FLOW G ============ -->
 <section id="flow-g" class="wrap">
   <p class="eyebrow">Flow G</p>
-  <h2>Rencontre en concert</h2>
-  <p class="flow-sub">Le seul flow où l'app met des gens en relation physiquement. Ses garde-fous ne sont pas négociables.</p>
+  <h2>Échange & rencontre en présentiel</h2>
+  <p class="flow-sub">Le seul endroit où une transaction d'échange se conclut, et le seul flow où l'app met des gens en relation physiquement. Deux points d'entrée — un concert, ou n'importe où via un radar de proximité — pour la même mécanique de fond. Ses garde-fous ne sont pas négociables.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Objectif</dt><dd>Transformer le fait de croiser un autre fan en progression concrète.</dd></div>
-    <div class="fact"><dt>Pré-requis</dt><dd>Check-in effectué <i>et</i> option de visibilité activée (Flow D, étape 4).</dd></div>
+    <div class="fact"><dt>Objectif</dt><dd>Transformer le fait de croiser un autre fan en échange conclu et en progression concrète.</dd></div>
+    <div class="fact"><dt>Pré-requis</dt><dd>Visibilité activée — check-in concert (Flow D) <i>ou</i> radar de proximité, désactivé par défaut dans les deux cas.</dd></div>
     <div class="fact"><dt>Sortie réussie</dt><dd>Un échange conclu sur place, ou une rencontre confirmée des deux côtés.</dd></div>
   </dl>
 
   <ol class="flow">
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran</span>
-      <h4>« Fans présents ce soir »</h4>
-      <p>Liste limitée aux fans ayant eux aussi activé l'option pour ce même concert. Pseudo, avatar, cartes recherchées. <b>Aucune position précise n'est affichée</b> — seulement le fait d'être présent à cet événement.</p>
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — quel point d'entrée ?</span>
+      <h4>Même mécanique, deux contextes</h4>
+      <ul class="branches">
+        <li><b>« Fans présents ce soir » (concert)</b>Liste limitée aux fans ayant eux aussi activé l'option pour ce même concert. Pseudo, avatar, cartes recherchées.</li>
+        <li><b>Radar de proximité (partout, à tout moment)</b>Fans à quelques mètres détectés en Bluetooth basse consommation — <b>pas de GPS</b>, portée radio seulement. Répond directement à « qui a l'app autour de moi », en dehors des concerts aussi (festival, disquaire, chez un pote). Même garde-fous que la liste concert.</li>
+      </ul>
+      <p class="note"><b>Aucune position précise n'est affichée</b> dans les deux cas — seulement le fait d'être présent ou à proximité.</p>
     </li>
 
-    <li class="step" data-type="decision">
-      <span class="tag">Décision — que faire depuis la liste ?</span>
-      <h4>Deux actions, une même exigence de réciprocité</h4>
-      <ul class="branches">
-        <li><b>Proposer un échange</b>Entre dans le Flow E à l'étape de composition, sans passer par la recherche globale.</li>
-        <li><b>« On s'est croisés »</b>Demande de confirmation envoyée à l'autre fan ; sans sa validation, il ne se passe rien.</li>
-      </ul>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Proposer une session</h4>
+      <p>Tap sur un fan de la liste (concert ou radar) → demande de session envoyée. Deux issues possibles depuis là : ouvrir un échange, ou simplement confirmer « on s'est croisés ».</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Confirmation mutuelle requise</h4>
-      <p>Dans les deux cas, rien ne se valide unilatéralement. Une confirmation à sens unique permettrait de marquer quelqu'un sans son accord.</p>
+      <p>Rien ne se valide unilatéralement, dans aucun des deux cas. Une confirmation à sens unique permettrait de marquer quelqu'un sans son accord.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Composition en direct, à deux</h4>
+      <p>Session acceptée → les deux téléphones affichent la <b>même transaction en temps réel</b> : chacun ajoute les cartes qu'il offre, un indicateur d'équilibre de rareté purement indicatif aide à juger, confirmation simultanée des deux côtés. Échange atomique — les deux collections changent ensemble, ou aucune. Pas d'offre envoyée puis attente d'une réponse plus tard : les deux fans sont là, l'échange se conclut dans l'instant.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Carte bonus de connexion</h4>
-      <p>La première rencontre confirmée sur un concert donné débloque une carte bonus garantie et fait progresser le titre « Metal Corner ». Une seule par concert : sinon la mécanique devient une course à la collecte de contacts.</p>
+      <p>La première rencontre confirmée avec un fan donné (échange conclu, ou simple « on s'est croisés ») débloque une carte bonus garantie et fait progresser le titre « Metal Corner ». Une seule fois par personne rencontrée, tous contextes confondus : sinon la mécanique devient une course à la collecte de contacts.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Fin de l'événement</h4>
-      <p>La liste disparaît. Aucun historique de présence n'est conservé. Seuls persistent le résultat de l'échange et la carte bonus, dans la Collection et le carnet.</p>
+      <h4>Fin de la fenêtre de présence</h4>
+      <p>La liste concert disparaît à la fin de l'événement ; le radar se vide dès qu'un fan sort de portée ou désactive l'option. Aucun historique de présence ou de proximité n'est conservé. Seuls persistent le résultat de l'échange et la carte bonus, dans la Collection et le carnet.</p>
     </li>
   </ol>
 
   <div class="block">
     <h3>Garde-fous à ne jamais casser</h3>
     <ul>
-      <li><b>Opt-in, désactivé par défaut</b> — apparaître dans la liste est toujours un acte volontaire.</li>
+      <li><b>Opt-in, désactivé par défaut</b> — apparaître dans la liste ou sur le radar est toujours un acte volontaire.</li>
       <li><b>Réciproque</b> — on ne voit que ceux qui peuvent aussi nous voir. Pas d'observateur invisible.</li>
-      <li><b>Éphémère</b> — la liste et les données de présence disparaissent avec l'événement.</li>
-      <li><b>Jamais de position précise</b> — « présent à ce concert », jamais « à 30 mètres de toi ».</li>
-      <li><b>Blocage et signalement accessibles depuis la liste elle-même</b>, en un geste.</li>
-      <li><b>Désactivation immédiate</b> — couper la visibilité en cours de soirée doit retirer instantanément de la liste des autres.</li>
+      <li><b>Éphémère</b> — la liste, le radar et les données de présence disparaissent avec l'événement ou la portée radio.</li>
+      <li><b>Jamais de position précise</b> — « présent à ce concert » ou « à quelques mètres », jamais une distance exacte ni une direction.</li>
+      <li><b>Pas de GPS pour le radar</b> — Bluetooth à courte portée uniquement ; ce n'est pas un suivi de localisation.</li>
+      <li><b>Blocage et signalement accessibles depuis la liste ou le radar eux-mêmes</b>, en un geste.</li>
+      <li><b>Désactivation immédiate</b> — couper la visibilité doit retirer instantanément des vues des autres, dans les deux contextes.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Ce flow doit être challengé par un tiers compétent</b> sur la sécurité et la vie privée avant tout développement — au même titre que les autres risques du concept. Les garde-fous ci-dessus sont un point de départ, pas une validation.</li>
+      <li><b>Ce flow doit être challengé par un tiers compétent</b> sur la sécurité et la vie privée avant tout développement — au même titre que les autres risques du concept, et d'autant plus que le radar de proximité généralise le risque au-delà du seul contexte concert. Les garde-fous ci-dessus sont un point de départ, pas une validation.</li>
       <li><b>Taille de la liste sur un gros festival</b> — plusieurs centaines de fans présents rendrait la liste inutilisable telle quelle : filtrer par carte recherchée, par guilde, ou plafonner ?</li>
+      <li><b>Contraintes techniques du Bluetooth en arrière-plan</b> (permissions iOS/Android, consommation batterie) — à valider par un spike technique avant de committer sur le radar de proximité comme mécanisme central de découverte d'échange.</li>
+      <li><b>Timeout de la session de composition en direct</b> — si un des deux fans quitte l'écran ou s'éloigne en cours de composition, la session doit expirer proprement plutôt que rester ouverte indéfiniment.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW H ============ -->
+<section id="flow-h" class="wrap">
+  <p class="eyebrow">Flow H</p>
+  <h2>Suivre une mission</h2>
+  <p class="flow-sub">Les classeurs et paliers disent <i>ce qui existe à collectionner</i> ; les missions disent <b style="color:var(--text)">quoi faire maintenant</b>. Elles ne créent pas de nouvelle activité : elles donnent une direction visible à celle qui existe déjà dans les autres flows.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Qu'un utilisateur sache toujours quoi faire de sa prochaine session, sans avoir à le deviner.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Toujours 2-3 missions actives, réparties sur plusieurs cadences.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Récompense garantie reçue, mission suivante déjà en place.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Bandeau missions — Accueil</h4>
+      <p>2 à 3 missions actives, mêlant les cadences : une quotidienne légère, une hebdomadaire, occasionnellement une saisonnière liée à un événement réel (tournée, sortie d'album majeure, festival). Progression visible sur chacune.</p>
+    </li>
+
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Activité normale</h4>
+      <p>Aucun écran dédié à consulter à chaque étape : la progression se met à jour en tâche de fond pendant que l'utilisateur ouvre des packs, échange, va en concert, découvre une évolution ou complète un classeur.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Mission complétée → récompense immédiate</h4>
+      <p>XP avatar systématique, parfois un pack gratuit ou un cosmétique. <b>Jamais de tirage aléatoire</b> en récompense de mission — ce serait rouvrir la question loot-box pour une mécanique censée renforcer le sentiment de maîtrise, pas le brouiller.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Renouvellement</h4>
+      <p>La mission accomplie est remplacée par une nouvelle, jamais accumulée sur une liste qui grandirait indéfiniment.</p>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>Catégories (liste volontairement large)</h3>
+    <div class="mission-grid">
+      <div class="mission-card" data-cat="collection">
+        <span class="cat">Collection</span>
+        <ul>
+          <li>Obtenir une carte d'une rareté donnée</li>
+          <li>Compléter un thème précis</li>
+          <li>Réunir des cartes Membre dans 3 instruments différents</li>
+        </ul>
+      </div>
+      <div class="mission-card" data-cat="echange">
+        <span class="cat">Échange (présentiel)</span>
+        <ul>
+          <li>Conclure un échange</li>
+          <li>Échanger avec 3 fans différents ce mois-ci</li>
+          <li>Échanger avec un membre de sa guilde</li>
+        </ul>
+      </div>
+      <div class="mission-card" data-cat="concert">
+        <span class="cat">Concert / vécu réel</span>
+        <ul>
+          <li>Importer un billet et check-in (Flow D)</li>
+          <li>Remplir son carnet le lendemain</li>
+          <li>Confirmer une rencontre "on s'est croisés" (Flow G)</li>
+        </ul>
+      </div>
+      <div class="mission-card" data-cat="social">
+        <span class="cat">Social / communauté</span>
+        <ul>
+          <li>Rejoindre une guilde</li>
+          <li>Enregistrer son cri signature</li>
+          <li>Créer un classeur personnalisé</li>
+        </ul>
+      </div>
+      <div class="mission-card" data-cat="decouverte">
+        <span class="cat">Découverte</span>
+        <ul>
+          <li>Consulter l'évolution d'une carte</li>
+          <li>Suivre un nouveau sous-genre ou artiste</li>
+        </ul>
+      </div>
+      <div class="mission-card" data-cat="achat">
+        <span class="cat">Achat réel</span>
+        <ul>
+          <li>Acheter un album/billet via un lien partenaire</li>
+          <li>Acheter du merch d'un artiste suivi</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px"><b>Catégorie "Achat réel"</b> : suppose un partenariat marchand pour une confirmation fiable ; à défaut, une preuve déclarative (photo de reçu) reste falsifiable — à ne jamais associer à une récompense dont la valeur inciterait à la triche.</p>
+  </div>
+
+  <div class="block">
+    <h3>Anti-pattern à respecter</h3>
+    <ul>
+      <li><b>Une mission doit rester une bonne expérience même sans la récompense.</b> « Va à un concert » passe ce test ; « envoie un message à 10 inconnus » non. Écarter toute mission dont le seul but perçu serait la récompense.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Missions personnalisées ou pool curaté commun ?</b> — personnaliser selon les sous-genres suivis et l'activité récente serait plus pertinent mais plus complexe à livrer pour un MVP ; un pool curaté avec assignation simple (1 quotidienne + 1 hebdo + 1 saisonnière) est probablement le socle réaliste.</li>
+      <li><b>Nombre de missions actives en parallèle</b> — 2 ou 3 ? Arbitrage entre variété et lisibilité du bandeau Accueil.</li>
     </ul>
   </div>
 </section>
@@ -891,14 +1015,25 @@
     </div>
 
     <div class="loop-card" data-tier="sociale">
-      <span class="cadence">Asynchrone, entre deux comptes</span>
+      <span class="cadence">En présentiel, entre deux comptes</span>
       <h4>Échange</h4>
-      <div class="loop-row"><b>Déclencheur</b>Doublon obtenu ou proposition reçue.</div>
-      <div class="loop-row"><b>Action</b>Composer ou répondre à une offre.</div>
-      <div class="loop-row"><b>Récompense</b>Carte manquante obtenue.</div>
+      <div class="loop-row"><b>Déclencheur</b>Un fan détecté à proximité — concert ou radar (Flow G).</div>
+      <div class="loop-row"><b>Action</b>Ouvrir une session, composer en direct à deux.</div>
+      <div class="loop-row"><b>Récompense</b>Carte manquante obtenue, dans l'instant.</div>
       <div class="loop-row"><b>Investissement</b>Réputation d'échangeur, relation de confiance.</div>
     </div>
+
+    <div class="loop-card" data-tier="quotidienne" style="border-top-color:var(--t-screen)">
+      <span class="cadence">Rotative, à cadences mêlées</span>
+      <h4>Missions</h4>
+      <div class="loop-row"><b>Déclencheur</b>Mission active, quelle que soit sa source (Flow H).</div>
+      <div class="loop-row"><b>Action</b>Poursuivre son activité normale.</div>
+      <div class="loop-row"><b>Récompense</b>Récompense garantie (XP, parfois pack/cosmétique).</div>
+      <div class="loop-row"><b>Investissement</b>Sentiment de direction, mission suivante déjà là.</div>
+    </div>
   </div>
+
+  <p style="margin-top:14px; max-width:66ch; font-size:0.85rem; color:var(--text-muted)">La boucle <b style="color:var(--text)">Missions</b> n'a pas de cadence propre : elle recycle la progression des quatre autres en lui donnant une direction visible, plutôt que d'ajouter un cycle indépendant à gérer.</p>
 
   <p style="margin-top:22px; max-width:66ch; font-size:0.9rem; color:var(--text-muted)">
     <b style="color:var(--text); font-weight:500">La boucle "actu artiste réelle" est celle qui différencie le plus Metalnini</b> — aucun concurrent de collection pure ne peut la répliquer sans le même travail éditorial continu. C'est elle qui mérite le plus d'investissement produit avant d'optimiser les boucles plus génériques. La <b style="color:var(--text); font-weight:500">boucle d'échange</b> a une propriété propre aux mécaniques sociales : un échange conclu retient potentiellement deux comptes à la fois, pas un seul.
@@ -909,12 +1044,14 @@
     <p style="font-size:0.9rem; color:var(--text-muted); max-width:66ch; margin:0 0 14px">Empiler des boucles authentiques ne dispense pas d'arbitrer : c'est le <i>cumul</i> de plusieurs boucles qui notifient le même jour, pas une boucle isolée, qui produirait le spam que cette communauté sanctionnerait.</p>
     <p style="font-size:0.85rem; color:var(--text-muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues — au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
     <ol class="priority">
-      <li><b>Actu artiste réelle</b> (Flow C) — le fait le plus rare et le plus fort.</li>
-      <li><b>Proposition d'échange reçue</b> (Flow E) — un autre fan attend une réponse.</li>
+      <li><b>Session d'échange proposée à proximité</b> (Flow G) — time-critique, le fan est là <i>maintenant</i>, contrairement à tout le reste de cette liste.</li>
+      <li><b>Actu artiste réelle</b> (Flow C) — le fait le plus rare et le plus fort après la proximité en direct.</li>
       <li><b>Carnet de concert à remplir</b> (Flow D) — une seule relance, le lendemain matin.</li>
-      <li><b>Nudge hebdomadaire classeur/guilde</b> — le moins urgent des quatre.</li>
+      <li><b>Mission proche d'être complétée / nouvelle mission dispo</b> (Flow H).</li>
+      <li><b>Nudge hebdomadaire classeur/guilde</b>.</li>
+      <li><b>Pack quotidien disponible</b> — poussé (demande produit explicite), mais toujours en dernier : jamais dupliqué le même jour qu'une autre notification de cette liste.</li>
     </ol>
-    <p class="note" style="margin-top:14px"><b>Le pack quotidien n'est volontairement pas poussé par notification par défaut</b> : sa disponibilité est visible au lancement de l'app (bannière Accueil). Une notification chaque jour sur un contenu qui revient chaque jour de toute façon userait vite la confiance de cette communauté — au mieux, un rappel opt-in. Règle générale : plusieurs faits le même jour pour un même utilisateur produisent une seule notification agrégée (déjà acté en Flow C), jamais une rafale.</p>
+    <p class="note" style="margin-top:14px">Règle générale : plusieurs faits le même jour pour un même utilisateur produisent une seule notification agrégée (déjà acté en Flow C), jamais une rafale — les rangs 4 à 6 ci-dessus sont les candidats naturels à ce regroupement quand plusieurs tombent le même jour.</p>
   </div>
 
   <div class="block">
@@ -952,19 +1089,19 @@
     </div>
     <div class="recap-row">
       <div>D</div>
-      <div><b>La carte Live exclusive exige-t-elle un check-in géolocalisé ?</b> Arbitrage entre falsifiabilité et pénalisation de ceux qui refusent la géolocalisation.</div>
+      <div><b>Formats de billetterie à couvrir en priorité</b> pour la lecture automatique du billet (PDF, wallet, appli tierce, papier).</div>
     </div>
     <div class="recap-row">
       <div>A</div>
       <div><b>Taille du pack de bienvenue</b> et <b>moment de l'amorce Live</b> (fin d'onboarding ou session 2).</div>
     </div>
     <div class="recap-row">
-      <div>E</div>
-      <div><b>Délai d'expiration</b> d'une proposition et <b>nombre de propositions simultanées</b> autorisées.</div>
+      <div>G</div>
+      <div><b>Contraintes Bluetooth du radar de proximité</b> (permissions OS, batterie) à valider par un spike technique, et <b>lisibilité de la liste sur un gros festival</b> — plus une revue sécurité/vie privée par un tiers compétent, désormais élargie au-delà du seul contexte concert.</div>
     </div>
     <div class="recap-row">
-      <div>G</div>
-      <div><b>Lisibilité de la liste de présence sur un gros festival</b>, et revue sécurité/vie privée par un tiers compétent.</div>
+      <div>H</div>
+      <div><b>Missions personnalisées ou pool curaté commun ?</b> Et <b>combien de missions actives en parallèle</b> (2 ou 3) — arbitrage entre variété et lisibilité du bandeau Accueil.</div>
     </div>
   </div>
 </section>

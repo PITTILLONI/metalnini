@@ -22,7 +22,8 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 
 - Concept et architecture posés, considérés comme une base solide amenée à mûrir.
 - Page de pitch en ligne pour recueillir les retours de proches, avec formulaire de réponse (texte + vocal).
-- **User flows détaillés** (`flows.html`) : les 7 parcours clés sont écrits étape par étape, avec leurs embranchements, leurs états limites et les décisions non tranchées identifiées.
+- **User flows détaillés** (`flows.html`) : les 8 parcours clés sont écrits étape par étape, avec leurs embranchements, leurs états limites et les décisions non tranchées identifiées.
+- **Trois décisions structurantes actées** : l'échange ne se fait qu'en présentiel (via un check-in concert ou un radar de proximité Bluetooth, jamais à distance) ; la détection/preuve de concert se fait par billet importé (électronique ou physique) plutôt que par croisement artistes suivis + agenda externe ; une couche **Missions** traverse désormais toutes les autres boucles pour donner une direction visible à l'utilisateur.
 - **Architecture des boucles de rétention** posée (`flows.html` + `docs/ARCHITECTURE-FLOWS.md`, section 4) : 5 boucles à cadences différentes (pack quotidien, classeurs/guilde hebdo, actu artiste, concert, échange), plus un budget de notifications explicite pour éviter que leur cumul ne devienne du spam.
 - **Motion : Rive retenu** comme outil d'animation pour les trois moments à forte charge émotionnelle (reveal de pack, évolution de carte, récompense de complétion) — compétence déjà acquise, pas de dépendance externe à trouver.
 - Aucun écran n'a encore été maquetté.
