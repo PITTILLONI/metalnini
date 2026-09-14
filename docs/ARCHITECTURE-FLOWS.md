@@ -73,7 +73,7 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 ### Flow B — Ouverture de pack (boucle la plus fréquente)
 1. Entrée depuis bannière Accueil ou onglet Packs.
 2. Sélection du pack → animation de reveal (moment fort ; **motion : Rive**, voir `DA.md`).
-3. Si nouvelle carte : ajout direct à la Collection avec highlight.
+3. Si nouvelle carte : ajout direct à la Collection avec highlight (**motion : Rive**).
 4. Si doublon : marquage immédiat comme "disponible à l'échange" (visible par les autres fans en Communauté/Flow E) — la transaction elle-même attend une rencontre en présentiel (Flow G), l'échange n'étant plus possible à distance.
 5. Si la carte obtenue déclenche une collection presque complète : nudge visible ("plus qu'1 carte pour compléter Sepultura — Early Years").
 
@@ -84,11 +84,11 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
 4. Optionnel : partage social du moment d'évolution (capture, pas de mécanique intrusive).
 
 ### Flow D — Concert / Live (billet → avatar)
-1. Import du billet (scan QR/code-barres électronique ou physique) → détection automatique de l'artiste, la date, le lieu ; complément manuel si le code n'est pas exploitable.
+1. Import du billet (scan QR/code-barres électronique ou physique ; **motion : Rive**, feedback de détection) → détection automatique de l'artiste, la date, le lieu ; complément manuel si le code n'est pas exploitable.
 2. Check-in confirmé (preuve "standard") ; option de géolocalisation ponctuelle le jour même pour la preuve "renforcée" (conditionne la carte Live exclusive) ; option "Visible aux autres fans ce soir" (opt-in, off par défaut).
 3. Pendant : jauge d'ambiance semi-automatique si fiable techniquement (sinon rien à faire pendant le show — pas de friction pendant l'expérience live réelle).
 4. Après : écran "carnet de concert" — note déclarative (ambiance, son, mosh pit, moment marquant), attribution d'XP avatar, déblocage éventuel de la carte exclusive liée à cette date/lieu.
-5. Mise à jour du carnet de concerts + progression des titres avatar visible immédiatement.
+5. Mise à jour du carnet de concerts + progression des titres avatar visible immédiatement (**motion : Rive**, barre XP).
 
 ### Flow E — Découverte d'échange (préparation à distance)
 1. Recherche d'un fan possédant la carte recherchée, ou consultation des cartes "recherchées" affichées sur les profils/guildes (Communauté).
@@ -107,14 +107,14 @@ Le profil personnel et les réglages sont accessibles depuis l'avatar en header 
    - **En concert** : check-in (Flow D) avec option "Visible aux autres fans ce soir" activée → liste éphémère des fans présents ayant eux aussi activé l'option pour ce même concert.
    - **Hors concert, à tout moment** : radar de proximité activé → fans à quelques mètres détectés en Bluetooth, opt-in et désactivable à tout instant, jamais de position exacte.
 2. Tap sur un fan de la liste → proposition de session d'échange envoyée ; elle doit être acceptée par l'autre fan pour démarrer (jamais imposée).
-3. Session acceptée → **écran de composition en direct partagé** : les deux téléphones affichent la même transaction en temps réel, chacun ajoute ses cartes offertes, confirmation simultanée des deux côtés → échange atomique (les deux collections changent ensemble, ou aucune).
-4. Première rencontre confirmée mutuellement avec un fan (échange conclu, ou simple confirmation "on s'est croisés") → déblocage d'une carte bonus garantie, non aléatoire, et progression du titre avatar "Metal Corner". Une seule fois par personne rencontrée.
+3. Session acceptée → **écran de composition en direct partagé** (**motion : Rive**, séquence majeure) : les deux téléphones affichent la même transaction en temps réel, chacun ajoute ses cartes offertes, confirmation simultanée des deux côtés → échange atomique (les deux collections changent ensemble, ou aucune).
+4. Première rencontre confirmée mutuellement avec un fan (échange conclu, ou simple confirmation "on s'est croisés") → déblocage d'une carte bonus garantie, non aléatoire (**motion : Rive**), et progression du titre avatar "Metal Corner". Une seule fois par personne rencontrée.
 5. La liste (concert ou radar) disparaît/se vide à la fin de l'événement ou dès que le fan sort de portée ; seuls le résultat de l'échange et la carte bonus restent dans la Collection/le carnet.
 
 ### Flow H — Suivre une mission
 1. 2 à 3 missions actives affichées sur le bandeau Accueil et sur une fiche dédiée, réparties sur les cadences (quotidienne légère, hebdomadaire, saisonnière/événementielle) — voir `Missions` dans `CONCEPT.md`.
 2. L'utilisateur poursuit son activité normale (packs, classeurs, concerts, échanges, découverte, achats) ; la progression de mission se met à jour en tâche de fond, sans écran dédié à consulter à chaque étape.
-3. Mission complétée → récompense garantie attribuée immédiatement (XP avatar systématique, parfois pack gratuit ou cosmétique) ; jamais de tirage aléatoire en récompense de mission.
+3. Mission complétée → récompense garantie attribuée immédiatement (**motion : Rive**, probablement une variante courte de l'interstitiel du Flow F) : XP avatar systématique, parfois pack gratuit ou cosmétique ; jamais de tirage aléatoire en récompense de mission.
 4. La mission accomplie est remplacée par une nouvelle, plutôt qu'accumulée sur une liste qui grandit indéfiniment.
 
 ## 4. Boucles de rétention
@@ -173,6 +173,8 @@ Empiler des boucles authentiques ne dispense pas d'arbitrer : plusieurs boucles 
 - Pas de position exacte affichée par le radar de proximité — présence/proximité seulement ("à quelques mètres"), jamais une distance précise ou une direction qui permettrait de localiser quelqu'un.
 - Pas de récompense de complétion sur les classeurs personnalisés — évite qu'un utilisateur crée un classeur trivial (1 carte) pour farmer la récompense prévue pour les classeurs officiels.
 - Pas de mission dont la seule valeur perçue serait la récompense — une mission doit rester une bonne expérience même sans la récompense (voir `Missions`, `CONCEPT.md`).
+
+Chaque endroit clé où une animation porte le moment (pas seulement le décore) est marqué **motion : Rive** dans les flows ci-dessus ; la carte complète classée par niveau d'importance (séquences majeures / confirmations courtes / micro-interactions) vit dans `DA.md` (section Motion) et dans `flows.html` (section "Carte des animations").
 
 ## Statut
 Architecture et parcours posés comme base de travail, avec un pivot structurant acté : l'échange en présentiel uniquement (Flow G généralisé au-delà du concert, via un radar de proximité), la détection/preuve de concert par billet plutôt que par suivi d'artiste (Flow D), et une nouvelle boucle Missions (Flow H) qui traverse toutes les autres. Prochaine étape suggérée : détailler un flow en particulier (wireframes bas-fidélité) ou challenger/amender cette structure avant tout maquettage visuel.

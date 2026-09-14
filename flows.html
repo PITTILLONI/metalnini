@@ -193,12 +193,14 @@
   footer{padding:44px 0 70px; color:var(--text-muted); font-size:0.85rem;}
   footer a{color:var(--t-decision);}
 
-  /* ---------- Rive tag ---------- */
+  /* ---------- Rive tag (3 niveaux d'importance) ---------- */
   .rive{
     display:inline-block; margin-left:8px; font-family:var(--font-mono); font-size:0.62rem;
     letter-spacing:0.08em; text-transform:uppercase; color:var(--t-decision);
     border:1px solid rgba(205,164,78,0.4); border-radius:3px; padding:2px 7px; vertical-align:middle;
   }
+  .rive[data-tier="2"]{color:var(--t-action); border-color:rgba(91,143,214,0.4);}
+  .rive[data-tier="3"]{color:var(--t-system); border-color:rgba(125,120,113,0.4);}
 
   /* ---------- Retention loops ---------- */
   .loops{display:grid; gap:16px; margin-top:24px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
@@ -386,6 +388,7 @@
     <a href="#flow-f">F · Récompense</a>
     <a href="#flow-g">G · Échange & rencontre</a>
     <a href="#flow-h">H · Missions</a>
+    <a href="#motion">Animation</a>
     <a href="#retention">Rétention</a>
     <a href="#trancher">À trancher</a>
   </div>
@@ -676,7 +679,7 @@
   <ol class="flow">
     <li class="step" data-type="action">
       <span class="tag">Action</span>
-      <h4>Import du billet</h4>
+      <h4>Import du billet<span class="rive" data-tier="2">Motion · Rive</span></h4>
       <p>Scan du QR/code-barres via l'appareil photo — billet électronique affiché à l'écran ou billet physique imprimé, même mécanique dans les deux cas.</p>
     </li>
 
@@ -727,7 +730,7 @@
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Retour au carnet, progression visible</h4>
+      <h4>Retour au carnet, progression visible<span class="rive" data-tier="2">Motion · Rive</span></h4>
       <p>La progression de l'avatar et les titres éventuellement débloqués sont affichés immédiatement, pas au prochain lancement.</p>
     </li>
   </ol>
@@ -891,13 +894,13 @@
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Composition en direct, à deux</h4>
+      <h4>Composition en direct, à deux<span class="rive">Motion · Rive</span></h4>
       <p>Session acceptée → les deux téléphones affichent la <b>même transaction en temps réel</b> : chacun ajoute les cartes qu'il offre, un indicateur d'équilibre de rareté purement indicatif aide à juger, confirmation simultanée des deux côtés. Échange atomique — les deux collections changent ensemble, ou aucune. Pas d'offre envoyée puis attente d'une réponse plus tard : les deux fans sont là, l'échange se conclut dans l'instant.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Carte bonus de connexion</h4>
+      <h4>Carte bonus de connexion<span class="rive" data-tier="2">Motion · Rive</span></h4>
       <p>La première rencontre confirmée avec un fan donné (échange conclu, ou simple « on s'est croisés ») débloque une carte bonus garantie et fait progresser le titre « Metal Corner ». Une seule fois par personne rencontrée, tous contextes confondus : sinon la mécanique devient une course à la collecte de contacts.</p>
     </li>
 
@@ -959,7 +962,7 @@
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Mission complétée → récompense immédiate</h4>
+      <h4>Mission complétée → récompense immédiate<span class="rive">Motion · Rive</span></h4>
       <p>XP avatar systématique, parfois un pack gratuit ou un cosmétique. <b>Jamais de tirage aléatoire</b> en récompense de mission — ce serait rouvrir la question loot-box pour une mécanique censée renforcer le sentiment de maîtrise, pas le brouiller.</p>
     </li>
 
@@ -1035,6 +1038,43 @@
     <ul>
       <li><b>Missions personnalisées ou pool curaté commun ?</b> — personnaliser selon les sous-genres suivis et l'activité récente serait plus pertinent mais plus complexe à livrer pour un MVP ; un pool curaté avec assignation simple (1 quotidienne + 1 hebdo + 1 saisonnière) est probablement le socle réaliste.</li>
       <li><b>Nombre de missions actives en parallèle</b> — 2 ou 3 ? Arbitrage entre variété et lisibilité du bandeau Accueil.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ MOTION ============ -->
+<section id="motion" class="wrap">
+  <p class="eyebrow">Production</p>
+  <h2>Carte des animations</h2>
+  <p class="flow-sub">Tous les endroits clés où une animation porte le moment plutôt que de le décorer — classés par le soin qu'ils demandent, pas par ordre d'apparition. <b style="color:var(--text)">Motion : Rive</b> partout (voir <code>docs/DA.md</code>) ; le reste reste du polish d'interface standard, sans state machine dédiée.</p>
+
+  <div class="block">
+    <h3 style="color:var(--t-decision); border-bottom-color:rgba(205,164,78,0.3)">Niveau 1 — Séquences majeures (state machine, plusieurs variables exposées)</h3>
+    <ul>
+      <li><a href="#flow-b">Flow B</a> <b>Reveal de pack</b> — rareté et type de carte pilotent la scène ; c'est le seul endroit où les effets riches (foil, shimmer, grain) sont autorisés.</li>
+      <li><a href="#flow-c">Flow C</a> <b>Évolution de carte</b> — avant/après ; doit rester lisible même joué en rafale pour un utilisateur qui revient après une absence avec plusieurs évolutions en attente.</li>
+      <li><a href="#flow-f">Flow F</a> <b>Récompense de complétion / palier avatar</b> — dans l'esprit du reveal mais plus court : c'est un aboutissement, pas une découverte.</li>
+      <li><a href="#flow-g">Flow G</a> <b>Composition en direct, à deux</b> — le swap atomique vu simultanément sur les deux téléphones ; c'est la conclusion physique d'une vraie rencontre, ça mérite le même soin que le reveal de pack.</li>
+      <li><a href="#flow-h">Flow H</a> <b>Mission complétée</b> — probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3 style="color:var(--t-action); border-bottom-color:rgba(91,143,214,0.3)">Niveau 2 — Confirmations & feedback courts</h3>
+    <ul>
+      <li><a href="#flow-d">Flow D</a> <b>Scan de billet réussi</b> — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.</li>
+      <li><a href="#flow-d">Flow D</a> <b>Barre XP qui se remplit</b> au retour du carnet — motif réutilisable partout où l'XP change (concert, mission, palier).</li>
+      <li><a href="#flow-g">Flow G</a> <b>Carte bonus de connexion</b> ("Metal Corner") — version allégée du reveal, une seule carte.</li>
+      <li><a href="#flow-b">Flow B</a> <b>Nouvelle carte qui "atterrit" en Collection</b>, avec highlight, à la fermeture du résumé post-ouverture.</li>
+      <li><a href="#flow-g">Flow G</a> <b>Blips du radar de proximité</b> — fans qui apparaissent/disparaissent à l'écran ; de l'ambiance plus qu'un moment fort.</li>
+      <li><b>Waveform du cri enregistré</b> (profil) — cosmétique, mais colle directement à la ligne édito "drôle" du positionnement (voir <code>CONCEPT.md</code>).</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>Niveau 3 — Micro-interactions</h3>
+    <ul>
+      <li>Sélection des tuiles sous-genre/artiste (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation — du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.</li>
     </ul>
   </div>
 </section>

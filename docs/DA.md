@@ -56,10 +56,25 @@ Concrètement dans Figma : construire ça comme **un composant à variantes** (p
 
 ## Motion
 
-**Outil retenu : Rive**, sur la base d'une compétence déjà acquise par le porteur de projet — pas de dépendance externe à trouver pour animer les trois moments qui en ont le plus besoin (voir `ARCHITECTURE-FLOWS.md`, section 4) :
+**Outil retenu : Rive**, sur la base d'une compétence déjà acquise par le porteur de projet — pas de dépendance externe à trouver pour animer l'app. Tous les moments listés ci-dessous restent dans le même principe directeur que le reste de la DA : les effets riches (foil, shimmer, particules) sont réservés à ces moments précis, jamais au chrome d'app autour.
 
-1. **Reveal de pack** (Flow B) — le moment le plus chargé émotionnellement de l'app, déjà identifié comme prioritaire en motion design.
-2. **Évolution de carte** (Flow C) — l'avant/après qui matérialise le lien avec l'actu réelle de l'artiste.
-3. **Récompense de complétion / palier avatar** (Flow F) — l'interstitiel de récompense garantie.
+Classement par le soin que chaque moment demande, pas par ordre d'apparition dans l'app (détail des flows dans `ARCHITECTURE-FLOWS.md` et `flows.html`) :
 
-Ces trois écrans restent dans le même principe directeur que le reste de la DA : les effets riches (foil, shimmer, particules) sont réservés à ces moments précis, jamais au chrome d'app autour. Le détail des state machines Rive (déclencheurs, variables exposées à l'app — rareté, type de carte, palier atteint) est à spécifier une fois le gabarit de carte lui-même stabilisé, puisque l'animation de reveal doit piloter les mêmes zones fixes (bordure, overlay de rareté, portrait) que le gabarit statique.
+**Niveau 1 — Séquences majeures** (state machine à plusieurs variables exposées à l'app) :
+1. **Reveal de pack** (Flow B) — rareté et type de carte pilotent la scène ; le moment le plus chargé émotionnellement de l'app, et le seul endroit où les effets riches sont autorisés.
+2. **Évolution de carte** (Flow C) — avant/après, doit rester lisible même joué en rafale pour un utilisateur qui revient avec plusieurs évolutions en attente.
+3. **Récompense de complétion / palier avatar** (Flow F) — dans l'esprit du reveal mais plus court : un aboutissement, pas une découverte.
+4. **Composition en direct, à deux** (Flow G) — le swap atomique d'un échange vu simultanément sur les deux téléphones ; conclusion physique d'une vraie rencontre, mérite le même soin que le reveal.
+5. **Mission complétée** (Flow H) — probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.
+
+**Niveau 2 — Confirmations & feedback courts** (Rive plus simple, timeline ou peu de variables) :
+- **Scan de billet réussi** (Flow D) — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.
+- **Barre XP qui se remplit** (Flow D, F, H) — motif réutilisable partout où l'XP change.
+- **Carte bonus de connexion "Metal Corner"** (Flow G) — version allégée du reveal, une seule carte.
+- **Nouvelle carte qui "atterrit" en Collection**, avec highlight (Flow B).
+- **Blips du radar de proximité** (Flow G) — fans qui apparaissent/disparaissent à l'écran ; de l'ambiance plus qu'un moment fort.
+- **Waveform du cri enregistré** (profil) — cosmétique, mais colle directement à la ligne édito "drôle" du positionnement (voir `CONCEPT.md`).
+
+**Niveau 3 — Micro-interactions** : sélection de tuiles (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation — du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.
+
+Le détail des state machines de niveau 1 (déclencheurs, variables exposées — rareté, type de carte, palier atteint) est à spécifier une fois le gabarit de carte lui-même stabilisé, puisque l'animation de reveal doit piloter les mêmes zones fixes (bordure, overlay de rareté, portrait) que le gabarit statique.
