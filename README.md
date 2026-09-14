@@ -27,7 +27,8 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 - **Architecture des boucles de rétention** posée (`flows.html` + `docs/ARCHITECTURE-FLOWS.md`, section 4) : 5 boucles à cadences différentes (pack quotidien, classeurs/guilde hebdo, actu artiste, concert, échange), plus un budget de notifications explicite pour éviter que leur cumul ne devienne du spam.
 - **Carte des animations** posée (`docs/DA.md` + `flows.html`) : tous les moments clés classés en 3 niveaux — séquences majeures en state machine Rive (reveal, évolution, récompense, échange en direct, mission complétée), confirmations courtes (scan de billet, barre XP, carte bonus, highlight collection, radar, cri signature), micro-interactions standard. Rive retenu comme outil, compétence déjà acquise.
 - Aucun écran n'a encore été maquetté.
-- **Volet visuel en pause** : la direction tarot ne satisfait pas encore, les crédits de génération d'images sont épuisés, et aucune solution n'est trouvée sur les droits à l'image. La conception avance donc sur ce qui n'en dépend pas (flows, structure, décisions produit).
+- **Stratégie droits à l'image posée** (`docs/ROADMAP-IDEAS.md`) : plutôt que viser l'accord de tous les groupes avant d'ouvrir, le plan réduit la ressemblance des portraits par défaut (socle Sleeplot, pas Landmvrks photo-guidé), vise un catalogue de lancement restreint aux artistes qui ont dit oui, et cible les artistes/labels les plus accessibles en priorité. Reste un vrai avis d'avocat à obtenir avant toute ouverture publique, même limitée.
+- **Volet visuel en pause** : la direction tarot ne satisfait pas encore et les crédits de génération d'images sont épuisés. La conception avance donc sur ce qui n'en dépend pas (flows, structure, décisions produit).
 
 ## Prochaines étapes possibles
 
@@ -35,4 +36,5 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 - Spécifier les state machines Rive des 5 séquences majeures identifiées (niveau 1 de la carte des animations) une fois le gabarit de carte stabilisé.
 - Wireframer en basse fidélité les écrans des flows A et B (onboarding et ouverture de pack), qui ne demandent aucun visuel de carte définitif.
 - Recueillir et synthétiser les retours des proches sur la page de pitch.
-- Reprendre la DA carte quand les droits à l'image et les moyens de génération seront débloqués ; le gabarit paramétrique de `docs/DA.md` reste valable indépendamment du style retenu.
+- Reprendre la DA carte, en socle Sleeplot (pas photo-guidé) par défaut, quand les moyens de génération seront débloqués ; le gabarit paramétrique de `docs/DA.md` reste valable indépendamment du style retenu.
+- Identifier une première liste d'artistes/labels accessibles à contacter (émergents, déjà actifs en ligne) pour amorcer la stratégie droits à l'image posée dans `docs/ROADMAP-IDEAS.md`.

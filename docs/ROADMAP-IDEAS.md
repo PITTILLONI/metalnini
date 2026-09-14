@@ -2,8 +2,20 @@
 
 But de ce document : conserver toutes les idées évoquées qui ne font pas partie du MVP, pour ne rien perdre, sans polluer le concept de lancement (`CONCEPT.md`).
 
-## Phase 2 — Ouverture publique (droits à l'image/musicaux)
-Le concept utilise dès maintenant les vrais noms de groupes/musiciens et des portraits IA ressemblants, tolérable uniquement en usage privé (voir risques dans `CONCEPT.md`). Avant toute ouverture publique ou commerciale, il faut une solution sur ce point — pistes possibles à explorer avec un juriste : accords de licence par artiste/label (à envisager progressivement, pas en un seul big bang), ou repli sur des noms/portraits détournés (parodiques) si les accords ne sont pas atteignables à temps.
+## Phase 2 — Ouverture publique : stratégie droits à l'image
+
+Le concept utilise dès maintenant les vrais noms de groupes/musiciens et des portraits IA ressemblants, tolérable uniquement en usage privé (voir risques dans `CONCEPT.md`). **Recadrage du problème** : viser "l'accord de tous les groupes" avant d'ouvrir n'a jamais été le plan (déjà écarté comme approche "big bang" — voir ci-dessous), mais même une approche progressive groupe par groupe se heurte à un taux de réponse naturellement bas. La stratégie doit donc surtout **réduire le nombre de portes auxquelles il faut frapper**, pas seulement accepter d'en frapper beaucoup.
+
+**Plan recommandé (produit/business, pas un avis juridique — voir la réserve en bas) :**
+
+1. **Réduire la ressemblance des portraits par défaut, indépendamment de tout accord** — le levier le plus direct, et le seul qui ne dépend d'aucun tiers à convaincre. Le test "Sleeplot" (`DA.md`) a déjà validé qu'un gag visuel stylisé, sans photo-guidage précis, porte bien l'humour et l'effet "vraie carte de collection" recherchés. Le test Landmvrks à ressemblance guidée par photo reste la version la plus exposée testée à ce jour — à réserver aux artistes ayant explicitement donné leur accord, jamais au socle par défaut. Ça ne supprime pas le risque lié au nom réel, mais réduit fortement l'exposition sur le droit à l'image du portrait, qui est le risque le plus tranchant des deux identifiés dans `CONCEPT.md`.
+2. **Ne pas viser un catalogue complet au lancement public** — un catalogue restreint aux artistes qui ont dit oui est un vrai produit, pas un MVP dégradé : c'est littéralement l'approche "par artiste/label, progressive" déjà retenue plus bas. Le reste du catalogue grandit ensuite.
+3. **Cibler les portes qui s'ouvrent le plus facilement, pas la liste idéale** — des groupes émergents/indépendants en recherche de visibilité répondent structurellement mieux qu'un groupe installé sollicité par une inconnue. Passer par un label, un booker ou un festival qui représente plusieurs artistes réduit aussi le nombre de contacts nécessaires par rapport à un démarchage groupe par groupe.
+4. **Présenter l'app comme un bénéfice pour l'artiste, pas une demande de faveur** — passer de « puis-je utiliser votre image » à « voici un outil d'engagement fan gratuit, qu'on aimerait construire avec vous » change la nature de la conversation. Amorce possible, à adapter par artiste : *« On construit une app de cartes à collectionner pour les fans de metal/rock, avec [artiste] déjà représenté dans un prototype privé — on adorerait vous montrer ce que ça donne et voir si ça vous intéresse d'en faire partie officiellement, sans coût de votre côté. »* Une prise de contact, pas un contrat — les termes se négocient après un accord de principe, pas avant.
+
+**Ce qui ne change pas** : usage strictement privé pour l'instant (déjà acté), et validation par un avocat propriété intellectuelle/droit à l'image avant toute diffusion publique même limitée. En particulier, un point que ce document ne tranche pas et qu'il ne faut pas supposer réglé par la stylisation seule : l'**exception de parodie** protège certains usages du **droit d'auteur** en droit français, mais son étendue sur le **droit à l'image** d'une personne reconnaissable est un terrain distinct, régi par d'autres bases juridiques — à faire confirmer par un juriste, pas à assumer par analogie.
+
+**Repli si le taux de réponse reste trop bas malgré tout ça** : retour aux noms/portraits détournés (parodiques) — perd une partie du driver d'authenticité identifié comme moteur d'engagement (voir `CONCEPT.md`), mais reste un produit viable et déjà documenté (test Sleeplot).
 
 ## Phase 2 — Hybride physique/digital
 - Packs physiques vendus en merch stand / disquaires / festival.
