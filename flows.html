@@ -1,0 +1,893 @@
+<title>Metalnini — User flows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#0c0b0a;
+    --surface:#161412;
+    --surface-2:#1e1b18;
+    --text:#f3f0ea;
+    --text-muted:#a49e94;
+    --border:rgba(255,255,255,0.09);
+
+    --accent:#b23a3a;
+    --accent-soft:rgba(178,58,58,0.14);
+
+    --t-screen:#f3f0ea;
+    --t-action:#5b8fd6;
+    --t-decision:#cda44e;
+    --t-system:#7d7871;
+    --t-notif:#b23a3a;
+
+    --font-display:'Oswald','Arial Narrow',sans-serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+    --font-mono:'JetBrains Mono','Courier New',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{color-scheme:dark; scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:0.035;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  a{color:var(--t-decision);}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--t-decision); outline-offset:3px;}
+
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px; position:relative; z-index:2;}
+  h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:0.01em; text-wrap:balance;}
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 12px;
+  }
+
+  /* ---------- Header ---------- */
+  .head{padding:clamp(56px,11vw,90px) 0 36px;}
+  .head h1{font-size:clamp(2.2rem,7vw,3.4rem); font-weight:700; line-height:1; text-transform:uppercase;}
+  .head .tagline{margin-top:14px; color:var(--text-muted); max-width:56ch;}
+  .head .meta{
+    margin-top:22px; font-family:var(--font-mono); font-size:0.78rem;
+    color:var(--text-muted); letter-spacing:0.04em;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:5;
+    background:rgba(12,11,10,0.92); backdrop-filter:blur(8px);
+    border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    margin-bottom:8px;
+  }
+  .nav-inner{display:flex; gap:6px; overflow-x:auto; padding:10px 20px; max-width:860px; margin:0 auto; scrollbar-width:none;}
+  .nav-inner::-webkit-scrollbar{display:none;}
+  .nav a{
+    flex:0 0 auto; font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em;
+    text-transform:uppercase; text-decoration:none; color:var(--text-muted);
+    padding:6px 10px; border:1px solid var(--border); border-radius:3px; white-space:nowrap;
+  }
+  .nav a:hover{color:var(--text); border-color:rgba(255,255,255,0.25);}
+
+  /* ---------- Legend ---------- */
+  .legend{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px; margin:28px 0 0;
+  }
+  .legend div{
+    border:1px solid var(--border); border-radius:4px; padding:10px 12px;
+    background:var(--surface); font-size:0.82rem; color:var(--text-muted);
+  }
+  .legend strong{
+    display:block; font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.12em;
+    text-transform:uppercase; margin-bottom:4px; color:var(--text);
+  }
+  .legend .l-screen strong{color:var(--t-screen);}
+  .legend .l-action strong{color:var(--t-action);}
+  .legend .l-decision strong{color:var(--t-decision);}
+  .legend .l-system strong{color:var(--t-system);}
+  .legend .l-notif strong{color:var(--t-notif);}
+
+  /* ---------- Sections ---------- */
+  section{padding:clamp(40px,7vw,64px) 0; border-bottom:1px solid var(--border);}
+  h2{font-size:clamp(1.4rem,3.2vw,1.9rem); font-weight:600; text-transform:uppercase; margin-bottom:6px;}
+  .flow-sub{color:var(--text-muted); font-size:0.95rem; margin:0 0 4px; max-width:64ch;}
+  section > p{max-width:66ch;}
+
+  .facts{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:12px; margin:22px 0 30px;
+  }
+  .fact{border-left:2px solid var(--accent); padding:2px 0 2px 14px;}
+  .fact dt{
+    font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:3px;
+  }
+  .fact dd{margin:0; font-size:0.9rem; color:var(--text-muted);}
+
+  /* ---------- Flow steps ---------- */
+  .flow{list-style:none; margin:0; padding:0 0 0 26px; position:relative;}
+  .flow::before{
+    content:""; position:absolute; left:5px; top:8px; bottom:8px;
+    width:1px; background:var(--border);
+  }
+  .step{position:relative; padding:0 0 22px;}
+  .step::before{
+    content:""; position:absolute; left:-26px; top:7px;
+    width:11px; height:11px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--t-system);
+  }
+  .step[data-type="ecran"]::before{border-color:var(--t-screen);}
+  .step[data-type="action"]::before{border-color:var(--t-action);}
+  .step[data-type="decision"]::before{border-color:var(--t-decision); border-radius:2px; transform:rotate(45deg); top:8px;}
+  .step[data-type="notif"]::before{border-color:var(--t-notif);}
+
+  .tag{
+    display:inline-block; font-family:var(--font-mono); font-size:0.63rem;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--t-system);
+    margin-bottom:3px;
+  }
+  .step[data-type="ecran"] .tag{color:var(--t-screen);}
+  .step[data-type="action"] .tag{color:var(--t-action);}
+  .step[data-type="decision"] .tag{color:var(--t-decision);}
+  .step[data-type="notif"] .tag{color:var(--t-notif);}
+
+  .step h4{font-size:1.02rem; font-weight:500; text-transform:none; line-height:1.35;}
+  .step p{margin:5px 0 0; font-size:0.9rem; color:var(--text-muted); max-width:62ch;}
+
+  .branches{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:8px;}
+  .branches li{
+    background:var(--surface); border:1px solid var(--border); border-radius:4px;
+    padding:10px 13px; font-size:0.87rem; color:var(--text-muted);
+  }
+  .branches b{
+    display:block; color:var(--text); font-weight:500; font-size:0.83rem;
+    font-family:var(--font-mono); letter-spacing:0.04em; margin-bottom:3px;
+  }
+
+  .note{
+    margin-top:10px; font-size:0.84rem; color:var(--text-muted);
+    border-left:2px solid var(--border); padding-left:12px; max-width:62ch;
+  }
+  .note b{color:var(--text); font-weight:500;}
+
+  /* ---------- Edge cases / open questions ---------- */
+  .block{margin-top:34px;}
+  .block h3{
+    font-size:0.78rem; font-family:var(--font-mono); letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--text-muted); margin-bottom:12px;
+    padding-bottom:8px; border-bottom:1px solid var(--border);
+  }
+  .block ul{margin:0; padding-left:18px;}
+  .block li{font-size:0.9rem; color:var(--text-muted); margin-bottom:8px; max-width:66ch;}
+  .block li b{color:var(--text); font-weight:500;}
+
+  .open h3{color:var(--t-decision); border-bottom-color:rgba(205,164,78,0.3);}
+  .open li::marker{color:var(--t-decision);}
+
+  /* ---------- Principles ---------- */
+  .principles{display:grid; gap:14px; margin-top:24px;}
+  .principle{
+    background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:16px 18px;
+  }
+  .principle h4{font-size:0.98rem; font-weight:500; text-transform:none; margin-bottom:5px;}
+  .principle p{margin:0; font-size:0.88rem; color:var(--text-muted); max-width:70ch;}
+
+  /* ---------- Recap table ---------- */
+  .recap{margin-top:22px; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
+  .recap-row{
+    display:grid; grid-template-columns:64px 1fr; gap:0;
+    border-bottom:1px solid var(--border);
+  }
+  .recap-row:last-child{border-bottom:none;}
+  .recap-row > div{padding:12px 14px;}
+  .recap-row > div:first-child{
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--t-decision);
+    background:var(--surface); letter-spacing:0.06em; border-right:1px solid var(--border);
+  }
+  .recap-row > div:last-child{font-size:0.89rem; color:var(--text-muted);}
+  .recap-row b{color:var(--text); font-weight:500;}
+
+  footer{padding:44px 0 70px; color:var(--text-muted); font-size:0.85rem;}
+  footer a{color:var(--t-decision);}
+
+  /* ---------- Gate ---------- */
+  .gate{
+    position:fixed; inset:0; z-index:50; background:var(--bg);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .gate-form{max-width:360px; width:100%; text-align:center;}
+  .gate-title{font-size:clamp(2rem,7vw,2.6rem); text-transform:uppercase; margin:6px 0 14px;}
+  .gate-copy{color:var(--text-muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-input{
+    width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:4px;
+    color:var(--text); font-family:var(--font-body); font-size:1rem; padding:12px 14px; margin-bottom:14px;
+  }
+  .gate-submit{
+    width:100%; font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.04em;
+    font-size:1rem; padding:12px 14px; background:var(--accent); color:var(--text);
+    border:none; border-radius:4px; cursor:pointer;
+  }
+  .gate-submit:hover{background:#c24444;}
+  .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
+</style>
+
+<div id="gate" class="gate">
+  <form id="gate-form" class="gate-form">
+    <p class="eyebrow" style="margin-bottom:10px">Accès privé</p>
+    <h1 class="gate-title">Metalnini</h1>
+    <p class="gate-copy">Document de travail interne. Mot de passe requis.</p>
+    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" autocomplete="off" autofocus>
+    <button type="submit" class="gate-submit">Entrer</button>
+    <p id="gate-error" class="gate-error" hidden>Mot de passe incorrect.</p>
+  </form>
+</div>
+
+<div id="site-content" style="display:none">
+
+<div class="wrap head">
+  <p class="eyebrow">Document de travail — conception</p>
+  <h1>User flows</h1>
+  <p class="tagline">Les 7 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes.</p>
+  <p class="meta">Basé sur docs/ARCHITECTURE-FLOWS.md · Aucun visuel de carte requis à ce stade</p>
+
+  <div class="legend">
+    <div class="l-screen"><strong>Écran</strong>Une vue à maquetter</div>
+    <div class="l-action"><strong>Action</strong>Geste de l'utilisateur</div>
+    <div class="l-decision"><strong>Décision</strong>Embranchement</div>
+    <div class="l-system"><strong>Système</strong>Traitement invisible</div>
+    <div class="l-notif"><strong>Notif</strong>Sollicitation sortante</div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#principes">Principes</a>
+    <a href="#flow-a">A · Onboarding</a>
+    <a href="#flow-b">B · Pack</a>
+    <a href="#flow-c">C · Évolution</a>
+    <a href="#flow-d">D · Concert</a>
+    <a href="#flow-e">E · Échange</a>
+    <a href="#flow-f">F · Récompense</a>
+    <a href="#flow-g">G · Rencontre</a>
+    <a href="#trancher">À trancher</a>
+  </div>
+</nav>
+
+<!-- ============ PRINCIPES ============ -->
+<section id="principes" class="wrap">
+  <p class="eyebrow">Règles transverses</p>
+  <h2>Ce qui s'applique à tous les flows</h2>
+  <p class="flow-sub">Cinq règles posées une fois ici plutôt que répétées à chaque parcours. Elles découlent directement des anti-patterns du concept.</p>
+
+  <div class="principles">
+    <div class="principle">
+      <h4>Le tirage est figé avant l'animation</h4>
+      <p>Tout ce qui est aléatoire (contenu d'un pack, carte bonus) est décidé côté serveur avant que l'animation démarre. Une app tuée en plein reveal ne fait rien perdre : au retour, le pack est toujours là, non ouvert.</p>
+    </div>
+    <div class="principle">
+      <h4>Aucune étape bloquante sans valeur perçue avant</h4>
+      <p>Création de compte, géolocalisation, notifications : toujours proposées après que l'utilisateur a reçu quelque chose, jamais avant. Chaque refus a un chemin de repli fonctionnel (saisie manuelle, mode invité), jamais un cul-de-sac.</p>
+    </div>
+    <div class="principle">
+      <h4>Une sollicitation sortante = un événement réel</h4>
+      <p>Chaque notification de ce document est déclenchée par un fait (sortie d'album, concert passé, proposition d'échange reçue). Aucun push de relance d'inactivité, aucun compte à rebours fabriqué.</p>
+    </div>
+    <div class="principle">
+      <h4>Tout ce qui est social est opt-in et réciproque</h4>
+      <p>Visibilité en concert, rencontre, présence : jamais actif par défaut, jamais à sens unique, jamais conservé après l'événement.</p>
+    </div>
+    <div class="principle">
+      <h4>Une récompense garantie n'est jamais otage d'un formulaire</h4>
+      <p>Quand une récompense est promise comme certaine (complétion de classeur, palier, première rencontre), elle est attribuée dès que la condition est remplie — pas après avoir rempli un questionnaire ou passé un écran optionnel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLOW A ============ -->
+<section id="flow-a" class="wrap">
+  <p class="eyebrow">Flow A</p>
+  <h2>Onboarding → premier pack</h2>
+  <p class="flow-sub">Le parcours le plus critique : c'est là que se perd la majorité des nouveaux arrivants.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Passer de l'installation à « j'ai des cartes à moi » en moins de deux minutes.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Première ouverture de l'app.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>L'utilisateur est sur sa Collection, avec des cartes dedans et une raison d'y revenir.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Accroche</h4>
+      <p>Une phrase, un bouton. Pas de carrousel de cinq slides à swiper : la promesse se démontre en jouant, pas en la lisant.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — compte requis ?</span>
+      <h4>Non. On joue d'abord, on sauvegarde ensuite.</h4>
+      <p>Demander un compte avant toute valeur reçue est le premier point de chute d'un onboarding. Le compte est proposé à l'étape 7, une fois les cartes obtenues.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Choix des sous-genres</h4>
+      <p>Grille de 6 à 8 tuiles. Sélection multiple, 2 minimum. C'est ce qui conditionne la suite : artistes proposés, composition du pack, feed d'accueil.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Choix des artistes</h4>
+      <p>Liste filtrée par les sous-genres choisis. 3 à 5 artistes. Bouton de validation désactivé sous 3 sélections, avec un compteur explicite plutôt qu'un bouton mort sans explication.</p>
+      <ul class="branches">
+        <li><b>Échappatoire</b>« Je ne sais pas encore » → pré-sélection des artistes les plus collectionnés du ou des sous-genres choisis. Un utilisateur indécis ne doit jamais rester coincé sur cet écran.</li>
+        <li><b>Sous-genre de niche</b>Si trop peu d'artistes disponibles, le dire (« encore peu d'artistes ici ») plutôt que d'afficher une grille vide.</li>
+      </ul>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Composition du pack de bienvenue</h4>
+      <p>Contenu garanti, non aléatoire : au moins une carte Rare, et au moins une carte d'un artiste explicitement choisi à l'étape précédente. Un premier pack entièrement composé de communes d'artistes inconnus annulerait tout le bénéfice du choix des goûts.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Reveal du pack de bienvenue</h4>
+      <p>Même écran que le Flow B, version simplifiée : aucun doublon possible, aucun résumé d'échange. Le seul but est le plaisir de la découverte.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Atterrissage sur la Collection</h4>
+      <p>Les cartes sont déjà en place dans leur classeur, avec les emplacements vides visibles autour. Un nudge discret : « plus que X cartes pour compléter [thème] ». La sensation de progression doit exister avant même la deuxième session.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — créer le compte ?</span>
+      <h4>Proposé ici, jamais imposé</h4>
+      <ul class="branches">
+        <li><b>Créer</b>Email / Apple / Google. Confirmation que les cartes sont désormais sauvegardées.</li>
+        <li><b>Plus tard</b>Autorisé. Un bandeau discret et persistant signale que les cartes ne sont pas encore sauvegardées — informatif, pas culpabilisant, et jamais un blocage.</li>
+      </ul>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran — optionnel</span>
+      <h4>Amorce Live</h4>
+      <p>« Tu vas voir un concert bientôt ? » Skippable en un geste. Présenté seulement après la création de compte, ou repoussé à la deuxième session : c'est une troisième demande d'engagement, elle ne doit pas s'empiler sur les deux précédentes.</p>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>États limites</h3>
+    <ul>
+      <li><b>Abandon en cours de route</b> — reprise à l'étape exacte au prochain lancement, choix déjà faits conservés.</li>
+      <li><b>Pas de réseau au moment du reveal</b> — le pack est attribué avant l'animation ; si la connexion tombe, l'animation est rejouable et rien n'est perdu.</li>
+      <li><b>Réinstallation sans compte</b> — les cartes sont perdues. C'est le coût assumé du mode invité, et la raison pour laquelle le bandeau de sauvegarde existe.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Taille du pack de bienvenue</b> — 5 ou 7 cartes ? Dépend du volume de contenu disponible au lancement : un pack généreux sur un catalogue mince rend la suite décevante.</li>
+      <li><b>Amorce Live en fin d'onboarding ou en session 2 ?</b> — arbitrage entre installer tôt la mécanique concert et ne pas saturer la première session.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW B ============ -->
+<section id="flow-b" class="wrap">
+  <p class="eyebrow">Flow B</p>
+  <h2>Ouverture de pack</h2>
+  <p class="flow-sub">La boucle la plus fréquente, et le moment le plus chargé émotionnellement de l'app.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Un moment court, rejouable, et jamais frustrant — même quand le tirage est mauvais.</dd></div>
+    <div class="fact"><dt>Entrées</dt><dd>Bannière Accueil · onglet Packs · notification « pack gratuit disponible ».</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Résumé lu, et au moins une action proposée derrière (échange d'un doublon, classeur à finir).</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Packs disponibles</h4>
+      <p>Pack gratuit (avec le temps restant avant le prochain), packs payants, packs événementiels. Le compteur affiche une disponibilité réelle — pas une fausse urgence de rareté.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — pack payant ?</span>
+      <h4>Deux chemins</h4>
+      <ul class="branches">
+        <li><b>Payant</b>Écran de confirmation : prix, nombre de cartes, et le contenu <i>garanti</i> annoncé clairement. Pas de formulation en « chances de… » qui laisse croire à mieux que la réalité.</li>
+        <li><b>Gratuit</b>Ouverture directe, sans étape intermédiaire.</li>
+      </ul>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Tirage</h4>
+      <p>Contenu déterminé côté serveur et figé avant l'animation (voir Principes).</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Reveal</h4>
+      <p>Cartes révélées une par une au tap, avec « Tout révéler » accessible en permanence — un joueur qui ouvre son dixième pack ne doit pas subir l'animation complète. C'est le seul endroit de l'app où les effets riches (foil, shimmer, grain) sont autorisés.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Résumé post-ouverture</h4>
+      <p>Trois blocs : nouvelles cartes, doublons, progression. Sur chaque nouvelle carte, l'impact chiffré sur le classeur concerné (« +12 % sur Early Years »). Sur chaque doublon, un bouton direct « Proposer en échange ».</p>
+      <ul class="branches">
+        <li><b>Doublon</b>Le bouton entre dans le Flow E à l'étape de composition, sans passer par la recherche. C'est ce raccourci qui transforme une déception en action.</li>
+        <li><b>Classeur complété</b>Enchaîne sur le Flow F (récompense) plutôt que de rester sur le résumé.</li>
+        <li><b>Classeur presque complet</b>Nudge visuel sur le résumé uniquement. Aucune notification derrière.</li>
+      </ul>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>États limites</h3>
+    <ul>
+      <li><b>App fermée pendant le reveal</b> — au retour : « tu as un pack non ouvert ». Le tirage étant déjà fait, rien ne change en attendant.</li>
+      <li><b>Paiement échoué</b> — le pack n'est pas consommé, message explicite, retour à l'écran Packs sans perte.</li>
+      <li><b>Pack entièrement composé de doublons</b> — le cas le plus frustrant possible. L'écran de résumé doit avoir un traitement digne plutôt qu'une liste de cartes déjà possédées.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Que deviennent les doublons non échangés ?</b> — ils s'accumulent sans usage aujourd'hui. Faut-il une contrepartie (monnaie d'échange, fragments convertibles en pack) ? C'est le principal trou du concept sur cette boucle, et il conditionne le traitement du pack 100 % doublons.</li>
+      <li><b>Un doublon a-t-il une valeur propre ?</b> — par exemple une deuxième copie affichable dans un classeur personnalisé, ou strictement rien en dehors de l'échange.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW C ============ -->
+<section id="flow-c" class="wrap">
+  <p class="eyebrow">Flow C</p>
+  <h2>Évolution d'une carte</h2>
+  <p class="flow-sub">Le seul flow déclenché de l'extérieur : c'est l'actualité réelle de l'artiste qui le lance, pas l'utilisateur.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Faire ressentir que la collection est vivante et connectée au réel.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Sortie d'album, clip, date de concert, anniversaire — détecté éditorialement.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>L'utilisateur comprend <i>quel fait réel</i> a fait bouger sa carte.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Détection de l'événement</h4>
+      <p>Curation manuelle et/ou flux externe. Le rythme de ce flow dépend entièrement de la capacité éditoriale — c'est une charge opérationnelle continue, pas une fonctionnalité qu'on livre une fois.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Ciblage</h4>
+      <p>Seuls les détenteurs de la carte concernée sont notifiés. Un utilisateur qui ne possède pas la carte ne reçoit rien, même s'il suit l'artiste.</p>
+    </li>
+
+    <li class="step" data-type="notif">
+      <span class="tag">Notification</span>
+      <h4>« Ta carte [Artiste] a changé »</h4>
+      <p>Une notification par événement, jamais groupée en rafale. Si plusieurs cartes évoluent le même jour, une seule notification agrégée.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — ouverture depuis la notif ?</span>
+      <h4>La notification ne doit pas être le seul chemin</h4>
+      <ul class="branches">
+        <li><b>Oui</b>Ouverture directe sur l'écran d'évolution.</li>
+        <li><b>Non / notif ignorée</b>L'évolution apparaît dans le feed Accueil et pose un badge sur la carte en Collection. Rien n'est perdu, l'écran d'évolution reste accessible plus tard.</li>
+      </ul>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Évolution</h4>
+      <p>Avant / après animé, et surtout : le fait réel déclencheur affiché explicitement (« Album <i>X</i> sorti le 12 mars »). C'est cette mention qui distingue un FOMO authentique d'un effet de manche.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Carte mise à jour en Collection</h4>
+      <p>L'historique d'évolution est consultable au verso : une carte ancienne et plusieurs fois évoluée doit se lire comme un objet qui a vécu.</p>
+    </li>
+
+    <li class="step" data-type="action">
+      <span class="tag">Action — optionnelle</span>
+      <h4>Partage</h4>
+      <p>Capture partageable. Aucune incitation répétée, aucun bonus lié au partage.</p>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>États limites</h3>
+    <ul>
+      <li><b>Événement annulé ou infirmé</b> (concert reporté, annonce démentie) — il faut un chemin de retour arrière éditorial, sinon une carte reste figée sur un fait faux.</li>
+      <li><b>Utilisateur inactif depuis longtemps</b> — plusieurs évolutions en attente : les présenter en une séquence groupée, pas en huit écrans successifs.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Une carte qui évolue laisse-t-elle un trou dans son classeur ?</b> — si une carte Artiste devient une carte Album, l'emplacement Artiste redevient-il vide (et donc le classeur incomplet), ou les deux coexistent-elles ? C'est la décision la plus structurante de ce flow : elle touche directement la complétion, donc le Flow F.</li>
+      <li><b>Plusieurs exemplaires de la même carte</b> — toutes évoluent, ou une seule ? Lié à la question des doublons du Flow B.</li>
+      <li><b>L'évolution est-elle réversible ?</b> — un collectionneur peut préférer garder l'état d'origine de sa carte.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW D ============ -->
+<section id="flow-d" class="wrap">
+  <p class="eyebrow">Flow D</p>
+  <h2>Concert : check-in → avatar</h2>
+  <p class="flow-sub">Le flow qui relie l'app au vécu réel. Sa contrainte principale : ne rien demander pendant le concert.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Transformer un concert vécu en progression, sans parasiter le concert lui-même.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Concert détecté à proximité, ou saisie manuelle par l'utilisateur.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Une entrée de plus au carnet de concerts, et un avatar qui a bougé.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Détection d'un concert</h4>
+      <p>Croisement entre les artistes suivis et l'agenda. La géolocalisation est ponctuelle et consentie au moment du check-in — jamais un suivi en continu.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran — avant</span>
+      <h4>Fiche concert</h4>
+      <p>Date, lieu, artistes, et le bouton « J'y suis ». Accessible aussi par recherche manuelle pour un concert non détecté.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — géolocalisation ?</span>
+      <h4>Le refus ne bloque jamais</h4>
+      <ul class="branches">
+        <li><b>Autorisée</b>Check-in vérifié automatiquement.</li>
+        <li><b>Refusée ou indisponible</b>Saisie manuelle du concert. L'entrée au carnet est identique ; seul le statut de vérification diffère.</li>
+      </ul>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Check-in confirmé</h4>
+      <p>Confirmation courte, plus un interrupteur « Visible aux autres fans ce soir », <b>désactivé par défaut</b>. C'est le seul point d'entrée du Flow G.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système — pendant le concert</span>
+      <h4>Rien à faire</h4>
+      <p>Aucune notification, aucun écran à consulter, aucune action à réaliser. Si la jauge d'ambiance par capteurs se révèle fiable, elle tourne passivement ; sinon, il ne se passe littéralement rien dans l'app pendant le show, et c'est volontaire.</p>
+    </li>
+
+    <li class="step" data-type="notif">
+      <span class="tag">Notification — le lendemain</span>
+      <h4>« Raconte ton show »</h4>
+      <p>Envoyée le lendemain matin, jamais à la sortie du concert. Une seule relance maximum, puis silence.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Carnet de concert — note déclarative</h4>
+      <p>Ambiance, son, intensité du pit, moment marquant, photo optionnelle. Ce carnet a une valeur en soi, indépendamment de l'avatar : c'est un journal de ses shows.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Attribution d'XP et de contenu</h4>
+      <p>XP réparti sur les trois sources de l'avatar, et carte Live exclusive liée à la date si l'événement en prévoit une. L'attribution se fait <b>au check-in</b>, pas à la rédaction du compte-rendu — la récompense ne doit pas être conditionnée au remplissage d'un formulaire.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Retour au carnet, progression visible</h4>
+      <p>La progression de l'avatar et les titres éventuellement débloqués sont affichés immédiatement, pas au prochain lancement.</p>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>États limites</h3>
+    <ul>
+      <li><b>Concert annulé après check-in</b> — l'entrée doit pouvoir être retirée du carnet, avec l'XP associé.</li>
+      <li><b>Check-in sur le mauvais concert</b> (deux salles proches, festival multi-scènes) — correction possible depuis la fiche.</li>
+      <li><b>Compte-rendu jamais rempli</b> — l'entrée reste au carnet avec les informations factuelles. Un carnet rempli de brouillons vides serait pire que des entrées minimales assumées.</li>
+      <li><b>Festival sur plusieurs jours</b> — une entrée par jour, ou une entrée par festival ? Le carnet doit gérer les deux lectures.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>La carte Live exclusive exige-t-elle un check-in vérifié ?</b> — si la saisie manuelle y donne droit, elle est déclarative et falsifiable ; si elle n'y donne pas droit, on pénalise tous ceux qui refusent la géolocalisation. Arbitrage à faire consciemment.</li>
+      <li><b>Fiabilité de la jauge d'ambiance</b> — dépend d'un spike technique non réalisé. Tout le flow est conçu pour rester valable si elle n'existe jamais.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW E ============ -->
+<section id="flow-e" class="wrap">
+  <p class="eyebrow">Flow E</p>
+  <h2>Échange entre fans</h2>
+  <p class="flow-sub">Troc pur : aucune conversion en argent réel à aucune étape.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Donner un usage aux doublons et créer du lien entre collectionneurs.</dd></div>
+    <div class="fact"><dt>Entrées</dt><dd>Doublon après un pack (Flow B) · recherche d'une carte manquante · profil d'un autre fan · liste de présence en concert (Flow G).</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Deux collections mises à jour simultanément, deux fans notifiés.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Recherche</h4>
+      <p>Par carte recherchée, par fan, ou par guilde. Étape court-circuitée quand on arrive depuis un doublon ou depuis la liste de présence en concert.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Composition de la proposition</h4>
+      <p>Cartes offertes d'un côté, demandées de l'autre. Un indicateur d'équilibre de rareté, purement indicatif et non monétaire, aide à juger avant d'envoyer — sans jamais empêcher un échange volontairement déséquilibré.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Verrouillage des cartes engagées</h4>
+      <p>Les cartes incluses dans une proposition en attente sont verrouillées, pour éviter qu'une même carte soit promise à deux fans en parallèle. Le verrou doit être visible en Collection, sinon il ressemble à un bug.</p>
+    </li>
+
+    <li class="step" data-type="notif">
+      <span class="tag">Notification</span>
+      <h4>Proposition reçue</h4>
+      <p>Notification à l'autre fan, avec le contenu de l'offre lisible sans ouvrir l'app.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — réponse du destinataire</span>
+      <h4>Trois issues</h4>
+      <ul class="branches">
+        <li><b>Accepte</b>Échange atomique : les deux collections changent en même temps, ou aucune. Notification aux deux parties.</li>
+        <li><b>Refuse</b>Notification à l'émetteur, cartes déverrouillées, contre-proposition possible en un geste.</li>
+        <li><b>Ne répond pas</b>Expiration après un délai fixe. Les cartes sont déverrouillées automatiquement — une proposition oubliée ne doit pas immobiliser une collection indéfiniment.</li>
+      </ul>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>États limites</h3>
+    <ul>
+      <li><b>Carte échangée entre-temps</b> — la proposition est invalidée proprement, avec un message qui explique pourquoi plutôt qu'une erreur générique.</li>
+      <li><b>Fan indésirable</b> — blocage et signalement accessibles depuis la fiche d'échange et le profil, pas enfouis dans les réglages.</li>
+      <li><b>Échange très déséquilibré</b> — autorisé (un fan peut vouloir faire un cadeau), mais l'indicateur doit être affiché au moment de confirmer, pas après.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Délai d'expiration d'une proposition</b> — assez long pour un usage occasionnel, assez court pour ne pas bloquer les cartes.</li>
+      <li><b>Nombre de propositions simultanées</b> — sans limite, on ouvre la porte au spam de propositions.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW F ============ -->
+<section id="flow-f" class="wrap">
+  <p class="eyebrow">Flow F</p>
+  <h2>Récompense de complétion</h2>
+  <p class="flow-sub">Le contrepoids non aléatoire de l'ouverture de pack : ici, l'effort donne une récompense certaine.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Récompenser la maîtrise et la persévérance, sans reproduire une mécanique de loot-box.</dd></div>
+    <div class="fact"><dt>Déclencheurs</dt><dd>Dernière carte d'un classeur officiel obtenue · palier d'XP avatar franchi.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Une trace durable et visible : badge de profil, carte Collector, trait d'avatar.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Détection</h4>
+      <p>Déclenché quelle que soit la provenance de la carte manquante : pack, échange, carte bonus de concert, évolution.</p>
+    </li>
+
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Interstitiel de récompense</h4>
+      <p>Dans l'esprit du reveal de pack mais plus court — c'est un aboutissement, pas une découverte. Classeur complété : carte Collector cosmétique + badge de profil. Palier d'avatar : déblocage cosmétique, et parfois un pack gratuit.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Mise à jour durable</h4>
+      <p>Le classeur bascule dans « collections complétées », le badge s'installe en continu sur le profil public et la fiche avatar.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Règle</span>
+      <h4>Aucune récompense sur un classeur personnalisé</h4>
+      <p>Un classeur défini par l'utilisateur lui-même — parfois réduit à une seule carte — rendrait la récompense triviale à exploiter. Seuls les classeurs officiels comptent.</p>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>États limites</h3>
+    <ul>
+      <li><b>Plusieurs récompenses déclenchées d'un coup</b> — mises en file et présentées en une seule séquence enchaînée, jamais en quatre interstitiels successifs à fermer un par un.</li>
+      <li><b>Récompense déclenchée pendant un autre flow</b> (échange, concert) — elle s'affiche à la fin du flow en cours, pas par-dessus.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Un classeur officiel qui s'agrandit après complétion</b> — si une nouvelle carte est ajoutée au thème, le classeur repasse-t-il à « en cours » ? Reprendre un badge déjà obtenu serait très mal vécu ; garder le badge tout en rouvrant le classeur est probablement le compromis, mais ça reste à acter.</li>
+      <li><b>Une carte échangée après complétion</b> — un classeur complété peut-il redevenir incomplet si son propriétaire échange une carte ? Sinon, il faut verrouiller les cartes des classeurs complétés.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FLOW G ============ -->
+<section id="flow-g" class="wrap">
+  <p class="eyebrow">Flow G</p>
+  <h2>Rencontre en concert</h2>
+  <p class="flow-sub">Le seul flow où l'app met des gens en relation physiquement. Ses garde-fous ne sont pas négociables.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Objectif</dt><dd>Transformer le fait de croiser un autre fan en progression concrète.</dd></div>
+    <div class="fact"><dt>Pré-requis</dt><dd>Check-in effectué <i>et</i> option de visibilité activée (Flow D, étape 4).</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Un échange conclu sur place, ou une rencontre confirmée des deux côtés.</dd></div>
+  </dl>
+
+  <ol class="flow">
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>« Fans présents ce soir »</h4>
+      <p>Liste limitée aux fans ayant eux aussi activé l'option pour ce même concert. Pseudo, avatar, cartes recherchées. <b>Aucune position précise n'est affichée</b> — seulement le fait d'être présent à cet événement.</p>
+    </li>
+
+    <li class="step" data-type="decision">
+      <span class="tag">Décision — que faire depuis la liste ?</span>
+      <h4>Deux actions, une même exigence de réciprocité</h4>
+      <ul class="branches">
+        <li><b>Proposer un échange</b>Entre dans le Flow E à l'étape de composition, sans passer par la recherche globale.</li>
+        <li><b>« On s'est croisés »</b>Demande de confirmation envoyée à l'autre fan ; sans sa validation, il ne se passe rien.</li>
+      </ul>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Confirmation mutuelle requise</h4>
+      <p>Dans les deux cas, rien ne se valide unilatéralement. Une confirmation à sens unique permettrait de marquer quelqu'un sans son accord.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Carte bonus de connexion</h4>
+      <p>La première rencontre confirmée sur un concert donné débloque une carte bonus garantie et fait progresser le titre « Metal Corner ». Une seule par concert : sinon la mécanique devient une course à la collecte de contacts.</p>
+    </li>
+
+    <li class="step" data-type="systeme">
+      <span class="tag">Système</span>
+      <h4>Fin de l'événement</h4>
+      <p>La liste disparaît. Aucun historique de présence n'est conservé. Seuls persistent le résultat de l'échange et la carte bonus, dans la Collection et le carnet.</p>
+    </li>
+  </ol>
+
+  <div class="block">
+    <h3>Garde-fous à ne jamais casser</h3>
+    <ul>
+      <li><b>Opt-in, désactivé par défaut</b> — apparaître dans la liste est toujours un acte volontaire.</li>
+      <li><b>Réciproque</b> — on ne voit que ceux qui peuvent aussi nous voir. Pas d'observateur invisible.</li>
+      <li><b>Éphémère</b> — la liste et les données de présence disparaissent avec l'événement.</li>
+      <li><b>Jamais de position précise</b> — « présent à ce concert », jamais « à 30 mètres de toi ».</li>
+      <li><b>Blocage et signalement accessibles depuis la liste elle-même</b>, en un geste.</li>
+      <li><b>Désactivation immédiate</b> — couper la visibilité en cours de soirée doit retirer instantanément de la liste des autres.</li>
+    </ul>
+  </div>
+
+  <div class="block open">
+    <h3>À trancher</h3>
+    <ul>
+      <li><b>Ce flow doit être challengé par un tiers compétent</b> sur la sécurité et la vie privée avant tout développement — au même titre que les autres risques du concept. Les garde-fous ci-dessus sont un point de départ, pas une validation.</li>
+      <li><b>Taille de la liste sur un gros festival</b> — plusieurs centaines de fans présents rendrait la liste inutilisable telle quelle : filtrer par carte recherchée, par guilde, ou plafonner ?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ RECAP ============ -->
+<section id="trancher" class="wrap">
+  <p class="eyebrow">Synthèse</p>
+  <h2>Décisions à trancher avant maquettage</h2>
+  <p class="flow-sub">Regroupées ici pour pouvoir les traiter d'un bloc. Les trois premières sont structurantes : elles changent la forme des écrans, pas seulement leur contenu.</p>
+
+  <div class="recap">
+    <div class="recap-row">
+      <div>C</div>
+      <div><b>Une carte qui évolue laisse-t-elle un trou dans son classeur ?</b> Touche directement la complétion, donc le Flow F et tout l'écran Collection.</div>
+    </div>
+    <div class="recap-row">
+      <div>B</div>
+      <div><b>Que deviennent les doublons non échangés ?</b> Sans réponse, la boucle la plus fréquente de l'app accumule des cartes sans usage.</div>
+    </div>
+    <div class="recap-row">
+      <div>—</div>
+      <div><b>Binder unique filtrable ou classeurs distincts par sous-genre ?</b> Point déjà ouvert dans l'architecture ; il faut le trancher avant de wireframer la Collection.</div>
+    </div>
+    <div class="recap-row">
+      <div>F</div>
+      <div><b>Un classeur complété peut-il redevenir incomplet ?</b> (carte échangée, thème agrandi) — et que devient le badge ?</div>
+    </div>
+    <div class="recap-row">
+      <div>D</div>
+      <div><b>La carte Live exclusive exige-t-elle un check-in géolocalisé ?</b> Arbitrage entre falsifiabilité et pénalisation de ceux qui refusent la géolocalisation.</div>
+    </div>
+    <div class="recap-row">
+      <div>A</div>
+      <div><b>Taille du pack de bienvenue</b> et <b>moment de l'amorce Live</b> (fin d'onboarding ou session 2).</div>
+    </div>
+    <div class="recap-row">
+      <div>E</div>
+      <div><b>Délai d'expiration</b> d'une proposition et <b>nombre de propositions simultanées</b> autorisées.</div>
+    </div>
+    <div class="recap-row">
+      <div>G</div>
+      <div><b>Lisibilité de la liste de présence sur un gros festival</b>, et revue sécurité/vie privée par un tiers compétent.</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    Document de travail Metalnini — user flows. Complète <a href="index.html">la page de pitch</a> et <code>docs/ARCHITECTURE-FLOWS.md</code>.<br>
+    Prochaine étape naturelle : trancher les décisions ci-dessus, puis wireframer les écrans en basse fidélité.
+  </footer>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var PASS = 'metalnini';
+  var KEY = 'metalnini-unlocked';
+  var gate = document.getElementById('gate');
+  var content = document.getElementById('site-content');
+  var form = document.getElementById('gate-form');
+  var input = document.getElementById('gate-input');
+  var error = document.getElementById('gate-error');
+
+  function unlock(){
+    gate.style.display = 'none';
+    content.style.display = '';
+  }
+
+  var alreadyUnlocked = false;
+  try{ alreadyUnlocked = localStorage.getItem(KEY) === '1'; }catch(e){}
+
+  if(alreadyUnlocked){
+    unlock();
+  } else {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(input.value.trim().toLowerCase() === PASS){
+        try{ localStorage.setItem(KEY,'1'); }catch(e){}
+        unlock();
+      } else {
+        error.hidden = false;
+        input.value = '';
+        input.focus();
+      }
+    });
+  }
+})();
+</script>

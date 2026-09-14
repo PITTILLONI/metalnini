@@ -8,21 +8,27 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 
 **https://pittilloni.github.io/metalnini/** — page de présentation (vision, mécaniques, craintes, sans jargon) créée pour recueillir les retours de proches (accès protégé par un mot de passe simple — filtre de politesse, pas une vraie confidentialité puisque ce dépôt public existe).
 
+**https://pittilloni.github.io/metalnini/flows.html** — document de travail interne : les 7 user flows détaillés au niveau nécessaire pour wireframer. Volontairement non lié depuis la page de pitch (ce n'est pas un document destiné aux proches).
+
 ## Documents
 
 - **[docs/CONCEPT.md](docs/CONCEPT.md)** — le concept validé pour le MVP : boucle de jeu, système de cartes et raretés, mécanique d'évolution, volet social, avatar de fan/carnet de concerts, monétisation, risques identifiés.
 - **[docs/DA.md](docs/DA.md)** — la direction artistique : chrome d'app monochrome et sobre, couleur réservée au système de rareté des cartes, typographie, et surtout le principe de gabarit paramétrique qui permet de produire des cartes à l'échelle sans tout redessiner à la main.
 - **[docs/ARCHITECTURE-FLOWS.md](docs/ARCHITECTURE-FLOWS.md)** — l'architecture de navigation, l'inventaire des écrans, les parcours utilisateurs clés (onboarding, ouverture de pack, évolution de carte, concert/avatar, échange), les mécaniques d'engagement à pousser et les anti-patterns à éviter.
+- **[flows.html](flows.html)** — les user flows détaillés (A→G) : étapes, embranchements, états limites et décisions encore à trancher, plus les règles transverses qui s'appliquent à tous les parcours. C'est le document de référence pour passer au wireframing.
 - **[docs/ROADMAP-IDEAS.md](docs/ROADMAP-IDEAS.md)** — tout ce qui est volontairement écarté du MVP pour ne rien perdre : hybride physique (phase 2), marketplace monétaire écartée, pistes techniques de détection d'ambiance, monétisation future.
 
 ## Où en est-on
 
 - Concept et architecture posés, considérés comme une base solide amenée à mûrir.
-- Page de pitch en ligne pour recueillir les retours de proches.
-- Aucun écran n'a encore été maquetté (Figma) : l'étape encore jugée prématurée tant que l'architecture et les mécaniques ne sont pas éprouvées.
+- Page de pitch en ligne pour recueillir les retours de proches, avec formulaire de réponse (texte + vocal).
+- **User flows détaillés** (`flows.html`) : les 7 parcours clés sont écrits étape par étape, avec leurs embranchements, leurs états limites et les décisions non tranchées identifiées.
+- Aucun écran n'a encore été maquetté.
+- **Volet visuel en pause** : la direction tarot ne satisfait pas encore, les crédits de génération d'images sont épuisés, et aucune solution n'est trouvée sur les droits à l'image. La conception avance donc sur ce qui n'en dépend pas (flows, structure, décisions produit).
 
 ## Prochaines étapes possibles
 
+- Trancher les décisions listées en fin de `flows.html` — en priorité : le trou laissé dans un classeur par une carte qui évolue, le sort des doublons non échangés, et binder unique vs classeurs par sous-genre.
+- Wireframer en basse fidélité les écrans des flows A et B (onboarding et ouverture de pack), qui ne demandent aucun visuel de carte définitif.
 - Recueillir et synthétiser les retours des proches sur la page de pitch.
-- Détailler un flow précis en bas-fidélité avant tout maquettage visuel complet.
-- Construire le composant carte à variantes (Type × Rareté × Genre) dans Figma une fois le template validé, en s'appuyant sur `docs/DA.md`.
+- Reprendre la DA carte quand les droits à l'image et les moyens de génération seront débloqués ; le gabarit paramétrique de `docs/DA.md` reste valable indépendamment du style retenu.
