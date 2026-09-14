@@ -53,3 +53,13 @@ L'humour de la DA ("drôle", voir positionnement) doit se voir sur le portrait/l
 **Homogénéité de cette direction** : contrairement au rendu réaliste testé avant (où l'homogénéité dépendait d'un filtre de post-traitement fixe), le format tarot est intrinsèquement homogène — bordure, numérotation, motifs célestes et cartouche sont des zones fixes du gabarit au même titre que les autres types de carte, pas un effet à recalibrer à chaque génération.
 
 Concrètement dans Figma : construire ça comme **un composant à variantes** (propriétés : Type × Rareté × Genre), lié aux variables de couleur/typo définies ci-dessus. Ajouter une nouvelle carte devient : déposer une photo + renseigner des métadonnées, jamais redessiner une carte. C'est aussi ce qui permettra, plus tard, une génération automatisée/scriptée des visuels de carte à partir d'une base de données (idée à garder dans `ROADMAP-IDEAS.md`).
+
+## Motion
+
+**Outil retenu : Rive**, sur la base d'une compétence déjà acquise par le porteur de projet — pas de dépendance externe à trouver pour animer les trois moments qui en ont le plus besoin (voir `ARCHITECTURE-FLOWS.md`, section 4) :
+
+1. **Reveal de pack** (Flow B) — le moment le plus chargé émotionnellement de l'app, déjà identifié comme prioritaire en motion design.
+2. **Évolution de carte** (Flow C) — l'avant/après qui matérialise le lien avec l'actu réelle de l'artiste.
+3. **Récompense de complétion / palier avatar** (Flow F) — l'interstitiel de récompense garantie.
+
+Ces trois écrans restent dans le même principe directeur que le reste de la DA : les effets riches (foil, shimmer, particules) sont réservés à ces moments précis, jamais au chrome d'app autour. Le détail des state machines Rive (déclencheurs, variables exposées à l'app — rareté, type de carte, palier atteint) est à spécifier une fois le gabarit de carte lui-même stabilisé, puisque l'animation de reveal doit piloter les mêmes zones fixes (bordure, overlay de rareté, portrait) que le gabarit statique.

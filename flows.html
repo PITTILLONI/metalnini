@@ -193,6 +193,47 @@
   footer{padding:44px 0 70px; color:var(--text-muted); font-size:0.85rem;}
   footer a{color:var(--t-decision);}
 
+  /* ---------- Rive tag ---------- */
+  .rive{
+    display:inline-block; margin-left:8px; font-family:var(--font-mono); font-size:0.62rem;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--t-decision);
+    border:1px solid rgba(205,164,78,0.4); border-radius:3px; padding:2px 7px; vertical-align:middle;
+  }
+
+  /* ---------- Retention loops ---------- */
+  .loops{display:grid; gap:16px; margin-top:24px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
+  .loop-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:6px;
+    padding:16px 18px; display:flex; flex-direction:column; gap:10px;
+    border-top:2px solid var(--t-system);
+  }
+  .loop-card[data-tier="quotidienne"]{border-top-color:var(--t-notif);}
+  .loop-card[data-tier="hebdo"]{border-top-color:var(--t-decision);}
+  .loop-card[data-tier="evenementielle"]{border-top-color:var(--t-action);}
+  .loop-card[data-tier="rare"]{border-top-color:var(--rarity-legendary,#9c2b2b);}
+  .loop-card[data-tier="sociale"]{border-top-color:var(--t-screen);}
+  .loop-card .cadence{
+    font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--text-muted);
+  }
+  .loop-card h4{font-size:1rem; font-weight:500; text-transform:none; margin:2px 0 2px;}
+  .loop-row{font-size:0.85rem; color:var(--text-muted); line-height:1.45;}
+  .loop-row b{
+    display:block; font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--text); margin-bottom:2px;
+  }
+
+  .priority{list-style:none; counter-reset:p; margin:14px 0 0; padding:0; display:grid; gap:8px;}
+  .priority li{
+    counter-increment:p; background:var(--surface); border:1px solid var(--border);
+    border-radius:4px; padding:10px 13px 10px 38px; font-size:0.87rem; color:var(--text-muted); position:relative;
+  }
+  .priority li::before{
+    content:counter(p); position:absolute; left:13px; top:10px;
+    font-family:var(--font-mono); font-size:0.75rem; color:var(--t-decision);
+  }
+  .priority b{color:var(--text); font-weight:500;}
+
   /* ---------- Gate ---------- */
   .gate{
     position:fixed; inset:0; z-index:50; background:var(--bg);
@@ -230,8 +271,8 @@
 <div class="wrap head">
   <p class="eyebrow">Document de travail — conception</p>
   <h1>User flows</h1>
-  <p class="tagline">Les 7 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes.</p>
-  <p class="meta">Basé sur docs/ARCHITECTURE-FLOWS.md · Aucun visuel de carte requis à ce stade</p>
+  <p class="tagline">Les 7 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes — plus l'architecture des boucles de rétention qui les relie.</p>
+  <p class="meta">Basé sur docs/ARCHITECTURE-FLOWS.md · Motion : Rive · Aucun visuel de carte requis à ce stade</p>
 
   <div class="legend">
     <div class="l-screen"><strong>Écran</strong>Une vue à maquetter</div>
@@ -252,6 +293,7 @@
     <a href="#flow-e">E · Échange</a>
     <a href="#flow-f">F · Récompense</a>
     <a href="#flow-g">G · Rencontre</a>
+    <a href="#retention">Rétention</a>
     <a href="#trancher">À trancher</a>
   </div>
 </nav>
@@ -415,7 +457,7 @@
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Reveal</h4>
+      <h4>Reveal<span class="rive">Motion · Rive</span></h4>
       <p>Cartes révélées une par une au tap, avec « Tout révéler » accessible en permanence — un joueur qui ouvre son dixième pack ne doit pas subir l'animation complète. C'est le seul endroit de l'app où les effets riches (foil, shimmer, grain) sont autorisés.</p>
     </li>
 
@@ -491,7 +533,7 @@
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Évolution</h4>
+      <h4>Évolution<span class="rive">Motion · Rive</span></h4>
       <p>Avant / après animé, et surtout : le fait réel déclencheur affiché explicitement (« Album <i>X</i> sorti le 12 mars »). C'est cette mention qui distingue un FOMO authentique d'un effet de manche.</p>
     </li>
 
@@ -703,7 +745,7 @@
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Interstitiel de récompense</h4>
+      <h4>Interstitiel de récompense<span class="rive">Motion · Rive</span></h4>
       <p>Dans l'esprit du reveal de pack mais plus court — c'est un aboutissement, pas une découverte. Classeur complété : carte Collector cosmétique + badge de profil. Palier d'avatar : déblocage cosmétique, et parfois un pack gratuit.</p>
     </li>
 
@@ -801,6 +843,86 @@
     <ul>
       <li><b>Ce flow doit être challengé par un tiers compétent</b> sur la sécurité et la vie privée avant tout développement — au même titre que les autres risques du concept. Les garde-fous ci-dessus sont un point de départ, pas une validation.</li>
       <li><b>Taille de la liste sur un gros festival</b> — plusieurs centaines de fans présents rendrait la liste inutilisable telle quelle : filtrer par carte recherchée, par guilde, ou plafonner ?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ RETENTION ============ -->
+<section id="retention" class="wrap">
+  <p class="eyebrow">Mécaniques transverses</p>
+  <h2>Boucles de rétention</h2>
+  <p class="flow-sub">Une boucle = déclencheur → action → récompense → investissement. Ici, "hyper efficace" ne veut pas dire plus de pression : la communauté cible déteste explicitement le marketing malhonnête (voir <code>CONCEPT.md</code>), donc le levier n'est jamais l'urgence fabriquée. C'est <b>l'empilement de boucles authentiques à des cadences différentes</b> qui fait qu'il existe presque toujours une vraie raison de revenir.</p>
+
+  <div class="loops">
+    <div class="loop-card" data-tier="quotidienne">
+      <span class="cadence">Quasi quotidienne</span>
+      <h4>Pack gratuit</h4>
+      <div class="loop-row"><b>Déclencheur</b>Pack quotidien réapprovisionné.</div>
+      <div class="loop-row"><b>Action</b>Ouvrir l'app, ouvrir le pack.</div>
+      <div class="loop-row"><b>Récompense</b>Reveal animé (Rive), contenu variable à plancher garanti.</div>
+      <div class="loop-row"><b>Investissement</b>Nouvelle carte en Collection, barre de classeur qui avance.</div>
+    </div>
+
+    <div class="loop-card" data-tier="hebdo">
+      <span class="cadence">Hebdomadaire</span>
+      <h4>Classeurs & guilde</h4>
+      <div class="loop-row"><b>Déclencheur</b>Classeur presque complet, classement de guilde mis à jour.</div>
+      <div class="loop-row"><b>Action</b>Chercher la carte manquante (pack/échange), consulter le classement.</div>
+      <div class="loop-row"><b>Récompense</b>Sentiment de progression et de rang social.</div>
+      <div class="loop-row"><b>Investissement</b>Place dans le classement, réputation de guilde.</div>
+    </div>
+
+    <div class="loop-card" data-tier="evenementielle">
+      <span class="cadence">Irrégulière, fréquente à l'échelle du catalogue</span>
+      <h4>Actu artiste réelle</h4>
+      <div class="loop-row"><b>Déclencheur</b>Sortie d'album/clip/date (Flow C).</div>
+      <div class="loop-row"><b>Action</b>Ouvrir l'app depuis la notif ciblée.</div>
+      <div class="loop-row"><b>Récompense</b>Évolution de carte + contexte réel affiché.</div>
+      <div class="loop-row"><b>Investissement</b>Historique d'évolution qui enrichit la carte.</div>
+    </div>
+
+    <div class="loop-card" data-tier="rare">
+      <span class="cadence">Rare, très forte</span>
+      <h4>Concert</h4>
+      <div class="loop-row"><b>Déclencheur</b>Un concert réel vécu.</div>
+      <div class="loop-row"><b>Action</b>Check-in, puis carnet le lendemain (Flow D).</div>
+      <div class="loop-row"><b>Récompense</b>XP avatar, carte Live exclusive, rencontre éventuelle (Flow G).</div>
+      <div class="loop-row"><b>Investissement</b>Carnet de concerts, progression avatar, lien social avec un autre fan.</div>
+    </div>
+
+    <div class="loop-card" data-tier="sociale">
+      <span class="cadence">Asynchrone, entre deux comptes</span>
+      <h4>Échange</h4>
+      <div class="loop-row"><b>Déclencheur</b>Doublon obtenu ou proposition reçue.</div>
+      <div class="loop-row"><b>Action</b>Composer ou répondre à une offre.</div>
+      <div class="loop-row"><b>Récompense</b>Carte manquante obtenue.</div>
+      <div class="loop-row"><b>Investissement</b>Réputation d'échangeur, relation de confiance.</div>
+    </div>
+  </div>
+
+  <p style="margin-top:22px; max-width:66ch; font-size:0.9rem; color:var(--text-muted)">
+    <b style="color:var(--text); font-weight:500">La boucle "actu artiste réelle" est celle qui différencie le plus Metalnini</b> — aucun concurrent de collection pure ne peut la répliquer sans le même travail éditorial continu. C'est elle qui mérite le plus d'investissement produit avant d'optimiser les boucles plus génériques. La <b style="color:var(--text); font-weight:500">boucle d'échange</b> a une propriété propre aux mécaniques sociales : un échange conclu retient potentiellement deux comptes à la fois, pas un seul.
+  </p>
+
+  <div class="block">
+    <h3>Budget de notifications — la gouvernance qui empêche le cumul de devenir du spam</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); max-width:66ch; margin:0 0 14px">Empiler des boucles authentiques ne dispense pas d'arbitrer : c'est le <i>cumul</i> de plusieurs boucles qui notifient le même jour, pas une boucle isolée, qui produirait le spam que cette communauté sanctionnerait.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues — au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
+    <ol class="priority">
+      <li><b>Actu artiste réelle</b> (Flow C) — le fait le plus rare et le plus fort.</li>
+      <li><b>Proposition d'échange reçue</b> (Flow E) — un autre fan attend une réponse.</li>
+      <li><b>Carnet de concert à remplir</b> (Flow D) — une seule relance, le lendemain matin.</li>
+      <li><b>Nudge hebdomadaire classeur/guilde</b> — le moins urgent des quatre.</li>
+    </ol>
+    <p class="note" style="margin-top:14px"><b>Le pack quotidien n'est volontairement pas poussé par notification par défaut</b> : sa disponibilité est visible au lancement de l'app (bannière Accueil). Une notification chaque jour sur un contenu qui revient chaque jour de toute façon userait vite la confiance de cette communauté — au mieux, un rappel opt-in. Règle générale : plusieurs faits le même jour pour un même utilisateur produisent une seule notification agrégée (déjà acté en Flow C), jamais une rafale.</p>
+  </div>
+
+  <div class="block">
+    <h3>Ce qui retient après une absence</h3>
+    <ul>
+      <li><b>Retour de boucle, pas punition</b> — les évolutions manquées pendant une absence se présentent groupées au retour (Flow C) plutôt que d'être perdues. Cohérent avec l'anti-pattern déjà posé : pas de streak punitif.</li>
+      <li><b>C'est l'investissement accumulé qui rappelle</b>, pas une mécanique de manque — collection, avatar, réputation de guilde et d'échangeur sont autant de raisons concrètes de revenir, sans qu'aucune n'ait besoin d'être agressive individuellement.</li>
+      <li><b>Effet de propagation externe</b> — les moments de récompense déjà partageables (évolution, complétion de classeur) sont aussi la seule boucle qui ramène potentiellement de nouveaux utilisateurs depuis l'extérieur de l'app : un bénéfice secondaire à garder en tête, pas un objectif à part du MVP.</li>
     </ul>
   </div>
 </section>

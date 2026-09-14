@@ -23,12 +23,15 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 - Concept et architecture posés, considérés comme une base solide amenée à mûrir.
 - Page de pitch en ligne pour recueillir les retours de proches, avec formulaire de réponse (texte + vocal).
 - **User flows détaillés** (`flows.html`) : les 7 parcours clés sont écrits étape par étape, avec leurs embranchements, leurs états limites et les décisions non tranchées identifiées.
+- **Architecture des boucles de rétention** posée (`flows.html` + `docs/ARCHITECTURE-FLOWS.md`, section 4) : 5 boucles à cadences différentes (pack quotidien, classeurs/guilde hebdo, actu artiste, concert, échange), plus un budget de notifications explicite pour éviter que leur cumul ne devienne du spam.
+- **Motion : Rive retenu** comme outil d'animation pour les trois moments à forte charge émotionnelle (reveal de pack, évolution de carte, récompense de complétion) — compétence déjà acquise, pas de dépendance externe à trouver.
 - Aucun écran n'a encore été maquetté.
 - **Volet visuel en pause** : la direction tarot ne satisfait pas encore, les crédits de génération d'images sont épuisés, et aucune solution n'est trouvée sur les droits à l'image. La conception avance donc sur ce qui n'en dépend pas (flows, structure, décisions produit).
 
 ## Prochaines étapes possibles
 
 - Trancher les décisions listées en fin de `flows.html` — en priorité : le trou laissé dans un classeur par une carte qui évolue, le sort des doublons non échangés, et binder unique vs classeurs par sous-genre.
+- Spécifier les state machines Rive des trois écrans identifiés (reveal, évolution, récompense) une fois le gabarit de carte stabilisé.
 - Wireframer en basse fidélité les écrans des flows A et B (onboarding et ouverture de pack), qui ne demandent aucun visuel de carte définitif.
 - Recueillir et synthétiser les retours des proches sur la page de pitch.
 - Reprendre la DA carte quand les droits à l'image et les moyens de génération seront débloqués ; le gabarit paramétrique de `docs/DA.md` reste valable indépendamment du style retenu.
