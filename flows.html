@@ -277,6 +277,74 @@
   }
   .gate-submit:hover{background:#c24444;}
   .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
+
+  /* ---------- Commenter (click-to-comment) ---------- */
+  html.commenting, html.commenting body{cursor:crosshair;}
+  html.commenting a, html.commenting button:not(.comment-toggle):not(.comment-close){cursor:crosshair;}
+
+  .comment-toggle{
+    position:fixed; right:20px; bottom:20px; z-index:40;
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    background:var(--surface-2); color:var(--text); border:1px solid var(--border);
+    border-radius:999px; padding:10px 16px; cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4);
+  }
+  .comment-toggle:hover{border-color:var(--accent);}
+  .comment-toggle.is-active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .comment-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--t-decision); flex:0 0 auto;}
+  .comment-toggle.is-active .dot{background:#fff;}
+
+  .comment-hint{
+    position:fixed; left:50%; top:18px; transform:translateX(-50%); z-index:39;
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.04em;
+    background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);
+    border-radius:6px; padding:8px 14px; text-align:center; max-width:88vw;
+  }
+
+  .comment-pin{
+    position:absolute; z-index:38; width:14px; height:14px; margin:-7px 0 0 -7px;
+    border-radius:50%; background:var(--accent); border:2px solid var(--text);
+    box-shadow:0 0 0 4px var(--accent-soft);
+  }
+
+  .comment-popover{
+    position:absolute; z-index:41; width:min(320px,86vw);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    padding:16px; box-shadow:0 14px 40px rgba(0,0,0,0.55); cursor:auto;
+  }
+  .comment-popover .cp-context{
+    font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 8px; line-height:1.4;
+  }
+  .comment-popover textarea{
+    width:100%; min-height:70px; resize:vertical; background:var(--bg); color:var(--text);
+    border:1px solid var(--border); border-radius:4px; padding:9px 10px;
+    font-family:var(--font-body); font-size:0.9rem;
+  }
+  .comment-popover input[type="text"]{
+    width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border);
+    border-radius:4px; padding:9px 10px; font-family:var(--font-body); font-size:0.88rem; margin-bottom:8px;
+  }
+  .comment-popover textarea:focus-visible, .comment-popover input:focus-visible{
+    outline:2px solid var(--t-decision); outline-offset:1px;
+  }
+  .comment-popover .cp-row{display:flex; gap:8px; margin-top:10px; align-items:center;}
+  .comment-popover .cp-send{
+    font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.03em; font-size:0.85rem;
+    background:var(--accent); color:#fff; border:none; border-radius:4px; padding:9px 16px; cursor:pointer;
+  }
+  .comment-popover .cp-send:hover{background:#c24444;}
+  .comment-popover .cp-send:disabled{opacity:0.6; cursor:default;}
+  .comment-close{
+    background:none; border:none; color:var(--text-muted); cursor:pointer;
+    font-family:var(--font-mono); font-size:0.78rem; padding:9px 4px;
+  }
+  .comment-close:hover{color:var(--text);}
+  .comment-popover .cp-msg{margin-top:10px; font-size:0.82rem;}
+  .comment-popover .cp-msg.success{color:var(--text);}
+  .comment-popover .cp-msg.error{color:#e08a8a;}
+  .botcheck{display:none;}
 </style>
 
 <div id="gate" class="gate">
@@ -1113,6 +1181,10 @@
   </footer>
 </div>
 
+<button type="button" id="comment-toggle" class="comment-toggle" aria-pressed="false">
+  <span class="dot"></span><span id="comment-toggle-label">Commenter</span>
+</button>
+
 </div>
 
 <script>
@@ -1148,5 +1220,157 @@
       }
     });
   }
+})();
+
+(function(){
+  var WEB3FORMS_KEY = '32acdb51-a679-4ea0-8159-3e5dc3d544a0';
+  var toggle = document.getElementById('comment-toggle');
+  var toggleLabel = document.getElementById('comment-toggle-label');
+  var active = false;
+  var hint = null;
+  var openPin = null;
+  var openPopover = null;
+
+  function contextFor(el){
+    var parts = [];
+    var section = el.closest('section[id]');
+    if(section){
+      var eyebrow = section.querySelector('.eyebrow');
+      var h2 = section.querySelector('h2');
+      var label = (eyebrow ? eyebrow.textContent.trim() + ' — ' : '') + (h2 ? h2.textContent.trim() : section.id);
+      parts.push(label);
+    }
+    var step = el.closest('.step, .loop-card, .mission-card, .principle, .recap-row');
+    if(step){
+      var h4 = step.querySelector('h4');
+      if(h4){
+        var clone = h4.cloneNode(true);
+        var rive = clone.querySelector('.rive');
+        if(rive) rive.remove();
+        var t = clone.textContent.trim();
+        if(t) parts.push(t);
+      }
+    }
+    return parts.length ? parts.join(' › ') : (document.title || 'flows.html');
+  }
+
+  function closeOpen(){
+    if(openPopover){ openPopover.remove(); openPopover = null; }
+    if(openPin){ openPin.remove(); openPin = null; }
+  }
+
+  function setActive(next){
+    active = next;
+    document.documentElement.classList.toggle('commenting', active);
+    toggle.classList.toggle('is-active', active);
+    toggle.setAttribute('aria-pressed', String(active));
+    toggleLabel.textContent = active ? 'Annuler' : 'Commenter';
+    if(active){
+      hint = document.createElement('div');
+      hint.className = 'comment-hint';
+      hint.textContent = 'Clique n\'importe où sur la page pour laisser un commentaire à cet endroit.';
+      document.body.appendChild(hint);
+    } else {
+      if(hint){ hint.remove(); hint = null; }
+      closeOpen();
+    }
+  }
+
+  toggle.addEventListener('click', function(){ setActive(!active); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(openPopover){ closeOpen(); } else if(active){ setActive(false); }
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if(!active) return;
+    if(e.target === toggle || toggle.contains(e.target)) return;
+    if(openPopover && openPopover.contains(e.target)) return;
+
+    e.preventDefault();
+    closeOpen();
+
+    var pageX = e.pageX, pageY = e.pageY;
+    var docEl = document.documentElement;
+    var xPct = Math.round((pageX / docEl.scrollWidth) * 100);
+    var yPct = Math.round((pageY / docEl.scrollHeight) * 100);
+    var context = contextFor(e.target);
+
+    var pin = document.createElement('div');
+    pin.className = 'comment-pin';
+    pin.style.left = pageX + 'px';
+    pin.style.top = pageY + 'px';
+    document.body.appendChild(pin);
+    openPin = pin;
+
+    var pop = document.createElement('div');
+    pop.className = 'comment-popover';
+    pop.innerHTML =
+      '<p class="cp-context">' + context.replace(/</g,'&lt;') + '</p>' +
+      '<input type="text" class="cp-name" placeholder="Ton prénom (optionnel)">' +
+      '<textarea class="cp-message" placeholder="Ton commentaire ici…" autofocus></textarea>' +
+      '<div class="cp-row">' +
+        '<button type="button" class="cp-send">Envoyer</button>' +
+        '<button type="button" class="comment-close">Annuler</button>' +
+      '</div>' +
+      '<p class="cp-msg" hidden></p>';
+
+    var left = pageX + 16;
+    var top = pageY + 16;
+    document.body.appendChild(pop);
+    var pw = pop.offsetWidth, ph = pop.offsetHeight;
+    if(left + pw > docEl.scrollWidth - 12) left = pageX - pw - 16;
+    if(left < 12) left = 12;
+    if(top + ph > window.scrollY + window.innerHeight - 12) top = pageY - ph - 16;
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    openPopover = pop;
+
+    var msgEl = pop.querySelector('.cp-msg');
+    var sendBtn = pop.querySelector('.cp-send');
+    var textarea = pop.querySelector('.cp-message');
+    textarea.focus();
+
+    pop.querySelector('.comment-close').addEventListener('click', function(){ closeOpen(); });
+
+    sendBtn.addEventListener('click', function(){
+      var message = textarea.value.trim();
+      if(!message){ textarea.focus(); return; }
+      sendBtn.disabled = true;
+
+      var data = new FormData();
+      data.append('access_key', WEB3FORMS_KEY);
+      data.append('subject', 'Nouveau commentaire — flows.html');
+      data.append('from_name', 'Metalnini — flows.html (commentaire positionné)');
+      data.append('name', pop.querySelector('.cp-name').value.trim() || '(non renseigné)');
+      data.append('message', message);
+      data.append('section', context);
+      data.append('position_approx', 'x≈' + xPct + '%, y≈' + yPct + '% de la page');
+      data.append('page_url', location.href);
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: data
+      }).then(function(res){ return res.json(); }).then(function(json){
+        if(json.success){
+          pop.innerHTML = '<p class="cp-context">' + context.replace(/</g,'&lt;') + '</p><p class="cp-msg success">Merci, commentaire envoyé !</p>';
+          setTimeout(closeOpen, 1600);
+        } else {
+          msgEl.textContent = "Un souci à l'envoi — réessaie.";
+          msgEl.className = 'cp-msg error';
+          msgEl.hidden = false;
+          sendBtn.disabled = false;
+        }
+      }).catch(function(){
+        msgEl.textContent = "Un souci à l'envoi — réessaie.";
+        msgEl.className = 'cp-msg error';
+        msgEl.hidden = false;
+        sendBtn.disabled = false;
+      });
+    });
+  }, true);
 })();
 </script>
