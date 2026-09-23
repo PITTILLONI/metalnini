@@ -12,11 +12,15 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 
 ## Documents
 
-- **[docs/CONCEPT.md](docs/CONCEPT.md)** — le concept validé pour le MVP : boucle de jeu, système de cartes et raretés, mécanique d'évolution, volet social, avatar de fan/carnet de concerts, monétisation, risques identifiés.
-- **[docs/DA.md](docs/DA.md)** — la direction artistique : chrome d'app monochrome et sobre, couleur réservée au système de rareté des cartes, typographie, et surtout le principe de gabarit paramétrique qui permet de produire des cartes à l'échelle sans tout redessiner à la main.
-- **[docs/ARCHITECTURE-FLOWS.md](docs/ARCHITECTURE-FLOWS.md)** — l'architecture de navigation, l'inventaire des écrans, les parcours utilisateurs clés (onboarding, ouverture de pack, évolution de carte, concert/avatar, échange), les mécaniques d'engagement à pousser et les anti-patterns à éviter.
-- **[flows.html](flows.html)** — les user flows détaillés (A→H) : étapes, embranchements, états limites et décisions encore à trancher, plus les règles transverses qui s'appliquent à tous les parcours, les boucles de rétention et la carte des animations. C'est le document de référence pour passer au wireframing.
-- **[docs/ROADMAP-IDEAS.md](docs/ROADMAP-IDEAS.md)** — tout ce qui est volontairement écarté du MVP pour ne rien perdre : hybride physique (phase 2), marketplace monétaire écartée, pistes techniques de détection d'ambiance, monétisation future.
+**[concept.html](concept.html)** — le document de référence unique, en onglets (même mot de passe que les autres pages) :
+- **Concept** — le concept validé pour le MVP : boucle de jeu, système de cartes et raretés, mécanique d'évolution, volet social, avatar de fan/carnet de concerts, missions, monétisation, risques identifiés.
+- **Direction artistique** — ligne édito, moodboard, exemples de créa (générés avec Krea), brief de génération, puis le système visuel déjà acté : chrome monochrome, couleur réservée aux raretés, typographie, gabarit paramétrique, motion.
+- **Architecture** — navigation, inventaire des écrans, parcours clés, boucles de rétention, budget de notifications, anti-patterns.
+- **Roadmap** — tout ce qui est volontairement écarté du MVP, et la stratégie droits à l'image pour l'ouverture publique.
+
+**[flows.html](flows.html)** — les user flows détaillés (A→H) : étapes, embranchements, états limites et décisions encore à trancher, plus les règles transverses, les boucles de rétention et la carte des animations. C'est le document de référence pour passer au wireframing.
+
+Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboard/` et `assets/da/creas/`, sous les noms indiqués sur chaque case : elles s'affichent automatiquement.
 
 ## Où en est-on
 
@@ -24,10 +28,10 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 - Page de pitch en ligne pour recueillir les retours de proches, avec formulaire de réponse (texte + vocal).
 - **User flows détaillés** (`flows.html`) : les 8 parcours clés sont écrits étape par étape, avec leurs embranchements, leurs états limites et les décisions non tranchées identifiées.
 - **Trois décisions structurantes actées** : l'échange ne se fait qu'en présentiel (via un check-in concert ou un radar de proximité Bluetooth, jamais à distance) ; la détection/preuve de concert se fait par billet importé (électronique ou physique) plutôt que par croisement artistes suivis + agenda externe ; une couche **Missions** traverse désormais toutes les autres boucles pour donner une direction visible à l'utilisateur.
-- **Architecture des boucles de rétention** posée (`flows.html` + `docs/ARCHITECTURE-FLOWS.md`, section 4) : 5 boucles à cadences différentes (pack quotidien, classeurs/guilde hebdo, actu artiste, concert, échange), plus un budget de notifications explicite pour éviter que leur cumul ne devienne du spam.
-- **Carte des animations** posée (`docs/DA.md` + `flows.html`) : tous les moments clés classés en 3 niveaux — séquences majeures en state machine Rive (reveal, évolution, récompense, échange en direct, mission complétée), confirmations courtes (scan de billet, barre XP, carte bonus, highlight collection, radar, cri signature), micro-interactions standard. Rive retenu comme outil, compétence déjà acquise.
+- **Architecture des boucles de rétention** posée (`flows.html` + `concept.html`, onglet Architecture) : 5 boucles à cadences différentes (pack quotidien, classeurs/guilde hebdo, actu artiste, concert, échange), plus un budget de notifications explicite pour éviter que leur cumul ne devienne du spam.
+- **Carte des animations** posée (`concept.html`, onglet Direction artistique + `flows.html`) : tous les moments clés classés en 3 niveaux — séquences majeures en state machine Rive (reveal, évolution, récompense, échange en direct, mission complétée), confirmations courtes (scan de billet, barre XP, carte bonus, highlight collection, radar, cri signature), micro-interactions standard. Rive retenu comme outil, compétence déjà acquise.
 - Aucun écran n'a encore été maquetté.
-- **Stratégie droits à l'image posée** (`docs/ROADMAP-IDEAS.md`) : plutôt que viser l'accord de tous les groupes avant d'ouvrir, le plan réduit la ressemblance des portraits par défaut (socle Sleeplot, pas Landmvrks photo-guidé), puis vise un catalogue de lancement construit autour de quelques têtes d'affiche reconnues (le jeu perd son sens sans pointures du metal/rock), atteintes via les canaux professionnels plutôt qu'en démarchage direct. Les vrais noms ne bougent pas dans ce plan. Reste un vrai avis d'avocat à obtenir avant toute ouverture publique, même limitée.
+- **Stratégie droits à l'image posée** (`concept.html`, onglet Roadmap) : plutôt que viser l'accord de tous les groupes avant d'ouvrir, le plan réduit la ressemblance des portraits par défaut (socle Sleeplot, pas Landmvrks photo-guidé), puis vise un catalogue de lancement construit autour de quelques têtes d'affiche reconnues (le jeu perd son sens sans pointures du metal/rock), atteintes via les canaux professionnels plutôt qu'en démarchage direct. Les vrais noms ne bougent pas dans ce plan. Reste un vrai avis d'avocat à obtenir avant toute ouverture publique, même limitée.
 - **Volet visuel en pause** : la direction tarot ne satisfait pas encore et les crédits de génération d'images sont épuisés. La conception avance donc sur ce qui n'en dépend pas (flows, structure, décisions produit).
 
 ## Prochaines étapes possibles
@@ -36,5 +40,5 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 - Spécifier les state machines Rive des 5 séquences majeures identifiées (niveau 1 de la carte des animations) une fois le gabarit de carte stabilisé.
 - Wireframer en basse fidélité les écrans des flows A et B (onboarding et ouverture de pack), qui ne demandent aucun visuel de carte définitif.
 - Recueillir et synthétiser les retours des proches sur la page de pitch.
-- Reprendre la DA carte, en socle Sleeplot (pas photo-guidé) par défaut, quand les moyens de génération seront débloqués ; le gabarit paramétrique de `docs/DA.md` reste valable indépendamment du style retenu.
-- Identifier une première liste de têtes d'affiche "ancres" et de leurs contacts professionnels (label, management) pour amorcer la stratégie droits à l'image posée dans `docs/ROADMAP-IDEAS.md`.
+- Reprendre la DA carte, en socle Sleeplot (pas photo-guidé) par défaut, quand les moyens de génération seront débloqués ; le gabarit paramétrique (onglet Direction artistique) reste valable indépendamment du style retenu.
+- Identifier une première liste de têtes d'affiche "ancres" et de leurs contacts professionnels (label, management) pour amorcer la stratégie droits à l'image posée dans l'onglet Roadmap de `concept.html`.

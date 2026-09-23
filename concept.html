@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Metalnini — Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#0c0b0a;
+    --surface:#161412;
+    --surface-2:#1e1b18;
+    --text:#f3f0ea;
+    --text-muted:#a49e94;
+    --border:rgba(255,255,255,0.09);
+
+    --accent:#b23a3a;
+    --accent-soft:rgba(178,58,58,0.14);
+
+    --t-action:#5b8fd6;
+    --t-decision:#cda44e;
+    --t-system:#7d7871;
+
+    --r-commune:#71717a;
+    --r-rare:#3b82f6;
+    --r-signature:#d4af37;
+    --r-legendaire:#7f1d1d;
+
+    --font-display:'Oswald','Arial Narrow',sans-serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+    --font-mono:'JetBrains Mono','Courier New',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{color-scheme:dark; scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:0.035;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  a{color:var(--t-decision);}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--t-decision); outline-offset:3px;}
+
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px; position:relative; z-index:2;}
+  h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:0.01em; text-wrap:balance;}
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 12px;
+  }
+
+  /* ---------- Header ---------- */
+  .head{padding:clamp(56px,11vw,90px) 0 32px;}
+  .head h1{font-size:clamp(2.2rem,7vw,3.4rem); font-weight:700; line-height:1; text-transform:uppercase;}
+  .tagline{margin-top:14px; color:var(--text-muted); max-width:60ch;}
+  .head .meta{
+    margin-top:22px; font-family:var(--font-mono); font-size:0.78rem;
+    color:var(--text-muted); letter-spacing:0.04em;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    position:sticky; top:0; z-index:5;
+    background:rgba(12,11,10,0.92); backdrop-filter:blur(8px);
+    border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  }
+  .tabs-inner{display:flex; gap:6px; overflow-x:auto; padding:10px 20px; max-width:860px; margin:0 auto; scrollbar-width:none;}
+  .tabs-inner::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto; font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.08em;
+    text-transform:uppercase; text-decoration:none; color:var(--text-muted);
+    padding:8px 12px; border:1px solid var(--border); border-radius:3px; white-space:nowrap;
+  }
+  .tab:hover{color:var(--text); border-color:rgba(255,255,255,0.25);}
+  .tab[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:var(--accent-soft);}
+  .tab.ext{margin-left:auto; border-style:dashed;}
+
+  /* ---------- Panel ---------- */
+  .panel-head{padding:clamp(36px,6vw,56px) 0 8px;}
+  .panel-title{font-size:clamp(1.7rem,4.4vw,2.4rem); font-weight:700; text-transform:uppercase; line-height:1.05;}
+
+  .toc{margin:26px 0 8px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:6px;}
+  .toc .eyebrow{margin-bottom:8px; color:var(--text-muted);}
+  .toc ol{margin:0; padding-left:20px; columns:2 220px; column-gap:28px;}
+  .toc li{font-size:0.88rem; margin-bottom:4px; break-inside:avoid;}
+  .toc a{color:var(--text); text-decoration:none;}
+  .toc a:hover{color:var(--t-decision);}
+
+  /* ---------- Document body ---------- */
+  .doc-sec{padding:clamp(34px,6vw,52px) 0; border-bottom:1px solid var(--border); scroll-margin-top:60px;}
+  .doc-sec.sub{padding-top:28px;}
+  .doc-intro{padding-top:20px;}
+  .doc h2{font-size:clamp(1.35rem,3.2vw,1.8rem); font-weight:600; text-transform:uppercase; margin-bottom:14px;}
+  .doc h3{font-size:1.12rem; font-weight:500; text-transform:uppercase; margin:30px 0 10px; color:var(--text);}
+  .doc h4{font-size:1rem; font-weight:500; text-transform:uppercase; margin:0 0 6px;}
+  .doc p, .doc li{max-width:68ch;}
+  .doc p{margin:0 0 14px;}
+  .doc ul, .doc ol{padding-left:20px; margin:0 0 16px;}
+  .doc li{margin-bottom:7px;}
+  .doc li::marker{color:var(--text-muted);}
+  .doc strong, .doc b{color:#fff; font-weight:600;}
+  .doc em{color:var(--text);}
+  .lead{color:var(--text-muted); font-size:1rem;}
+  .note{font-family:var(--font-mono); font-size:0.74rem; color:var(--text-muted); letter-spacing:0.02em;}
+  code{
+    font-family:var(--font-mono); font-size:0.84em; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:3px; padding:1px 5px;
+  }
+  a.xref{
+    font-family:var(--font-mono); font-size:0.82em; text-decoration:none;
+    border-bottom:1px dotted var(--t-decision); padding-bottom:1px;
+  }
+  .sw{display:inline-block; width:0.8em; height:0.8em; border-radius:2px; background:var(--c); margin:0 5px 0 2px; vertical-align:-0.05em; box-shadow:0 0 0 1px rgba(255,255,255,0.25);}
+
+  .table-wrap{overflow-x:auto; margin:10px 0 20px; border:1px solid var(--border); border-radius:6px;}
+  table{border-collapse:collapse; width:100%; font-size:0.86rem; min-width:560px;}
+  th, td{text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid var(--border);}
+  th{font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); background:var(--surface); font-weight:500;}
+  tr:last-child td{border-bottom:none;}
+  td{color:var(--text-muted);}
+  td:first-child{color:var(--text);}
+
+  /* ---------- DA : édito ---------- */
+  .promise{margin:26px 0 8px; padding:20px 22px; border-left:3px solid var(--accent); background:var(--surface);}
+  .promise p:nth-child(2){font-family:var(--font-display); font-size:clamp(1.2rem,3vw,1.5rem); text-transform:uppercase; line-height:1.25; margin:0 0 10px; color:#fff;}
+  .pillars{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+  .pillar{background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:14px 16px;}
+  .pillar p{font-size:0.88rem; color:var(--text-muted); margin:0;}
+  .dodont{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .dodont > div{background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:14px 16px 4px;}
+  .dodont .do{border-top:2px solid var(--t-decision);}
+  .dodont .dont{border-top:2px solid var(--accent);}
+  .dodont .do .eyebrow{color:var(--t-decision);}
+  .dodont li{font-size:0.88rem; color:var(--text-muted);}
+
+  /* ---------- DA : emplacements d'images ---------- */
+  .slots{display:grid; gap:14px; margin:18px 0 16px;}
+  .slots.mood{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+  .slots.creas{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+  .slot{margin:0; display:flex; flex-direction:column;}
+  .slot-img{
+    position:relative; border-radius:10px; overflow:hidden; background:var(--surface);
+    border:1px dashed rgba(255,255,255,0.18);
+  }
+  .mood .slot-img{aspect-ratio:4/3;}
+  .creas .slot-img{aspect-ratio:2/3;}
+  .slot-img img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .slot-img.has-img{border-style:solid; border-color:var(--border);}
+  .slot-img .ph{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:12px;
+    font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); text-align:center; word-break:break-all;
+  }
+  .slot-img.has-img .ph{display:none;}
+  .slot figcaption{padding:10px 2px 0; font-size:0.84rem; color:var(--text-muted);}
+  .slot figcaption strong{display:block; font-family:var(--font-display); font-weight:500; text-transform:uppercase; font-size:0.95rem; color:var(--text); margin-bottom:3px;}
+  .slot figcaption span{display:block;}
+  .slot figcaption .groupe{font-family:var(--font-mono); font-size:0.7rem; margin-top:4px;}
+  .creas .slot[data-rarity] .slot-img{border-top:3px solid var(--r-commune);}
+  .creas .slot[data-rarity="rare"] .slot-img{border-top-color:var(--r-rare);}
+  .creas .slot[data-rarity="holo"] .slot-img{border-top-color:transparent; border-image:linear-gradient(90deg,#2dd4bf,#8b5cf6,#ec4899) 1; border-image-width:3px 0 0 0;}
+  .creas .slot[data-rarity="signature"] .slot-img{border-top-color:var(--r-signature);}
+  .creas .slot[data-rarity="legendaire"] .slot-img{border-top-color:#b91c1c;}
+  .creas .slot[data-rarity="archive"] .slot-img{border-top-color:var(--t-system);}
+
+  pre.prompt{
+    margin:10px 0 18px; padding:16px 18px; background:var(--surface); border:1px solid var(--border);
+    border-radius:6px; overflow-x:auto;
+  }
+  pre.prompt code{background:none; border:none; padding:0; font-size:0.8rem; line-height:1.65; color:var(--text); white-space:pre-wrap;}
+
+  footer{padding:44px 0 70px; color:var(--text-muted); font-size:0.85rem;}
+  footer a{color:var(--t-decision);}
+
+
+  /* ---------- Gate ---------- */
+  .gate{
+    position:fixed; inset:0; z-index:50; background:var(--bg);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .gate-form{max-width:360px; width:100%; text-align:center;}
+  .gate-title{font-size:clamp(2rem,7vw,2.6rem); text-transform:uppercase; margin:6px 0 14px;}
+  .gate-copy{color:var(--text-muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-input{
+    width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:4px;
+    color:var(--text); font-family:var(--font-body); font-size:1rem; padding:12px 14px; margin-bottom:14px;
+  }
+  .gate-submit{
+    width:100%; font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.04em;
+    font-size:1rem; padding:12px 14px; background:var(--accent); color:var(--text);
+    border:none; border-radius:4px; cursor:pointer;
+  }
+  .gate-submit:hover{background:#c24444;}
+  .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
+
+  /* ---------- Commenter (click-to-comment) ---------- */
+  html.commenting, html.commenting body{cursor:crosshair;}
+  html.commenting a, html.commenting button:not(.comment-toggle):not(.comment-close){cursor:crosshair;}
+
+  .comment-toggle{
+    position:fixed; right:20px; bottom:20px; z-index:40;
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    background:var(--surface-2); color:var(--text); border:1px solid var(--border);
+    border-radius:999px; padding:10px 16px; cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4);
+  }
+  .comment-toggle:hover{border-color:var(--accent);}
+  .comment-toggle.is-active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .comment-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--t-decision); flex:0 0 auto;}
+  .comment-toggle.is-active .dot{background:#fff;}
+
+  .comment-hint{
+    position:fixed; left:50%; top:18px; transform:translateX(-50%); z-index:39;
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.04em;
+    background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);
+    border-radius:6px; padding:8px 14px; text-align:center; max-width:88vw;
+  }
+
+  .comment-pin{
+    position:absolute; z-index:38; width:14px; height:14px; margin:-7px 0 0 -7px;
+    border-radius:50%; background:var(--accent); border:2px solid var(--text);
+    box-shadow:0 0 0 4px var(--accent-soft);
+  }
+
+  .comment-popover{
+    position:absolute; z-index:41; width:min(320px,86vw);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    padding:16px; box-shadow:0 14px 40px rgba(0,0,0,0.55); cursor:auto;
+  }
+  .comment-popover .cp-context{
+    font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 8px; line-height:1.4;
+  }
+  .comment-popover textarea{
+    width:100%; min-height:70px; resize:vertical; background:var(--bg); color:var(--text);
+    border:1px solid var(--border); border-radius:4px; padding:9px 10px;
+    font-family:var(--font-body); font-size:0.9rem;
+  }
+  .comment-popover input[type="text"]{
+    width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border);
+    border-radius:4px; padding:9px 10px; font-family:var(--font-body); font-size:0.88rem; margin-bottom:8px;
+  }
+  .comment-popover textarea:focus-visible, .comment-popover input:focus-visible{
+    outline:2px solid var(--t-decision); outline-offset:1px;
+  }
+  .comment-popover .cp-row{display:flex; gap:8px; margin-top:10px; align-items:center;}
+  .comment-popover .cp-send{
+    font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.03em; font-size:0.85rem;
+    background:var(--accent); color:#fff; border:none; border-radius:4px; padding:9px 16px; cursor:pointer;
+  }
+  .comment-popover .cp-send:hover{background:#c24444;}
+  .comment-popover .cp-send:disabled{opacity:0.6; cursor:default;}
+  .comment-close{
+    background:none; border:none; color:var(--text-muted); cursor:pointer;
+    font-family:var(--font-mono); font-size:0.78rem; padding:9px 4px;
+  }
+  .comment-close:hover{color:var(--text);}
+  .comment-popover .cp-msg{margin-top:10px; font-size:0.82rem;}
+  .comment-popover .cp-msg.success{color:var(--text);}
+  .comment-popover .cp-msg.error{color:#e08a8a;}
+  .botcheck{display:none;}
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <form id="gate-form" class="gate-form">
+    <p class="eyebrow" style="margin-bottom:10px">Accès privé</p>
+    <h1 class="gate-title">Metalnini</h1>
+    <p class="gate-copy">Document de travail interne. Mot de passe requis.</p>
+    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" autocomplete="off" autofocus>
+    <button type="submit" class="gate-submit">Entrer</button>
+    <p id="gate-error" class="gate-error" hidden>Mot de passe incorrect.</p>
+  </form>
+</div>
+
+<div id="site-content" style="display:none">
+
+<div class="wrap head">
+  <p class="eyebrow">Document de travail — concept</p>
+  <h1>Metalnini</h1>
+  <p class="tagline">Le « Panini du metal/rock » : une app de collection de cartes d'artistes metal/rock, avec une couche vivante liée à l'actu réelle et au vécu en concert, et un volet social en troc pur.</p>
+  <p class="meta">Concept · Direction artistique · Architecture · Roadmap — les parcours détaillés sont dans flows.html</p>
+</div>
+
+<nav class="tabs" aria-label="Sections du document">
+  <div class="tabs-inner" role="tablist">
+    <a class="tab" role="tab" href="#concept" id="tab-concept" aria-controls="panel-concept" data-tab="concept">Concept</a><a class="tab" role="tab" href="#da" id="tab-da" aria-controls="panel-da" data-tab="da">Direction artistique</a><a class="tab" role="tab" href="#architecture" id="tab-architecture" aria-controls="panel-architecture" data-tab="architecture">Architecture</a><a class="tab" role="tab" href="#roadmap" id="tab-roadmap" aria-controls="panel-roadmap" data-tab="roadmap">Roadmap</a>
+    <a class="tab ext" href="flows.html">User flows ↗</a>
+  </div>
+</nav>
+
+
+<div class="tab-panel" role="tabpanel" id="panel-concept" aria-labelledby="tab-concept" data-label="Concept" hidden>
+  <div class="wrap">
+    <div class="panel-head">
+      <p class="eyebrow">01 · Concept</p>
+      <h2 class="panel-title">Concept</h2>
+      <p class="tagline">Le concept validé pour le MVP : boucle de jeu, cartes et raretés, évolution, social, avatar, missions, monétisation, risques.</p>
+    </div>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#concept-positionnement">Positionnement</a></li><li><a href="#concept-ce-que-metalnini-n-est-pas">Ce que Metalnini n&#x27;est pas</a></li><li><a href="#concept-boucle-de-jeu-centrale-mvp">Boucle de jeu centrale (MVP)</a></li><li><a href="#concept-systeme-de-cartes">Système de cartes</a></li><li><a href="#concept-classeurs-recompenses">Classeurs &amp;amp; récompenses</a></li><li><a href="#concept-mecanique-d-evolution-des-cartes">Mécanique d&#x27;évolution des cartes</a></li><li><a href="#concept-volet-social-troc-pas-de-marche">Volet social (troc, pas de marché)</a></li><li><a href="#concept-echanges-rencontres-en-presentiel-concert-et-proximite">Échanges &amp;amp; rencontres en présentiel (concert et proximité)</a></li><li><a href="#concept-missions">Missions</a></li><li><a href="#concept-avatar-de-fan-carnet-de-concerts">Avatar de fan &amp;amp; carnet de concerts</a></li><li><a href="#concept-monetisation-mvp">Monétisation (MVP)</a></li><li><a href="#concept-risques-points-a-faire-trancher-par-des-tiers-competents">Risques / points à faire trancher par des tiers compétents</a></li><li><a href="#concept-statut">Statut</a></li></ol></nav>
+    <div class="doc">
+<section id="concept-positionnement" class="doc-sec"><h2>Positionnement</h2>
+<p>Le "Panini du metal/rock" : une collection de cartes numériques d'artistes, à ouvrir en packs, collectionner et échanger — avec une couche vivante connectée à l'actualité réelle des artistes et à l'expérience vécue en concert. Cible : la communauté metal/rock, soudée, nerd, très attachée à l'authenticité et au vécu live.</p>
+<p><strong>Ligne édito : humour, fun, moderne, gamifié.</strong> Ce ton n'est pas décoratif, il traverse plusieurs décisions déjà actées : le format carte (tarot vintage — voir <a class="xref" href="#da">Direction artistique</a>) qui porte l'humour par le jeu de mots et le gag visuel plutôt que par l'exagération, et un système de progression assumé comme du jeu plutôt qu'une simulation sérieuse (classeurs, paliers, récompenses garanties — voir <code>Classeurs &amp; récompenses</code>).</p>
+<p><strong>État actuel (provisoire) sur les noms et portraits</strong> : après hésitation entre noms détournés (parodiques) et vrais noms, le choix pour l'instant est d'utiliser <strong>directement les vrais noms de groupes/musiciens</strong>, avec des cartes façon tarot dont l'apparence se rapproche des vrais musiciens (à partir de photos) — cf. test "Landmvrks". Raison du choix : l'authenticité d'un vrai groupe pèse plus lourd sur l'engagement qu'une parodie, aussi réussie soit-elle, pour une communauté dont le positionnement repose justement sur l'authenticité et le vécu réel.</p>
+<p><strong>Ce choix n'est tenable que tant que l'usage reste privé</strong> (pas de diffusion publique ni commerciale) — voir le risque détaillé plus bas. Une solution doit être trouvée (accords de licence, ou autre approche) avant toute ouverture publique, même limitée ; jusque-là, aucune évolution de carte n'a besoin d'un mapping caché : le "vrai groupe" et le "groupe affiché" sont un seul et même groupe (voir <code>Mécanique d'évolution des cartes</code>).</p>
+</section>
+<section id="concept-ce-que-metalnini-n-est-pas" class="doc-sec"><h2>Ce que Metalnini n'est pas</h2>
+<ul>
+<li>Pas un jeu de combat/versus.</li>
+<li>Pas une marketplace monétaire (aucune revente de carte contre argent réel).</li>
+<li>Pas un produit physique au lancement (packs physiques, merch, NFC/QR sur objet : reporté, voir <a class="xref" href="#roadmap">Roadmap</a>).</li>
+</ul>
+</section>
+<section id="concept-boucle-de-jeu-centrale-mvp" class="doc-sec"><h2>Boucle de jeu centrale (MVP)</h2>
+<ol>
+<li>Ouvrir un pack (gratuit régulier + payant + gagné en event) → reveal animé.</li>
+<li>Compléter des collections thématiques (par artiste, sous-genre, époque, festival) — et transversalement par musicien ou par instrument.</li>
+<li>Une carte peut <strong>évoluer</strong> quand un événement réel se produit chez l'artiste (sortie d'album, clip, date de concert, anniversaire).</li>
+<li>Échanger des cartes avec d'autres fans, <strong>en présentiel uniquement</strong> (troc pur, sans argent réel) — voir <code>Volet social</code>.</li>
+<li>Vivre un concert → nourrir son <strong>avatar de fan</strong> et son <strong>carnet de concerts</strong>.</li>
+<li>Suivre des <strong>missions</strong> qui donnent une direction concrète à tout ce qui précède — voir <code>Missions</code>.</li>
+</ol>
+</section>
+<section id="concept-systeme-de-cartes" class="doc-sec"><h2>Système de cartes</h2>
+<ul>
+<li><strong>Types</strong> : Artiste, Membre (musicien), Live, Album, Riff/Moment culte (clip, extrait), Collector (édition limitée événement).</li>
+<li><strong>Rareté</strong> : Commune → Rare → Holo/Prisme → Signature (numérotée) → Légendaire (série ultra-limitée).</li>
+<li>Traitement graphique différencié par rareté (texture, foil, bordure), identité graphique déclinée par sous-genre.</li>
+</ul>
+<p><strong>Carte Membre (musicien)</strong> — dédiée à un membre précis d'un groupe (nom, instrument, rôle). Elle porte une métadonnée <code>instrument</code> (guitare, basse, batterie, chant, clavier, etc.) et peut être rattachée à plusieurs groupes (side-projects, supergroupes, remplacements — fréquent dans le metal). Elle ouvre un axe de collection <strong>transversal</strong>, indépendant du regroupement par groupe :
+- Collection "par musicien" : retrouver toutes les cartes liées à un même musicien à travers ses différents groupes.
+- Collection "par instrument" : par exemple, collectionner les batteurs ou les bassistes suivis, tous groupes confondus.</p>
+</section>
+<section id="concept-classeurs-recompenses" class="doc-sec"><h2>Classeurs &amp; récompenses</h2>
+<ul>
+<li><strong>Classeurs officiels (thématiques)</strong> — les collections de la boucle de jeu (par artiste, sous-genre, époque, festival). Compléter un classeur officiel déclenche une récompense <strong>garantie, non aléatoire</strong> : carte Collector cosmétique dédiée + badge de complétion visible sur le profil. Aucun avantage compétitif ni monétaire — uniquement cosmétique/statutaire, cohérent avec l'absence de marketplace.</li>
+<li><strong>Paliers d'avatar (niveaux)</strong> — franchir un palier d'XP avatar (cumulé sur les 3 sources : collection, vécu concert, profil de spectateur) débloque un nouveau trait/emplacement de personnalisation cosmétique de l'avatar, et occasionnellement un pack gratuit. Nombre de paliers et coût XP à calibrer en phase de game design, hors scope de ce document.</li>
+<li><strong>Classeurs personnalisés</strong> — en plus des classeurs officiels, chaque utilisateur peut créer ses propres classeurs libres : sélection manuelle parmi les cartes qu'il possède déjà, nommage libre, réordonnancement (ex. "Mes riffs cultes", "Ma tournée 2025"). Ils alimentent la vitrine de profil public (voir Volet social) mais ne déclenchent <strong>aucune récompense de complétion propre</strong> — un classeur custom étant défini par l'utilisateur lui-même (parfois réduit à une seule carte), le récompenser créerait une boucle triviale à exploiter. Seuls les classeurs officiels comptent pour les récompenses.</li>
+</ul>
+</section>
+<section id="concept-mecanique-d-evolution-des-cartes" class="doc-sec"><h2>Mécanique d'évolution des cartes</h2>
+<p>Les cartes changent d'état suite à un flux d'actualité artiste réel — directement celle du vrai groupe affiché sur la carte (plus de mapping caché tant que noms et portraits sont ceux du vrai groupe) :
+- Carte "Artiste" → devient carte "Album" à la sortie d'un nouvel album.
+- Carte "Live" → variante spéciale débloquée si l'utilisateur était présent au concert concerné (preuve par billet importé, voir <code>Avatar de fan &amp; carnet de concerts</code>).
+- Événements calendaires (anniversaire d'un album culte, reformation, etc.) déclenchent des drops commémoratifs limités dans le temps.</p>
+<p><strong>Suivi de l'actualité réelle</strong> : un travail éditorial continu (curation manuelle et/ou flux externe — RSS metal news, API type Songkick/Bandsintown pour les dates de concert — à cadrer) reste nécessaire pour détecter ces événements. C'est aussi ce qui conditionne le rythme de contenu.</p>
+</section>
+<section id="concept-volet-social-troc-pas-de-marche" class="doc-sec"><h2>Volet social (troc, pas de marché)</h2>
+<p><strong>Décision actée : l'échange ne se fait qu'en présentiel, jamais à distance.</strong> Pas de proposition envoyée à un inconnu puis acceptée des heures plus tard ailleurs dans le pays — un échange exige que les deux fans soient physiquement au même endroit au même moment. Conséquence assumée : ça réduit la liquidité des échanges par rapport à un système d'échange à distance (moins de partenaires potentiels accessibles à tout moment) — c'est un choix délibéré, pas un oubli, qui rapproche l'app du vécu réel de collection (comme échanger des Panini dans la cour de récré) plutôt que d'une marketplace déguisée, et qui simplifie fortement la confiance/anti-fraude (pas de colis à expédier, pas de litige à distance).</p>
+<ul>
+<li><strong>Découverte à distance, exécution en présentiel</strong> : <code>Communauté</code> reste consultable à distance (qui possède quoi, qui recherche quoi, classements, guildes) — c'est une vitrine et une liste de souhaits, pas un canal de transaction. La transaction elle-même ne s'ouvre que lorsque deux fans sont détectés physiquement proches (voir <code>Échanges &amp; rencontres en présentiel</code> ci-dessous).</li>
+<li><strong>Composition en direct, à deux</strong> : une fois la session d'échange ouverte entre deux fans proches, les deux téléphones affichent le même écran de composition en temps réel (chacun ajoute ses cartes offertes), avec une confirmation simultanée des deux côtés — pas d'offre envoyée puis attente d'une réponse asynchrone, l'échange se conclut dans l'instant, comme un vrai troc à la main.</li>
+<li>Valeur symbolique de rareté affichée pendant la composition pour équilibrer les échanges, purement indicative — <strong>jamais convertible en argent réel</strong>.</li>
+<li>Guildes/clans par groupe ou sous-genre.</li>
+<li>Classements de collection (par artiste, par festival, global).</li>
+<li>Vitrine de profil public (le "book" à montrer), incluant les classeurs personnalisés mis en avant (voir <code>Classeurs &amp; récompenses</code>).</li>
+<li><strong>Cri enregistré</strong> : un court enregistrement audio de son propre cri/growl metal, affiché comme signature vocale sur son profil public — purement cosmétique et social, sans aucune mécanique de jeu dessus. Dans la même veine "drôle" que la ligne édito (voir positionnement).</li>
+</ul>
+</section>
+<section id="concept-echanges-rencontres-en-presentiel-concert-et-proximite" class="doc-sec"><h2>Échanges &amp; rencontres en présentiel (concert et proximité)</h2>
+<p>Puisque l'échange n'existe qu'en présentiel, il faut un moyen simple de trouver qui échanger avec, sur place. Deux mécanismes complémentaires, tous deux dérivés du même principe de présence partagée opt-in :</p>
+<ul>
+<li><strong>Présence partagée en concert</strong> : au moment du check-in (voir <code>Avatar de fan &amp; carnet de concerts</code>), l'utilisateur peut choisir d'apparaître dans une liste éphémère "Fans présents ce soir", visible uniquement par les autres fans ayant eux aussi activé cette option pour ce même concert. Pas de liste publique par défaut, pas d'historique de localisation conservé au-delà de l'événement.</li>
+<li><strong>Radar de proximité, hors concert aussi</strong> : généralisation du même principe à n'importe quel moment (avant/après un concert, un festival, chez un pote, dans un disquaire) — détection des autres utilisateurs de l'app à quelques mètres via Bluetooth basse consommation (pas de GPS, portée radio de quelques mètres seulement), opt-in et désactivable à tout instant, jamais de position exacte affichée, aucune trace conservée une fois hors de portée ou l'option désactivée. C'est la réponse concrète à « qui a l'app autour de moi » : un radar de courte portée, pas un suivi de localisation.</li>
+<li><strong>Ouverture de session</strong> : depuis l'une ou l'autre liste, un tap propose une session d'échange à la personne choisie ; elle doit l'accepter pour que la composition en direct démarre (voir <code>Volet social</code>) — jamais de session imposée à sens unique.</li>
+<li><strong>Carte bonus de connexion</strong> : la première rencontre confirmée mutuellement avec un autre fan (échange conclu, ou simple "on s'est croisés" confirmé des deux côtés) débloque une <strong>carte bonus garantie, non aléatoire</strong> — même logique de récompense que les classeurs/paliers (voir <code>Classeurs &amp; récompenses</code>). Ça donne un contenu concret au titre "Metal Corner" de la progression d'avatar.</li>
+</ul>
+<p>Les garde-fous déjà posés pour la présence partagée en concert (opt-in, réciproque, éphémère, pas de position exacte) s'appliquent identiquement au radar de proximité généralisé — c'est la même mécanique, juste plus disponible dans le temps.</p>
+</section>
+<section id="concept-missions" class="doc-sec"><h2>Missions</h2>
+<p>Les classeurs et paliers (voir <code>Classeurs &amp; récompenses</code>) disent <em>ce qui existe à collectionner</em> ; les missions disent <strong>quoi faire maintenant</strong>. C'est la couche qui donne une direction concrète, visible et renouvelée à un utilisateur qui ne saurait pas spontanément quoi faire de sa prochaine session.</p>
+<p><strong>Principe</strong> : une mission a toujours un objectif clair, une progression visible, et une récompense garantie à l'accomplissement (XP avatar systématique, et selon la mission un pack gratuit ou un cosmétique) — jamais de tirage aléatoire en récompense de mission, ce serait rouvrir la question loot-box pour une mécanique qui doit au contraire renforcer le sentiment de maîtrise (même logique que <code>Classeurs &amp; récompenses</code>).</p>
+<p><strong>Catégories (liste volontairement large, à cribler en game design)</strong> :
+- <strong>Collection</strong> — obtenir une carte d'une rareté donnée, compléter un thème précis, réunir des cartes Membre dans N instruments différents, obtenir une carte de chaque type sur un même artiste.
+- <strong>Échange (en présentiel)</strong> — conclure un échange, échanger avec 3 fans différents dans le mois, faire un échange pendant un concert, faire un échange avec un membre de sa guilde.
+- <strong>Concert / vécu réel</strong> — check-in à un concert (billet importé), remplir son carnet le lendemain, assister à deux concerts d'un même sous-genre, activer la présence partagée et confirmer une rencontre ("on s'est croisés").
+- <strong>Social / communauté</strong> — rejoindre une guilde, participer au classement hebdomadaire, enregistrer son cri signature, créer un classeur personnalisé.
+- <strong>Découverte</strong> — consulter l'évolution d'une carte suite à une actu réelle, suivre un nouveau sous-genre ou artiste.
+- <strong>Achat réel (album, billet, merch)</strong> — acheter un album ou un billet de concert via un lien partenaire, acheter du merch d'un artiste suivi. Catégorie liée à <code>Monétisation</code> : elle suppose soit un partenariat marchand permettant une confirmation d'achat fiable, soit à défaut une preuve déclarative (photo de reçu) — moins fiable, à traiter comme telle plutôt que comme une vérification forte.</p>
+<p><strong>Cadence, pour rester cohérent avec <a class="xref" href="#architecture">Architecture</a> (boucles de rétention)</strong> : quelques missions actives en parallèle plutôt qu'une liste illimitée, à cadences mêlées — une mission courte (quotidienne/légère), une mission de la semaine, et occasionnellement une mission saisonnière liée à un événement réel (tournée, sortie d'album majeure, festival). Une mission accomplie est remplacée, pas accumulée à l'infini.</p>
+<p><strong>Anti-pattern à respecter</strong> : une mission ne doit jamais pousser à une action qui n'a pas de valeur en soi si elle échouait à débloquer la récompense — "va à un concert" reste une bonne expérience même sans la carte bonus, "envoie un message à 10 inconnus" ne le serait pas. Écarter toute mission dont le seul but perçu serait la récompense.</p>
+</section>
+<section id="concept-avatar-de-fan-carnet-de-concerts" class="doc-sec"><h2>Avatar de fan &amp; carnet de concerts</h2>
+<p>Chaque utilisateur a un avatar personnel qui évolue selon <strong>trois sources combinées</strong>, pas seulement le vécu live : sa collection de cartes, son vécu de concerts réels, et son profil de spectateur déclaré.</p>
+<p><strong>Source 1 — Collection de cartes</strong>
+Diversité de sous-genres/groupes suivis, rareté moyenne possédée, thèmes complétés, diversité d'instruments collectionnés via les cartes Membre : nourrit des traits d'identité de collectionneur sur l'avatar (ex. sous-genre dominant affiché).</p>
+<p><strong>Détection et preuve de concert — par billet, pas par suivi d'artiste</strong>
+Croiser les artistes suivis avec un agenda de concerts externe a été écarté : ça dépend d'une intégration d'agenda tierce (Songkick/Bandsintown ou équivalent) à maintenir, pour un résultat qui reste probabiliste (l'utilisateur suit-il vraiment l'artiste dont il va voir le concert ce soir-là ?). Le <strong>billet, électronique ou physique, sert directement de preuve</strong> — plus simple et plus fiable :
+- <strong>Billet électronique</strong> : scan du QR/code-barres du billet (affiché sur le téléphone) via l'appareil photo. Si le code n'est pas exploitable directement (pas de partenariat billetterie établi), l'utilisateur confirme/complète manuellement artiste, date et lieu à partir de ce qui a été lu.
+- <strong>Billet physique</strong> : même mécanique de scan sur le billet imprimé.
+- <strong>Repli</strong> : photo du billet (avec tentative de lecture automatique) ou saisie manuelle complète, pour les cas sans code scannable (accès guestlist, billet au nom d'un tiers).
+- <strong>Deux niveaux de preuve</strong> : le billet scanné suffit pour le carnet de concert et l'XP avatar (niveau "standard"). Une <strong>géolocalisation ponctuelle le jour même</strong>, optionnelle, apporte un niveau de preuve renforcé — c'est cette version renforcée qui conditionne la carte Live exclusive (voir <code>Mécanique d'évolution des cartes</code>), pour limiter (sans l'exclure complètement) le cas d'un billet scanné sans y être allé.
+- Cette approche supprime le besoin de maintenir un catalogue d'artistes suivis pour la détection : le billet dit déjà tout (quel artiste, quelle date, quel lieu).</p>
+<p><strong>Vécu de concert (double mécanisme de captation)</strong>
+- <strong>Jauge d'ambiance semi-automatique</strong> : si la précision technique le permet, utilisation de l'accéléromètre/gyroscope du téléphone pendant le concert pour estimer un niveau d'énergie/intensité vécu (à valider par un spike technique — la détection fine d'un pogo vs un wall of death n'est pas garantie, mais un niveau d'intensité global est plausible).
+- <strong>Déclaratif (toujours disponible, socle du MVP)</strong> : après le concert, l'utilisateur note son expérience — ambiance, musique, sono, intensité du mosh pit, etc. Ce carnet de concerts a une valeur en soi (journal de ses shows vécus), indépendamment de l'avatar.</p>
+<p><strong>Source 3 — Profil de spectateur</strong>
+Agrégation dans le temps du comportement déclaré en concert (pogo, calme, air guitar, chanteur, photographe, etc.) en un "type" de spectateur dominant, affiché sur l'avatar et affiné au fil des shows plutôt que figé dès le premier concert.</p>
+<p><strong>Progression de l'avatar</strong>
+Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ces trois sources, par exemple (liste ouverte, à affiner) :
+- Titres d'ambiance : "Roi du pogo", "As des airs" (air guitar), etc.
+- Titres sociaux : "Metal Corner" (a échangé/discuté avec d'autres fans sur place).
+- Titres de fidélité/découverte : nombre de concerts vus, diversité de sous-genres/artistes vus, ancienneté sur un artiste.
+- Titres de collectionneur : ex. "Puriste" (collection ultra-concentrée sur un seul sous-genre), "Multi-instrumentiste" (cartes Membre collectionnées dans de nombreux instruments différents).</p>
+</section>
+<section id="concept-monetisation-mvp" class="doc-sec"><h2>Monétisation (MVP)</h2>
+<ul>
+<li>Vente de packs digitaux (achat direct + monnaie in-app).</li>
+<li>Partenariats labels/artistes/festivals pour du contenu exclusif sponsorisé.</li>
+<li><strong>Aucune commission sur échange/revente</strong> (le troc n'est pas un marché monétaire).</li>
+</ul>
+</section>
+<section id="concept-risques-points-a-faire-trancher-par-des-tiers-competents" class="doc-sec"><h2>Risques / points à faire trancher par des tiers compétents</h2>
+<ul>
+<li><strong>Cadre légal loot-box</strong> : mécaniques de pack aléatoire payant régulées dans certains pays — à valider par un juriste avant tout modèle payant.</li>
+<li><strong>Droits à l'image / musicaux</strong> : usage actuel de <strong>vrais noms de groupes/musiciens et de portraits IA dont l'apparence se rapproche des vrais visages</strong> (à partir de photos). Deux risques distincts et cumulatifs : (1) le <strong>droit à l'image</strong> porte sur la personne reconnaissable, indépendamment du fait que l'image soit une photo ou une illustration originale — un style original ne suffit pas à s'en affranchir ; (2) si l'IA s'appuie sur une photo précise, la question de l'<strong>œuvre dérivée</strong> (droits du photographe) se pose selon ce qui subsiste de ses choix créatifs (cadrage, pose, lumière) — terrain juridiquement disputé (cf. le litige de l'affiche "Hope" de Shepard Fairey, basée sur une photo AP précise). <strong>Ce choix n'est acceptable que tant que l'usage reste strictement privé</strong> (pas de diffusion publique/commerciale, pas de mise en avant à grande échelle) — y compris sur la page de pitch, qui est techniquement publique (hébergée sur un repo GitHub public, mot de passe = filtre de politesse et non une vraie confidentialité) : décision assumée et actée pour l'instant par le porteur de projet en connaissance de ce risque, à réévaluer avant toute diffusion plus large. À faire trancher par un juriste avant toute ouverture publique, même limitée.
+  <strong>Stratégie retenue pour la suite</strong> (détaillée dans <a class="xref" href="#roadmap">Roadmap</a>, section "Ouverture publique") : ne pas viser un accord avec "tous les groupes" avant d'ouvrir — réduire d'abord la ressemblance des portraits par défaut (le levier qui ne dépend d'aucun tiers), puis viser un catalogue de lancement construit autour de quelques <strong>têtes d'affiche reconnues</strong> (pas un catalogue complet, mais pas non plus un catalogue volontairement mineur — le jeu perd son sens sans pointures du metal/rock), atteintes via les canaux professionnels (label, management) plutôt qu'en démarchage direct, en s'appuyant sur la preuve déjà construite (page de pitch, retours de proches) comme argument de crédibilité. Les artistes émergents/indépendants restent utiles en complément, jamais en remplacement des têtes d'affiche. <strong>Les vrais noms ne bougent pas dans ce plan</strong> — un faux groupe n'a pas le même impact, c'est la raison même de ce choix (voir positionnement). Le retour aux noms/portraits détournés reste documenté comme dernier recours si tout le reste échoue durablement, pas comme une étape prévue.</li>
+<li><strong>Fiabilité de la détection capteur</strong> : à valider par un spike technique avant de committer sur la jauge d'ambiance automatique ; le déclaratif doit rester le socle robuste dans tous les cas.</li>
+<li><strong>Sécurité de la présence partagée et du radar de proximité</strong> : rendre visible qu'un utilisateur est physiquement présent ou à proximité peut créer un risque de repérage/harcèlement s'il n'est pas encadré — risque désormais plus large qu'au lancement du concept puisque le radar de proximité (voir <code>Échanges &amp; rencontres en présentiel</code>) n'est plus limité aux concerts. Garde-fous déjà posés (opt-in réciproque, éphémère, jamais de position exacte, jamais de liste publique par défaut) — à faire challenger par un tiers compétent sur la sécurité/vie privée avant lancement, au même titre que les autres risques listés ici.</li>
+<li><strong>Données du billet importé</strong> : le scan ou la photo d'un billet peut contenir des données personnelles (nom de l'acheteur, parfois un moyen de contact). À traiter comme une donnée personnelle standard (minimisation, pas de conservation au-delà du besoin de preuve de concert) plutôt que comme une simple métadonnée technique.</li>
+<li><strong>Preuve d'achat déclarative (missions "achat réel")</strong> : en l'absence de partenariat marchand vérifiable, une preuve par photo de reçu reste falsifiable — à ne jamais associer à une récompense dont la valeur perçue inciterait à la triche, et à documenter comme un socle "best effort", pas une vérification forte.</li>
+</ul>
+</section>
+<section id="concept-statut" class="doc-sec"><h2>Statut</h2>
+<p>Concept validé comme base de travail pour la suite (direction visuelle, puis maquettage), enrichi d'une décision structurante (échange en présentiel uniquement), d'un mécanisme de détection/preuve de concert simplifié (billet plutôt que suivi d'artiste + agenda), d'une couche Missions, et d'une stratégie droits à l'image qui remplace "obtenir l'accord de tous les groupes" par un catalogue de lancement restreint et une réduction de la ressemblance des portraits par défaut (voir <a class="xref" href="#roadmap">Roadmap</a>). Les idées écartées du MVP ou à explorer plus tard sont conservées dans <a class="xref" href="#roadmap">Roadmap</a> pour ne rien perdre.</p></section>
+    </div>
+  </div>
+</div>
+<div class="tab-panel" role="tabpanel" id="panel-da" aria-labelledby="tab-da" data-label="Direction artistique" hidden>
+  <div class="wrap">
+    <div class="panel-head">
+      <p class="eyebrow">02 · Direction artistique</p>
+      <h2 class="panel-title">Direction artistique</h2>
+      <p class="tagline">Ligne édito, moodboard, exemples de créa et système visuel des cartes.</p>
+    </div>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#da-ligne-edito">Ligne édito</a></li><li><a href="#da-moodboard">Moodboard</a></li><li><a href="#da-exemples-crea">Exemples de créa</a></li><li><a href="#da-brief-krea">Brief Krea</a></li><li><a href="#da-systeme">Système visuel &amp; gabarit</a></li></ol></nav>
+    <div class="doc">
+<!-- ============ LIGNE ÉDITO ============ -->
+<section id="da-ligne-edito" class="doc-sec">
+  <p class="eyebrow">01 · Ligne édito</p>
+  <h2>Ligne édito</h2>
+  <p class="lead">Humour, fun, moderne, gamifié. Ce ton n'est pas décoratif : il décide de ce qu'on dessine sur une carte, de comment on nomme les choses dans l'app, et de ce qu'on s'interdit.</p>
+
+  <blockquote class="promise">
+    <p class="eyebrow">La promesse, en une phrase</p>
+    <p>Une vraie carte de collection d'un vrai groupe, avec un clin d'œil que seul un fan comprend.</p>
+    <p class="note">[À PRÉCISER : formulation à valider — proposition de travail]</p>
+  </blockquote>
+
+  <h3>Quatre piliers</h3>
+  <div class="pillars">
+    <div class="pillar">
+      <h4>Authentique</h4>
+      <p>Vrais groupes, vrais noms, vrai vécu de concert. On parle la langue de la scène, pas celle du marketing. La communauté repère immédiatement le faux.</p>
+    </div>
+    <div class="pillar">
+      <h4>Second degré</h4>
+      <p>L'humour passe par le <b>gag visuel</b> et le <b>jeu de mots</b>, pas par l'exagération ni la moquerie. On rit <em>avec</em> la culture metal, jamais <em>d'elle</em>. Référence : le masque de sommeil brodé « Zzz » du test Sleeplot, les arcanes détournés type « The Iron Maiden ».</p>
+    </div>
+    <div class="pillar">
+      <h4>Nerd et précis</h4>
+      <p>Le plaisir du collectionneur tient dans les détails : numéro d'édition en chiffres romains, fine print en monospace, instrument, line-up, date exacte. L'exactitude des métadonnées est une marque de respect.</p>
+    </div>
+    <div class="pillar">
+      <h4>Généreux</h4>
+      <p>Moderne et gamifié, mais jamais sous pression : récompenses garanties, pas de compte à rebours fabriqué, pas de culpabilisation. Le ton reste celui d'un pote au merch stand, pas d'un vendeur.</p>
+    </div>
+  </div>
+
+  <h3>Sur la carte</h3>
+  <div class="dodont">
+    <div class="do">
+      <p class="eyebrow">On fait</p>
+      <ul>
+        <li>Un seul gag lisible par carte, intégré au personnage ou à un attribut (objet, accessoire, pose).</li>
+        <li>Un gag qui renvoie à un trait connu du groupe ou du musicien (look, anecdote, titre, instrument).</li>
+        <li>Des titres d'arcane qui jouent sur le vocabulaire tarot et le metal (« The Iron Maiden »).</li>
+        <li>Un style stylisé, sans photo-guidage précis, par défaut (socle Sleeplot).</li>
+      </ul>
+    </div>
+    <div class="dont">
+      <p class="eyebrow">On ne fait pas</p>
+      <ul>
+        <li>De la caricature dégradante ou qui vise le physique d'une personne réelle.</li>
+        <li>Un portrait qui cherche la ressemblance photographique, sauf accord explicite de l'artiste.</li>
+        <li>Des blagues sur des sujets sensibles liés à un membre réel (santé, décès, affaires).</li>
+        <li>L'empilement de références : si le gag demande une explication, il est raté.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Dans l'app (microcopie)</h3>
+  <p>Exemples pour fixer le ton. Ce sont des propositions à valider, pas des textes définitifs.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Moment</th><th>Plutôt</th><th>Plutôt pas</th></tr></thead>
+    <tbody>
+      <tr><td>Doublon au reveal</td><td>« Doublon. Garde-le pour le prochain concert, quelqu'un le cherche. »</td><td>« Dommage ! Achète un pack pour retenter ta chance ! »</td></tr>
+      <tr><td>Classeur presque complet</td><td>« Plus qu'une carte et Sepultura — Early Years est bouclé. »</td><td>« Ne rate pas ta chance, complète vite ! »</td></tr>
+      <tr><td>Carnet de concert, le lendemain</td><td>« Alors, ce pit ? Note ta soirée tant que tes oreilles sifflent encore. »</td><td>« Tu n'as pas encore rempli ton carnet. »</td></tr>
+      <tr><td>Cri signature</td><td>« Enregistre ton plus beau growl. Personne ne juge. Enfin, presque. »</td><td>« Ajoutez un fichier audio à votre profil. »</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ MOODBOARD ============ -->
+<section id="da-moodboard" class="doc-sec">
+  <p class="eyebrow">02 · Moodboard</p>
+  <h2>Moodboard</h2>
+  <p class="lead">Les références qui fixent l'univers de la carte. Chaque case décrit ce qu'elle doit montrer ; l'image s'affiche automatiquement dès que le fichier est déposé dans <code>assets/da/moodboard/</code> sous le nom indiqué.</p>
+
+  <div class="slots mood">
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/01-tarot-vintage.jpg" alt="Référence tarot vintage" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">01-tarot-vintage.jpg</span></div>
+      <figcaption><strong>Tarot occulte vintage</strong>Cadre parchemin, coins arrondis, cartouche de nom, motifs célestes. La référence de départ.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/02-gravure.jpg" alt="Référence gravure ancienne" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">02-gravure.jpg</span></div>
+      <figcaption><strong>Gravure ancienne</strong>Linework en hachures, trait fin, ombres par densité de lignes.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/03-affiche-concert.jpg" alt="Référence affiche de concert" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">03-affiche-concert.jpg</span></div>
+      <figcaption><strong>Affiche de concert</strong>Typographie condensée, sérigraphie, aplats limités en couleurs.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/04-flyer-xerox.jpg" alt="Référence flyer photocopié" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">04-flyer-xerox.jpg</span></div>
+      <figcaption><strong>Flyer photocopié / zine</strong>Grain, contraste dur, collage : le côté DIY de la scène.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/05-patchs-veste.jpg" alt="Référence patchs de veste" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">05-patchs-veste.jpg</span></div>
+      <figcaption><strong>Veste à patchs</strong>Broderie, logos illisibles, accumulation : l'objet de collection du fan de metal.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/06-carte-collection.jpg" alt="Référence carte à collectionner" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">06-carte-collection.jpg</span></div>
+      <figcaption><strong>Cartes à collectionner</strong>Fine print, numérotation, verso, logique de série façon vignettes et cartes sportives.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/07-foil-holo.jpg" alt="Référence foil holographique" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">07-foil-holo.jpg</span></div>
+      <figcaption><strong>Foil et holographie</strong>Matières des raretés hautes : prisme, dorure, foil noir.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/08-palette.jpg" alt="Référence palette rétro" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">08-palette.jpg</span></div>
+      <figcaption><strong>Palette rétro sourde</strong>Moutarde, bleu pétrole, brique, vert sauge sur fond noir.</figcaption></figure>
+  </div>
+  <p class="note">[À PRÉCISER : sources des références — privilégier des images générées ou des références libres de droits, la page étant techniquement publique]</p>
+</section>
+
+<!-- ============ EXEMPLES DE CRÉA ============ -->
+<section id="da-exemples-crea" class="doc-sec">
+  <p class="eyebrow">03 · Exemples de créa</p>
+  <h2>Exemples de créa</h2>
+  <p class="lead">Une carte par type, à des raretés différentes, pour vérifier que le gabarit tient sur toute la gamme. Déposer les images générées avec Krea dans <code>assets/da/creas/</code> sous le nom indiqué. Format conseillé : portrait 2:3 (ex. 1000 × 1500 px).</p>
+
+  <div class="slots creas">
+    <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/artiste-commune.jpg" alt="Carte Artiste, rareté Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">artiste-commune.jpg</span></div>
+      <figcaption><strong>Artiste · Commune</strong><span class="meta">Gabarit de base, sans effet de rareté.</span><span class="groupe">Groupe : [À PRÉCISER]</span></figcaption></figure>
+    <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/membre-rare.jpg" alt="Carte Membre, rareté Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">membre-rare.jpg</span></div>
+      <figcaption><strong>Membre · Rare</strong><span class="meta">Zone instrument visible (ex. batterie).</span><span class="groupe">Musicien : [À PRÉCISER]</span></figcaption></figure>
+    <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/live-holo.jpg" alt="Carte Live, rareté Holo" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">live-holo.jpg</span></div>
+      <figcaption><strong>Live · Holo/Prisme</strong><span class="meta">Scène, foule, lumières : la carte du vécu.</span><span class="groupe">Concert : [À PRÉCISER]</span></figcaption></figure>
+    <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/album-signature.jpg" alt="Carte Album, rareté Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">album-signature.jpg</span></div>
+      <figcaption><strong>Album · Signature</strong><span class="meta">Numérotée, dorure. Évoque l'album sans reproduire la pochette.</span><span class="groupe">Album : [À PRÉCISER]</span></figcaption></figure>
+    <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/riff-rare.jpg" alt="Carte Riff ou Moment culte, rareté Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">riff-rare.jpg</span></div>
+      <figcaption><strong>Riff / Moment culte · Rare</strong><span class="meta">Un instant précis (clip, scène culte) mis en arcane.</span><span class="groupe">Moment : [À PRÉCISER]</span></figcaption></figure>
+    <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/collector-legendaire.jpg" alt="Carte Collector, rareté Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">collector-legendaire.jpg</span></div>
+      <figcaption><strong>Collector · Légendaire</strong><span class="meta">Rouge sombre, foil noir, série ultra-limitée.</span><span class="groupe">Événement : [À PRÉCISER]</span></figcaption></figure>
+  </div>
+
+  <h3>Tests précédents</h3>
+  <div class="slots creas">
+    <figure class="slot" data-rarity="archive"><div class="slot-img has-img"><img src="assets/carte-exemple-landmvrks.jpg" alt="Test de carte tarot Landmvrks" loading="lazy"></div>
+      <figcaption><strong>Landmvrks · test photo-guidé</strong><span class="meta">Prouve qu'une ressemblance est atteignable dans le cadre tarot. Hors socle par défaut : à réserver aux artistes ayant donné leur accord (voir <a class="xref" href="#roadmap">Roadmap</a>).</span></figcaption></figure>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-sleeplot.jpg" alt="Test de carte tarot Sleeplot" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-sleeplot.jpg</span></div>
+      <figcaption><strong>Sleeplot · socle par défaut</strong><span class="meta">Gag visuel stylisé (masque de sommeil « Zzz »), sans photo-guidage. Image absente du dépôt.</span></figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ BRIEF KREA ============ -->
+<section id="da-brief-krea" class="doc-sec">
+  <p class="eyebrow">04 · Brief de génération</p>
+  <h2>Brief Krea</h2>
+  <p class="lead">Un prompt de base commun à toutes les créas, pour que les cartes restent homogènes d'une génération à l'autre. Seuls les champs entre crochets changent. Point de départ à ajuster après les premiers essais.</p>
+
+  <h3>Prompt de base</h3>
+  <pre class="prompt"><code>Vintage occult tarot card, full card with rounded corners, aged parchment frame,
+fine engraving linework with cross-hatching, muted retro palette (mustard, petrol blue,
+brick red, sage green), roman numeral [NUMÉRO] at the top, small sun and star motifs
+in the upper corners, name cartouche at the bottom reading "[NOM]".
+Central figure: stylized [RÔLE : singer / guitarist / drummer...] of a [SOUS-GENRE] band,
+[GAG VISUEL : one clear visual joke tied to the band].
+Illustrated, not photographic, no real person likeness.
+Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
+
+  <h3>Variables</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Champ</th><th>Valeurs</th></tr></thead>
+    <tbody>
+      <tr><td><code>[TYPE]</code></td><td>Artiste, Membre (+ instrument), Live, Album, Riff / Moment culte, Collector</td></tr>
+      <tr><td><code>[RARETÉ]</code></td><td>Commune : aucun effet · Rare : liseré bleu froid · Holo : reflet iridescent teal → violet → rose · Signature : dorure or métallique · Légendaire : rouge sombre et foil noir</td></tr>
+      <tr><td><code>[SOUS-GENRE]</code></td><td>Accent de liseré uniquement : black (bleu glacial), death (rouge sang), thrash (jaune/orange), nu-metal (orange industriel), prog (violet), rock/hard rock (ambre/bronze)</td></tr>
+      <tr><td><code>[GAG VISUEL]</code></td><td>Un seul, lisible sans explication (voir Ligne édito)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>À éviter dans les générations</h3>
+  <ul>
+    <li>Utiliser une photo réelle d'un musicien comme image de référence (socle par défaut = sans photo-guidage).</li>
+    <li>Reproduire un logo de groupe, une pochette d'album ou un visuel officiel existant.</li>
+    <li>Varier la structure du cadre d'une carte à l'autre : seuls le personnage et l'overlay de rareté changent.</li>
+    <li>Laisser l'IA écrire le texte final de la carte : le nom et les métadonnées seront posés par le gabarit dans Figma.</li>
+  </ul>
+  <p class="note">Rappel : les images publiées ici sont visibles publiquement via le dépôt GitHub, quel que soit le mot de passe. Voir les risques droits à l'image dans l'onglet <a class="xref" href="#concept">Concept</a>.</p>
+</section>
+
+<section id="da-systeme" class="doc-sec"><p class="eyebrow">Référence</p><h2>Système visuel &amp; gabarit</h2><p class="lead">Les règles déjà actées : chrome, palette, typographie, gabarit paramétrique et motion. Elles restent valables quel que soit le style de portrait retenu.</p></section>
+<section id="da-principe-directeur" class="doc-sec sub"><h2>Principe directeur</h2>
+<p><strong>Le chrome de l'app est monochrome. Toute la couleur est réservée aux cartes.</strong>
+Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds ou les composants UI génériques — ils restent noir/blanc/gris. Ça garantit que l'œil va systématiquement à la carte à l'écran, et ça évite l'écueil "app metal = néon partout" qui fatiguerait vite visuellement.</p>
+<p><em>Point ouvert depuis le pivot vers une direction carte "tarot vintage" (voir plus bas) :</em> ce principe suppose une carte qui contraste avec un chrome sombre neutre. Une carte à dominante parchemin/chaude peut très bien fonctionner par contraste sur fond noir (comme une carte de tarot posée sur une table sombre) — mais reste à valider en contexte réel d'écran, pas seulement sur une carte isolée.</p>
+</section>
+<section id="da-palette" class="doc-sec sub"><h2>Palette</h2>
+<p><strong>Chrome UI (neutre, sobre)</strong> — inspiré d'une DA "photo studio" pur noir/blanc :
+- Background : <span class="sw" style="--c:#000000"></span><code>#000000</code> (noir OLED)
+- Surface/carte de fond (hors carte-jeu) : <span class="sw" style="--c:#0C0C0C"></span><code>#0C0C0C</code> / <span class="sw" style="--c:#121212"></span><code>#121212</code>
+- Foreground : <span class="sw" style="--c:#FAFAFA"></span><code>#FAFAFA</code>
+- Muted foreground : <span class="sw" style="--c:#94A3B8"></span><code>#94A3B8</code>
+- Border : <span class="sw" style="--c:#3F3F46"></span><code>#3F3F46</code> (rgba(255,255,255,0.08) en overlay)
+- Destructive : <span class="sw" style="--c:#EF4444"></span><code>#EF4444</code> (usage fonctionnel uniquement — erreurs)</p>
+<p><strong>Couleur = système de rareté</strong> (seule source de couleur saturée de l'app, portée par les cartes) :
+- Commune : gris acier <span class="sw" style="--c:#71717A"></span><code>#71717A</code>
+- Rare : bleu froid <span class="sw" style="--c:#3B82F6"></span><code>#3B82F6</code>
+- Holo/Prisme : dégradé iridescent (teal → violet → rose, effet shimmer animé)
+- Signature : or métallique <span class="sw" style="--c:#D4AF37"></span><code>#D4AF37</code>
+- Légendaire : rouge sombre profond + foil noir <span class="sw" style="--c:#7F1D1D"></span><code>#7F1D1D</code> / holo noir</p>
+<p><strong>Accent de sous-genre</strong> (discret, limité au liseré de cadre + tag, jamais au fond) :
+- Black metal : bleu glacial
+- Death metal : rouge sang
+- Thrash : jaune/orange
+- Nu-metal : orange industriel
+- Prog : violet
+- Rock/hard rock classique : ambre/bronze</p>
+</section>
+<section id="da-typographie" class="doc-sec sub"><h2>Typographie</h2>
+<ul>
+<li><strong>Display</strong> (titres, noms d'artiste/groupe) : condensée, bold, esprit affiche de concert — ex. Barlow Condensed ou Oswald.</li>
+<li><strong>Corps/UI</strong> : sans-serif neutre et très lisible — Inter.</li>
+<li><strong>Meta cartes</strong> (numéro d'édition, stats, code de rareté) : monospace — JetBrains Mono ou IBM Plex Mono, esprit "fine print" de carte à collectionner.</li>
+</ul>
+</section>
+<section id="da-style" class="doc-sec sub"><h2>Style</h2>
+<p>Dark mode sobre, content-first, chrome plat sans effet (pas de skeuomorphisme, pas de glow décoratif hors carte). Les seuls effets visuels riches (texture foil, grain, shimmer holographique) sont réservés aux cartes elles-mêmes — jamais à l'interface autour.</p>
+</section>
+<section id="da-le-vrai-enjeu-generer-des-cartes-a-l-echelle-de-facon-homoge" class="doc-sec sub"><h2>Le vrai enjeu : générer des cartes à l'échelle, de façon homogène</h2>
+<p>La réponse n'est pas "designer chaque carte à la main", c'est un <strong>système de template paramétrique</strong> :</p>
+<ol>
+<li><strong>Un gabarit fixe par type de carte</strong> (Artiste / Membre / Live / Album / Riff / Collector) — 6 layouts maximum, avec des zones fixes : image, nom, artiste, tag genre, marqueur de rareté, numéro d'édition, ligne de contexte. Le gabarit Membre ajoute une zone dédiée à l'instrument (guitare, basse, batterie, chant, clavier, etc.), qui sert aussi de méta pour le tri transversal par instrument.</li>
+<li><strong>La rareté = une couche d'overlay appliquée sur le même gabarit</strong>, pas un redesign : bordure, texture, effet foil/shimmer changent, la structure ne change jamais. 5 presets de rareté, réutilisables sur tous les types.</li>
+<li><strong>Le sous-genre = un accent de cadre</strong> (couleur de liseré + tag), pas un habillage différent.</li>
+<li><strong>Le seul asset réellement sur-mesure par carte = le portrait de l'artiste.</strong> Tout le reste (cadre, typo, effets de rareté, accent de genre) est systématique. Ce portrait est <strong>généré par IA à partir de photos réelles</strong> (pas une vraie photo directement) — état actuel du choix noms/portraits détaillé dans <a class="xref" href="#concept">Concept</a>, avec ses risques associés.</li>
+</ol>
+<p><strong>Direction retenue : carte façon tarot vintage.</strong> Deux directions de portrait ont d'abord été testées (illustration caricaturale plate, puis portrait réaliste + traitement graphique duotone/halftone) avant qu'une référence moodboard (tarot occulte vintage) ne remette en cause le cadre de carte lui-même, pas seulement le portrait. C'est cette troisième direction qui est retenue : cadre parchemin aux coins arrondis, linework façon gravure ancienne, palette rétro sourde (moutarde, bleu pétrole, brique, vert sauge), numéro d'édition en chiffre romain, motifs célestes (soleil, étoiles) en zones fixes du gabarit, cartouche de nom en bas — une déclinaison directe du gabarit paramétrique déjà posé (zones fixes, seul le portrait/personnage change).</p>
+<p>L'humour de la DA ("drôle", voir positionnement) doit se voir sur le portrait/la carte, pas seulement passer par un nom détourné : un premier test sur "Sleeplot" (clin d'œil à Slipknot, à l'époque où l'option nom détourné était encore envisagée) a validé qu'un gag visuel simple — ici un masque de sommeil brodé "Zzz" à la place du masque effrayant — porte bien le second degré dans ce cadre vintage, à l'image des jeux de mots sur les arcanes du moodboard de référence (ex. "The Iron Maiden"). Un second test avec le vrai nom "Landmvrks" confirme que l'effet "vraie carte de collection" est nettement plus fort avec un vrai nom affiché qu'avec un nom détourné — un des éléments qui a fait pencher la décision vers les vrais noms (voir <a class="xref" href="#concept">Concept</a>). Un troisième test, à partir d'une photo réelle du chanteur (Florent Salfati) utilisée comme référence, montre qu'une vraie ressemblance est atteignable dans ce même cadre tarot sans perdre le style — mais le degré de ressemblance exact du portrait reste un point à faire trancher par un juriste (voir risques dans <a class="xref" href="#concept">Concept</a>).</p>
+<p><strong>Posture par défaut retenue pour la suite</strong> (voir la stratégie droits à l'image dans <a class="xref" href="#roadmap">Roadmap</a>) : le style <strong>Sleeplot</strong> (gag visuel stylisé, sans photo-guidage précis) redevient le socle par défaut de génération, pas le test Landmvrks à ressemblance photo-guidée. Ce dernier reste documenté comme preuve que l'effet est atteignable, mais n'est plus la direction à reproduire systématiquement — à réserver aux artistes ayant explicitement donné leur accord. C'est le levier de réduction de risque qui ne dépend d'aucun accord tiers, donc le plus simple à appliquer dès maintenant.</p>
+<p><strong>Homogénéité de cette direction</strong> : contrairement au rendu réaliste testé avant (où l'homogénéité dépendait d'un filtre de post-traitement fixe), le format tarot est intrinsèquement homogène — bordure, numérotation, motifs célestes et cartouche sont des zones fixes du gabarit au même titre que les autres types de carte, pas un effet à recalibrer à chaque génération.</p>
+<p>Concrètement dans Figma : construire ça comme <strong>un composant à variantes</strong> (propriétés : Type × Rareté × Genre), lié aux variables de couleur/typo définies ci-dessus. Ajouter une nouvelle carte devient : déposer une photo + renseigner des métadonnées, jamais redessiner une carte. C'est aussi ce qui permettra, plus tard, une génération automatisée/scriptée des visuels de carte à partir d'une base de données (idée à garder dans <a class="xref" href="#roadmap">Roadmap</a>).</p>
+</section>
+<section id="da-motion" class="doc-sec sub"><h2>Motion</h2>
+<p><strong>Outil retenu : Rive</strong>, sur la base d'une compétence déjà acquise par le porteur de projet — pas de dépendance externe à trouver pour animer l'app. Tous les moments listés ci-dessous restent dans le même principe directeur que le reste de la DA : les effets riches (foil, shimmer, particules) sont réservés à ces moments précis, jamais au chrome d'app autour.</p>
+<p>Classement par le soin que chaque moment demande, pas par ordre d'apparition dans l'app (détail des flows dans <a class="xref" href="#architecture">Architecture</a> et <a class="xref" href="flows.html">flows.html</a>) :</p>
+<p><strong>Niveau 1 — Séquences majeures</strong> (state machine à plusieurs variables exposées à l'app) :
+1. <strong>Reveal de pack</strong> (Flow B) — rareté et type de carte pilotent la scène ; le moment le plus chargé émotionnellement de l'app, et le seul endroit où les effets riches sont autorisés.
+2. <strong>Évolution de carte</strong> (Flow C) — avant/après, doit rester lisible même joué en rafale pour un utilisateur qui revient avec plusieurs évolutions en attente.
+3. <strong>Récompense de complétion / palier avatar</strong> (Flow F) — dans l'esprit du reveal mais plus court : un aboutissement, pas une découverte.
+4. <strong>Composition en direct, à deux</strong> (Flow G) — le swap atomique d'un échange vu simultanément sur les deux téléphones ; conclusion physique d'une vraie rencontre, mérite le même soin que le reveal.
+5. <strong>Mission complétée</strong> (Flow H) — probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.</p>
+<p><strong>Niveau 2 — Confirmations &amp; feedback courts</strong> (Rive plus simple, timeline ou peu de variables) :
+- <strong>Scan de billet réussi</strong> (Flow D) — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.
+- <strong>Barre XP qui se remplit</strong> (Flow D, F, H) — motif réutilisable partout où l'XP change.
+- <strong>Carte bonus de connexion "Metal Corner"</strong> (Flow G) — version allégée du reveal, une seule carte.
+- <strong>Nouvelle carte qui "atterrit" en Collection</strong>, avec highlight (Flow B).
+- <strong>Blips du radar de proximité</strong> (Flow G) — fans qui apparaissent/disparaissent à l'écran ; de l'ambiance plus qu'un moment fort.
+- <strong>Waveform du cri enregistré</strong> (profil) — cosmétique, mais colle directement à la ligne édito "drôle" du positionnement (voir <a class="xref" href="#concept">Concept</a>).</p>
+<p><strong>Niveau 3 — Micro-interactions</strong> : sélection de tuiles (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation — du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.</p>
+<p>Le détail des state machines de niveau 1 (déclencheurs, variables exposées — rareté, type de carte, palier atteint) est à spécifier une fois le gabarit de carte lui-même stabilisé, puisque l'animation de reveal doit piloter les mêmes zones fixes (bordure, overlay de rareté, portrait) que le gabarit statique.</p></section>
+    </div>
+  </div>
+</div>
+<div class="tab-panel" role="tabpanel" id="panel-architecture" aria-labelledby="tab-architecture" data-label="Architecture" hidden>
+  <div class="wrap">
+    <div class="panel-head">
+      <p class="eyebrow">03 · Architecture</p>
+      <h2 class="panel-title">Architecture</h2>
+      <p class="tagline">Navigation, inventaire d'écrans, parcours clés, boucles de rétention et anti-patterns. Le détail étape par étape vit dans <a href="flows.html">flows.html</a>.</p>
+    </div>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#architecture-1-architecture-de-navigation-ia">1. Architecture de navigation (IA)</a></li><li><a href="#architecture-2-inventaire-d-ecrans-par-section">2. Inventaire d&#x27;écrans (par section)</a></li><li><a href="#architecture-3-parcours-cles">3. Parcours clés</a></li><li><a href="#architecture-4-boucles-de-retention">4. Boucles de rétention</a></li><li><a href="#architecture-5-anti-patterns-a-eviter-explicitement">5. Anti-patterns à éviter explicitement</a></li><li><a href="#architecture-statut">Statut</a></li></ol></nav>
+    <div class="doc">
+<section id="architecture-1-architecture-de-navigation-ia" class="doc-sec"><h2>1. Architecture de navigation (IA)</h2>
+<p>Navigation basse à 5 entrées max :</p>
+<ol>
+<li><strong>Accueil</strong> — feed : nouvelles évolutions de cartes débloquées, actu des artistes suivis, événements à venir près de l'utilisateur, rappels de pack disponible.</li>
+<li><strong>Collection</strong> — l'album/binder : organisé par artiste, sous-genre, époque, festival. Barres de complétion par thème. Vues transversales par musicien et par instrument, indépendantes du regroupement par groupe.</li>
+<li><strong>Packs</strong> — ouverture de pack (gratuit régulier + payant) et boutique.</li>
+<li><strong>Live</strong> — carnet de concerts, avatar de fan, check-in événement, jauge d'ambiance, titres/achievements.</li>
+<li><strong>Communauté</strong> — découverte des échanges possibles (qui a quoi, qui recherche quoi), guildes par sous-genre/artiste, classements, profils publics d'autres fans. <strong>L'échange lui-même ne s'y conclut pas</strong> : il s'ouvre depuis Live (présence en concert) ou depuis le radar de proximité — voir <code>Échanges &amp; rencontres en présentiel</code> dans <a class="xref" href="#concept">Concept</a>.</li>
+</ol>
+<p>Le profil personnel et les réglages sont accessibles depuis l'avatar en header (pas un onglet dédié), pour ne pas saturer la barre.</p>
+</section>
+<section id="architecture-2-inventaire-d-ecrans-par-section" class="doc-sec"><h2>2. Inventaire d'écrans (par section)</h2>
+<p><strong>Onboarding</strong>
+- Choix des genres/artistes favoris
+- Pack de bienvenue (offert) + premier reveal
+- Intro courte à la boucle centrale (collection / évolution / concert)</p>
+<p><strong>Accueil</strong>
+- Feed chronologique (évolutions, actu artiste, events à venir)
+- Bannière pack disponible
+- Accès rapide "prochain concert suivi"
+- Bandeau <strong>Missions en cours</strong> (2-3 missions actives, progression visible) — voir <code>Missions</code> dans <a class="xref" href="#concept">Concept</a> et Flow H</p>
+<p><strong>Collection</strong>
+- Vue d'ensemble par thème (grille + % complétion)
+- Vue transversale "par musicien" — toutes les cartes Membre d'un même musicien, tous groupes confondus (side-projects, supergroupes)
+- Vue transversale "par instrument" — ex. tous les batteurs ou bassistes suivis, tous groupes confondus
+- Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention) — pour une carte Membre : instrument et groupe(s) associés, avec lien direct vers les autres cartes de ce musicien
+- Vue "collections en cours" vs "complétées"
+- Écran de récompense de complétion d'un classeur officiel (carte Collector cosmétique + badge), dans l'esprit du reveal de pack
+- Création et gestion de classeurs personnalisés : sélection libre parmi ses cartes possédées, nommage, réordonnancement — sans mécanique de récompense propre (voir <a class="xref" href="#concept">Concept</a>)</p>
+<p><em>Point ouvert à trancher</em> : faut-il un binder unique filtrable par thème (structure actuelle), ou plusieurs classeurs distincts par sous-genre (ex. un classeur "Black metal", un classeur "Nu-metal") ? Un classeur par genre renforcerait l'identité de niche (cohérent avec les guildes par sous-genre) mais fragmenterait la vue d'ensemble et la lisibilité de la progression globale — à trancher avant maquettage de cet écran.</p>
+<p><strong>Packs</strong>
+- Sélection de pack (gratuit du jour/semaine, payant, événementiel)
+- Écran de reveal (le moment le plus chargé émotionnellement de l'app)
+- Résumé post-ouverture (nouvelles cartes, doublons, suggestion d'échange si doublon)</p>
+<p><strong>Live</strong>
+- Carnet de concerts (liste chronologique des shows vécus)
+- Import de billet (scan QR/code-barres électronique ou physique, repli photo/saisie manuelle) — détecte le concert et sert de preuve standard, voir <a class="xref" href="#concept">Concept</a>
+- Check-in confirmé, avec option "Visible aux autres fans ce soir" (opt-in, off par défaut) et option de géolocalisation ponctuelle du jour même (preuve renforcée, conditionne la carte Live exclusive)
+- Liste éphémère "Fans présents ce soir" — visible uniquement entre fans ayant mutuellement activé l'option pour ce concert ; disparaît après l'événement
+- Fiche avatar (traits débloqués, titres, XP par catégorie : collection, vécu concert, profil de spectateur)
+- Détail d'un concert passé (note d'ambiance, carte exclusive obtenue le cas échéant)</p>
+<p><strong>Communauté</strong>
+- Recherche/liste de fans (par carte recherchée, par guilde) — <strong>découverte uniquement</strong>, aucune proposition d'échange à distance possible depuis cet écran
+- Radar de proximité (hors concert) — fans de l'app détectés à quelques mètres (Bluetooth, opt-in, éphémère), point d'entrée d'une session d'échange
+- Session d'échange en direct (composition à deux en temps réel, confirmation simultanée) — accessible depuis la liste "Fans présents ce soir" (Live) ou le radar de proximité, jamais depuis la recherche globale
+- Guilde (fil, classement interne, membres)
+- Classements globaux (collection, avatar, guildes)</p>
+<p><strong>Profil (perso)</strong>
+- Vitrine publique de collection, dont les classeurs personnalisés mis en avant
+- Enregistrement et lecture du "cri" signature (audio court, cosmétique)
+- Historique des missions accomplies
+- Réglages, notifications, comptes liés</p>
+</section>
+<section id="architecture-3-parcours-cles" class="doc-sec"><h2>3. Parcours clés</h2>
+<h3>Flow A — Onboarding → premier pack</h3>
+<ol>
+<li>Choix de 3 à 5 artistes/sous-genres favoris.</li>
+<li>Ouverture du pack de bienvenue (reveal immédiat, sans friction).</li>
+<li>Landing sur Collection avec la/les cartes obtenues déjà placées → sentiment de progression instantané.</li>
+<li>Prompt doux vers Live ("dis-nous le prochain concert que tu vas voir") — optionnel, non bloquant.</li>
+</ol>
+<h3>Flow B — Ouverture de pack (boucle la plus fréquente)</h3>
+<ol>
+<li>Entrée depuis bannière Accueil ou onglet Packs.</li>
+<li>Sélection du pack → animation de reveal (moment fort ; <strong>motion : Rive</strong>, voir <a class="xref" href="#da">Direction artistique</a>).</li>
+<li>Si nouvelle carte : ajout direct à la Collection avec highlight (<strong>motion : Rive</strong>).</li>
+<li>Si doublon : marquage immédiat comme "disponible à l'échange" (visible par les autres fans en Communauté/Flow E) — la transaction elle-même attend une rencontre en présentiel (Flow G), l'échange n'étant plus possible à distance.</li>
+<li>Si la carte obtenue déclenche une collection presque complète : nudge visible ("plus qu'1 carte pour compléter Sepultura — Early Years").</li>
+</ol>
+<h3>Flow C — Évolution de carte (déclenché par une actu réelle artiste)</h3>
+<ol>
+<li>Trigger externe : sortie d'album / clip / date de concert / anniversaire.</li>
+<li>Notification push ciblée uniquement aux détenteurs de la carte concernée.</li>
+<li>Ouverture app → écran d'évolution dédié (avant/après animé ; <strong>motion : Rive</strong>) → carte mise à jour dans la Collection.</li>
+<li>Optionnel : partage social du moment d'évolution (capture, pas de mécanique intrusive).</li>
+</ol>
+<h3>Flow D — Concert / Live (billet → avatar)</h3>
+<ol>
+<li>Import du billet (scan QR/code-barres électronique ou physique ; <strong>motion : Rive</strong>, feedback de détection) → détection automatique de l'artiste, la date, le lieu ; complément manuel si le code n'est pas exploitable.</li>
+<li>Check-in confirmé (preuve "standard") ; option de géolocalisation ponctuelle le jour même pour la preuve "renforcée" (conditionne la carte Live exclusive) ; option "Visible aux autres fans ce soir" (opt-in, off par défaut).</li>
+<li>Pendant : jauge d'ambiance semi-automatique si fiable techniquement (sinon rien à faire pendant le show — pas de friction pendant l'expérience live réelle).</li>
+<li>Après : écran "carnet de concert" — note déclarative (ambiance, son, mosh pit, moment marquant), attribution d'XP avatar, déblocage éventuel de la carte exclusive liée à cette date/lieu.</li>
+<li>Mise à jour du carnet de concerts + progression des titres avatar visible immédiatement (<strong>motion : Rive</strong>, barre XP).</li>
+</ol>
+<h3>Flow E — Découverte d'échange (préparation à distance)</h3>
+<ol>
+<li>Recherche d'un fan possédant la carte recherchée, ou consultation des cartes "recherchées" affichées sur les profils/guildes (Communauté).</li>
+<li>Ajout à sa propre liste de souhaits, ou repérage d'un fan cible (ex. un membre de sa guilde).</li>
+<li><strong>Aucune transaction ne se conclut ici</strong> : ce repérage sert à savoir avec qui ouvrir une session d'échange la prochaine fois qu'on le croise en concert ou via le radar de proximité (Flow G).</li>
+<li>Un doublon obtenu (Flow B) alimente symétriquement ce qu'on a à proposer, visible par les autres le moment venu.</li>
+</ol>
+<h3>Flow F — Complétion de classeur officiel / palier avatar → récompense</h3>
+<ol>
+<li>Dernière carte manquante d'un classeur officiel obtenue (pack ou échange), ou franchissement d'un palier XP avatar.</li>
+<li>Détection automatique → écran de récompense dédié (animé — <strong>motion : Rive</strong>, dans l'esprit du reveal de pack) : carte Collector cosmétique + badge de profil pour un classeur complété ; déblocage cosmétique d'avatar pour un palier XP.</li>
+<li>Le classeur complété bascule dans "collections complétées" (Collection) ; le badge/trait reste visible en continu sur le profil et la fiche avatar.</li>
+<li>Aucune mécanique équivalente sur les classeurs personnalisés (non éligibles à la récompense, voir <a class="xref" href="#concept">Concept</a>).</li>
+</ol>
+<h3>Flow G — Rencontre &amp; échange en présentiel (concert ou radar de proximité)</h3>
+<ol>
+<li>Entrée par l'une de deux listes, selon le contexte :
+   - <strong>En concert</strong> : check-in (Flow D) avec option "Visible aux autres fans ce soir" activée → liste éphémère des fans présents ayant eux aussi activé l'option pour ce même concert.
+   - <strong>Hors concert, à tout moment</strong> : radar de proximité activé → fans à quelques mètres détectés en Bluetooth, opt-in et désactivable à tout instant, jamais de position exacte.</li>
+<li>Tap sur un fan de la liste → proposition de session d'échange envoyée ; elle doit être acceptée par l'autre fan pour démarrer (jamais imposée).</li>
+<li>Session acceptée → <strong>écran de composition en direct partagé</strong> (<strong>motion : Rive</strong>, séquence majeure) : les deux téléphones affichent la même transaction en temps réel, chacun ajoute ses cartes offertes, confirmation simultanée des deux côtés → échange atomique (les deux collections changent ensemble, ou aucune).</li>
+<li>Première rencontre confirmée mutuellement avec un fan (échange conclu, ou simple confirmation "on s'est croisés") → déblocage d'une carte bonus garantie, non aléatoire (<strong>motion : Rive</strong>), et progression du titre avatar "Metal Corner". Une seule fois par personne rencontrée.</li>
+<li>La liste (concert ou radar) disparaît/se vide à la fin de l'événement ou dès que le fan sort de portée ; seuls le résultat de l'échange et la carte bonus restent dans la Collection/le carnet.</li>
+</ol>
+<h3>Flow H — Suivre une mission</h3>
+<ol>
+<li>2 à 3 missions actives affichées sur le bandeau Accueil et sur une fiche dédiée, réparties sur les cadences (quotidienne légère, hebdomadaire, saisonnière/événementielle) — voir <code>Missions</code> dans <a class="xref" href="#concept">Concept</a>.</li>
+<li>L'utilisateur poursuit son activité normale (packs, classeurs, concerts, échanges, découverte, achats) ; la progression de mission se met à jour en tâche de fond, sans écran dédié à consulter à chaque étape.</li>
+<li>Mission complétée → récompense garantie attribuée immédiatement (<strong>motion : Rive</strong>, probablement une variante courte de l'interstitiel du Flow F) : XP avatar systématique, parfois pack gratuit ou cosmétique ; jamais de tirage aléatoire en récompense de mission.</li>
+<li>La mission accomplie est remplacée par une nouvelle, plutôt qu'accumulée sur une liste qui grandit indéfiniment.</li>
+</ol>
+</section>
+<section id="architecture-4-boucles-de-retention" class="doc-sec"><h2>4. Boucles de rétention</h2>
+<p><strong>Principe de conception : l'efficacité vient de la couverture des cadences, pas de la pression.</strong> Une boucle de rétention est un cycle déclencheur → action → récompense → investissement. La communauté cible déteste explicitement le marketing malhonnête (voir <a class="xref" href="#concept">Concept</a>, positionnement) : "hyper efficace" ne peut donc pas passer par plus d'urgence fabriquée ou plus de notifications, sous peine de jouer contre l'authenticité qui est le principal atout concurrentiel du produit. Le levier retenu est différent : <strong>empiler plusieurs boucles authentiques à des cadences différentes</strong>, pour qu'il existe presque toujours une vraie raison de revenir, sans qu'aucune boucle individuelle n'ait besoin d'être agressive.</p>
+<h3>4.1 Les boucles, par cadence</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cadence</th>
+<th>Boucle</th>
+<th>Déclencheur</th>
+<th>Action</th>
+<th>Récompense</th>
+<th>Investissement (ce qui retient)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Quasi quotidienne</strong></td>
+<td>Pack gratuit</td>
+<td>Pack quotidien réapprovisionné</td>
+<td>Ouvrir l'app, ouvrir le pack</td>
+<td>Reveal animé (Rive), contenu variable à plancher garanti</td>
+<td>Nouvelle carte en Collection, barre de classeur qui avance</td>
+</tr>
+<tr>
+<td><strong>Hebdomadaire</strong></td>
+<td>Classeurs &amp; guilde</td>
+<td>Nudge de classeur presque complet, classement de guilde mis à jour</td>
+<td>Chercher la carte manquante (pack/échange), consulter le classement</td>
+<td>Sentiment de progression et de rang social</td>
+<td>Place dans le classement, réputation de guilde</td>
+</tr>
+<tr>
+<td><strong>Irrégulière, fréquente à l'échelle du catalogue</strong></td>
+<td>Actu artiste réelle</td>
+<td>Sortie d'album/clip/date (Flow C)</td>
+<td>Ouvrir l'app depuis la notif ciblée</td>
+<td>Évolution de carte + contexte réel affiché</td>
+<td>Historique d'évolution qui enrichit la carte</td>
+</tr>
+<tr>
+<td><strong>Rare, très forte</strong></td>
+<td>Concert</td>
+<td>Un billet importé</td>
+<td>Check-in, puis carnet le lendemain (Flow D)</td>
+<td>XP avatar, carte Live exclusive (preuve renforcée), rencontre éventuelle (Flow G)</td>
+<td>Carnet de concerts, progression avatar, lien social avec un autre fan</td>
+</tr>
+<tr>
+<td><strong>En présentiel, entre deux comptes</strong></td>
+<td>Échange</td>
+<td>Un fan détecté à proximité (concert ou radar)</td>
+<td>Ouvrir une session, composer en direct à deux (Flow G)</td>
+<td>Carte manquante obtenue dans l'instant</td>
+<td>Réputation d'échangeur, relation de confiance</td>
+</tr>
+<tr>
+<td><strong>Rotative, à cadences mêlées</strong></td>
+<td>Missions</td>
+<td>Mission active, quelle que soit la source de progression</td>
+<td>Poursuivre son activité normale (Flow H)</td>
+<td>Récompense garantie (XP, parfois pack/cosmétique)</td>
+<td>Sentiment de direction et de maîtrise, mission suivante déjà là</td>
+</tr>
+</tbody>
+</table></div>
+<p>C'est <strong>la boucle "actu artiste réelle" qui différencie le plus Metalnini</strong> : aucun concurrent de collection pure ne peut la répliquer sans le même travail éditorial continu (voir Flow C, <a class="xref" href="#concept">Concept</a>). C'est elle qui mérite le plus d'investissement produit sur la durée, avant d'optimiser les boucles plus génériques (pack, classeur).</p>
+<p>La <strong>boucle d'échange</strong> a une propriété propre aux mécaniques sociales, renforcée par le passage au présentiel : un échange ne se conclut que si deux comptes sont physiquement réunis au même moment, donc chaque échange retient nécessairement deux comptes à la fois, pas un seul — et la session en direct (composition à deux, confirmation simultanée) donne une conclusion immédiate plutôt qu'une attente de réponse asynchrone.</p>
+<p>La <strong>boucle missions</strong> n'a pas de cadence propre : elle recycle la progression des quatre autres boucles en lui donnant une direction visible, plutôt que d'ajouter un cycle indépendant à gérer.</p>
+<h3>4.2 Budget de notifications (gouvernance transverse)</h3>
+<p>Empiler des boucles authentiques ne dispense pas d'arbitrer : plusieurs boucles peuvent vouloir notifier le même jour, et c'est le cumul, pas une boucle isolée, qui produirait le spam que la communauté cible sanctionnerait.</p>
+<ul>
+<li><strong>Budget cible : 1 à 2 notifications non sollicitées par jour, toutes boucles confondues</strong> — au-delà, une notification supplémentaire attend le lendemain plutôt que de s'ajouter.</li>
+<li><strong>Priorité en cas de concurrence le même jour</strong> :
+  1. <strong>Session d'échange proposée par un fan à proximité</strong> (Flow G) — time-critique, la personne est là <em>maintenant</em>, contrairement à toutes les autres notifications de cette liste.
+  2. <strong>Actu artiste réelle</strong> (Flow C) — le fait le plus rare et le plus fort après la proximité en direct.
+  3. <strong>Carnet de concert à remplir</strong> (Flow D) — une seule relance, le lendemain matin.
+  4. <strong>Mission proche d'être complétée / nouvelle mission disponible</strong> (Flow H).
+  5. <strong>Nudge hebdomadaire classeur/guilde</strong>.
+  6. <strong>Pack quotidien disponible</strong> — désormais poussé (demande produit explicite), mais toujours le dernier de la liste : jamais dupliqué le même jour qu'une autre notification, et regroupé avec les nudges bas de liste (4-5) en une seule notification agrégée plutôt que d'ajouter un push séparé.</li>
+<li><strong>Agrégation obligatoire</strong> : plusieurs faits déclenchants le même jour pour un même utilisateur (déjà acté pour les évolutions multiples en Flow C) doivent produire une seule notification groupée, jamais une rafale. Les rangs 4 à 6 ci-dessus sont les candidats naturels à ce regroupement quand plusieurs tombent le même jour.</li>
+</ul>
+<h3>4.3 Autres mécaniques d'engagement</h3>
+<ul>
+<li><strong>Progression à deux axes</strong> : collection de cartes (objet) + avatar/carnet de concerts (vécu). Un utilisateur qui a "fini" de collectionner un artiste garde une raison de revenir via son avatar, et inversement.</li>
+<li><strong>Scarcité liée à la présence réelle</strong>, pas au paiement : les cartes exclusives de concert récompensent le fait d'y être, pas de payer plus.</li>
+<li><strong>Reconnaissance sociale par la niche</strong> : guildes par sous-genre (le fan de black metal norvégien et le fan de nu-metal n'ont pas la même culture) → appartenance forte, classements internes valorisants même sans être "le meilleur" à l'échelle globale.</li>
+<li><strong>Reconnaissance sociale IRL, pas seulement en ligne</strong> : la rencontre en concert (Flow G) transforme un moment social réel (croiser un autre fan, échanger sur place) en progression concrète — cohérent avec l'ADN "vécu réel" de l'app, pas un système social purement digital.</li>
+<li><strong>Nudges de complétion</strong> : mise en avant discrète des collections presque terminées, sans notification agressive.</li>
+<li><strong>Récompense garantie à la complétion</strong> : contrairement à l'ouverture de pack (aléatoire), finir un classeur officiel ou franchir un palier avatar rapporte une récompense certaine et non-aléatoire — renforce le sentiment de maîtrise sans reproduire une mécanique de loot-box.</li>
+<li><strong>Réciprocité sociale immédiate</strong> : un doublon obtenu est marqué disponible à l'échange dès l'obtention, sans étape supplémentaire — la friction restante (trouver la bonne personne, au bon endroit) est celle, assumée, du choix du présentiel.</li>
+<li><strong>Retour de boucle après absence</strong> : les évolutions manquées pendant une absence se présentent groupées au retour (Flow C) plutôt que d'être perdues ou de pénaliser l'utilisateur — l'investissement accumulé (collection, avatar, réputation) est ce qui donne envie de revenir après une coupure, pas une mécanique punitive.</li>
+<li><strong>Effet de propagation externe</strong> : les moments de récompense déjà partageables (évolution de carte, complétion de classeur) sont aussi la seule boucle qui ramène potentiellement de nouveaux utilisateurs depuis l'extérieur de l'app — à garder en tête comme un bénéfice secondaire de ces écrans, pas un objectif à part entière du MVP.</li>
+</ul>
+</section>
+<section id="architecture-5-anti-patterns-a-eviter-explicitement" class="doc-sec"><h2>5. Anti-patterns à éviter explicitement</h2>
+<ul>
+<li>Pas de compte à rebours artificiel sur les packs ("plus que 2h !") sans événement réel derrière.</li>
+<li>Pas de mécanique de perte punitive (streak qui pénalise fort une absence) — la communauté cible réagit mal à la pression commerciale.</li>
+<li>Pas de notification spam sur les évolutions : un artiste suivi = pertinent, le reste doit rester silencieux par défaut.</li>
+<li>Pas de mécanique de check-in concert qui capte des données de localisation en continu — check-in ponctuel et consenti uniquement.</li>
+<li>Pas de liste "fans présents" ni de radar de proximité visible par défaut ou à sens unique — uniquement opt-in et réciproque (voir Flow G), pour ne pas créer un risque de repérage/harcèlement, en concert comme hors concert.</li>
+<li>Pas de position exacte affichée par le radar de proximité — présence/proximité seulement ("à quelques mètres"), jamais une distance précise ou une direction qui permettrait de localiser quelqu'un.</li>
+<li>Pas de récompense de complétion sur les classeurs personnalisés — évite qu'un utilisateur crée un classeur trivial (1 carte) pour farmer la récompense prévue pour les classeurs officiels.</li>
+<li>Pas de mission dont la seule valeur perçue serait la récompense — une mission doit rester une bonne expérience même sans la récompense (voir <code>Missions</code>, <a class="xref" href="#concept">Concept</a>).</li>
+</ul>
+<p>Chaque endroit clé où une animation porte le moment (pas seulement le décore) est marqué <strong>motion : Rive</strong> dans les flows ci-dessus ; la carte complète classée par niveau d'importance (séquences majeures / confirmations courtes / micro-interactions) vit dans <a class="xref" href="#da">Direction artistique</a> (section Motion) et dans <a class="xref" href="flows.html">flows.html</a> (section "Carte des animations").</p>
+</section>
+<section id="architecture-statut" class="doc-sec"><h2>Statut</h2>
+<p>Architecture et parcours posés comme base de travail, avec un pivot structurant acté : l'échange en présentiel uniquement (Flow G généralisé au-delà du concert, via un radar de proximité), la détection/preuve de concert par billet plutôt que par suivi d'artiste (Flow D), et une nouvelle boucle Missions (Flow H) qui traverse toutes les autres. Prochaine étape suggérée : détailler un flow en particulier (wireframes bas-fidélité) ou challenger/amender cette structure avant tout maquettage visuel.</p></section>
+    </div>
+  </div>
+</div>
+<div class="tab-panel" role="tabpanel" id="panel-roadmap" aria-labelledby="tab-roadmap" data-label="Roadmap" hidden>
+  <div class="wrap">
+    <div class="panel-head">
+      <p class="eyebrow">04 · Roadmap</p>
+      <h2 class="panel-title">Roadmap</h2>
+      <p class="tagline">Tout ce qui est volontairement écarté du MVP, et la stratégie droits à l'image pour l'ouverture publique.</p>
+    </div>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#roadmap-phase-2-ouverture-publique-strategie-droits-a-l-image">Phase 2 — Ouverture publique : stratégie droits à l&#x27;image</a></li><li><a href="#roadmap-phase-2-hybride-physique-digital">Phase 2 — Hybride physique/digital</a></li><li><a href="#roadmap-idees-sociales-a-explorer-plus-tard">Idées sociales à explorer plus tard</a></li><li><a href="#roadmap-avatar-detection-d-ambiance-pistes-techniques">Avatar &amp;amp; détection d&#x27;ambiance — pistes techniques</a></li><li><a href="#roadmap-production-de-cartes-pistes-de-scalabilite-technique">Production de cartes — pistes de scalabilité technique</a></li><li><a href="#roadmap-monetisation-pistes-futures">Monétisation — pistes futures</a></li><li><a href="#roadmap-rappel-de-cadrage">Rappel de cadrage</a></li></ol></nav>
+    <div class="doc">
+<div class="doc-intro"><p>But de ce document : conserver toutes les idées évoquées qui ne font pas partie du MVP, pour ne rien perdre, sans polluer le concept de lancement (<a class="xref" href="#concept">Concept</a>).</p>
+</div>
+<section id="roadmap-phase-2-ouverture-publique-strategie-droits-a-l-image" class="doc-sec"><h2>Phase 2 — Ouverture publique : stratégie droits à l'image</h2>
+<p>Le concept utilise dès maintenant les vrais noms de groupes/musiciens et des portraits IA ressemblants, tolérable uniquement en usage privé (voir risques dans <a class="xref" href="#concept">Concept</a>). <strong>Recadrage du problème</strong> : viser "l'accord de tous les groupes" avant d'ouvrir n'a jamais été le plan (déjà écarté comme approche "big bang" — voir ci-dessous), mais même une approche progressive groupe par groupe se heurte à un taux de réponse naturellement bas. La stratégie doit donc surtout <strong>réduire le nombre de portes auxquelles il faut frapper</strong>, pas seulement accepter d'en frapper beaucoup.</p>
+<p><strong>Les vrais noms ne bougent pas dans ce plan.</strong> Les 4 leviers ci-dessous portent uniquement sur le portrait et sur <em>qui</em> est approché en premier — à aucun moment ils ne demandent de renoncer aux vrais groupes. C'est un choix assumé, pas un oubli : un faux groupe n'a structurellement pas le même impact qu'un vrai (voir <a class="xref" href="#concept">Concept</a>, positionnement — c'est la raison même du choix des vrais noms), et ce plan est construit pour ne pas avoir à y toucher.</p>
+<p><strong>Plan recommandé (produit/business, pas un avis juridique — voir la réserve en bas) :</strong></p>
+<ol>
+<li><strong>Réduire la ressemblance des portraits par défaut, indépendamment de tout accord</strong> — le levier le plus direct, et le seul qui ne dépend d'aucun tiers à convaincre. Le test "Sleeplot" (<a class="xref" href="#da">Direction artistique</a>) a déjà validé qu'un gag visuel stylisé, sans photo-guidage précis, porte bien l'humour et l'effet "vraie carte de collection" recherchés. Le test Landmvrks à ressemblance guidée par photo reste la version la plus exposée testée à ce jour — à réserver aux artistes ayant explicitement donné leur accord, jamais au socle par défaut. Ça ne supprime pas le risque lié au nom réel, mais réduit fortement l'exposition sur le droit à l'image du portrait, qui est le risque le plus tranchant des deux identifiés dans <a class="xref" href="#concept">Concept</a>.</li>
+<li><strong>Un catalogue de lancement construit autour de quelques têtes d'affiche, pas seulement "qui a dit oui en premier"</strong> — le jeu perd son sens sans des pointures reconnues du metal/rock (voir positionnement : c'est l'authenticité d'un vrai poids culturel qui porte l'engagement, pas juste un vrai nom quelconque). Pas un catalogue complet dès le départ, mais pas un catalogue volontairement mineur non plus : un petit nombre d'artistes "ancres" choisis pour leur poids dans la culture, le reste du catalogue grandissant autour.</li>
+<li><strong>Deux vitesses pour atteindre ces ancres, pas un choix entre "stars" et "petits groupes"</strong> :
+   - Pour les artistes reconnus, passer par les canaux professionnels (label, management, agent) plutôt que directement par le groupe — c'est le canal normal pour ce type de demande côté business, et souvent plus rapide qu'un message à un petit groupe sans structure claire pour savoir qui doit même répondre.
+   - S'appuyer sur la preuve déjà construite (page de pitch, retours de proches, prototype qui tourne) comme argument de crédibilité auprès de ces interlocuteurs — une proposition avec une démo qui fonctionne convainc plus qu'une idée sur papier.
+   - Accepter que ça prenne plus de temps et un taux de succès par contact plus bas que viser des groupes émergents — c'est le compromis assumé pour ne pas sacrifier l'impact du jeu.
+   - Les artistes indépendants/émergents restent utiles <strong>en complément</strong>, une fois les ancres posées (diversité du catalogue, rareté, actu plus fréquente donc plus de contenu vivant) — en renfort, jamais en remplacement des têtes d'affiche.</li>
+<li><strong>Présenter l'app comme un bénéfice pour l'artiste, pas une demande de faveur</strong> — passer de « puis-je utiliser votre image » à « voici un outil d'engagement fan gratuit, qu'on aimerait construire avec vous » change la nature de la conversation, y compris face à un contact professionnel. Amorce possible, à adapter selon l'interlocuteur (le groupe directement ou son management) : <em>« On construit une app de cartes à collectionner pour les fans de metal/rock, avec [artiste] déjà représenté dans un prototype privé — on adorerait vous montrer ce que ça donne et voir si ça vous intéresse d'en faire partie officiellement, sans coût de votre côté. »</em> Une prise de contact, pas un contrat — les termes se négocient après un accord de principe, pas avant.</li>
+</ol>
+<p><strong>Ce qui ne change pas</strong> : usage strictement privé pour l'instant (déjà acté), et validation par un avocat propriété intellectuelle/droit à l'image avant toute diffusion publique même limitée. En particulier, un point que ce document ne tranche pas et qu'il ne faut pas supposer réglé par la stylisation seule : l'<strong>exception de parodie</strong> protège certains usages du <strong>droit d'auteur</strong> en droit français, mais son étendue sur le <strong>droit à l'image</strong> d'une personne reconnaissable est un terrain distinct, régi par d'autres bases juridiques — à faire confirmer par un juriste, pas à assumer par analogie.</p>
+<p><strong>Repli — dernier recours, pas une étape 5</strong> : si, après avoir sérieusement tenté 1 à 4 sur une durée significative, le taux de réponse reste proche de zéro, l'option noms/portraits détournés (parodiques) reste documentée et techniquement viable (test Sleeplot). Elle n'est délibérément pas mise en avant comme suite logique du plan : un faux groupe n'a pas le même impact qu'un vrai — c'est justement pourquoi les vrais noms ont été choisis à l'origine (voir <a class="xref" href="#concept">Concept</a>) — donc ce repli coûte quelque chose de réel à l'engagement, pas seulement une préférence esthétique. À activer en connaissance de ce coût, pas par défaut.</p>
+</section>
+<section id="roadmap-phase-2-hybride-physique-digital" class="doc-sec"><h2>Phase 2 — Hybride physique/digital</h2>
+<ul>
+<li>Packs physiques vendus en merch stand / disquaires / festival.</li>
+<li>QR code ou tag NFC sur le pack physique → scan pour débloquer le jumeau numérique (la carte physique devient un objet d'affichage collector, la valeur "jeu" reste dans l'app).</li>
+<li>Bornes ou scan géolocalisé sur site (festival/concert) débloquant des cartes exclusives non obtenables ailleurs.</li>
+<li>"Passeport festival" agrégeant les scans d'une tournée/édition.</li>
+<li>Objets physiques réellement liés à des cartes Légendaires (médiator, ticket, setlist signée) pour les éditions ultra-limitées.</li>
+</ul>
+</section>
+<section id="roadmap-idees-sociales-a-explorer-plus-tard" class="doc-sec"><h2>Idées sociales à explorer plus tard</h2>
+<ul>
+<li>Marketplace monétaire (revente contre argent réel) — <strong>écarté pour l'instant</strong> pour des raisons de cadre légal (loot-box) et de dérive spéculative ; à ne reconsidérer qu'avec un avis juridique dédié.</li>
+<li>Système de valeur symbolique de rareté pour équilibrer les échanges (sorte de "cote" indicative, non monétaire).</li>
+<li>Fonctionnalités "Metal Corner" approfondies : rencontres IRL facilitées entre fans présents au même événement, forums par guilde/sous-genre.</li>
+<li>Duels/mini-jeux entre avatars (sans dénaturer le positionnement "pas un jeu de combat" — à cadrer si exploré).</li>
+</ul>
+</section>
+<section id="roadmap-avatar-detection-d-ambiance-pistes-techniques" class="doc-sec"><h2>Avatar &amp; détection d'ambiance — pistes techniques</h2>
+<ul>
+<li>Jauge d'ambiance automatique via accéléromètre/gyroscope : nécessite un spike technique pour valider la précision réelle (distinction pogo / wall of death / simple headbanging).</li>
+<li>Corroboration sociale : d'autres fans présents au même moment/lieu peuvent confirmer un moment vécu (renforce la fiabilité du déclaratif sans capteur).</li>
+<li>Liste de titres/achievements à étoffer au fil du temps (ambiance, social, fidélité, découverte) — conçue comme un système évolutif, pas figé au lancement.</li>
+</ul>
+</section>
+<section id="roadmap-production-de-cartes-pistes-de-scalabilite-technique" class="doc-sec"><h2>Production de cartes — pistes de scalabilité technique</h2>
+<ul>
+<li>Pipeline de génération automatisée/scriptée des visuels de carte à partir d'une base de données (métadonnées artiste + photo → composition automatique sur le gabarit défini dans <a class="xref" href="#da">Direction artistique</a>), une fois le template validé en design.</li>
+</ul>
+</section>
+<section id="roadmap-monetisation-pistes-futures" class="doc-sec"><h2>Monétisation — pistes futures</h2>
+<ul>
+<li>Bundle billetterie x festival (carte exclusive incluse dans certains billets).</li>
+<li>Extensions de contenu sponsorisées par labels/artistes au-delà du MVP.</li>
+</ul>
+</section>
+<section id="roadmap-rappel-de-cadrage" class="doc-sec"><h2>Rappel de cadrage</h2>
+<p>Toute mécanique impliquant de l'argent réel en lien avec des packs aléatoires ou la revente de cartes doit être validée par un juriste avant développement (risque loot-box / réglementation jeux d'argent selon les pays).</p></section>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <footer>
+    Document de travail Metalnini — concept. Complète <a href="index.html">la page de pitch</a> et <a href="flows.html">les user flows</a>.
+  </footer>
+</div>
+
+<button type="button" id="comment-toggle" class="comment-toggle" aria-pressed="false">
+  <span class="dot"></span><span id="comment-toggle-label">Commenter</span>
+</button>
+
+</div>
+
+<script>
+(function(){
+  var PASS = 'metalnini';
+  var KEY = 'metalnini-unlocked';
+  var gate = document.getElementById('gate');
+  var content = document.getElementById('site-content');
+  var form = document.getElementById('gate-form');
+  var input = document.getElementById('gate-input');
+  var error = document.getElementById('gate-error');
+
+  function unlock(){
+    gate.style.display = 'none';
+    content.style.display = '';
+  }
+
+  var alreadyUnlocked = false;
+  try{ alreadyUnlocked = localStorage.getItem(KEY) === '1'; }catch(e){}
+
+  if(alreadyUnlocked){
+    unlock();
+  } else {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(input.value.trim().toLowerCase() === PASS){
+        try{ localStorage.setItem(KEY,'1'); }catch(e){}
+        unlock();
+      } else {
+        error.hidden = false;
+        input.value = '';
+        input.focus();
+      }
+    });
+  }
+})();
+
+(function(){
+  var WEB3FORMS_KEY = '32acdb51-a679-4ea0-8159-3e5dc3d544a0';
+  var toggle = document.getElementById('comment-toggle');
+  var toggleLabel = document.getElementById('comment-toggle-label');
+  var active = false;
+  var hint = null;
+  var openPin = null;
+  var openPopover = null;
+
+  function contextFor(el){
+    var parts = [];
+    var panel = el.closest('.tab-panel');
+    if(panel) parts.push(panel.getAttribute('data-label'));
+    var section = el.closest('section[id]');
+    if(section){
+      var h2 = section.querySelector('h2');
+      if(h2) parts.push(h2.textContent.trim());
+    }
+    var block = el.closest('.slot, .pillar, .swatch-row, h3 + *, li, p');
+    if(block){
+      var h = block.querySelector('h4, figcaption strong') || null;
+      if(h && h.textContent.trim()) parts.push(h.textContent.trim());
+    }
+    return parts.length ? parts.join(' › ') : (document.title || 'concept.html');
+  }
+
+  function closeOpen(){
+    if(openPopover){ openPopover.remove(); openPopover = null; }
+    if(openPin){ openPin.remove(); openPin = null; }
+  }
+
+  function setActive(next){
+    active = next;
+    document.documentElement.classList.toggle('commenting', active);
+    toggle.classList.toggle('is-active', active);
+    toggle.setAttribute('aria-pressed', String(active));
+    toggleLabel.textContent = active ? 'Annuler' : 'Commenter';
+    if(active){
+      hint = document.createElement('div');
+      hint.className = 'comment-hint';
+      hint.textContent = 'Clique n\'importe où sur la page pour laisser un commentaire à cet endroit.';
+      document.body.appendChild(hint);
+    } else {
+      if(hint){ hint.remove(); hint = null; }
+      closeOpen();
+    }
+  }
+
+  toggle.addEventListener('click', function(){ setActive(!active); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(openPopover){ closeOpen(); } else if(active){ setActive(false); }
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if(!active) return;
+    if(e.target === toggle || toggle.contains(e.target)) return;
+    if(openPopover && openPopover.contains(e.target)) return;
+
+    e.preventDefault();
+    closeOpen();
+
+    var pageX = e.pageX, pageY = e.pageY;
+    var docEl = document.documentElement;
+    var xPct = Math.round((pageX / docEl.scrollWidth) * 100);
+    var yPct = Math.round((pageY / docEl.scrollHeight) * 100);
+    var context = contextFor(e.target);
+
+    var pin = document.createElement('div');
+    pin.className = 'comment-pin';
+    pin.style.left = pageX + 'px';
+    pin.style.top = pageY + 'px';
+    document.body.appendChild(pin);
+    openPin = pin;
+
+    var pop = document.createElement('div');
+    pop.className = 'comment-popover';
+    pop.innerHTML =
+      '<p class="cp-context">' + context.replace(/</g,'&lt;') + '</p>' +
+      '<input type="text" class="cp-name" placeholder="Ton prénom (optionnel)">' +
+      '<textarea class="cp-message" placeholder="Ton commentaire ici…" autofocus></textarea>' +
+      '<div class="cp-row">' +
+        '<button type="button" class="cp-send">Envoyer</button>' +
+        '<button type="button" class="comment-close">Annuler</button>' +
+      '</div>' +
+      '<p class="cp-msg" hidden></p>';
+
+    var left = pageX + 16;
+    var top = pageY + 16;
+    document.body.appendChild(pop);
+    var pw = pop.offsetWidth, ph = pop.offsetHeight;
+    if(left + pw > docEl.scrollWidth - 12) left = pageX - pw - 16;
+    if(left < 12) left = 12;
+    if(top + ph > window.scrollY + window.innerHeight - 12) top = pageY - ph - 16;
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    openPopover = pop;
+
+    var msgEl = pop.querySelector('.cp-msg');
+    var sendBtn = pop.querySelector('.cp-send');
+    var textarea = pop.querySelector('.cp-message');
+    textarea.focus();
+
+    pop.querySelector('.comment-close').addEventListener('click', function(){ closeOpen(); });
+
+    sendBtn.addEventListener('click', function(){
+      var message = textarea.value.trim();
+      if(!message){ textarea.focus(); return; }
+      sendBtn.disabled = true;
+
+      var data = new FormData();
+      data.append('access_key', WEB3FORMS_KEY);
+      data.append('subject', 'Nouveau commentaire — concept.html');
+      data.append('from_name', 'Metalnini — concept.html (commentaire positionné)');
+      data.append('name', pop.querySelector('.cp-name').value.trim() || '(non renseigné)');
+      data.append('message', message);
+      data.append('section', context);
+      data.append('position_approx', 'x≈' + xPct + '%, y≈' + yPct + '% de la page');
+      data.append('page_url', location.href);
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: data
+      }).then(function(res){ return res.json(); }).then(function(json){
+        if(json.success){
+          pop.innerHTML = '<p class="cp-context">' + context.replace(/</g,'&lt;') + '</p><p class="cp-msg success">Merci, commentaire envoyé !</p>';
+          setTimeout(closeOpen, 1600);
+        } else {
+          msgEl.textContent = "Un souci à l'envoi — réessaie.";
+          msgEl.className = 'cp-msg error';
+          msgEl.hidden = false;
+          sendBtn.disabled = false;
+        }
+      }).catch(function(){
+        msgEl.textContent = "Un souci à l'envoi — réessaie.";
+        msgEl.className = 'cp-msg error';
+        msgEl.hidden = false;
+        sendBtn.disabled = false;
+      });
+    });
+  }, true);
+})();
+
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab[data-tab]'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+
+  function show(key, target){
+    panels.forEach(function(p){ p.hidden = p.id !== 'panel-' + key; });
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-tab') === key)); });
+    if(target){ target.scrollIntoView(); }
+    else { window.scrollTo(0, document.querySelector('.tabs').offsetTop); }
+  }
+
+  function route(){
+    var id = decodeURIComponent(location.hash.slice(1));
+    if(!id){ show('concept', null); window.scrollTo(0,0); return; }
+    if(document.getElementById('panel-' + id)){ show(id, null); return; }
+    var el = document.getElementById(id);
+    var panel = el && el.closest('.tab-panel');
+    if(panel){ show(panel.id.replace('panel-',''), el); return; }
+    show('concept', null);
+  }
+
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
