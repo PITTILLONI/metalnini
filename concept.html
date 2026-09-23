@@ -144,6 +144,8 @@
   /* ---------- DA : emplacements d'images ---------- */
   .slots{display:grid; gap:14px; margin:18px 0 16px;}
   .slots.mood{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+  .mood.tall .slot-img{aspect-ratio:2/3;}
+  .mood.tall .slot-img img{object-fit:contain; background:#000;}
   .slots.creas{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
   .slot{margin:0; display:flex; flex-direction:column;}
   .slot-img{
@@ -516,27 +518,57 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 <section id="da-moodboard" class="doc-sec">
   <p class="eyebrow">02 · Moodboard</p>
   <h2>Moodboard</h2>
-  <p class="lead">Les références qui fixent l'univers de la carte. Chaque case décrit ce qu'elle doit montrer ; l'image s'affiche automatiquement dès que le fichier est déposé dans <code>assets/da/moodboard/</code> sous le nom indiqué.</p>
+  <p class="lead">Le moodboard Krea (9 images : 5 références externes, 4 générations). Les images sont gardées en local, hors du dépôt public, puisque certaines sont des illustrations de tiers.</p>
 
-  <div class="slots mood">
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/01-tarot-vintage.jpg" alt="Référence tarot vintage" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">01-tarot-vintage.jpg</span></div>
-      <figcaption><strong>Tarot occulte vintage</strong>Cadre parchemin, coins arrondis, cartouche de nom, motifs célestes. La référence de départ.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/02-gravure.jpg" alt="Référence gravure ancienne" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">02-gravure.jpg</span></div>
-      <figcaption><strong>Gravure ancienne</strong>Linework en hachures, trait fin, ombres par densité de lignes.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/03-affiche-concert.jpg" alt="Référence affiche de concert" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">03-affiche-concert.jpg</span></div>
-      <figcaption><strong>Affiche de concert</strong>Typographie condensée, sérigraphie, aplats limités en couleurs.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/04-flyer-xerox.jpg" alt="Référence flyer photocopié" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">04-flyer-xerox.jpg</span></div>
-      <figcaption><strong>Flyer photocopié / zine</strong>Grain, contraste dur, collage : le côté DIY de la scène.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/05-patchs-veste.jpg" alt="Référence patchs de veste" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">05-patchs-veste.jpg</span></div>
-      <figcaption><strong>Veste à patchs</strong>Broderie, logos illisibles, accumulation : l'objet de collection du fan de metal.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/06-carte-collection.jpg" alt="Référence carte à collectionner" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">06-carte-collection.jpg</span></div>
-      <figcaption><strong>Cartes à collectionner</strong>Fine print, numérotation, verso, logique de série façon vignettes et cartes sportives.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/07-foil-holo.jpg" alt="Référence foil holographique" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">07-foil-holo.jpg</span></div>
-      <figcaption><strong>Foil et holographie</strong>Matières des raretés hautes : prisme, dorure, foil noir.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/08-palette.jpg" alt="Référence palette rétro" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">08-palette.jpg</span></div>
-      <figcaption><strong>Palette rétro sourde</strong>Moutarde, bleu pétrole, brique, vert sauge sur fond noir.</figcaption></figure>
+  <div class="slots mood tall">
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-01.jpg" alt="The Wizard" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-01.jpg</span></div>
+      <figcaption><strong>01 · The Wizard</strong>Référence externe (signée NB). Linogravure à contour noir épais, nuit bleu profond, aplats limités. Le gag passe par les attributs : colombe et chauve-souris renvoient aux légendes d'Ozzy, le titre est un titre de chanson.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-02.jpg" alt="The Priest" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-02.jpg</span></div>
+      <figcaption><strong>02 · The Priest</strong>Référence externe. Gothique dense : hachures fines, halo, cadre ornementé, rouge / noir / or. Candidat naturel pour les raretés hautes.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-03.jpg" alt="Ozzy" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-03.jpg</span></div>
+      <figcaption><strong>03 · Ozzy</strong>Référence externe. Palette chaude, attributs du tarot (coupe, pentacle, épée), cornes du diable : ton joyeux, personnage expressif.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-04.jpg" alt="A Reza" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-04.jpg</span></div>
+      <figcaption><strong>04 · A Reza</strong>Référence externe. Noir et crème uniquement, pure gravure, halo et banderole. Piste pour une version sobre, type Commune.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-05.jpg" alt="The Reclaimed" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-05.jpg</span></div>
+      <figcaption><strong>05 · The Reclaimed</strong>Référence externe. Fond brique, cadre floral, légende humoristique sous le titre : preuve que le texte de carte peut porter le second degré.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-06.jpg" alt="Navire céleste" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-06.jpg</span></div>
+      <figcaption><strong>06 · Navire céleste</strong>Génération Krea. Soleils à visage, œil, étoiles : le répertoire de motifs célestes, palette violet / bleu nuit / rose.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-07.jpg" alt="Forêt" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-07.jpg</span></div>
+      <figcaption><strong>07 · Forêt</strong>Génération Krea. Décor en linogravure, format paysage : piste pour les fonds des cartes Live ou le verso.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-08.jpg" alt="Le squelette" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-08.jpg</span></div>
+      <figcaption><strong>08 · Le squelette</strong>Génération Krea. Hachures fines, rouge sourd, halo, architecture en fond : proche de la famille gothique.</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-09.jpg" alt="La clé" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-09.jpg</span></div>
+      <figcaption><strong>09 · La clé</strong>Génération Krea. Gros plan sur un objet : piste pour les cartes Album ou Riff centrées sur un attribut plutôt qu'un personnage.</figcaption></figure>
   </div>
-  <p class="note">[À PRÉCISER : sources des références — privilégier des images générées ou des références libres de droits, la page étant techniquement publique]</p>
+
+  <h3>Ce qui revient partout</h3>
+  <ul>
+    <li><b>La structure de carte</b> : bordure crème, chiffre romain en haut, cartouche de titre en capitales à empattements en bas, personnage central en buste ou en pied.</li>
+    <li><b>Le décor symbolique</b> : lune, soleil, étoiles, halo ou rayons derrière la tête, et des attributs posés autour (coupe, crâne, épée, pentacle, bougies, animaux).</li>
+    <li><b>L'humour par les attributs</b> : la carte fait rire parce que les objets et le titre renvoient à ce que les fans savent de l'artiste (01, 03), pas parce que le visage est déformé.</li>
+    <li><b>Le titre en arcane</b> : un titre de chanson ou un surnom plutôt que le nom du groupe (« The Wizard »), le nom réel pouvant passer dans la fine print.</li>
+  </ul>
+
+  <h3>Deux familles à arbitrer</h3>
+  <div class="dodont">
+    <div class="do">
+      <p class="eyebrow">A · Linogravure chaude (01, 03, 06, 09)</p>
+      <ul>
+        <li>Contour noir épais, aplats, peu de couleurs.</li>
+        <li>Lisible en petit, à l'échelle d'une vignette dans la Collection.</li>
+        <li>Plus fun et plus homogène à générer en série.</li>
+      </ul>
+    </div>
+    <div class="do">
+      <p class="eyebrow">B · Gothique gravé (02, 04, 08)</p>
+      <ul>
+        <li>Hachures fines, cadres ornementés, rouge / noir / or.</li>
+        <li>Plus spectaculaire, plus « objet précieux ».</li>
+        <li>Plus chargé : perd en lisibilité en petit.</li>
+      </ul>
+    </div>
+  </div>
+  <p><b>Piste proposée</b> : A comme socle de toutes les cartes, et les ornements de B réservés aux raretés hautes (cadre ornementé et halo pour Signature, version gothique complète pour Légendaire). La rareté se lit alors dans le dessin du cadre, en plus de la couleur. <span class="note">[À PRÉCISER : à valider]</span></p>
 </section>
 
 <!-- ============ EXEMPLES DE CRÉA ============ -->
