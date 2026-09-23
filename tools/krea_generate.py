@@ -7,7 +7,7 @@ Usage :
   python3 tools/krea_generate.py --out assets/da/creas/artiste-commune.jpg \
       --prompt "..." [--model krea/krea-2/medium] [--ratio 2:3] [--resolution 1K]
 """
-import argparse, json, subprocess, sys, time, urllib.error, urllib.request
+import argparse, json, os, subprocess, sys, time, urllib.error, urllib.request
 
 API = "https://api.krea.ai"
 
@@ -45,11 +45,27 @@ def main():
     p.add_argument("--ratio", default="2:3")
     p.add_argument("--resolution", default="1K")
     p.add_argument("--timeout", type=int, default=300)
+    p.add_argument("--creativity", choices=["raw", "low", "medium", "high"],
+                   help="Krea 2 : raw désactive la réécriture automatique du prompt")
+    p.add_argument("--style-ref", action="append", default=[], metavar="URL[@FORCE]",
+                   help="Krea 2 : image de référence de style (URL publique), force 0-1, ex. URL@0.6")
+    p.add_argument("--image-url", action="append", default=[], metavar="URL",
+                   help="Nano Banana : image(s) de référence (visage, style), URL publique")
     a = p.parse_args()
 
     key = api_key()
-    job = call("POST", f"/generate/image/{a.model}", key,
-               {"prompt": a.prompt, "aspect_ratio": a.ratio, "resolution": a.resolution})
+    body = {"prompt": a.prompt, "aspect_ratio": a.ratio, "resolution": a.resolution}
+    if a.creativity:
+        body["creativity"] = a.creativity
+    if a.style_ref:
+        refs = []
+        for r in a.style_ref:
+            url, _, force = r.rpartition("@") if "@" in r.rsplit("/", 1)[-1] else (r, "", "")
+            refs.append({"url": url or r, "strength": float(force) if force else 0.5})
+        body["image_style_references"] = refs
+    if a.image_url:
+        body["image_urls"] = a.image_url
+    job = call("POST", f"/generate/image/{a.model}", key, body)
     job_id = job.get("job_id") or job.get("id")
     if not job_id:
         sys.exit(f"Réponse inattendue : {json.dumps(job)[:300]}")
@@ -63,7 +79,11 @@ def main():
             urls = (job.get("result") or {}).get("urls") or []
             if not urls:
                 sys.exit(f"Job terminé sans image : {json.dumps(job)[:300]}")
-            urllib.request.urlretrieve(urls[0], a.out)
+            tmp = a.out + ".download"
+            urllib.request.urlretrieve(urls[0], tmp)
+            subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "92", tmp, "--out", a.out],
+                           check=True, stdout=subprocess.DEVNULL)
+            os.remove(tmp)
             print(f"Image enregistrée : {a.out}")
             return
         if status in ("failed", "cancelled"):
