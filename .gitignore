@@ -1,0 +1,3 @@
+# Créas de la V1 perso (artistes reconnaissables) : locales uniquement, jamais publiées
+assets/da/creas/*
+!assets/da/creas/.gitkeep

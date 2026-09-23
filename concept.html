@@ -127,6 +127,8 @@
   td:first-child{color:var(--text);}
 
   /* ---------- DA : édito ---------- */
+  .decision{margin:0 0 18px; padding:14px 18px; border-left:3px solid var(--t-decision); background:var(--surface);}
+  .decision p:last-child{margin:0; font-size:0.92rem;}
   .promise{margin:26px 0 8px; padding:20px 22px; border-left:3px solid var(--accent); background:var(--surface);}
   .promise p:nth-child(2){font-family:var(--font-display); font-size:clamp(1.2rem,3vw,1.5rem); text-transform:uppercase; line-height:1.25; margin:0 0 10px; color:#fff;}
   .pillars{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
@@ -483,14 +485,14 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
         <li>Un seul gag lisible par carte, intégré au personnage ou à un attribut (objet, accessoire, pose).</li>
         <li>Un gag qui renvoie à un trait connu du groupe ou du musicien (look, anecdote, titre, instrument).</li>
         <li>Des titres d'arcane qui jouent sur le vocabulaire tarot et le metal (« The Iron Maiden »).</li>
-        <li>Un style stylisé, sans photo-guidage précis, par défaut (socle Sleeplot).</li>
+        <li>V1 perso : des portraits où l'artiste est reconnaissable, dans le style tarot (voir la décision ci-dessous).</li>
       </ul>
     </div>
     <div class="dont">
       <p class="eyebrow">On ne fait pas</p>
       <ul>
         <li>De la caricature dégradante ou qui vise le physique d'une personne réelle.</li>
-        <li>Un portrait qui cherche la ressemblance photographique, sauf accord explicite de l'artiste.</li>
+        <li>Diffuser un portrait reconnaissable hors de l'usage perso sans accord de l'artiste.</li>
         <li>Des blagues sur des sujets sensibles liés à un membre réel (santé, décès, affaires).</li>
         <li>L'empilement de références : si le gag demande une explication, il est raté.</li>
       </ul>
@@ -541,6 +543,7 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 <section id="da-exemples-crea" class="doc-sec">
   <p class="eyebrow">03 · Exemples de créa</p>
   <h2>Exemples de créa</h2>
+  <div class="decision"><p class="eyebrow">Décision — 2026-09-23</p><p><b>La V1 des cartes est à usage strictement perso et utilise des artistes reconnaissables</b> (vrais noms, portraits ressemblants dans le style tarot, dans la lignée du test Landmvrks). Le socle Sleeplot, stylisé et sans photo-guidage, redevient la règle avant toute diffusion au-delà de ce cercle (voir <a class="xref" href="#roadmap">Roadmap</a>). Les images de cette V1 restent en local et ne sont pas publiées dans le dépôt.</p></div>
   <p class="lead">Une carte par type, à des raretés différentes, pour vérifier que le gabarit tient sur toute la gamme. Déposer les images générées avec Krea dans <code>assets/da/creas/</code> sous le nom indiqué. Format conseillé : portrait 2:3 (ex. 1000 × 1500 px).</p>
 
   <div class="slots creas">
@@ -561,9 +564,9 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
   <h3>Tests précédents</h3>
   <div class="slots creas">
     <figure class="slot" data-rarity="archive"><div class="slot-img has-img"><img src="assets/carte-exemple-landmvrks.jpg" alt="Test de carte tarot Landmvrks" loading="lazy"></div>
-      <figcaption><strong>Landmvrks · test photo-guidé</strong><span class="meta">Prouve qu'une ressemblance est atteignable dans le cadre tarot. Hors socle par défaut : à réserver aux artistes ayant donné leur accord (voir <a class="xref" href="#roadmap">Roadmap</a>).</span></figcaption></figure>
+      <figcaption><strong>Landmvrks · test photo-guidé</strong><span class="meta">Prouve qu'une ressemblance est atteignable dans le cadre tarot. Référence de la V1 perso ; hors usage perso, à réserver aux artistes ayant donné leur accord (voir <a class="xref" href="#roadmap">Roadmap</a>).</span></figcaption></figure>
     <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-sleeplot.jpg" alt="Test de carte tarot Sleeplot" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-sleeplot.jpg</span></div>
-      <figcaption><strong>Sleeplot · socle par défaut</strong><span class="meta">Gag visuel stylisé (masque de sommeil « Zzz »), sans photo-guidage. Image absente du dépôt.</span></figcaption></figure>
+      <figcaption><strong>Sleeplot · socle avant diffusion</strong><span class="meta">Gag visuel stylisé (masque de sommeil « Zzz »), sans photo-guidage. Image absente du dépôt.</span></figcaption></figure>
   </div>
 </section>
 
@@ -578,9 +581,9 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 fine engraving linework with cross-hatching, muted retro palette (mustard, petrol blue,
 brick red, sage green), roman numeral [NUMÉRO] at the top, small sun and star motifs
 in the upper corners, name cartouche at the bottom reading "[NOM]".
-Central figure: stylized [RÔLE : singer / guitarist / drummer...] of a [SOUS-GENRE] band,
+Central figure: [ARTISTE : name, role, signature look — V1 perso: recognizable likeness],
 [GAG VISUEL : one clear visual joke tied to the band].
-Illustrated, not photographic, no real person likeness.
+Illustrated in the engraving style, not photographic.
 Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
 
   <h3>Variables</h3>
@@ -596,12 +599,12 @@ Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
 
   <h3>À éviter dans les générations</h3>
   <ul>
-    <li>Utiliser une photo réelle d'un musicien comme image de référence (socle par défaut = sans photo-guidage).</li>
+    <li>Hors V1 perso : utiliser une photo réelle d'un musicien comme image de référence (le socle avant diffusion est sans photo-guidage).</li>
     <li>Reproduire un logo de groupe, une pochette d'album ou un visuel officiel existant.</li>
     <li>Varier la structure du cadre d'une carte à l'autre : seuls le personnage et l'overlay de rareté changent.</li>
     <li>Laisser l'IA écrire le texte final de la carte : le nom et les métadonnées seront posés par le gabarit dans Figma.</li>
   </ul>
-  <p class="note">Rappel : les images publiées ici sont visibles publiquement via le dépôt GitHub, quel que soit le mot de passe. Voir les risques droits à l'image dans l'onglet <a class="xref" href="#concept">Concept</a>.</p>
+  <p class="note">Rappel : tout fichier poussé dans le dépôt est visible publiquement, quel que soit le mot de passe. Les créas de la V1 perso sont donc exclues du dépôt (.gitignore) et ne s'affichent qu'en local. Voir les risques droits à l'image dans l'onglet <a class="xref" href="#concept">Concept</a>.</p>
 </section>
 
 <section id="da-systeme" class="doc-sec"><p class="eyebrow">Référence</p><h2>Système visuel &amp; gabarit</h2><p class="lead">Les règles déjà actées : chrome, palette, typographie, gabarit paramétrique et motion. Elles restent valables quel que soit le style de portrait retenu.</p></section>
@@ -652,7 +655,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 </ol>
 <p><strong>Direction retenue : carte façon tarot vintage.</strong> Deux directions de portrait ont d'abord été testées (illustration caricaturale plate, puis portrait réaliste + traitement graphique duotone/halftone) avant qu'une référence moodboard (tarot occulte vintage) ne remette en cause le cadre de carte lui-même, pas seulement le portrait. C'est cette troisième direction qui est retenue : cadre parchemin aux coins arrondis, linework façon gravure ancienne, palette rétro sourde (moutarde, bleu pétrole, brique, vert sauge), numéro d'édition en chiffre romain, motifs célestes (soleil, étoiles) en zones fixes du gabarit, cartouche de nom en bas — une déclinaison directe du gabarit paramétrique déjà posé (zones fixes, seul le portrait/personnage change).</p>
 <p>L'humour de la DA ("drôle", voir positionnement) doit se voir sur le portrait/la carte, pas seulement passer par un nom détourné : un premier test sur "Sleeplot" (clin d'œil à Slipknot, à l'époque où l'option nom détourné était encore envisagée) a validé qu'un gag visuel simple — ici un masque de sommeil brodé "Zzz" à la place du masque effrayant — porte bien le second degré dans ce cadre vintage, à l'image des jeux de mots sur les arcanes du moodboard de référence (ex. "The Iron Maiden"). Un second test avec le vrai nom "Landmvrks" confirme que l'effet "vraie carte de collection" est nettement plus fort avec un vrai nom affiché qu'avec un nom détourné — un des éléments qui a fait pencher la décision vers les vrais noms (voir <a class="xref" href="#concept">Concept</a>). Un troisième test, à partir d'une photo réelle du chanteur (Florent Salfati) utilisée comme référence, montre qu'une vraie ressemblance est atteignable dans ce même cadre tarot sans perdre le style — mais le degré de ressemblance exact du portrait reste un point à faire trancher par un juriste (voir risques dans <a class="xref" href="#concept">Concept</a>).</p>
-<p><strong>Posture par défaut retenue pour la suite</strong> (voir la stratégie droits à l'image dans <a class="xref" href="#roadmap">Roadmap</a>) : le style <strong>Sleeplot</strong> (gag visuel stylisé, sans photo-guidage précis) redevient le socle par défaut de génération, pas le test Landmvrks à ressemblance photo-guidée. Ce dernier reste documenté comme preuve que l'effet est atteignable, mais n'est plus la direction à reproduire systématiquement — à réserver aux artistes ayant explicitement donné leur accord. C'est le levier de réduction de risque qui ne dépend d'aucun accord tiers, donc le plus simple à appliquer dès maintenant.</p>
+<p><strong>Posture par défaut avant toute diffusion</strong> (la V1 perso fait exception, voir <a class="xref" href="#da-exemples-crea">Exemples de créa</a>) (voir la stratégie droits à l'image dans <a class="xref" href="#roadmap">Roadmap</a>) : le style <strong>Sleeplot</strong> (gag visuel stylisé, sans photo-guidage précis) redevient le socle par défaut de génération, pas le test Landmvrks à ressemblance photo-guidée. Ce dernier reste documenté comme preuve que l'effet est atteignable, mais n'est plus la direction à reproduire systématiquement — à réserver aux artistes ayant explicitement donné leur accord. C'est le levier de réduction de risque qui ne dépend d'aucun accord tiers, donc le plus simple à appliquer dès maintenant.</p>
 <p><strong>Homogénéité de cette direction</strong> : contrairement au rendu réaliste testé avant (où l'homogénéité dépendait d'un filtre de post-traitement fixe), le format tarot est intrinsèquement homogène — bordure, numérotation, motifs célestes et cartouche sont des zones fixes du gabarit au même titre que les autres types de carte, pas un effet à recalibrer à chaque génération.</p>
 <p>Concrètement dans Figma : construire ça comme <strong>un composant à variantes</strong> (propriétés : Type × Rareté × Genre), lié aux variables de couleur/typo définies ci-dessus. Ajouter une nouvelle carte devient : déposer une photo + renseigner des métadonnées, jamais redessiner une carte. C'est aussi ce qui permettra, plus tard, une génération automatisée/scriptée des visuels de carte à partir d'une base de données (idée à garder dans <a class="xref" href="#roadmap">Roadmap</a>).</p>
 </section>

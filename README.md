@@ -22,6 +22,8 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 
 Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboard/` et `assets/da/creas/`, sous les noms indiqués sur chaque case : elles s'affichent automatiquement.
 
+**V1 perso des cartes** (décision du 2026-09-23) : artistes reconnaissables, usage strictement perso. Les images de `assets/da/creas/` sont exclues du dépôt via `.gitignore` et ne s'affichent qu'en local. Générées avec `tools/krea_generate.py` (API REST Krea, clé lue dans le Trousseau macOS).
+
 ## Où en est-on
 
 - Concept et architecture posés, considérés comme une base solide amenée à mûrir.
