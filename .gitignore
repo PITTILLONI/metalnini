@@ -5,3 +5,6 @@ assets/da/creas/*
 # Moodboard : contient des illustrations de tiers (références), local uniquement
 assets/da/moodboard/*
 !assets/da/moodboard/.gitkeep
+
+# Exports partagés en privé (contiennent les cartes)
+export/
