@@ -38,9 +38,10 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 
 ## Prochaines étapes possibles
 
+- **Feature 1 à développer : ouverture de paquet + visualisation du classeur** (décision du 2026-09-23, détail dans l'onglet Roadmap de `concept.html`). Avant de coder : trancher taille de paquet, probabilités par rareté, statut de la carte « de base », composition des deux classeurs de test et stack du prototype.
+- Compléter le catalogue de test : 10 à 12 artistes déclinés sur les 5 raretés (5 générés à ce jour).
 - Trancher les décisions listées en fin de `flows.html` — en priorité : le trou laissé dans un classeur par une carte qui évolue, le sort des doublons non échangés, et binder unique vs classeurs par sous-genre.
 - Spécifier les state machines Rive des 5 séquences majeures identifiées (niveau 1 de la carte des animations) une fois le gabarit de carte stabilisé.
-- Wireframer en basse fidélité les écrans des flows A et B (onboarding et ouverture de pack), qui ne demandent aucun visuel de carte définitif.
+- Wireframer en basse fidélité les écrans de la feature 1 (Flow B et Collection), puis ceux du Flow A.
 - Recueillir et synthétiser les retours des proches sur la page de pitch.
-- Reprendre la DA carte, en socle Sleeplot (pas photo-guidé) par défaut, quand les moyens de génération seront débloqués ; le gabarit paramétrique (onglet Direction artistique) reste valable indépendamment du style retenu.
 - Identifier une première liste de têtes d'affiche "ancres" et de leurs contacts professionnels (label, management) pour amorcer la stratégie droits à l'image posée dans l'onglet Roadmap de `concept.html`.
