@@ -22,7 +22,7 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 
 Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboard/` et `assets/da/creas/`, sous les noms indiqués sur chaque case : elles s'affichent automatiquement.
 
-**V1 perso des cartes** (décision du 2026-09-23) : artistes reconnaissables, usage strictement perso. Les images de `assets/da/creas/` sont exclues du dépôt via `.gitignore` et ne s'affichent qu'en local. Générées avec `tools/krea_generate.py` (API REST Krea, clé lue dans le Trousseau macOS).
+**V1 perso des cartes** (décision du 2026-09-23) : artistes reconnaissables, usage strictement perso. Les cartes de `assets/da/creas/` sont publiées dans le dépôt public et s'affichent en ligne (choix du 2026-09-23, pour y accéder depuis plusieurs machines). Le moodboard (`assets/da/moodboard/`) reste local car il contient des illustrations de tiers. `export/metalnini-cartes.html` est une galerie autonome à envoyer directement. Générées avec `tools/krea_generate.py` (API REST Krea, clé lue dans le Trousseau macOS).
 
 ## Où en est-on
 

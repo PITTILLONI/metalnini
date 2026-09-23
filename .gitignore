@@ -1,10 +1,4 @@
-# Créas de la V1 perso (artistes reconnaissables) : locales uniquement, jamais publiées
-assets/da/creas/*
-!assets/da/creas/.gitkeep
-
 # Moodboard : contient des illustrations de tiers (références), local uniquement
 assets/da/moodboard/*
 !assets/da/moodboard/.gitkeep
-
-# Exports partagés en privé (contiennent les cartes)
-export/
+.DS_Store
