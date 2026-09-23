@@ -611,7 +611,20 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
   <h2>Brief Krea</h2>
   <p class="lead">Un prompt de base commun à toutes les créas, pour que les cartes restent homogènes d'une génération à l'autre. Seuls les champs entre crochets changent. Point de départ à ajuster après les premiers essais.</p>
 
-  <h3>Prompt de base</h3>
+  <div class="decision"><p class="eyebrow">Recette validée — 2026-09-23 (essai 3, Knocked Loose)</p><p><b>Modèle</b> : Nano Banana Pro, format 2:3, 1K. <b>Deux images de référence</b> : une photo nette de l'artiste (visage, coiffure, look) et The Priest (moodboard 02) pour le style. Le prompt dit explicitement à quoi sert chaque image (« first image ONLY for the likeness », « second image ONLY as the style reference, do not copy the priest »). Titre d'arcane en grand, nom de l'artiste et du groupe en sous-titre. Commande : <code>tools/krea_generate.py --model google/nano-banana-pro --image-url PHOTO --image-url PRIEST</code>.</p></div>
+
+  <h3>Prompt validé</h3>
+  <pre class="prompt"><code>Create a vintage gothic tarot card. Use the first image ONLY for the likeness of
+[ARTISTE, qui il est sur la photo]: keep his face, [coiffure, look], [pose], half-body.
+Use the second image ONLY as the style reference: dense fine engraved cross-hatching,
+ornate black frame with corner flourishes, sun and crescent moon at the top, aged
+parchment, palette of dark red, black and antique gold, a dark red halo behind the head.
+Do not copy the priest, only the style.
+Props: [OBJETS / GAG].
+Roman numeral "[N]" at the top. Bottom cartouche: large title "[TITRE-ARCANE]",
+smaller subtitle "[ARTISTE] · [GROUPE]". No other text, no signature.</code></pre>
+
+  <h3>Prompt de base (première version, Krea 2 Medium)</h3>
   <pre class="prompt"><code>Vintage occult tarot card, full card with rounded corners, aged parchment frame,
 fine engraving linework with cross-hatching, muted retro palette (mustard, petrol blue,
 brick red, sage green), roman numeral [NUMÉRO] at the top, small sun and star motifs
