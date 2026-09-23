@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<title>Metalnini — Cartes</title>
+<style>
+:root{--bg:#0c0b0a;--surface:#161412;--text:#f3f0ea;--muted:#a49e94;--border:rgba(255,255,255,.1);--accent:#b23a3a;--gold:#cda44e;}
+*{box-sizing:border-box} html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header{padding:44px 0 18px} .eyebrow{font:500 .72rem/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+h1{font-family:"Arial Narrow",Oswald,sans-serif;font-size:clamp(2rem,6vw,3rem);text-transform:uppercase;margin:0;letter-spacing:.02em}
+header p{color:var(--muted);max-width:62ch;margin:10px 0 0}
+.picker{position:sticky;top:0;z-index:3;background:rgba(12,11,10,.94);backdrop-filter:blur(8px);border-block:1px solid var(--border);padding:10px 0}
+.picker .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.ab{flex:0 0 auto;font:500 .74rem ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:8px 14px;cursor:pointer}
+.ab[aria-selected="true"]{color:var(--text);border-color:var(--accent);background:rgba(178,58,58,.16)}
+.ab:focus-visible,.zoom:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+h2{font-family:"Arial Narrow",Oswald,sans-serif;text-transform:uppercase;font-size:1.6rem;margin:28px 0 2px} h2 span{color:var(--muted);font-size:1rem}
+.meta{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));padding-bottom:40px}
+figure{margin:0} .zoom{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:10px;overflow:hidden}
+.zoom img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover}
+figcaption{font:500 .7rem ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:8px}
+figure[data-r="rare"] figcaption{color:#6aa0f0} figure[data-r="holo"] figcaption{color:#b58cf0} figure[data-r="signature"] figcaption{color:var(--gold)} figure[data-r="legendaire"] figcaption{color:#e05a5a}
+.lb{position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:12px}
+footer{color:var(--muted);font-size:.8rem;padding:10px 0 40px}
+</style></head><body>
+<header class="wrap"><p class="eyebrow">Prototype privé · ne pas diffuser</p><h1>Metalnini</h1>
+<p>Le « Panini du metal » : des cartes d'artistes à collectionner, façon tarot gravé. Chaque artiste existe en 5 raretés, de la Commune à la Légendaire. Choisis un artiste, clique sur une carte pour l'agrandir. Ton avis m'intéresse : qu'est-ce qui te donne envie de les collectionner, et qu'est-ce qui ne marche pas ?</p></header>
+<nav class="picker" aria-label="Choisir l'artiste"><div class="wrap" role="tablist"><!--BUTTONS--></div></nav>
+<main class="wrap"><!--PANELS--></main>
+<footer class="wrap">Illustrations générées par IA à partir de photos sous licence libre (Wikimedia Commons). Usage strictement privé, les artistes n'ont pas été consultés.</footer>
+<script>
+(function(){
+ var b=[].slice.call(document.querySelectorAll('.ab')),p=[].slice.call(document.querySelectorAll('.panel'));
+ b.forEach(function(x){x.addEventListener('click',function(){var a=x.getAttribute('data-a');
+  b.forEach(function(y){y.setAttribute('aria-selected',String(y===x))});p.forEach(function(q){q.hidden=q.getAttribute('data-a')!==a});window.scrollTo({top:0});})});
+ document.addEventListener('click',function(e){var z=e.target.closest('.zoom');if(!z)return;var d=document.createElement('div');d.className='lb';
+  var i=document.createElement('img');i.src=z.querySelector('img').src;i.alt=z.querySelector('img').alt;d.appendChild(i);d.addEventListener('click',function(){d.remove()});document.body.appendChild(d);});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var l=document.querySelector('.lb');if(l)l.remove();}});
+})();
+</script></body></html>
