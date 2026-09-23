@@ -172,6 +172,16 @@
   .creas .slot[data-rarity="legendaire"] .slot-img{border-top-color:#b91c1c;}
   .creas .slot[data-rarity="archive"] .slot-img{border-top-color:var(--t-system);}
 
+  .artist-picker{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 6px;}
+  .artist-btn{
+    font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.08em; text-transform:uppercase;
+    background:var(--surface); color:var(--text-muted); border:1px solid var(--border); border-radius:999px;
+    padding:8px 14px; cursor:pointer;
+  }
+  .artist-btn:hover{color:var(--text); border-color:rgba(255,255,255,0.25);}
+  .artist-btn[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:var(--accent-soft);}
+  .artist-sub{margin:12px 0 0; font-size:0.9rem;}
+  .artist-sub .note{font-size:0.7rem;}
   pre.prompt{
     margin:10px 0 18px; padding:16px 18px; background:var(--surface); border:1px solid var(--border);
     border-radius:6px; overflow-x:auto;
@@ -593,29 +603,64 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
       <figcaption><strong>Collector · Légendaire</strong><span class="meta">Rouge sombre, foil noir, série ultra-limitée.</span><span class="groupe">Événement : [À PRÉCISER]</span></figcaption></figure>
   </div>
 
-  <h3>Déclinaison par rareté — Knocked Loose</h3>
-  <p>Générée à partir de l'essai 3 (Nano Banana Pro, image d'entrée = la carte validée) : seule la consigne de cadre et de finition change, l'illustration et les textes restent identiques.</p>
-  <div class="slots creas">
-    <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/knocked-loose-commune.jpg" alt="Knocked Loose, rareté Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-commune.jpg</span></div>
-      <figcaption><strong>Commune</strong><span class="meta">Cadre simplifié à filets, sans or, halo gris acier.</span></figcaption></figure>
-    <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/knocked-loose-rare.jpg" alt="Knocked Loose, rareté Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-rare.jpg</span></div>
-      <figcaption><strong>Rare</strong><span class="meta">Filet et motifs célestes bleu froid ; écart faible avec la base.</span></figcaption></figure>
-    <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/knocked-loose-holo-v2.jpg" alt="Knocked Loose, rareté Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-holo-v2.jpg</span></div>
-      <figcaption><strong>Holo / Prisme</strong><span class="meta">V2 : foil holographique sur toute la carte, illustration comprise, paillettes et reflets.</span></figcaption></figure>
-    <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/knocked-loose-signature.jpg" alt="Knocked Loose, rareté Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-signature.jpg</span></div>
-      <figcaption><strong>Signature</strong><span class="meta">Cadre doré en relief, numéro 07/50, signature manuscrite générée (voir note).</span></figcaption></figure>
-    <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/knocked-loose-legendaire-v2.jpg" alt="Knocked Loose, rareté Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-legendaire-v2.jpg</span></div>
-      <figcaption><strong>Légendaire</strong><span class="meta">V2 : gravure en négatif rouge et or sur foil noir, halo de feu, braises, gemmes rouges.</span></figcaption></figure>
-  </div>
-  <p class="note">[À PRÉCISER : la signature manuscrite de la version Signature est inventée par le modèle ; acceptable en usage perso, à remplacer par un sceau ou un tampon avant toute diffusion, pour ne jamais imiter l'autographe d'un artiste réel.]</p>
+  <h3>Galerie par artiste</h3>
+  <p>Chaque artiste : la carte de base générée avec la recette validée, puis ses 5 raretés, obtenues en repartant de la base (seuls le cadre et la finition changent).</p>
+  <div class="artist-gallery">
+    <div class="artist-picker" role="tablist" aria-label="Choisir l'artiste"><button type="button" class="artist-btn" role="tab" data-artist="knocked-loose" aria-selected="true">Knocked Loose</button><button type="button" class="artist-btn" role="tab" data-artist="jinjer" aria-selected="false">Jinjer</button><button type="button" class="artist-btn" role="tab" data-artist="spiritbox" aria-selected="false">Spiritbox</button></div>
 
-  <h3>Autres artistes — recette validée</h3>
-  <div class="slots creas">
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/jinjer-base.jpg" alt="Jinjer · Pisces" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-base.jpg</span></div>
-      <figcaption><strong>Jinjer · Pisces</strong><span class="meta">Tatiana Shmayluk. Photo : Stefan Brending (2eight), Rock im Park 2023, CC BY-SA 4.0.</span></figcaption></figure>
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/spiritbox-base.jpg" alt="Spiritbox · Holy Roller" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-base.jpg</span></div>
-      <figcaption><strong>Spiritbox · Holy Roller</strong><span class="meta">Courtney LaPlante. Photo : Sven Mandel, Wacken 2024, CC BY-SA 4.0.</span></figcaption></figure>
+    <div class="artist-panel" role="tabpanel" data-artist="knocked-loose">
+      <p class="artist-sub"><b>Bryan Garris · « The Deadringer » · IV</b><br><span class="note">Photo de référence : S. Bollmann, With Full Force 2018, Wikimedia Commons (Attribution).</span></p>
+      <div class="slots creas">
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-knocked-loose-03.jpg" alt="Knocked Loose, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-knocked-loose-03.jpg</span></div>
+        <figcaption><strong>Base</strong></figcaption></figure>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/knocked-loose-commune.jpg" alt="Knocked Loose, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-commune.jpg</span></div>
+        <figcaption><strong>Commune</strong></figcaption></figure>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/knocked-loose-rare.jpg" alt="Knocked Loose, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-rare.jpg</span></div>
+        <figcaption><strong>Rare</strong></figcaption></figure>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/knocked-loose-holo-v2.jpg" alt="Knocked Loose, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-holo-v2.jpg</span></div>
+        <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/knocked-loose-signature.jpg" alt="Knocked Loose, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-signature.jpg</span></div>
+        <figcaption><strong>Signature</strong></figcaption></figure>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/knocked-loose-legendaire-v2.jpg" alt="Knocked Loose, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-legendaire-v2.jpg</span></div>
+        <figcaption><strong>Légendaire</strong></figcaption></figure>
+      </div>
+    </div>
+    <div class="artist-panel" role="tabpanel" data-artist="jinjer" hidden>
+      <p class="artist-sub"><b>Tatiana Shmayluk · « Pisces » · V</b><br><span class="note">Photo de référence : Stefan Brending (2eight), Rock im Park 2023, CC BY-SA 4.0.</span></p>
+      <div class="slots creas">
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/jinjer-base.jpg" alt="Jinjer, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-base.jpg</span></div>
+        <figcaption><strong>Base</strong></figcaption></figure>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/jinjer-commune.jpg" alt="Jinjer, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-commune.jpg</span></div>
+        <figcaption><strong>Commune</strong></figcaption></figure>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/jinjer-rare.jpg" alt="Jinjer, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-rare.jpg</span></div>
+        <figcaption><strong>Rare</strong></figcaption></figure>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/jinjer-holo.jpg" alt="Jinjer, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-holo.jpg</span></div>
+        <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/jinjer-signature.jpg" alt="Jinjer, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-signature.jpg</span></div>
+        <figcaption><strong>Signature</strong></figcaption></figure>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/jinjer-legendaire.jpg" alt="Jinjer, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-legendaire.jpg</span></div>
+        <figcaption><strong>Légendaire</strong></figcaption></figure>
+      </div>
+    </div>
+    <div class="artist-panel" role="tabpanel" data-artist="spiritbox" hidden>
+      <p class="artist-sub"><b>Courtney LaPlante · « Holy Roller » · VI</b><br><span class="note">Photo de référence : Sven Mandel, Wacken 2024, CC BY-SA 4.0.</span></p>
+      <div class="slots creas">
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/spiritbox-base.jpg" alt="Spiritbox, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-base.jpg</span></div>
+        <figcaption><strong>Base</strong></figcaption></figure>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/spiritbox-commune.jpg" alt="Spiritbox, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-commune.jpg</span></div>
+        <figcaption><strong>Commune</strong></figcaption></figure>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/spiritbox-rare.jpg" alt="Spiritbox, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-rare.jpg</span></div>
+        <figcaption><strong>Rare</strong></figcaption></figure>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/spiritbox-holo.jpg" alt="Spiritbox, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-holo.jpg</span></div>
+        <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/spiritbox-signature.jpg" alt="Spiritbox, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-signature.jpg</span></div>
+        <figcaption><strong>Signature</strong></figcaption></figure>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/spiritbox-legendaire.jpg" alt="Spiritbox, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-legendaire.jpg</span></div>
+        <figcaption><strong>Légendaire</strong></figcaption></figure>
+      </div>
+    </div>
   </div>
+  <p class="note">[À PRÉCISER : les signatures manuscrites des versions Signature sont inventées par le modèle ; acceptable en usage perso, à remplacer par un sceau avant toute diffusion.]</p>
   <p class="note">[INFORMATION MANQUANTE : Dying Wish (Emma Boster) — aucune photo en gros plan libre de droits sur Wikimedia Commons ; photo de référence à fournir]</p>
 
   <h3>Tests de génération</h3>
@@ -703,7 +748,8 @@ Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
       <tr><td>Knocked Loose, 5 raretés</td><td>5</td><td>Nano Banana Pro</td><td>0,75 $</td></tr>
       <tr><td>Knocked Loose, Holo et Légendaire v2</td><td>2</td><td>Nano Banana Pro</td><td>0,30 $</td></tr>
       <tr><td>Jinjer et Spiritbox, cartes de base</td><td>2</td><td>Nano Banana Pro</td><td>0,30 $</td></tr>
-      <tr><td><b>Total Nano Banana Pro</b></td><td><b>10</b></td><td></td><td><b>1,50 $</b></td></tr>
+      <tr><td>Jinjer et Spiritbox, 5 raretés chacun</td><td>10</td><td>Nano Banana Pro</td><td>1,50 $</td></tr>
+      <tr><td><b>Total Nano Banana Pro</b></td><td><b>20</b></td><td></td><td><b>3,00 $</b></td></tr>
     </tbody>
   </table></div>
   <p>Solde : 10 $ rechargés, environ 8 $ restants après les 10 premières images selon le tableau de bord. Le solde n'est pas lisible par l'API : il se vérifie sur krea.ai/app/api (« API cost in the last 7 days »).</p>
@@ -1312,6 +1358,19 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 
   window.addEventListener('hashchange', route);
   route();
+})();
+(function(){
+  var KEY = 'metalnini-artist';
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.artist-btn'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.artist-panel'));
+  function pick(id){
+    if(!panels.some(function(p){ return p.getAttribute('data-artist') === id; })) return;
+    btns.forEach(function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-artist') === id)); });
+    panels.forEach(function(p){ p.hidden = p.getAttribute('data-artist') !== id; });
+    try{ localStorage.setItem(KEY, id); }catch(e){}
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ pick(b.getAttribute('data-artist')); }); });
+  try{ var saved = localStorage.getItem(KEY); if(saved) pick(saved); }catch(e){}
 })();
 </script>
 </body>

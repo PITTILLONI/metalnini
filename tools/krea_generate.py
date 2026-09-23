@@ -84,7 +84,7 @@ def main():
             subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "92", tmp, "--out", a.out],
                            check=True, stdout=subprocess.DEVNULL)
             os.remove(tmp)
-            print(f"Image enregistrée : {a.out}")
+            print(f"Image enregistrée : {a.out} (source Krea : {urls[0]})")
             return
         if status in ("failed", "cancelled"):
             sys.exit(f"Job {status} : {json.dumps(job.get('result'))[:300]}")
