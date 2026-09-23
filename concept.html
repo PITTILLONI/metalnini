@@ -445,7 +445,7 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
       <h2 class="panel-title">Direction artistique</h2>
       <p class="tagline">Ligne édito, moodboard, exemples de créa et système visuel des cartes.</p>
     </div>
-    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#da-ligne-edito">Ligne édito</a></li><li><a href="#da-moodboard">Moodboard</a></li><li><a href="#da-exemples-crea">Exemples de créa</a></li><li><a href="#da-brief-krea">Brief Krea</a></li><li><a href="#da-systeme">Système visuel &amp; gabarit</a></li></ol></nav>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#da-ligne-edito">Ligne édito</a></li><li><a href="#da-moodboard">Moodboard</a></li><li><a href="#da-exemples-crea">Exemples de créa</a></li><li><a href="#da-brief-krea">Brief Krea</a></li><li><a href="#da-couts">Coûts de génération</a></li><li><a href="#da-systeme">Système visuel &amp; gabarit</a></li></ol></nav>
     <div class="doc">
 <!-- ============ LIGNE ÉDITO ============ -->
 <section id="da-ligne-edito" class="doc-sec">
@@ -609,6 +609,15 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
   </div>
   <p class="note">[À PRÉCISER : la signature manuscrite de la version Signature est inventée par le modèle ; acceptable en usage perso, à remplacer par un sceau ou un tampon avant toute diffusion, pour ne jamais imiter l'autographe d'un artiste réel.]</p>
 
+  <h3>Autres artistes — recette validée</h3>
+  <div class="slots creas">
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/jinjer-base.jpg" alt="Jinjer · Pisces" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-base.jpg</span></div>
+      <figcaption><strong>Jinjer · Pisces</strong><span class="meta">Tatiana Shmayluk. Photo : Stefan Brending (2eight), Rock im Park 2023, CC BY-SA 4.0.</span></figcaption></figure>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/spiritbox-base.jpg" alt="Spiritbox · Holy Roller" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-base.jpg</span></div>
+      <figcaption><strong>Spiritbox · Holy Roller</strong><span class="meta">Courtney LaPlante. Photo : Sven Mandel, Wacken 2024, CC BY-SA 4.0.</span></figcaption></figure>
+  </div>
+  <p class="note">[INFORMATION MANQUANTE : Dying Wish (Emma Boster) — aucune photo en gros plan libre de droits sur Wikimedia Commons ; photo de référence à fournir]</p>
+
   <h3>Tests de génération</h3>
   <div class="slots creas">
     <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-knocked-loose-01.jpg" alt="Test Knocked Loose, essai 1" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-knocked-loose-01.jpg</span></div>
@@ -669,6 +678,43 @@ Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
     <li>Laisser l'IA écrire le texte final de la carte : le nom et les métadonnées seront posés par le gabarit dans Figma.</li>
   </ul>
   <p class="note">Rappel : tout fichier poussé dans le dépôt est visible publiquement, quel que soit le mot de passe. Les créas de la V1 perso sont donc exclues du dépôt (.gitignore) et ne s'affichent qu'en local. Voir les risques droits à l'image dans l'onglet <a class="xref" href="#concept">Concept</a>.</p>
+</section>
+<!-- ============ COÛTS ============ -->
+<section id="da-couts" class="doc-sec">
+  <p class="eyebrow">05 · Budget</p>
+  <h2>Coûts de génération</h2>
+  <p class="lead">Les générations passent par l'API Krea du compte perso, sur un solde prépayé en dollars, séparé des crédits de l'app web. Seuls les jobs terminés sont facturés.</p>
+
+  <h3>Tarifs</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Modèle</th><th>Prix par image</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>Nano Banana Pro, 1K</td><td>0,15 $</td><td>Grille publique Krea API (krea.ai/features/api), consultée le 2026-09-23</td></tr>
+      <tr><td>Krea 2 Medium, 1K</td><td>[À PRÉCISER : non affiché sur la grille publique]</td><td>À relever sur le tableau de bord krea.ai/app/api</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Dépenses au 2026-09-23</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Lot</th><th>Images</th><th>Modèle</th><th>Coût</th></tr></thead>
+    <tbody>
+      <tr><td>Knocked Loose, essais 1 et 2</td><td>2</td><td>Krea 2 Medium</td><td>[À PRÉCISER]</td></tr>
+      <tr><td>Knocked Loose, essai 3 (recette validée)</td><td>1</td><td>Nano Banana Pro</td><td>0,15 $</td></tr>
+      <tr><td>Knocked Loose, 5 raretés</td><td>5</td><td>Nano Banana Pro</td><td>0,75 $</td></tr>
+      <tr><td>Knocked Loose, Holo et Légendaire v2</td><td>2</td><td>Nano Banana Pro</td><td>0,30 $</td></tr>
+      <tr><td>Jinjer et Spiritbox, cartes de base</td><td>2</td><td>Nano Banana Pro</td><td>0,30 $</td></tr>
+      <tr><td><b>Total Nano Banana Pro</b></td><td><b>10</b></td><td></td><td><b>1,50 $</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>Solde : 10 $ rechargés, environ 8 $ restants après les 10 premières images selon le tableau de bord. Le solde n'est pas lisible par l'API : il se vérifie sur krea.ai/app/api (« API cost in the last 7 days »).</p>
+
+  <h3>Estimation par carte</h3>
+  <ul>
+    <li><b>Une carte de base</b> : 1 image, soit 0,15 $, plus environ une reprise sur trois (0,20 $ en moyenne).</li>
+    <li><b>Un artiste décliné sur les 5 raretés</b> : la base plus 4 variantes, soit 5 images, environ 0,75 $ (0,90 $ avec les reprises).</li>
+    <li><b>10 artistes complets</b> : environ 9 $. <b>20 artistes</b> : environ 18 $.</li>
+  </ul>
+  <p class="note">Estimations sur la base du tarif Nano Banana Pro 1K ; une résolution plus haute (2K, 4K) coûte davantage.</p>
 </section>
 
 <section id="da-systeme" class="doc-sec"><p class="eyebrow">Référence</p><h2>Système visuel &amp; gabarit</h2><p class="lead">Les règles déjà actées : chrome, palette, typographie, gabarit paramétrique et motion. Elles restent valables quel que soit le style de portrait retenu.</p></section>
