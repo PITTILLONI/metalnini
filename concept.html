@@ -608,7 +608,7 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
   <h3>Galerie par artiste</h3>
   <p>Chaque artiste : la carte de base générée avec la recette validée, puis ses 5 raretés, obtenues en repartant de la base (seuls le cadre et la finition changent). Les cases vides attendent leur génération.</p>
   <div class="artist-gallery">
-    <div class="artist-picker" role="tablist" aria-label="Choisir l'artiste"><button type="button" class="artist-btn" role="tab" data-artist="knocked-loose" aria-selected="true">Knocked Loose</button><button type="button" class="artist-btn" role="tab" data-artist="jinjer" aria-selected="false">Jinjer</button><button type="button" class="artist-btn" role="tab" data-artist="spiritbox" aria-selected="false">Spiritbox</button><button type="button" class="artist-btn" role="tab" data-artist="blink182" aria-selected="false">Blink-182</button><button type="button" class="artist-btn" role="tab" data-artist="landmvrks" aria-selected="false">Landmvrks</button><button type="button" class="artist-btn" role="tab" data-artist="hendrix" aria-selected="false">Jimi Hendrix</button><button type="button" class="artist-btn" role="tab" data-artist="isaac-hale" aria-selected="false">Knocked Loose (guitare)</button></div>
+    <div class="artist-picker" role="tablist" aria-label="Choisir l'artiste"><button type="button" class="artist-btn" role="tab" data-artist="knocked-loose" aria-selected="true">Knocked Loose</button><button type="button" class="artist-btn" role="tab" data-artist="jinjer" aria-selected="false">Jinjer</button><button type="button" class="artist-btn" role="tab" data-artist="spiritbox" aria-selected="false">Spiritbox</button><button type="button" class="artist-btn" role="tab" data-artist="blink182" aria-selected="false">Blink-182</button><button type="button" class="artist-btn" role="tab" data-artist="landmvrks" aria-selected="false">Landmvrks</button><button type="button" class="artist-btn" role="tab" data-artist="hendrix" aria-selected="false">Jimi Hendrix</button><button type="button" class="artist-btn" role="tab" data-artist="isaac-hale" aria-selected="false">Knocked Loose (guitare)</button><button type="button" class="artist-btn" role="tab" data-artist="korn" aria-selected="false">Korn</button></div>
 
     <div class="artist-panel" role="tabpanel" data-artist="knocked-loose">
       <p class="artist-sub"><b>Bryan Garris · « The Deadringer » · IV</b></p>
@@ -743,6 +743,25 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
+    <div class="artist-panel" role="tabpanel" data-artist="korn" hidden>
+      <p class="artist-sub"><b>Jonathan Davis · « Freak on a Leash » · XI</b></p>
+      <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Nu metal</li><li>Groupe : Korn</li></ul>
+      <p class="note">Photo de référence : pitpony.photography, Rock im Park 2016, CC BY-SA 3.0.</p>
+      <div class="slots creas">
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/korn-base.jpg" alt="Jonathan Davis, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-base.jpg</span></div>
+        <figcaption><strong>Base</strong></figcaption></figure>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/korn-commune.jpg" alt="Jonathan Davis, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-commune.jpg</span></div>
+        <figcaption><strong>Commune</strong></figcaption></figure>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/korn-rare.jpg" alt="Jonathan Davis, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-rare.jpg</span></div>
+        <figcaption><strong>Rare</strong></figcaption></figure>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/korn-holo.jpg" alt="Jonathan Davis, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-holo.jpg</span></div>
+        <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/korn-signature.jpg" alt="Jonathan Davis, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-signature.jpg</span></div>
+        <figcaption><strong>Signature</strong></figcaption></figure>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/korn-legendaire.jpg" alt="Jonathan Davis, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-legendaire.jpg</span></div>
+        <figcaption><strong>Légendaire</strong></figcaption></figure>
+      </div>
+    </div>
   </div>
 
   <h3>Marquage des cartes</h3>
@@ -853,7 +872,8 @@ Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
       <tr><td>Spiritbox, Signature refaite (plus d'or)</td><td>1</td><td>Nano Banana Pro</td><td>0,15 $</td></tr>
       <tr><td>Jimi Hendrix et Isaac Hale, cartes de base</td><td>2</td><td>Nano Banana Pro</td><td>0,30 $</td></tr>
       <tr><td>Jimi Hendrix et Isaac Hale, 5 raretés chacun</td><td>10</td><td>Nano Banana Pro</td><td>1,50 $</td></tr>
-      <tr><td><b>Total Nano Banana Pro</b></td><td><b>47</b></td><td></td><td><b>7,05 $</b></td></tr>
+      <tr><td>Korn, carte de base et 5 raretés</td><td>6</td><td>Nano Banana Pro</td><td>0,90 $</td></tr>
+      <tr><td><b>Total Nano Banana Pro</b></td><td><b>53</b></td><td></td><td><b>7,95 $</b></td></tr>
     </tbody>
   </table></div>
   <p>Solde : 10 $ rechargés, environ 4 $ restants après 36 images selon le tableau de bord (relevé du 2026-09-23, avant Hendrix et Isaac Hale) (écart avec le total ci-dessus : coût des 2 essais Krea 2 Medium et arrondis). Le solde n'est pas lisible par l'API : il se vérifie sur krea.ai/app/api (« API cost in the last 7 days »).</p>
@@ -1225,7 +1245,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
   <h3>Contenu nécessaire</h3>
   <ul>
     <li>Un catalogue de test d'environ <b>10 à 12 artistes déclinés sur les 5 raretés</b> (50 à 60 cartes), répartis en <b>deux classeurs</b> pour pouvoir vivre au moins une complétion.</li>
-    <li>État au 2026-09-23 : 7 artistes générés et déclinés sur les 5 raretés (Knocked Loose chant et guitare, Jinjer, Spiritbox, Blink-182, Landmvrks, Jimi Hendrix). Budget estimé pour compléter : voir « Coûts de génération » dans l'onglet Direction artistique.</li>
+    <li>État au 2026-09-23 : 8 artistes générés et déclinés sur les 5 raretés (Knocked Loose chant et guitare, Jinjer, Spiritbox, Blink-182, Landmvrks, Jimi Hendrix, Korn). Budget estimé pour compléter : voir « Coûts de génération » dans l'onglet Direction artistique.</li>
   </ul>
 
   <h3>À trancher avant de développer</h3>
