@@ -31,7 +31,7 @@
   h1,h2{font-family:var(--display); text-transform:uppercase; letter-spacing:.02em; margin:0}
 
   /* ---------- Tab bar ---------- */
-  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; background:rgba(12,11,10,.96); backdrop-filter:blur(10px);
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; background:#0c0b0a;
           border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom)}
   .tabbar button{flex:1; background:none; border:0; padding:12px 4px 10px; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
   .tabbar button[aria-selected="true"]{color:var(--text)}
@@ -75,11 +75,13 @@
   .face.back{transform:translateZ(2px)}
   .edge{position:absolute; inset:0; border-radius:14px; background:#cbbd9c; box-shadow:inset 0 0 0 1px rgba(90,60,30,.55); pointer-events:none}
   .face.front img{width:100%; height:100%; object-fit:cover; display:block}
-  .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px; mix-blend-mode:soft-light;
-         background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,var(--ga,.35)), transparent 58%)}
+  .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px;
+         background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,calc(var(--ga,.35) * .45)), transparent 58%)}
   .tilt.live{transition:transform .12s linear}
+  .tilt.sway, .pack.sway{animation:sway 6s ease-in-out infinite; transition:none}
+  @keyframes sway{0%,100%{transform:rotateY(-7deg) rotateX(3deg)}50%{transform:rotateY(7deg) rotateX(-3deg)}}
   .pile{--shx:0px; --shy:18px}
-  .stage::after{content:""; position:absolute; left:6%; right:6%; bottom:-6%; height:10%; border-radius:50%; background:rgba(0,0,0,.55); filter:blur(14px); z-index:-1; transform:translate(var(--shx),calc(var(--shy) - 18px)); transition:transform .12s linear}
+  .stage::after{content:""; position:absolute; left:2%; right:2%; bottom:-8%; height:14%; border-radius:50%; background:radial-gradient(closest-side, rgba(0,0,0,.6), transparent); z-index:-1; transform:translate(var(--shx),calc(var(--shy) - 18px)); transition:transform .12s linear}
   .pcard{perspective:1000px; margin:6px auto 12px; width:min(100%,360px)}
   .pcard .pin{position:relative; border-radius:12px; overflow:hidden; transform-style:preserve-3d; transition:transform .12s linear; box-shadow:0 18px 40px rgba(0,0,0,.6)}
   .pcard .pin img{display:block; width:100%}
@@ -91,9 +93,9 @@
   .glow[data-r="signature"]{box-shadow:0 0 50px 12px rgba(212,175,55,.65)}
   .glow[data-r="legendaire"]{box-shadow:0 0 60px 16px rgba(220,38,38,.7); animation:pulse 1.6s ease-in-out infinite}
   @keyframes pulse{50%{box-shadow:0 0 80px 26px rgba(220,38,38,.85)}}
-  .sheen{position:absolute; inset:0; border-radius:14px; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 48%,transparent 62%); background-size:250% 100%; opacity:0; mix-blend-mode:screen}
-  .flip.on .sheen[data-r="holo"], .flip.on .sheen[data-r="signature"], .flip.on .sheen[data-r="legendaire"]{opacity:1; animation:sheen 2.4s ease .8s infinite}
-  @keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
+  .sheen{position:absolute; top:0; bottom:0; left:-60%; width:60%; pointer-events:none; background:linear-gradient(115deg,transparent,rgba(255,255,255,.22) 50%,transparent); opacity:0; will-change:transform}
+  .flip.on .sheen[data-r="holo"], .flip.on .sheen[data-r="signature"], .flip.on .sheen[data-r="legendaire"]{opacity:1; animation:sheen 2.8s ease .8s infinite}
+  @keyframes sheen{from{transform:translateX(0)}to{transform:translateX(330%)}}
   .card-info{margin-top:16px; text-align:center; min-height:64px; visibility:hidden; transform:translateY(8px); transition:transform .3s ease .35s}
   .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
@@ -211,7 +213,6 @@
   .charge-legendaire .face.back{box-shadow:inset 0 0 0 2px #dc2626, 0 0 70px 20px rgba(220,38,38,.85)}
   .ring{position:fixed; left:50%; top:45%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--ring,#dc2626); pointer-events:none; z-index:46; animation:ring .9s ease-out forwards}
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
-  .sheen{background-position:var(--sx,150%) 0}
   .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
   .sum-grid figure{opacity:0; transform:translateY(14px) scale(.95); animation:rise .45s cubic-bezier(.2,.8,.2,1) forwards}
   @keyframes rise{to{opacity:1; transform:none}}
@@ -252,9 +253,9 @@
   .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
   .ptilt > .pack{transition:transform .12s linear}
   .pack .ext{position:absolute; inset:1.2% 2.5%; border-radius:5px; pointer-events:none; background:linear-gradient(90deg,#0b0908,#2a221c 50%,#0b0908); box-shadow:inset 0 0 0 1px rgba(212,175,55,.18)}
-  .pack .pshadow{position:absolute; left:8%; right:8%; bottom:-4%; height:10%; border-radius:50%; background:rgba(0,0,0,.75); filter:blur(16px); transform:translateZ(-30px); pointer-events:none}
+  .pack .pshadow{position:absolute; left:0; right:0; bottom:-7%; height:14%; border-radius:50%; background:radial-gradient(closest-side, rgba(0,0,0,.75), transparent); transform:translateZ(-30px); pointer-events:none}
   .pack .flap, .pack .tear, .pack .grip, .pack .glare{transform-style:flat}
-  .pack .glare{border-radius:6px; z-index:4; mix-blend-mode:overlay}
+  .pack .glare{border-radius:6px; z-index:4}
   /* (6) montée en puissance selon la rareté */
   #rays{position:absolute; left:50%; top:50%; width:260%; aspect-ratio:1; margin:-130% 0 0 -130%; border-radius:50%; pointer-events:none; z-index:0; opacity:0;
         background:repeating-conic-gradient(from 0deg, var(--rc,#fff) 0deg 6deg, transparent 6deg 22deg); -webkit-mask:radial-gradient(closest-side, #000 30%, transparent 72%); mask:radial-gradient(closest-side, #000 30%, transparent 72%)}
@@ -987,9 +988,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var pTarget = null, lastInput = 0, idleT0 = 0, orient0 = null, motionAsked = false;
   function clamp(v){ return Math.max(-1, Math.min(1, v)); }
   // nx, ny entre -1 et 1 : la carte pivote, l'illustration glisse en sens inverse, le reflet et l'ombre suivent
+  // les mouvements (gyroscope, souris, doigt) sont regroupés : au plus une mise à jour par image
+  var pxQueued = null;
   function parallax(nx, ny){
     if(reduce || !pTarget) return;
-    var t = pTarget;
+    var first = !pxQueued; pxQueued = [nx, ny];
+    if(first) requestAnimationFrame(function(){ var q = pxQueued; pxQueued = null; if(q) applyParallax(q[0], q[1]); });
+    armIdle();
+  }
+  function applyParallax(nx, ny){
+    if(!pTarget) return;
+    var t = pTarget; t.tilt.classList.remove('sway');
     t.tilt.style.transform = 'rotateY(' + (nx * 24) + 'deg) rotateX(' + (-ny * 18) + 'deg)';
     t.root.style.setProperty('--ix', (-nx * 3.6).toFixed(2) + '%'); t.root.style.setProperty('--iy', (-ny * 3.6).toFixed(2) + '%');
     t.root.style.setProperty('--gx', (50 + nx * 42).toFixed(1) + '%'); t.root.style.setProperty('--gy', (38 + ny * 38).toFixed(1) + '%');
@@ -998,9 +1007,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function setTarget(root, tiltEl, r){
     pTarget = root ? {root:root, tilt:tiltEl} : null; orient0 = null; idleT0 = performance.now();
-    if(root){ root.style.setProperty('--ga', GLARE[r] || .3); tiltEl.classList.add('live'); }
+    if(root){ root.style.setProperty('--ga', GLARE[r] || .3); tiltEl.classList.add('live'); armIdle(); }
   }
-  function clearTarget(){ if(pTarget){ pTarget.tilt.style.transform = ''; pTarget.tilt.classList.remove('live'); } pTarget = null; }
+  function clearTarget(){ clearTimeout(idleTimer); if(pTarget){ pTarget.tilt.style.transform = ''; pTarget.tilt.classList.remove('live', 'sway'); } pTarget = null; }
   function askMotion(){
     if(motionAsked) return; motionAsked = true;
     try{ if(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') DeviceOrientationEvent.requestPermission().catch(function(){}); }catch(e){}
@@ -1011,11 +1020,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     lastInput = performance.now();
     parallax(clamp((e.gamma - orient0.g) / 15), clamp((e.beta - orient0.b) / 15));
   });
-  // léger balancement quand rien ne bouge, pour que la carte reste vivante
-  (function idle(t){
-    if(pTarget && !g && !drag && t - lastInput > 1600){ var k = (t - idleT0) / 1000; parallax(Math.sin(k * .9) * .35, Math.cos(k * .7) * .22); }
-    requestAnimationFrame(idle);
-  })(0);
+  // au repos : léger balancement en CSS (géré par la carte graphique), aucune mise à jour image par image
+  var idleTimer = null;
+  function armIdle(){
+    if(!pTarget || reduce) return;
+    pTarget.tilt.classList.remove('sway'); clearTimeout(idleTimer);
+    idleTimer = setTimeout(function(){ if(pTarget && !g && !drag){ pTarget.tilt.style.transform = ''; pTarget.tilt.classList.add('sway'); } }, 1600);
+  }
 
   function packParallax(){ if(!opening && !drag && !document.getElementById('v-packs').hidden && revealEl.hidden) setTarget(document.getElementById('pack-root'), packEl, 'pack'); }
   document.getElementById('pack-root').addEventListener('pointermove', function(e){ if(drag || !pTarget || pTarget.root.id !== 'pack-root' || e.pointerType !== 'mouse') return;
