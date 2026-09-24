@@ -34,18 +34,21 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const st = state();
   check('5 cartes ajoutées à la collection', Object.values(st.owned).reduce((a, b) => a + b, 0) === 5, JSON.stringify(st.owned));
   check('rangée de 5 cartes sous la carte', d.querySelectorAll('#deck i').length === 5);
+  check('pile : 4 cartes sous la carte du dessus', d.querySelectorAll('#unders .under').length === 4);
 
   // 2. Retourner par glissé puis passer par glissé, 5 fois
   const stage = d.getElementById('stage');
   stage.getBoundingClientRect = () => ({ left: 0, top: 0, width: 300, height: 450 });
   for (let i = 0; i < 5; i++) {
     ptr(stage, 'pointerdown', 10); ptr(stage, 'pointermove', 200); ptr(stage, 'pointerup', 200);
+    check('pile avant la carte ' + (i + 1) + ' : ' + (4 - i) + ' dessous', d.querySelectorAll('#unders .under').length === 4 - i);
     await sleep(2400);
     check('carte ' + (i + 1) + ' retournée par glissé', d.getElementById('flip').classList.contains('on'));
     ptr(stage, 'pointerdown', 150); ptr(stage, 'pointermove', 280); ptr(stage, 'pointerup', 280);
     await sleep(500);
   }
   check('résumé affiché à la fin', !d.getElementById('summary').hidden);
+  check('aucune transparence sur la carte', !/opacity/.test(d.getElementById('stage').getAttribute('style') || ''));
 
   // 3. Classeur : les emplacements remplis correspondent exactement à la collection
   d.getElementById('to-binder').click();

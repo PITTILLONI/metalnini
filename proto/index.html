@@ -59,7 +59,11 @@
   .reveal{position:fixed; inset:0; z-index:40; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
   .reveal[hidden]{display:none}
   .reveal .counter{font:500 .72rem var(--mono); letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:14px}
-  .stage{perspective:1400px; width:min(78vw,340px, calc((100vh - 200px) * .6667)); aspect-ratio:2/3; position:relative}
+  .pile{position:relative; width:min(74vw,330px, calc((100vh - 300px) * .6667)); aspect-ratio:2/3}
+  .pile.pull{animation:pull .6s cubic-bezier(.2,.9,.3,1)}
+  @keyframes pull{from{transform:translateY(70vh) rotate(-4deg)}to{transform:none}}
+  .under{position:absolute; inset:0; border-radius:14px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 6px 16px rgba(0,0,0,.55), inset 0 0 0 1px rgba(212,175,55,.35); transition:transform .25s ease}
+  .stage{position:absolute; inset:0; perspective:1400px; z-index:2}
   .flip{position:absolute; inset:0; transform-style:preserve-3d; transition:transform .75s cubic-bezier(.2,.8,.2,1); cursor:pointer}
   .flip.on{transform:rotateY(180deg)}
   .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:14px; overflow:hidden}
@@ -209,8 +213,6 @@
   .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
   @keyframes toast{0%{opacity:0; transform:translate(-50%,16px)}10%,85%{opacity:1; transform:translate(-50%,0)}100%{opacity:0; transform:translate(-50%,8px)}}
   .stage{touch-action:none; user-select:none; -webkit-user-select:none}
-  .stage.enter{animation:enter .38s cubic-bezier(.2,.8,.2,1)}
-  @keyframes enter{from{transform:translateY(40px) scale(.9); opacity:0}to{transform:none; opacity:1}}
   .deck{display:flex; gap:6px; justify-content:center; margin-top:14px; min-height:62px; align-items:flex-end}
   .deck i{display:block; width:36px; aspect-ratio:2/3; border-radius:4px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 4px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(212,175,55,.35); transition:transform .3s ease, opacity .3s ease}
   .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc,#8a8a92)}
@@ -221,7 +223,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} .pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} .pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -290,6 +292,8 @@
   <button type="button" class="skip" id="skip">Tout révéler</button>
   <div id="reveal-one">
     <div class="counter" id="counter"></div>
+    <div class="pile" id="pile">
+    <div id="unders" aria-hidden="true"></div>
     <div class="stage" id="stage">
       <div class="tilt" id="tilt">
         <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
@@ -298,6 +302,7 @@
         </div>
         <div class="glow" id="glow"></div>
       </div>
+    </div>
     </div>
     <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
     <div class="hint" id="hint">Glisse la carte pour la retourner</div>
@@ -549,7 +554,7 @@
       current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); });
       setTimeout(function(){
         revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
-        document.getElementById('skip').hidden = false; showCard();
+        document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
         packEl.classList.remove('torn'); setTear(0); opening = false; renderStats();
       }, 600);
     }, wait);
@@ -567,8 +572,8 @@
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
     flip.classList.remove('on'); flip.style.transition = ''; flip.style.transform = '';
-    stage.className = 'stage'; stage.style.transition = ''; stage.style.transform = ''; stage.style.opacity = '';
-    void stage.offsetWidth; if(!reduce) stage.classList.add('enter');
+    stage.className = 'stage';
+    renderUnders();
     revealEl.classList.remove('dim'); tilt.style.transform = '';
     document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
@@ -580,6 +585,16 @@
     document.getElementById('sheen').setAttribute('data-r', x.r);
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
+  }
+  // la pile : les cartes pas encore retournées, légèrement décalées sous celle du dessus
+  function offset(i){ return 'translate(' + (i*3) + 'px,' + (i*4) + 'px) rotate(' + ((i%2 ? 1 : -1) * i * .8) + 'deg)'; }
+  function renderUnders(){
+    var left = current.length - 1 - idx, html = '';
+    for(var i = left; i >= 1; i--) html += '<i class="under" style="transform:' + offset(i) + '"></i>';
+    document.getElementById('unders').innerHTML = html;
+  }
+  function openStack(){
+    var pile = document.getElementById('pile'); pile.classList.remove('pull'); void pile.offsetWidth; if(!reduce) pile.classList.add('pull');
   }
   function reveal(dir){
     if(!current[idx]) return;
@@ -596,18 +611,29 @@
       flip.style.transition = 'transform ' + (reduce ? 0 : .55) + 's cubic-bezier(.2,.8,.2,1)'; flip.style.transform = 'rotateY(' + (side * 180) + 'deg)';
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
-        stage.classList.remove('enter'); stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
+        stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
         document.getElementById('card-info').classList.add('on'); busy = false; renderDeck();
         document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'le résumé') + (rank(r) >= 2 ? ' · appuie et bouge pour faire briller' : '');
       }, reduce ? 0 : 320);
     }, ms);
   }
+  // la carte révélée rejoint sa miniature dans la rangée du bas ; celle du dessous est déjà en place
   function next(dir){
-    busy = true; stage.classList.remove('impact','enter');
-    stage.style.transition = 'transform .32s ease-in, opacity .32s ease-in';
-    stage.style.transform = 'translateX(' + (dir * 115) + 'vw) rotate(' + (dir * 16) + 'deg)'; stage.style.opacity = '0';
+    busy = true; stage.classList.remove('impact');
+    var mini = document.querySelectorAll('#deck i')[idx], sr = document.getElementById('pile').getBoundingClientRect(), mr = mini ? mini.getBoundingClientRect() : null;
+    var t = mr && sr.width ? 'translate(' + (mr.left + mr.width/2 - (sr.left + sr.width/2)) + 'px,' + (mr.top + mr.height/2 - (sr.top + sr.height/2)) + 'px) scale(' + (mr.width / sr.width) + ') rotate(' + (dir * 6) + 'deg)'
+                           : 'translateX(' + (dir * 115) + 'vw) rotate(' + (dir * 16) + 'deg)';
+    stage.style.transition = 'transform ' + (reduce ? 0 : .42) + 's cubic-bezier(.5,0,.3,1)'; stage.style.transform = t;
     SFX.flip();
-    setTimeout(function(){ if(idx < current.length-1){ idx++; showCard(); } else { stage.style.transform = ''; stage.style.opacity = ''; showSummary(); } }, reduce ? 0 : 300);
+    setTimeout(function(){
+      if(idx < current.length-1){
+        idx++;
+        // la nouvelle carte du dessus part de la position qu'elle occupait dans la pile, puis se replace
+        stage.style.transition = 'none'; stage.style.transform = offset(1);
+        showCard(); void stage.offsetWidth;
+        stage.style.transition = 'transform ' + (reduce ? 0 : .22) + 's ease-out'; stage.style.transform = '';
+      } else { showSummary(); stage.style.transition = 'none'; stage.style.transform = ''; }
+    }, reduce ? 0 : 420);
   }
   function tapCard(){ if(busy) return; if(!flipped) reveal(1); else next(1); }
   flip.addEventListener('keydown', function(e){
