@@ -14,4 +14,35 @@ Base Postgres gérée par Supabase. Le serveur décide de tout ce qui a de la va
 3. Activer Sign in with Apple et l'e-mail dans l'authentification.
 4. Se déclarer admin : `insert into public.admins (user_id) values ('<ton id utilisateur>');`
 
-Statut : migration écrite, **pas encore exécutée sur une vraie base**.
+## Statut (2026-09-24)
+
+Projet Supabase **METALNINI** (`mdnevzmczljycmgbsrsu`, région eu-central-1, Postgres 17), relié au dépôt avec la CLI (`npx supabase`). Migration `0001_init.sql` et seed **appliqués** (`supabase db push --include-seed`).
+
+Vérifié sur la vraie base, avec deux joueurs fictifs dans une transaction annulée :
+
+| Contrôle | Résultat |
+|---|---|
+| Catalogue | 18 musiciens, 90 cartes, 11 classeurs, 6 paquets, probabilités |
+| Droits d'accès | RLS active sur toutes les tables |
+| `open_pack` | 5 cartes tirées, inventaire mis à jour |
+| Rejeu du même appel | même paquet renvoyé, une seule ouverture enregistrée |
+| Écriture directe dans l'inventaire | refusée (RLS) |
+| Fonction admin appelée par un joueur | refusée |
+| Fusion d'une Légendaire | refusée |
+| Un joueur qui se débloque lui-même | refusé |
+| Profil créé à l'inscription, rangement | OK |
+| Un joueur voit l'inventaire d'un autre | non (0 ligne) |
+
+## Commandes
+
+Les secrets sont dans le Trousseau macOS (jamais dans le dépôt) :
+
+```sh
+cd backend
+export SUPABASE_ACCESS_TOKEN="$(security find-generic-password -s supabase-token -w)"
+export SUPABASE_DB_PASSWORD="$(security find-generic-password -s supabase-db-password -w)"
+npx supabase migration list          # état des migrations
+npx supabase db push                 # appliquer les nouvelles migrations
+```
+
+Pour enregistrer ou changer un secret : `tools/store_secret.sh supabase-token` (ou `supabase-db-password`).
