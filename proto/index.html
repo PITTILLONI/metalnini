@@ -956,7 +956,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('hud-name').textContent = state.username || (ONLINE ? '…' : 'Invité');
   }
   var AUTH = null, splashT0 = performance.now();
-  var SPLASH_LINES = ['Balances en cours…', 'On accorde les guitares…', 'Le roadie branche les amplis…', 'Échauffement des cordes vocales…', 'Le public tape des pieds…', 'Réglage de la double pédale…'];
+  var SPLASH_LINES = ['Balances en cours…', 'On accorde les guitares…', 'Le roadie branche les amplis…', 'Échauffement des cordes vocales…', 'Le public tape des pieds…', 'Réglage de la double pédale…', 'Wesh, le pit se remplit…', 'Askip ce soir ça va être chaud…'];
   // une seule phrase par lancement, jamais deux fois la même d'affilée
   (function(){ var last = -1; try{ last = +localStorage.getItem('metalnini-splash'); }catch(e){}
     var i = Math.floor(Math.random() * (SPLASH_LINES.length - 1)); if(i >= last && last >= 0) i++;
@@ -1404,21 +1404,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = '';
   }
   var LINES = {
-    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Solide, comme un riff en mi.', 'La base. Et la base, c\'est sacré.', 'Commune. Même le roadie en a une.', 'Pas de quoi réveiller les voisins.',
-      'Commune. Tiède comme une bière de festival.', 'Le public applaudit. Poliment.', 'Première partie, au mieux.', 'Ça sent la balance, pas le concert.'],
-    rare:['Oh, ça commence à chauffer.', 'Rare. Tes voisins vont l\'entendre.', 'Joli tirage, le pit approuve.', 'Rare. Le vigile te laisse passer.', 'Ça pogote dans les premiers rangs.'],
-    holo:['Ça brille ! Le pit s\'ouvre !', 'Holo ! Lève les cornes !', 'Là, on parle. Ça scintille.', 'Holo ! Les briquets sont levés !', 'Ça brille plus qu\'une Les Paul neuve !'],
-    signature:['Signée ! Tu peux hurler.', 'Une Signature ! Le public en redemande !', 'Stage diving autorisé : c\'est signé !', 'Signée à la main. Pas au feutre de la merch.', 'Wall of death autorisé !'],
-    legendaire:['Légendaire. Arrête tout.', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.', 'Légendaire. Tes tympans ne s\'en remettront pas.', 'Tu viens de casser la scène.', 'Légendaire. Les autres peuvent rentrer chez eux.']
+    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Commune. Même le roadie en a une.', 'Commune. Tiède comme une bière de festival.', 'Wallah, c\'est une Commune.', 'C\'est carré. Mais c\'est gris.', 'Le public applaudit. Poliment.', 'Askip ça vaut rien. Askip.', 'Ma gueule, c\'est la base. On respecte.', 'Première partie, au mieux.'],
+    rare:['Oh, ça commence à chauffer.', 'Rare. Le vigile te laisse passer.', 'Joli tirage, le pit approuve.', 'En sah, pas mal du tout.', 'Wesh, ça pogote au premier rang.', 'Rare. T\'as un peu de rizz, là.'],
+    holo:['Holo ! Lève les cornes !', 'Ça brille ! Le pit s\'ouvre !', 'C\'est un banger, frérot !', 'Holo. Ton aura vient de monter.', 'Wallah ça brille trop !', 'Fraté… c\'est une Holo !', 'Les briquets sont levés !'],
+    signature:['Signée ! Tu peux hurler.', 'Chokbar : une Signature !', 'Signée à la main, ma gueule !', 'Wall of death autorisé !', 'Masterclass. Rien à dire.', 'Signature. Les PNJ peuvent sortir.'],
+    legendaire:['Légendaire. Arrête tout.', 'Wallah… LÉGENDAIRE !', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.', 'T\'as cassé le jeu, fraté.', 'Légendaire. Aura infinie.', 'Les autres peuvent rentrer chez eux.']
   };
-  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.', 'Encore ? Il te suit ou quoi ?', 'Doublon. Le destin a de l\'humour.', 'T\'as déjà le t-shirt, là.',
-    'Doublon. Même setlist qu\'hier.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Il ira grossir la pile.'];
+  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Encore ? Il te suit ou quoi ?', 'T\'as déjà le t-shirt, papy.', 'Doublon. Le destin a de l\'humour.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Red flag, fraté.'];
   // même carte trois fois dans le paquet : le destin s'acharne
-  var TRIPLE_LINES = ['Trois fois la même. T\'es maudit, avoue.', 'Triplé ! Le mauvais, hein.', 'Trois fois. Même le merch n\'en veut plus.', 'Tu collectionnes ou tu te venges ?'];
-  var TWICE_LINES = ['Encore elle, dans le même paquet ?!', 'Deux fois. Le paquet bégaie.'];
+  var TRIPLE_LINES = ['Trois fois la même. T\'es maudit, avoue.', 'Triplé ! Cheh.', 'Trois fois ? Le seum, ma gueule.', 'Tu collectionnes ou tu te venges ?', 'Wallah, trois fois la même. C\'est un complot.'];
+  var TWICE_LINES = ['Encore elle, dans le même paquet ?!', 'Deux fois. Le paquet bégaie.', 'Doublé dans le même paquet. Gênant, papy.'];
   // paquet faible : une pique au moment de ranger
-  var WEAK_PACK = ['Que des Communes. Le pit te regarde avec pitié.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Demain, tu souffles sur le paquet.'];
-  var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf sous le soleil noir. Transforme tout ça.'];
+  var WEAK_PACK = ['Que des Communes. Cheh.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Le seum.', 'Que des Communes, papy. Demain, tu souffles sur le paquet.'];
+  var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf, fraté. Transforme tout ça.', 'Que des doublons. Même le PNJ est déçu.'];
   function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
   function fillInfo(x){
     var line = document.getElementById('combo');
