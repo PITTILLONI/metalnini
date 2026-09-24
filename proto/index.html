@@ -71,7 +71,7 @@
   .face.front{transform:rotateY(180deg) translateZ(2px); background:#000}
   .face.back{transform:translateZ(2px)}
   .edge{position:absolute; inset:0; border-radius:14px; background:#cbbd9c; box-shadow:inset 0 0 0 1px rgba(90,60,30,.55); pointer-events:none}
-  .face.front img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.08) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
+  .face.front img{width:100%; height:100%; object-fit:cover; display:block}
   .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px; mix-blend-mode:soft-light;
          background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,var(--ga,.35)), transparent 58%)}
   .tilt.live{transition:transform .12s linear}
@@ -79,7 +79,7 @@
   .stage::after{content:""; position:absolute; left:6%; right:6%; bottom:-6%; height:10%; border-radius:50%; background:rgba(0,0,0,.55); filter:blur(14px); z-index:-1; transform:translate(var(--shx),calc(var(--shy) - 18px)); transition:transform .12s linear}
   .pcard{perspective:1000px; margin:6px auto 12px; width:min(100%,360px)}
   .pcard .pin{position:relative; border-radius:12px; overflow:hidden; transform-style:preserve-3d; transition:transform .12s linear; box-shadow:0 18px 40px rgba(0,0,0,.6)}
-  .pcard .pin img{display:block; width:100%; transform:scale(1.08) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
+  .pcard .pin img{display:block; width:100%}
   .pcard .detail-img{margin:0; width:100%; border-radius:0}
   .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:none}
   .flip.on + .glow{opacity:1; transition:opacity .6s ease .35s}
@@ -669,7 +669,22 @@
     pre.gain.value = .22; env(a, g, t, (v||1) * (mute ? .35 : .5), mute ? .12 : dur);
   }
   var E2 = 82.41, G2 = 98, A2 = 110, D2 = 73.42;
-  var SFX = {
+  // Sons enregistrés : proto/sounds/<nom>.mp3 ; s'ils existent, ils remplacent la synthèse
+  var SOUND_FILES = ['tear','flip','commune','rare','holo','signature','legendaire','build','heartbeat','land','complete'];
+  var samples = {}, samplesAsked = false;
+  function loadSamples(){
+    if(samplesAsked) return; var a = bus(); if(!a) return; samplesAsked = true;
+    SOUND_FILES.forEach(function(n){
+      fetch('sounds/' + n + '.mp3').then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); })
+        .then(function(buf){ return new Promise(function(ok, ko){ a.decodeAudioData(buf, ok, ko); }); })
+        .then(function(b){ samples[n] = b; }).catch(function(){});
+    });
+  }
+  function sample(n, vol){
+    var b = samples[n], a = audio(); if(!b || !a) return false;
+    var s = a.createBufferSource(), g = a.createGain(); s.buffer = b; g.gain.value = vol || 1; s.connect(g); g.connect(master || a.destination); s.start(); return true;
+  }
+  var SYNTH = {
     tear: function(){ var a = bus(); if(!a) return; var t = a.currentTime, n = noiseSrc(a, .4), f = a.createBiquadFilter(), g = a.createGain();
       f.type = 'bandpass'; f.Q.value = 3; f.frequency.setValueAtTime(600, t); f.frequency.exponentialRampToValueAtTime(5000, t + .35); env(a, g, t, .35, .38); n.connect(f); f.connect(g); g.connect(master); n.start(t); buzz([20]); },
     flip: function(){ DR.hat(0, .9); buzz([12]); },
@@ -682,8 +697,13 @@
     heartbeat: function(){ DR.kick(0, 1); DR.kick(.22, .8); buzz([40,180,30]); },
     land: function(){ DR.tom(0, 170, .8); DR.hat(.05, .5); buzz([18]); },
     // double pédale qui accélère pendant l'attente
-    rumble: function(ms){ var n = Math.floor(ms / 1000 * 14), t = 0; for(var i=0;i<n;i++){ DR.kick(t, .45 + .5 * i/n); t += Math.max(.045, .14 - .1 * i/n); if(t * 1000 > ms) break; } buzz([ms]); }
+    rumble: function(ms){ var n = Math.floor(ms / 1000 * 14), t = 0; for(var i=0;i<n;i++){ DR.kick(t, .45 + .5 * i/n); t += Math.max(.045, .14 - .1 * i/n); if(t * 1000 > ms) break; } buzz([ms]); },
+    complete: function(){ SYNTH.signature(); }
   };
+  // chaque son : le fichier s'il est là, sinon la version synthétisée (les vibrations restent dans tous les cas)
+  var FILE_OF = {rumble:'build'}, HAPT = {commune:HAPTIC.commune, rare:HAPTIC.rare, holo:HAPTIC.holo, signature:HAPTIC.signature, legendaire:HAPTIC.legendaire, flip:[12], land:[18], heartbeat:[40,180,30], tear:[20], complete:HAPTIC.signature};
+  var SFX = {};
+  Object.keys(SYNTH).forEach(function(k){ SFX[k] = function(arg){ loadSamples(); if(sample(FILE_OF[k] || k)){ if(k === 'rumble') buzz([arg]); else if(HAPT[k]) buzz(HAPT[k]); return; } SYNTH[k](arg); }; });
 
   var fx = document.getElementById('fx'), ctx = fx.getContext('2d'), parts = [], looping = false;
   function sizeFx(){ var d = window.devicePixelRatio || 1; fx.width = innerWidth * d; fx.height = innerHeight * d; ctx.setTransform(d,0,0,d,0,0); }
@@ -724,7 +744,7 @@
   function setTear(v){ packEl.style.setProperty('--tear', v.toFixed(3)); }
   function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
   packEl.addEventListener('pointerdown', function(e){
-    if(opening) return; prepTease(); audio(); askMotion(); tick();
+    if(opening) return; prepTease(); audio(); loadSamples(); askMotion(); tick();
     drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
     packEl.setPointerCapture(e.pointerId);
   });
@@ -1008,7 +1028,7 @@
         if(s2){ s2.classList.add('landed'); var rr = s2.getBoundingClientRect(); burst(r === 'commune' ? 'rare' : r, {x:rr.left + rr.width/2, y:rr.top + rr.height/2, w:rr.width, h:rr.height}); }
         SFX.land(); placing = false;
         var comps = newCompletions(), mast = newMasteries();
-        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.signature(); burst('signature'); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
+        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); burst('signature'); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
         if(done) setTimeout(done, 180);
       }, reduce ? 0 : 560);
