@@ -357,6 +357,8 @@
   .fuse button b{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em}
   .fuse .dis{opacity:.45; cursor:default}
   .mastery{margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid rgba(238,177,52,.35); background:rgba(238,177,52,.08); font-size:.86rem}
+  .move{margin-top:14px; padding:12px 14px; border:1px solid rgba(238,177,52,.35); border-radius:12px; background:rgba(238,177,52,.06)}
+  .move .eyebrow{margin:0 0 6px} .move b{display:block; font:800 1.3rem/1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .move p:last-child{margin:6px 0 0; font-size:.88rem; color:var(--muted)}
   .detail-actions{display:flex; gap:10px; margin-top:16px} .detail-actions .btn{flex:1}
   .tearfx i{position:fixed; background-size:cover; background-position:center; border-radius:10px; will-change:transform}
   .tearfx .l{clip-path:polygon(0 0, 52% 0, 46% 18%, 55% 34%, 45% 52%, 54% 70%, 47% 86%, 52% 100%, 0 100%); animation:tearl 1s cubic-bezier(.5,0,.8,.4) forwards}
@@ -858,6 +860,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
   BINDERS[0].ids = CARDS.map(function(c){ return c.id; });
 
+  // coup spécial : un nom dans le ton du jeu, adossé à un fait réel. Sans fait vérifié, pas de coup spécial.
+  var MOVES = {
+    'knocked-loose':['Arf arf', 'Son « arf arf » aboyé en plein morceau est devenu un mème du hardcore.'],
+    jinjer:['Bascule instantanée', 'Passe du chant clair au growl sans reprendre son souffle, comme sur Pisces.'],
+    spiritbox:['Tessiture totale', 'Du chant aérien au growl le plus grave. Avant Spiritbox, elle hurlait dans iwrestledabearonce.'],
+    landmvrks:['Flow marseillais', 'Landmvrks vient de Marseille, et Flo y mêle couplets rappés et cris metalcore.'],
+    ramos:['Breakdown de l\'enfer', 'La fin de To the Hellfire est devenue l\'une des breakdowns les plus partagées du deathcore.'],
+    duplantier:['Cérémonie d\'ouverture', 'Gojira a joué à la Conciergerie pour l\'ouverture des Jeux olympiques de Paris 2024.'],
+    blink182:['Retour dans les airs', 'Survivant d\'un accident d\'avion en 2008, il a fini par reprendre l\'avion en 2021.'],
+    hoppus:['Course à poil', 'Dans le clip de What\'s My Age Again?, Blink-182 court tout nu dans les rues de Los Angeles.'],
+    hendrix:['Guitare en feu', 'Au festival de Monterey en 1967, il met le feu à sa guitare sur scène.'],
+    korn:['Cornemuse', 'Il joue de la cornemuse sur scène, et son pied de micro a été dessiné par H. R. Giger.'],
+    poppy:['Nomination historique', 'Première artiste solo nommée aux Grammy dans la catégorie Best Metal Performance, avec BLOODMONEY.'],
+    slash:['Riff d\'échauffement', 'Le riff de Sweet Child O\' Mine est né d\'un exercice qu\'il jouait pour rigoler.'],
+    zack:['Numéro un de Noël', 'En 2009, une campagne de fans propulse Killing in the Name numéro un des ventes de Noël au Royaume-Uni.'],
+    frusciante:['Triple entrée', 'Entré chez les Red Hot à 18 ans, parti deux fois, revenu deux fois.'],
+    root:['Double vie', 'Guitariste masqué de Slipknot, il a aussi joué à visage découvert dans Stone Sour.'],
+    jordison:['Batterie volante', 'Pendant ses solos, sa batterie montait et tournait sur elle-même au-dessus de la scène.']
+  };
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
   function rank(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return i; return -1; }
@@ -1774,6 +1795,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       }).join('') + '</div>' + fuseBlock(id) +
       (mastered(id) ? '<div class="mastery">★ <b>Maîtrise</b> : tu possèdes les 5 raretés de ' + esc(c.who) + '.</div>'
                     : (r ? '<p class="note" style="margin-top:12px">Maîtrise : ' + RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }).length + '/5 raretés. Réunis-les toutes pour le badge.</p>' : '')) +
+      (r && MOVES[id] ? '<div class="move"><p class="eyebrow">Coup spécial</p><b>' + esc(MOVES[id][0]) + '</b><p>' + esc(MOVES[id][1]) + '</p></div>' : '') +
       (r ? '<div class="detail-actions"><button type="button" class="btn ghost" id="d-share">Partager</button><button type="button" class="btn danger" id="d-tear">Déchirer</button></div>' : '');
     if(r){
       document.getElementById('d-share').onclick = function(){ shareCard(c, r); };

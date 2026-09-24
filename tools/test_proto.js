@@ -138,6 +138,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const st2 = JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1')).owned;
   check('fusion : 1 Commune gardée + 1 Rare obtenue', st2['korn|commune'] === 1 && st2['korn|rare'] === 1, JSON.stringify(st2));
   check('fusion : reveal de la nouvelle carte', !d2.getElementById('reveal').hidden);
+  { d2.getElementById('reveal').hidden = true; d2.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(30);
+    check('fiche : coup spécial affiché pour une carte possédée', /Coup spécial.*Cornemuse/.test(d2.getElementById('detail').textContent)); d2.getElementById('sheet-close').click(); await sleep(20); }
 
   // 6. Remise à zéro depuis les Réglages, après confirmation
   d2.getElementById('reveal').hidden = true; d2.querySelector('.tabbar [data-v="packs"]').click();
