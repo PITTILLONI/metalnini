@@ -54,6 +54,8 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 
 ## Prochaines étapes possibles
 
+- **À changer avant d'ouvrir à plus de monde : l'expéditeur des e-mails** (décision du 2026-09-24). Les e-mails de compte (confirmation, mot de passe oublié) partent pour l'instant de l'adresse Gmail perso du créateur via le SMTP de Gmail (limite d'environ 500 e-mails par jour). À remplacer par un domaine dédié (ex. `metalnini.fr`, environ 10 € par an) vérifié dans Resend, dont le SMTP est déjà configuré dans Supabase et la clé rangée dans le Trousseau (`resend-api-key`).
+- **App iOS : passer à l'inscription par e-mail** (ou Sign in with Apple) : les comptes anonymes sont désactivés côté serveur depuis le 2026-09-24, une nouvelle installation passe donc en mode hors ligne.
 - **Phase 0 démarrée (2026-09-24)** : app iOS native (`ios/`, SwiftUI, iOS 17, logique de jeu testée dans `MetalniniKit`) et back-end Supabase (`backend/`, schéma v1, droits d'accès, tirage serveur). Reste à créer le projet Supabase, y appliquer la migration, puis brancher l'app dessus.
 - **Architecture actée (2026-09-24)** : iOS natif (SwiftUI) d'abord, Android ensuite, back-end managé, espace admin web séparé ; 8 phases détaillées dans l'onglet Roadmap de `concept.html`, en commençant par la phase 0 (fondations).
 - **Feature 1 à développer : ouverture de paquet + visualisation du classeur** (décision du 2026-09-23, détail dans l'onglet Roadmap de `concept.html`). Avant de coder : trancher taille de paquet, probabilités par rareté, statut de la carte « de base », composition des deux classeurs de test et stack du prototype.
