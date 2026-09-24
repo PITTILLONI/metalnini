@@ -36,11 +36,10 @@
 
   /* ---------- Tab bar ---------- */
   /* barre d'onglets flottante, boutons en relief */
-  /* barre d'onglets : bandeau gravé, comme le cadre des cartes (double filet or, glyphes de tarot) */
+  /* barre d'onglets : fond encre, filet or fin, icônes SVG maison */
   .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; justify-content:center; padding:10px 12px calc(8px + env(safe-area-inset-bottom));
           background:linear-gradient(180deg, rgba(13,10,8,.94), #0d0a08 40%);
-          border-top:1px solid rgba(212,175,55,.55); box-shadow:0 -1px 0 #0d0a08, 0 -3px 0 rgba(212,175,55,.22), 0 -18px 40px rgba(0,0,0,.6)}
-  .tabbar::before{content:"✦"; position:absolute; top:-9px; left:50%; transform:translateX(-50%); font-size:.8rem; line-height:1; color:var(--gold); background:#0d0a08; padding:0 8px}
+          border-top:1px solid rgba(212,175,55,.3); box-shadow:0 -18px 40px rgba(0,0,0,.6)}
   .tabbar button{flex:1; max-width:160px; position:relative; background:none; border:0; padding:6px 4px 4px; font:600 .7rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:#8f877b; cursor:pointer; transition:color .2s ease}
   .tabbar .ico{display:block; margin:0 auto 3px; transition:transform .2s ease, filter .2s ease}
   .tabbar button[aria-selected="true"]{color:var(--gold-hi)}
@@ -56,7 +55,7 @@
   .hud{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:calc(12px + env(safe-area-inset-top)) 0 10px}
   .hud-me{display:flex; align-items:center; gap:10px; min-width:0}
   .hud-me .av{flex:0 0 auto; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; font-size:1.3rem; color:var(--gold); padding:0; cursor:pointer; overflow:hidden;
-    background:#16110e center/cover no-repeat; border:0; box-shadow:0 0 0 1px rgba(212,175,55,.7), 0 0 0 3px #0d0a08, 0 0 0 4px rgba(212,175,55,.3)}
+    background:#16110e center/cover no-repeat; border:0; box-shadow:0 0 0 1px rgba(212,175,55,.6)}
   .hud-me .av.has svg{display:none}
   .hud-me b{display:block; font:700 1rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw}
   .hud-me .net{display:block; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:left; margin-top:2px}
@@ -67,24 +66,37 @@
   .hud-stats i{display:flex; color:var(--gold)}
   .home-title{font-size:1.9rem; line-height:1.05; margin:12px 0 0; text-align:center}
   .pack-zone{display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px 0 6px}
-  .home .pack-desc{display:none}
   @media (orientation:landscape) and (max-height:540px){
     .home{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:28px; align-items:start}
     .home > *{grid-column:1} .home .pack-zone{grid-column:2; grid-row:1 / span 4; padding-top:calc(10px + env(safe-area-inset-top))}
     .home .pack.art{width:max(90px, calc((100svh - 200px) * var(--pa,.5783)))}
     .home .pack-zone{gap:8px} .home .swipe-hint{display:none}
-    .home .pack-picker button{width:40px} .home .pack-picker small{display:none}
   }
-  .home .pack-picker button{width:56px}
-  .home .pack-picker small{font-size:.7rem}
+  #v-packs[data-step="choose"] .pack-zone{display:none}
+  #v-packs[data-step="open"] .quests, #v-packs[data-step="open"] .home-title, #v-packs[data-step="open"] .choose-grid{display:none}
+  .choose-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; padding:14px 0 8px}
+  @media (min-width:700px){ .choose-grid{grid-template-columns:repeat(3, minmax(0,1fr))} }
+  .choose-grid button{display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 10px 12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); cursor:pointer; text-align:center; transition:border-color .15s ease, transform .12s ease}
+  .choose-grid button:hover{border-color:rgba(212,175,55,.5)} .choose-grid button:active{transform:scale(.98)}
+  .choose-grid img{width:62%; aspect-ratio:.58; object-fit:contain; filter:drop-shadow(0 10px 18px rgba(0,0,0,.6))}
+  .choose-grid b{font:800 1.15rem/1 var(--display); text-transform:uppercase; letter-spacing:.02em; color:var(--text)}
+  .choose-grid small{font:500 .74rem/1.3 var(--mono); color:var(--muted)}
+  .open-head{width:100%; text-align:center}
+  .open-head .back-btn{display:block; margin:0 auto 4px}
+  .open-head h1{font-size:2rem}
+  .home .open-head .pack-desc{display:block; margin:6px auto 0}
   .goal.quest{padding:8px 12px}
-  .quests{margin-top:2px}
-  .quest-track{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; gap:12px}
+  .quests{margin-top:4px}
+  .quest-track{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; gap:10px}
   .quest-track::-webkit-scrollbar{display:none}
-  .quest-dots{padding:8px 0 0}
-  .goal.quest{flex:0 0 100%; scroll-snap-align:start; max-width:none; background:linear-gradient(180deg,#191410,#110d0a); border:0; box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 4px #110d0a, inset 0 0 0 5px rgba(212,175,55,.2)}
-  .goal .qbar{display:block; height:6px; border-radius:3px; background:rgba(255,255,255,.1); margin-top:7px; overflow:hidden}
-  .goal .qbar i{display:block; height:100%; border-radius:3px; background:linear-gradient(90deg,#b8912a,#f5c542)}
+  .goal.quest{flex:0 0 100%; scroll-snap-align:start; display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 10px; min-height:52px; padding:9px 14px;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:left; cursor:pointer; max-width:none}
+  .goal.quest b{font:600 .86rem/1.25 var(--mono); letter-spacing:0; text-transform:none; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .goal.quest .pc{font:600 .78rem var(--mono); color:var(--gold); font-variant-numeric:tabular-nums}
+  .goal .qbar{grid-column:1 / -1; display:block; height:3px; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden}
+  .goal .qbar i{display:block; height:100%; background:var(--gold)}
+  .quest-dots{padding:6px 0 0} .quest-dots i{width:5px; height:5px} .quest-dots i.on{width:14px}
+  .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
   .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
         background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%), #111; box-shadow:0 18px 50px rgba(0,0,0,.6), inset 0 0 0 1px rgba(212,175,55,.35);
         transition:transform .2s ease}
@@ -95,25 +107,25 @@
   .pack .p-moon{position:absolute; left:0; right:0; top:18%; text-align:center; font-size:1.8rem; color:var(--gold)}
   .pack.shake{animation:shake .5s ease}
   @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
-  .btn{position:relative; border:0; border-radius:12px; padding:14px 26px; font:700 .92rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.12em; cursor:pointer; color:#1c140b;
-    background:linear-gradient(180deg, var(--gold-hi), var(--gold) 48%, var(--gold-lo)); box-shadow:inset 0 1px 0 rgba(255,248,220,.7), inset 0 0 0 1px rgba(90,64,20,.55), 0 8px 24px rgba(0,0,0,.45);
-    transition:transform .12s ease, filter .12s ease}
-  .btn::after{content:""; position:absolute; inset:4px; border-radius:8px; border:1px solid rgba(60,40,10,.35); pointer-events:none}
-  .btn:hover{filter:brightness(1.06)} .btn:active{transform:scale(.98)}
-  .btn.ghost{color:var(--gold-hi); background:rgba(212,175,55,.06); box-shadow:inset 0 0 0 1px rgba(212,175,55,.55)}
-  .btn.ghost::after{border-color:rgba(212,175,55,.18)}
-  .btn.danger{color:#fff; background:linear-gradient(180deg,#c24a3e,#8f231c); box-shadow:inset 0 1px 0 rgba(255,200,190,.35), inset 0 0 0 1px rgba(60,10,8,.6), 0 8px 24px rgba(0,0,0,.45)}
-  .btn.danger::after{border-color:rgba(255,220,210,.22)}
+  /* boutons : même hauteur, même typo partout ; or plein (principal), filet (secondaire), rouge plein (danger) */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:50px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
+    font:600 .88rem/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink); background:var(--gold); transition:transform .12s ease, background .15s ease, border-color .15s ease}
+  .btn:hover{background:var(--gold-hi)} .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.45; cursor:default; transform:none}
+  .btn.ghost{color:var(--text); background:transparent; box-shadow:inset 0 0 0 1px rgba(243,240,234,.22)}
+  .btn.ghost:hover{box-shadow:inset 0 0 0 1px rgba(243,240,234,.45); background:rgba(255,255,255,.03)}
+  .btn.danger{color:#fff; background:var(--accent)} .btn.danger:hover{background:#c44545}
+  .btn.block{width:100%}
   .modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
   .modal[hidden]{display:none}
   .modal-in{width:100%; max-width:380px; background:linear-gradient(180deg,#1b1511,#110d0a); border-radius:16px; padding:22px 20px 18px; text-align:center;
-    box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 5px #110d0a, inset 0 0 0 6px rgba(212,175,55,.22), 0 24px 60px rgba(0,0,0,.7)}
+    border:1px solid rgba(212,175,55,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
   .modal-in.profile{max-height:92dvh; overflow:auto; position:relative}
   .modal-in.profile .sheet-close{position:absolute; top:12px; right:12px; float:none}
   .pf-av{display:grid; place-items:center; width:132px; height:132px; margin:10px auto 8px; border-radius:50%; border:0; padding:0; cursor:pointer; font-size:3rem; color:var(--gold);
-    background:#16110e center/cover no-repeat; box-shadow:0 0 0 2px rgba(212,175,55,.8), 0 0 0 6px #110d0a, 0 0 0 7px rgba(212,175,55,.3), 0 14px 30px rgba(0,0,0,.6)}
+    background:#16110e center/cover no-repeat; box-shadow:0 0 0 1px rgba(212,175,55,.6), 0 14px 30px rgba(0,0,0,.6)}
   .pf-av.has span{display:none}
   .pf-name{font:700 1.2rem var(--display); text-transform:uppercase; letter-spacing:.06em; color:var(--text); margin:0 0 12px}
   .pf-note{font-size:.86rem; margin:0 0 10px}
@@ -198,7 +210,6 @@
   .dots i{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.22); transition:all .2s ease}
   .dots i.on{width:20px; border-radius:4px; background:var(--gold)}
   .sum-actions{display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
-  .btn.big{width:100%; min-height:56px; padding:0 24px; font-size:1rem}
 
   /* ---------- Classeur ---------- */
   .binder-head{position:relative; padding:calc(24px + env(safe-area-inset-top)) 0 6px}
@@ -322,21 +333,6 @@
   .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
   .deck i.next{animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-3px)}}
-  .pack-picker{display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; padding:4px 2px 2px; max-width:100%; scroll-snap-type:x mandatory}
-  .pack-picker::-webkit-scrollbar{display:none}
-  .pack-picker button{flex:0 0 auto; width:64px; border:0; padding:0; background:none; cursor:pointer; scroll-snap-align:center; text-align:center}
-  .pack-picker img{display:block; width:100%; aspect-ratio:.58; object-fit:contain; opacity:.55; transition:opacity .2s ease, transform .2s ease}
-  .pack-picker button[aria-pressed="true"] img{opacity:1; transform:translateY(-4px)}
-  .pack-picker small{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:4px; line-height:1.25}
-  .pack-picker button[aria-pressed="true"] small{color:var(--text)}
-  .goal{display:flex; align-items:center; gap:12px; width:100%; max-width:420px; background:var(--surface); border:1px solid rgba(212,175,55,.35); border-radius:12px; padding:10px 12px; text-align:left; cursor:pointer}
-  .goal .gi{flex:0 0 auto; display:flex; gap:3px}
-  .goal .gi i{display:block; width:18px; aspect-ratio:2/3; border-radius:2px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4)}
-  .goal .gi i.have{background-size:cover; box-shadow:0 0 0 1px var(--gold)}
-  .goal b{display:block; font-family:var(--display); text-transform:uppercase; letter-spacing:.03em; font-size:.95rem}
-  .goal span{font-size:.8rem; color:var(--muted)}
-  .goal .eyebrow{margin:0 0 3px; font-size:.7rem}
-  .summary .goal{margin:0 auto 12px; width:calc(100% - 32px); max-width:608px}
   /* (3) paquet fermé en parallaxe */
   .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
   .ptilt > .pack{transition:transform .12s linear}
@@ -374,7 +370,6 @@
   .tray .cards{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:6px 3px 8px; margin:0 -3px}
   .tray .cards button{flex:0 0 auto; width:46px; border:0; padding:0; background:none; cursor:pointer}
   .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc,#8a8a92)}
-  .tray .all{width:100%; background:var(--accent); color:var(--text); border:0; border-radius:12px; padding:13px 16px; font-family:var(--display); text-transform:uppercase; font-size:1rem; letter-spacing:.04em; cursor:pointer}
   body.placing #v-binder .grid, body.placing #v-binder .matrix{padding-bottom:200px}
   .flyer{position:fixed; z-index:55; pointer-events:none; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
   .flyer img{display:block; width:100%; height:100%; object-fit:cover}
@@ -479,15 +474,20 @@
 <body>
 
 <!-- ============ PAQUETS ============ -->
-<main id="v-packs" class="view wrap home">
+<main id="v-packs" class="view wrap home" data-step="choose">
   <header class="hud">
     <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg></button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
     <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
   <div class="quests" id="goal" hidden></div>
-  <h1 class="home-title">Choisis et ouvre ton paquet du jour</h1>
+  <h1 class="home-title">Choisis ton paquet du jour</h1>
+  <div class="choose-grid" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
   <div class="pack-zone">
-    <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
+    <div class="open-head">
+      <button type="button" class="back-btn" id="pack-back">← Changer de paquet</button>
+      <h1 id="open-title"></h1>
+      <p class="pack-desc" id="pack-desc"></p>
+    </div>
     <div class="pack-wrap" id="pack-root">
       <div class="ptilt" id="ptilt">
       <button type="button" class="pack art" id="pack" aria-label="Déchirer le paquet (glisser vers la droite, ou toucher pour l'ouvrir)">
@@ -497,7 +497,6 @@
         <i class="ext" style="transform:translateZ(-2px)"></i><i class="ext" style="transform:translateZ(-4px)"></i><i class="ext" style="transform:translateZ(-6px)"></i><i class="ext" style="transform:translateZ(-8px)"></i><i class="pshadow"></i>
       </button>
       </div>
-      <p class="pack-desc" id="pack-desc"></p>
       <p class="swipe-hint" id="swipe-hint">Glisse pour l'éventrer →</p>
     </div>
   </div>
@@ -579,7 +578,7 @@
     <div class="carousel" id="sum-grid" aria-label="Cartes du paquet"></div>
     <div class="dots" id="sum-dots" aria-hidden="true"></div>
     <div class="sum-actions">
-      <button type="button" class="btn big" id="to-binder">Ranger dans le classeur</button>
+      <button type="button" class="btn block" id="to-binder">Ranger dans le classeur</button>
     </div>
   </div>
 </div>
@@ -658,7 +657,7 @@
 <div id="fxlayer" aria-hidden="true"><div id="stamp"></div></div>
 <div id="vignette" aria-hidden="true"></div>
 <div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""></div><div class="df-plus" id="df-plus"></div><div class="df-sub" id="df-sub"></div><p class="df-skip">Touche pour passer</p></div>
-<div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="all" id="tray-all">Tout ranger d'un coup</button></div></div>
+<div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
 <label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
 
@@ -813,7 +812,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
   // Paquets : le Mosh Pack tire dans tous les musiciens, un paquet de style seulement dans son classeur
-  var PACKS = [{k:'serie', label:'Mosh Pack', desc:'Tous les styles dans le même pit : 5 cartes tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
+  var PACKS = [{k:'serie', label:'Mosh Pack', short:'Tous les styles', desc:'Tous les styles dans le même pit : 5 cartes tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, short:b.ids.length + ' musiciens', desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
     .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
   function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
   // ---------- En ligne : le serveur tire les paquets et tient la collection ----------
@@ -999,17 +998,27 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }
     return state.pending;
   }
+  // deux temps : choisir un paquet, puis l'ouvrir
+  function packStep(st){
+    document.getElementById('v-packs').dataset.step = st; window.scrollTo(0, 0);
+    if(st === 'open'){ setTimeout(packParallax, 0); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
+  }
+  document.getElementById('pack-back').addEventListener('click', function(){ if(!opening) packStep('choose'); });
   function renderPacks(){
     if(!PACKS.some(function(p){ return p.k === state.packType; })) state.packType = 'serie';
     var pk = document.getElementById('pack'), ratio = (window.METALNINI_PACKS || {})[state.packType] || .5783;
     pk.style.setProperty('--pimg', 'url(cards/pack-' + state.packType + '.jpg)'); pk.style.setProperty('--pa', ratio);
     var el = document.getElementById('pack-picker');
     el.hidden = PACKS.length < 2;
-    el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-pressed="' + (p.k === state.packType) + '"><img src="cards/pack-' + p.k + '.jpg" alt=""><small>' + esc(p.label) + '</small></button>'; }).join('');
-    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; if(ONLINE && state.pending && state.pending.length){ toast('Finis d\'abord le paquet entamé. On gâche pas.'); return; } state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
+    el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '"><img src="cards/pack-' + p.k + '.jpg" alt=""><b>' + esc(p.label) + '</b><small>' + esc(p.short) + '</small></button>'; }).join('');
+    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){
+      if(opening) return;
+      if(ONLINE && state.pending && state.pending.length && state.pendingType !== b.getAttribute('data-p')){ toast('Finis d\'abord le paquet entamé. On gâche pas.'); packStep('open'); return; }
+      state.packType = b.getAttribute('data-p'); save(); renderPacks(); packStep('open'); }); });
     var cur = PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0];
     pk.setAttribute('aria-label', 'Déchirer le paquet ' + cur.label);
-    document.getElementById('pack-desc').innerHTML = '<b>' + esc(cur.label) + '</b> · ' + esc(cur.desc);
+    document.getElementById('open-title').textContent = cur.label;
+    document.getElementById('pack-desc').textContent = cur.desc;
   }
 
   // Prochain objectif : le classeur le plus proche d'être complété, sinon la maîtrise la plus avancée
@@ -1024,18 +1033,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var out = list.slice(0, 4).map(function(g){ return {
       pct:Math.round((g.ids.length - g.miss.length) / g.ids.length * 100), binder:g.b.k,
       title:'Plus que ' + g.miss.length + ' carte' + (g.miss.length > 1 ? 's' : '') + ' et ' + binderLabel(g.b) + ' est plié',
-      icons:g.ids.map(function(id){ var r = best(id); return r ? '<i class="have" style="background-image:url(' + img(id, r) + ')"></i>' : '<i></i>'; }).join('')}; });
+    }; });
     var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n >= 1 && n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
-    if(m) out.push({pct:m.n * 20, binder:styleOf(m.c.id), title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', icons:''});
+    if(m) out.push({pct:m.n * 20, binder:styleOf(m.c.id), title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5'});
     return out;
   }
   // bandeau d'objectifs : on glisse de l'un à l'autre, un point par objectif
   function renderGoal(id){
     var el = document.getElementById(id), list = goals(); el.hidden = !list.length; if(!list.length) return;
     el.innerHTML = '<div class="quest-track">' + list.map(function(g, i){
-      return '<button type="button" class="goal quest" data-b="' + g.binder + '">' + (g.icons ? '<span class="gi">' + g.icons + '</span>' : '') +
-        '<span style="flex:1; min-width:0"><p class="eyebrow">' + (i ? 'Objectif ' + (i + 1) + '/' + list.length : 'Prochain objectif') + '</p><b>' + esc(g.title) + '</b>' +
-        '<i class="qbar"><i style="width:' + g.pct + '%"></i></i></span></button>'; }).join('') + '</div>' +
+      return '<button type="button" class="goal quest" data-b="' + g.binder + '"><span class="sr-only">' + (i ? 'Objectif ' + (i + 1) + ' sur ' + list.length : 'Prochain objectif') + ' : </span>' +
+        '<b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></button>'; }).join('') + '</div>' +
       (list.length > 1 ? '<div class="dots quest-dots">' + list.map(function(g, i){ return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '');
     var track = el.querySelector('.quest-track'), dots = el.querySelectorAll('.quest-dots i');
     track.onscroll = function(){ var k = Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); [].forEach.call(dots, function(d, j){ d.classList.toggle('on', j === k); }); };
@@ -1067,7 +1075,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['packs','binder','settings'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder();
-    if(v === 'packs'){ renderStats(); setTimeout(packParallax, 0); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
+    if(v === 'packs'){ renderStats(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
     if(v === 'settings') renderSettings();
     window.scrollTo(0,0);
@@ -1664,7 +1672,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('confirm-yes').addEventListener('click', function(){ closeConfirm(); resetAll(); go('packs'); toast('Collection brûlée. Le pit t\'attend.'); });
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
-  renderStats(); setNet(); paintAvatar(); setTimeout(packParallax, 0);
+  renderStats(); setNet(); paintAvatar();
 })();
 </script>
 </body>

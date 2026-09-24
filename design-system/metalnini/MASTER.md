@@ -23,12 +23,20 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - Aucun texte sous ~11 px (0,7 rem) ; corps de texte ≥ 14 px ; chiffres en `tabular-nums` (`.num`).
 
 ## Composants
-- **Bouton principal** `.btn` : or gravé (dégradé `--gold-hi` → `--gold` → `--gold-lo`), texte encre, filet intérieur. Un seul par écran.
-- **Secondaire** `.btn.ghost` : filet or. **Danger** `.btn.danger` : rouge sang, toujours derrière une modale de confirmation.
-- **Icône seule** `.icon-btn` : rond, filet or, `aria-label` obligatoire, 44 px minimum.
-- **Cartouche** (quêtes, modales) : double filet or (`inset 0 0 0 1px` + `5px` + `6px`), comme le cadre des cartes.
-- **Barre d'onglets** : 2 entrées maximum (Paquets, Classeur), bandeau à double filet, icônes SVG maison ; Réglages en haut à droite.
+- **Boutons** : un seul système, même hauteur (50 px) et même typo (Inter 600, capitales, 0,08 em) partout.
+  - Principal `.btn` : or plein, texte encre. Un seul par écran. `.btn.block` pour la pleine largeur.
+  - Secondaire `.btn.ghost` : fond transparent, filet os fin.
+  - Danger `.btn.danger` : rouge plein, toujours derrière une modale de confirmation.
+- **Icône seule** `.icon-btn` : rond, filet or fin, `aria-label` obligatoire, 44 px minimum.
+- **Bordures** : un seul filet fin (1 px). Pas de double bordure ni de double filet (retour utilisateur du 2026-09-25).
+- **Surfaces** (tuiles, objectifs, modales) : `--surface`, filet `--border`, rayon 12-14 px, sans ombre intérieure.
+- **Objectifs** : une ligne par objectif (texte, pourcentage, filet de progression de 3 px), à glisser, un point par objectif.
+- **Barre d'onglets** : 2 entrées (Paquets, Classeur), fond encre, filet or fin, icônes SVG maison ; Réglages en haut à droite.
 - **Icônes** : SVG au trait 1,4-2 px, `currentColor`. Pas d'emoji ni de glyphes Unicode comme icônes.
+
+## Parcours Paquets (deux temps)
+1. **Choisir** : HUD, objectifs, « Choisis ton paquet du jour », grille de paquets (2 colonnes, 3 dès 700 px).
+2. **Ouvrir** : « ← Changer de paquet », nom et description du paquet, paquet en grand, geste pour déchirer. Un paquet serveur entamé rouvre directement cette étape.
 
 ## Interaction et mouvement
 - Cibles tactiles ≥ 44 × 44 px, 8 px d'écart minimum ; retour visuel à l'appui (échelle 0,97-0,98 ou opacité).
