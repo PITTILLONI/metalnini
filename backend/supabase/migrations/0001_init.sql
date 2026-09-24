@@ -204,6 +204,7 @@ end $$;
 create or replace function public.open_pack(p_pack_type text, p_request_id uuid)
 returns table (card_position int, musician_id text, rarity public.rarity, is_new boolean)
 language plpgsql volatile security definer set search_path = public as $$
+#variable_conflict use_column
 declare
   v_user uuid := auth.uid();
   v_opening uuid;
