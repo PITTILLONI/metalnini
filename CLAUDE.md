@@ -15,7 +15,7 @@ Projet perso (hors United Heroes) : collection de cartes de musiciens metal et r
 ## Design
 - Référence : `design-system/metalnini/MASTER.md` (jetons, composants, checklist). La lire avant toute modification d'interface.
 - Utiliser le skill `.claude/skills/ui-ux-pro-max` pour toute décision d'interface (accessibilité, tailles tactiles, typographie, mouvement). Ses recommandations génériques ne remplacent pas la DA des cartes.
-- DA : celle des cartes (tarot gravé : noir d'encre, or, os, rouge sang ; titres Cinzel ; doubles filets or). Moderne et élégant, jamais « site web » générique.
+- DA : celle des cartes (tarot gravé : noir d'encre, or chaud, os, rouge sang ; titres Big Shoulders Display, interface Inter ; filets simples, jamais de double bordure). Moderne, sobre et élégant, jamais « site web » générique.
 - Ton : UX writing rock'n'roll, drôle et clair (guide dans `concept.html`, onglet Direction artistique, Ligne édito). Une vanne par écran au plus ; l'action reste lisible.
 
 ## Sécurité

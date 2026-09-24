@@ -443,9 +443,11 @@
   @keyframes dffan1{0%{transform:none}45%{transform:translate(-34%,6%) rotate(-16deg)}100%{transform:translate(-8%,3%) rotate(-5deg)}}
   @keyframes dffan2{0%{transform:none}45%{transform:translate(34%,6%) rotate(16deg)}100%{transform:translate(8%,3%) rotate(5deg)}}
   @keyframes dffan3{0%{transform:none}45%{transform:translate(0,14%) rotate(3deg)}100%{transform:translate(0,4%) rotate(1deg)}}
-  .df-plus{font:700 clamp(3rem,16vw,5.5rem)/1 var(--display); color:var(--rc); text-shadow:0 0 30px var(--rc), 0 3px 0 #000; animation:dfpop .6s cubic-bezier(.2,1.8,.4,1) .45s both}
-  @keyframes dfpop{0%{transform:scale(0) rotate(-12deg)}100%{transform:none}}
-  .df-sub{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--text); animation:dfin .3s ease .7s both}
+  /* bonus posé sur la carte, en bandeau incliné comme les phrases de révélation */
+  .df-plus{position:absolute; left:-6%; right:-6%; top:42%; z-index:3; text-align:center; pointer-events:none; animation:dfpop .5s cubic-bezier(.2,1.6,.4,1) .3s both}
+  .df-plus span{display:inline-block; max-width:100%; padding:12px 18px 10px; background:rgba(10,8,7,.92); border:2px solid var(--rc); transform:skewX(-8deg);
+    font:900 clamp(2.4rem, 12vw, 3.4rem)/.95 var(--display); white-space:nowrap; text-transform:uppercase; color:var(--rc); text-shadow:0 3px 0 #000; box-shadow:0 0 36px color-mix(in srgb, var(--rc) 55%, transparent), 0 10px 30px rgba(0,0,0,.6)}
+  .df-sub{font:600 .88rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--text); text-align:center; padding:0 16px; animation:dfin .3s ease .45s both}
   .df-tf{display:flex; flex-direction:column; gap:10px; width:min(86vw, 340px); margin-top:8px; animation:dfin .3s ease .8s both}
   .dupfx.fresh .df-card i{display:none}
   .df-skip{position:absolute; bottom:calc(28px + env(safe-area-inset-bottom)); margin:0; font:600 .8rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-hi); animation:dfin .3s ease .9s both, hintpulse 1.6s ease-in-out 1.2s infinite}
@@ -716,7 +718,7 @@
 </div>
 <div id="fxlayer" aria-hidden="true"><div id="stamp"></div></div>
 <div id="vignette" aria-hidden="true"></div>
-<div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""></div><div class="df-plus" id="df-plus"></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div><p class="df-skip" id="df-skip"></p></div>
+<div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""><div class="df-plus" id="df-plus"></div></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div><p class="df-skip" id="df-skip"></p></div>
 <div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
 <label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
@@ -1388,6 +1390,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
     document.getElementById('to-binder').hidden = true; document.getElementById('share').hidden = true; document.getElementById('hint').hidden = false;
+    var cb = document.getElementById('combo'); cb.classList.remove('go'); cb.innerHTML = ''; cb.style.opacity = '';
     flip.style.transition = 'none'; flip.classList.remove('on'); flip.style.transform = ''; void flip.offsetWidth; flip.style.transition = '';
     document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on');
     stage.className = 'stage';
@@ -1404,13 +1407,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = '';
   }
   var LINES = {
-    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Solide, comme un riff en mi.', 'La base. Et la base, c\'est sacré.', 'Commune. Même le roadie en a une.', 'Pas de quoi réveiller les voisins.'],
-    rare:['Oh, ça commence à chauffer.', 'Rare. Tes voisins vont l\'entendre.', 'Joli tirage, le pit approuve.'],
-    holo:['Ça brille ! Le pit s\'ouvre !', 'Holo ! Lève les cornes !', 'Là, on parle. Ça scintille.'],
-    signature:['Signée ! Tu peux hurler.', 'Une Signature ! Le public en redemande !', 'Stage diving autorisé : c\'est signé !'],
-    legendaire:['Légendaire. Arrête tout.', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.']
+    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Solide, comme un riff en mi.', 'La base. Et la base, c\'est sacré.', 'Commune. Même le roadie en a une.', 'Pas de quoi réveiller les voisins.',
+      'Commune. Tiède comme une bière de festival.', 'Le public applaudit. Poliment.', 'Première partie, au mieux.', 'Ça sent la balance, pas le concert.'],
+    rare:['Oh, ça commence à chauffer.', 'Rare. Tes voisins vont l\'entendre.', 'Joli tirage, le pit approuve.', 'Rare. Le vigile te laisse passer.', 'Ça pogote dans les premiers rangs.'],
+    holo:['Ça brille ! Le pit s\'ouvre !', 'Holo ! Lève les cornes !', 'Là, on parle. Ça scintille.', 'Holo ! Les briquets sont levés !', 'Ça brille plus qu\'une Les Paul neuve !'],
+    signature:['Signée ! Tu peux hurler.', 'Une Signature ! Le public en redemande !', 'Stage diving autorisé : c\'est signé !', 'Signée à la main. Pas au feutre de la merch.', 'Wall of death autorisé !'],
+    legendaire:['Légendaire. Arrête tout.', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.', 'Légendaire. Tes tympans ne s\'en remettront pas.', 'Tu viens de casser la scène.', 'Légendaire. Les autres peuvent rentrer chez eux.']
   };
-  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.', 'Encore ? Il te suit ou quoi ?', 'Doublon. Le destin a de l\'humour.', 'T\'as déjà le t-shirt, là.'];
+  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.', 'Encore ? Il te suit ou quoi ?', 'Doublon. Le destin a de l\'humour.', 'T\'as déjà le t-shirt, là.',
+    'Doublon. Même setlist qu\'hier.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Il ira grossir la pile.'];
   // paquet faible : une pique au moment de ranger
   var WEAK_PACK = ['Que des Communes. Le pit te regarde avec pitié.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Demain, tu souffles sur le paquet.'];
   var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf sous le soleil noir. Transforme tout ça.'];
@@ -1700,7 +1705,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     el.classList.toggle('fresh', fresh);
     el.style.setProperty('--rc', COLORS[shown]);
     document.getElementById('df-img').src = img(id, shown);
-    document.getElementById('df-plus').textContent = fresh ? 'Nouvelle !' : up ? rarity(r).label : '+1';
+    document.getElementById('df-plus').innerHTML = '<span>' + (fresh ? 'Nouvelle&nbsp;!' : up ? esc(rarity(r).label) + '&nbsp;!' : '+1') + '</span>';
     document.getElementById('df-sub').textContent = card(id).who + ' · ' + rarity(r).label + (fresh ? ' · case ' + slotNum(id) : up ? ' · monte en grade' : ' · ×' + total(id));
     document.getElementById('df-skip').textContent = 'Touche la carte pour la ranger' + (left ? ' · encore ' + left : '');
     el.classList.remove('out'); el.hidden = false; void el.offsetWidth;

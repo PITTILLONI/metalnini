@@ -1,0 +1,32 @@
+# Crédits des photos de référence (série 2)
+
+Photos de Wikimedia Commons utilisées comme référence de ressemblance pour générer les cartes (usage perso, non commercial). Licences d'origine à respecter en cas de diffusion.
+
+| Carte | Photo | Auteur | Licence |
+|---|---|---|---|
+| dickinson | [Bruce_Dickinson_–_Iron_Maiden_–_Tons_of_Rock_2026_05.jpg](https://commons.wikimedia.org/wiki/File:Bruce_Dickinson_%E2%80%93_Iron_Maiden_%E2%80%93_Tons_of_Rock_2026_05.jpg) | Birgit Fostervold | CC BY-SA 4.0 |
+| halford | [Rob_Halford.jpg](https://commons.wikimedia.org/wiki/File:Rob_Halford.jpg) | Birgit Fostervold | CC BY-SA 4.0 |
+| ozzy | [Ozzy_Osbourne_in_1970_(medium-sized_crop).jpg](https://commons.wikimedia.org/wiki/File:Ozzy_Osbourne_in_1970_(medium-sized_crop).jpg) | Warner Bros. Records | Public domain |
+| lemmy | [Lemmy-02.jpg](https://commons.wikimedia.org/wiki/File:Lemmy-02.jpg) | Mark Marek
+Mark Marek
+Copyright Mark Marek Photography ©2007
+
+URL: Motorhead Gallery on Alberta Stars | CC BY-SA 3.0 |
+| hetfield | [James_Hetfield_2025_Marvel_Stadium_(8).jpg](https://commons.wikimedia.org/wiki/File:James_Hetfield_2025_Marvel_Stadium_(8).jpg) | 4TheWynne | CC BY-SA 4.0 |
+| mustaine | [HF2022Megadeth_2.jpg](https://commons.wikimedia.org/wiki/File:HF2022Megadeth_2.jpg) | Selbymay | CC BY-SA 4.0 |
+| araya | [Araya_Slayer_München_2016_(6_von_6).jpg](https://commons.wikimedia.org/wiki/File:Araya_Slayer_M%C3%BCnchen_2016_(6_von_6).jpg) | pitpony.photography | CC BY-SA 3.0 |
+| scott-ian | [Anthrax_Tuska_2019_(1)_(Cropped).jpg](https://commons.wikimedia.org/wiki/File:Anthrax_Tuska_2019_(1)_(Cropped).jpg) | WanderingTrad | CC BY-SA 4.0 |
+| cobain | [Nirvana_around_1992_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Nirvana_around_1992_(cropped).jpg) | P.B. Rage from USA | CC BY-SA 2.0 |
+| cornell | [ChrisCornellTIFFSept2011.jpg](https://commons.wikimedia.org/wiki/File:ChrisCornellTIFFSept2011.jpg) | gdcgraphics | CC BY-SA 2.0 |
+| staley | [Staley05_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Staley05_(cropped).jpg) | Rex Aran Emrick | CC BY-SA 3.0 |
+| grohl | [FoosDublin210819-6_(48620330261)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:FoosDublin210819-6_(48620330261)_(cropped).jpg) | Raph_PH | CC BY 2.0 |
+| keenan | [20180602_Nürnberg_Rock_im_Park_A_Perfect_Circle_0029_(cropped).jpg](https://commons.wikimedia.org/wiki/File:20180602_N%C3%BCrnberg_Rock_im_Park_A_Perfect_Circle_0029_(cropped).jpg) | © Markus Felix / PushingPixels (contact me) | CC BY-SA 4.0 |
+| white-gluz | [Arch_Enemy_-_2023175213234_2023-06-24_Alpen_Flair_-_Sven_-_1D_X_MK_II_-_1567_-_AK8I6082.jpg](https://commons.wikimedia.org/wiki/File:Arch_Enemy_-_2023175213234_2023-06-24_Alpen_Flair_-_Sven_-_1D_X_MK_II_-_1567_-_AK8I6082.jpg) | Sven Mandel | CC BY-SA 4.0 |
+| tankian | [Serj_Tankian_performing_2026.png](https://commons.wikimedia.org/wiki/File:Serj_Tankian_performing_2026.png) | Californipedia | CC0 |
+| sykes | [Oli_Sykes_Tons_of_Rock_2026_03.jpg](https://commons.wikimedia.org/wiki/File:Oli_Sykes_Tons_of_Rock_2026_03.jpg) | Birgit Fostervold | CC BY-SA 4.0 |
+| hayley | [Hayley_Williams_Show_in_Raleigh_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Hayley_Williams_Show_in_Raleigh_(cropped).jpg) | user: paintedmoments_ on twitter
+
+https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link to her post where she gives permission | CC BY 4.0 |
+| armstrong | [GreenDayIOW230624_(307_of_367)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:GreenDayIOW230624_(307_of_367)_(cropped).jpg) | Raph_PH | CC BY 2.0 |
+| angus | [ACDCWembley030724_(115_of_169)_(53844255247)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:ACDCWembley030724_(115_of_169)_(53844255247)_(cropped).jpg) | Raph_PH | CC BY 2.0 |
+| corpsegrinder | [Cannibal_Corpse_Rockharz_2018_18.jpg](https://commons.wikimedia.org/wiki/File:Cannibal_Corpse_Rockharz_2018_18.jpg) | S. Bollmann | Attribution |
