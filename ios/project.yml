@@ -1,0 +1,61 @@
+# Projet Xcode généré par XcodeGen : `cd ios && xcodegen` (ne pas modifier Metalnini.xcodeproj à la main).
+name: Metalnini
+options:
+  bundleIdPrefix: com.pittilloni
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    # Équipe de signature : à choisir dans Xcode (Signing & Capabilities) pour installer sur un iPhone.
+    DEVELOPMENT_TEAM: ""
+packages:
+  MetalniniKit:
+    path: Packages/MetalniniKit
+targets:
+  Metalnini:
+    type: application
+    platform: iOS
+    sources:
+      - path: Metalnini
+      # Visuels des cartes, du dos et des paquets, partagés avec le prototype web
+      - path: ../proto/cards
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: MetalniniKit
+    info:
+      path: Metalnini/Info.plist
+      properties:
+        CFBundleDisplayName: Metalnini
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIUserInterfaceStyle: Dark
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pittilloni.metalnini
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+  MetalniniTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [MetalniniTests]
+    dependencies:
+      - target: Metalnini
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.pittilloni.metalnini.tests
+schemes:
+  Metalnini:
+    build:
+      targets:
+        Metalnini: all
+        MetalniniTests: [test]
+    test:
+      targets: [MetalniniTests]

@@ -7,3 +7,10 @@ package-lock.json
 
 # Sons bruts avant préparation (licences à vérifier une par une)
 sounds-raw/
+
+# iOS : projet Xcode généré par XcodeGen (ios/project.yml) et fichiers de build
+ios/Metalnini.xcodeproj/
+ios/build/
+ios/Packages/*/.build/
+ios/Packages/*/.swiftpm/
+*.xcuserstate

@@ -53,6 +53,7 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 
 ## Prochaines étapes possibles
 
+- **Phase 0 démarrée (2026-09-24)** : app iOS native (`ios/`, SwiftUI, iOS 17, logique de jeu testée dans `MetalniniKit`) et back-end Supabase (`backend/`, schéma v1, droits d'accès, tirage serveur). Reste à créer le projet Supabase, y appliquer la migration, puis brancher l'app dessus.
 - **Architecture actée (2026-09-24)** : iOS natif (SwiftUI) d'abord, Android ensuite, back-end managé, espace admin web séparé ; 8 phases détaillées dans l'onglet Roadmap de `concept.html`, en commençant par la phase 0 (fondations).
 - **Feature 1 à développer : ouverture de paquet + visualisation du classeur** (décision du 2026-09-23, détail dans l'onglet Roadmap de `concept.html`). Avant de coder : trancher taille de paquet, probabilités par rareté, statut de la carte « de base », composition des deux classeurs de test et stack du prototype.
 - Compléter le catalogue de test : 10 à 12 artistes déclinés sur les 5 raretés (18 musiciens générés et déclinés, 90 cartes jouables : cible dépassée).
