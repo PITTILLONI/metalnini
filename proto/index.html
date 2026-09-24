@@ -84,7 +84,7 @@
   .pack-info{text-align:center; min-height:84px; padding:4px 8px 12px; max-width:360px}
   .pack-info h2{font-size:1.8rem}
   .pack-info p{margin:6px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
-  .choose .btn{max-width:420px}
+  .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
   .open-head .back-btn{display:block; margin:0 auto 4px}
@@ -231,20 +231,38 @@
   .icon-btn.sm{width:44px; height:44px}
   .icon-btn.corner{position:absolute; right:0; top:calc(18px + env(safe-area-inset-top))}
   .back-btn{background:none; border:0; min-height:44px; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
-  .binder-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 4px; scrollbar-width:none}
-  .binder-tabs button{flex:0 0 auto; min-height:44px; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
-  .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); padding:0 2px 0 8px}
-  .binder-tabs .tab-kind:first-child{padding-left:0}
-  .binder-tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
+  .kind-chips{display:flex; gap:8px; overflow-x:auto; padding:14px 0 6px; scrollbar-width:none}
+  .kind-chips::-webkit-scrollbar{display:none}
+  .kind-chips button{flex:0 0 auto; min-height:44px; padding:0 16px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--muted); font:600 .82rem var(--mono); cursor:pointer}
+  .kind-chips button[aria-selected="true"]{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+  .binder-list{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; padding:12px 0 24px}
+  @media (min-width:700px){ .binder-list{grid-template-columns:repeat(3, minmax(0,1fr))} }
+  .bcard{position:relative; display:flex; flex-direction:column; gap:10px; padding:12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); cursor:pointer; text-align:left}
+  .bcard .fan{position:relative; height:112px}
+  .bcard .fan i{position:absolute; top:6px; left:50%; width:62px; aspect-ratio:2/3; margin-left:-31px; border-radius:6px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 6px 14px rgba(0,0,0,.6)}
+  .bcard .fan i:nth-child(1){transform:translateX(-30px) rotate(-10deg)} .bcard .fan i:nth-child(3){transform:translateX(30px) rotate(10deg)}
+  .bcard b{font:800 1.15rem/1 var(--display); text-transform:uppercase; color:var(--text)}
+  .bcard small{font:500 .74rem var(--mono); color:var(--muted)}
+  .bcard .bar{display:block; flex:none; height:3px; min-height:0; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden} .bcard .bar i{display:block; height:100%; background:var(--gold)}
+  .bcard .done{position:absolute; top:10px; right:10px; font:700 .7rem var(--mono); color:var(--ink); background:var(--gold); border-radius:999px; padding:3px 8px}
+  .bp-head .back-btn{margin:4px 0 0}
+  .bp-row{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .bp-row h2{font-size:1.9rem}
+  .bsheet{position:fixed; inset:0; z-index:80; background:rgba(5,4,4,.6); display:flex; align-items:flex-end; justify-content:center; animation:dfin .18s ease-out}
+  .bsheet[hidden]{display:none}
+  .bsheet-in{width:100%; max-width:560px; background:var(--surface); border-top:1px solid var(--border); border-radius:20px 20px 0 0; padding:10px 18px calc(18px + env(safe-area-inset-bottom)); animation:sheetup .24s cubic-bezier(.2,.8,.2,1)}
+  @keyframes sheetup{from{transform:translateY(100%)}}
+  .bsheet .grab{display:block; width:40px; height:4px; border-radius:2px; background:rgba(255,255,255,.2); margin:0 auto 12px}
+  .bsheet h2{font-size:1.5rem; margin-bottom:10px}
+  .bsheet .eyebrow{margin:14px 0 8px}
+  .opts{display:flex; gap:8px} .opts button{flex:1; min-height:48px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); font:600 .84rem var(--mono); cursor:pointer}
+  .opts button[aria-checked="true"]{border-color:var(--gold); background:rgba(238,177,52,.12); color:var(--gold-hi)}
+  #sort-done{margin-top:18px}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
   .bar{flex:1; height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden}
   .bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); width:0; transition:width .6s ease}
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
   @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
-  .view-toggle{display:flex; gap:6px; margin-top:10px}
-  .view-toggle button{min-height:44px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer}
-  .view-toggle button[aria-pressed="true"]{color:var(--text); border-color:var(--gold)}
-  .view-toggle .sort{margin-left:auto; color:var(--text)}
   .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
   .matrix .mh{font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; text-align:center}
   .matrix .who{font:500 .7rem var(--mono); text-transform:uppercase; color:var(--muted); line-height:1.3; overflow:hidden}
@@ -406,7 +424,6 @@
   .slot .layers i:nth-child(2){transform:translate(-3px,6px) rotate(-2.6deg)}
   .slot .layers i:nth-child(3){transform:translate(6px,8px) rotate(3.4deg)}
   .slot .sw .img{z-index:1}
-  .binder-tabs .tab-kind[data-k="Collection"]{display:none}
   /* ranger une carte déjà possédée : elle s'écrase sur la pile, la pile s'évase, le compteur saute, « +1 » s'envole */
   .slot.stacked, .slot.upgraded{position:relative}
   .dupfx{position:fixed; inset:0; z-index:56; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; overflow:hidden;
@@ -507,8 +524,7 @@
   <div class="choose">
     <div class="pack-car" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
-    <div class="pack-info"><h2 id="pc-name"></h2><p id="pc-desc"></p></div>
-    <button type="button" class="btn block" id="pc-open">Ouvrir ce paquet</button>
+    <div class="pack-info"><h2 id="pc-name"></h2><p id="pc-desc"></p><p class="pc-wait" id="pc-wait" hidden></p></div>
   </div>
   <div class="pack-zone">
     <div class="open-head">
@@ -534,14 +550,19 @@
 <main id="v-binder" class="view wrap" hidden>
   <div class="binder-head">
     <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button>
-    <p class="eyebrow">Collection</p>
-    <h1 id="binder-title">Classeur</h1>
-    <div class="binder-tabs" id="binder-tabs" role="tablist" aria-label="Classeurs"></div>
-    <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
-    <div class="view-toggle" role="group" aria-label="Affichage"><button type="button" data-mode="pages">Par musicien</button><button type="button" data-mode="matrix">Par rareté</button><button type="button" id="sort-dir" class="sort" aria-label="Changer l'ordre des numéros"></button></div>
+    <h1>Classeurs</h1>
+    <div class="kind-chips" id="binder-kinds" role="tablist" aria-label="Catégories de classeurs"></div>
   </div>
+  <div class="binder-list" id="binder-list"></div>
+  <div class="binder-page" id="binder-page">
+    <div class="bp-head">
+      <button type="button" class="back-btn" id="binder-back"></button>
+      <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
+      <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
+    </div>
   <div class="grid" id="grid"></div>
   <div class="matrix" id="matrix" hidden></div>
+  </div>
 </main>
 
 <!-- ============ RÉGLAGES ============ -->
@@ -676,6 +697,17 @@
       <button type="button" class="btn" id="pf-save" hidden>Garder ce cri</button>
     </div>
     <p class="err" id="pf-err"></p>
+  </div>
+</div>
+<div class="bsheet" id="sort-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ss-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="ss-t">Trier et afficher</h2>
+    <p class="eyebrow">Affichage</p>
+    <div class="view-toggle opts" role="radiogroup" aria-label="Affichage"><button type="button" role="radio" data-mode="pages">Par musicien</button><button type="button" role="radio" data-mode="matrix">Par rareté</button></div>
+    <p class="eyebrow">Ordre des cases</p>
+    <div class="opts" role="radiogroup" aria-label="Ordre"><button type="button" role="radio" data-dir="asc">N° croissant</button><button type="button" role="radio" data-dir="desc">N° décroissant</button></div>
+    <button type="button" class="btn block" id="sort-done">OK</button>
   </div>
 </div>
 <div class="modal" id="confirm" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirm-t" aria-describedby="confirm-d">
@@ -866,8 +898,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   var AUTH = null, splashT0 = performance.now();
   var SPLASH_LINES = ['Balances en cours…', 'On accorde les guitares…', 'Le roadie branche les amplis…', 'Échauffement des cordes vocales…', 'Le public tape des pieds…', 'Réglage de la double pédale…'];
-  (function(){ var el = document.getElementById('splash-line'), i = Math.floor(Math.random() * SPLASH_LINES.length); el.textContent = SPLASH_LINES[i];
-    var t = setInterval(function(){ var sp = document.getElementById('splash'); if(!sp || sp.classList.contains('out')){ clearInterval(t); return; } i = (i + 1) % SPLASH_LINES.length; el.textContent = SPLASH_LINES[i]; }, 1100); })();
+  // une seule phrase par lancement, jamais deux fois la même d'affilée
+  (function(){ var last = -1; try{ last = +localStorage.getItem('metalnini-splash'); }catch(e){}
+    var i = Math.floor(Math.random() * (SPLASH_LINES.length - 1)); if(i >= last && last >= 0) i++;
+    document.getElementById('splash-line').textContent = SPLASH_LINES[i]; try{ localStorage.setItem('metalnini-splash', i); }catch(e){} })();
   function hideSplash(){ var sp = document.getElementById('splash'); if(!sp || sp.classList.contains('out')) return;
     setTimeout(function(){ sp.classList.add('out'); }, Math.max(0, 1400 - (performance.now() - splashT0))); }
   window.metalniniOnline = async function(api){
@@ -1068,7 +1102,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(ONLINE && state.pending && state.pending.length && state.pendingType !== state.packType){ toast('Finis d\'abord le paquet entamé. On gâche pas.'); state.packType = state.pendingType; }
     renderPacks(); packStep('open');
   }
-  document.getElementById('pc-open').addEventListener('click', openChosen);
   // un paquet par jour : le merch ferme jusqu'à minuit (heure de Paris)
   function untilMidnight(){
     var t = new Date().toLocaleTimeString('fr-FR', {timeZone:'Europe/Paris', hour12:false}).split(':'), left = 24 * 60 - (+t[0] * 60 + +t[1]);
@@ -1078,8 +1111,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var closed = state.packsLeft === 0, box = document.querySelector('.choose');
     box.classList.toggle('closed', closed);
     document.getElementById('home-title').textContent = closed ? 'Le merch est fermé' : 'Choisis ton paquet du jour';
-    var btn = document.getElementById('pc-open'); btn.disabled = closed;
-    btn.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() : 'Ouvrir ce paquet';
+    var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
+    wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() : '';
   }
   function refreshDaily(){ if(!ONLINE){ state.packsLeft = null; renderDaily(); return; } ONLINE.packsLeft().then(function(n){ state.packsLeft = n; renderDaily(); }).catch(function(){}); }
   setInterval(function(){ if(state.packsLeft === 0) renderDaily(); }, 60000);
@@ -1144,7 +1177,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (list.length > 1 ? '<div class="dots quest-dots">' + list.map(function(g, i){ return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '');
     var track = el.querySelector('.quest-track'), dots = el.querySelectorAll('.quest-dots i');
     track.onscroll = function(){ var k = Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); [].forEach.call(dots, function(d, j){ d.classList.toggle('on', j === k); }); };
-    [].forEach.call(el.querySelectorAll('.goal'), function(b){ b.onclick = function(){ if(b.getAttribute('data-act') === 'profile'){ openProfile(); return; } revealEl.hidden = true; state.binder = b.getAttribute('data-b'); save(); go('binder'); if(b.getAttribute('data-d')) openDetail(b.getAttribute('data-d')); }; });
+    [].forEach.call(el.querySelectorAll('.goal'), function(b){ b.onclick = function(){ if(b.getAttribute('data-act') === 'profile'){ openProfile(); return; } revealEl.hidden = true; openBinder(b.getAttribute('data-b')); go('binder'); if(b.getAttribute('data-d')) openDetail(b.getAttribute('data-d')); }; });
   }
   function commitPack(){
     if(ONLINE){
@@ -1543,7 +1576,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   document.getElementById('to-binder').addEventListener('click', function(){
     revealEl.hidden = true;
-    state.binder = 'all'; save(); go('binder');
+    openBinder('all'); go('binder');
   });
 
   // ---------- Classeur ----------
@@ -1564,7 +1597,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var placing = false;
   function placeCard(k, fromEl, done){
     if(placing) return; var id = k.split('|')[0], r = k.split('|')[1];
-    var b = binderOf(state.binder); if(b.ids.indexOf(id) === -1){ state.binder = 'all'; renderBinder(); }
+    var b = binderOf(state.binder); if(!state.binderOpen || b.ids.indexOf(id) === -1){ openBinder(b.ids.indexOf(id) === -1 ? 'all' : b.k); renderBinder(); }
     var slot = document.querySelector('#grid .slot[data-id="' + id + '"]'); if(!slot){ finishPlace(k); if(done) done(); return; }
     var before = placed(id);   // rareté déjà rangée pour ce musicien, avant ce rangement
     placing = true; slot.scrollIntoView({block:'center', behavior: reduce ? 'auto' : 'smooth'});
@@ -1644,23 +1677,38 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies. Respect. Badge débloqué.'); }, 500 + i*1200); });
   }
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
+  // classeurs : catégorie (puces) → cartes de classeur → page du classeur ; « Collection » ouvre directement toutes les cartes
+  var KINDS = ['Collection', 'Styles', 'Instruments', 'Groupes'];
+  function openBinder(k){ var b = binderOf(k); state.binder = b.k; state.binderKind = b.kind; state.binderOpen = true; save(); }
+  function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
   function renderBinder(){
-    var tabsEl = document.getElementById('binder-tabs');
     if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
-    var lastKind = null;
-    tabsEl.innerHTML = BINDERS.map(function(b){
-      var head = b.kind !== lastKind ? '<span class="tab-kind">' + b.kind + '</span>' : ''; lastKind = b.kind;
-      var done = b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); });
-      return head + '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(binderLabel(b)) + (done ? ' ✓' : '') + '</button>';
-    }).join('');
-    [].forEach.call(tabsEl.querySelectorAll('button'), function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
+    var kind = KINDS.indexOf(state.binderKind) === -1 ? 'Collection' : state.binderKind;
+    var kindsEl = document.getElementById('binder-kinds');
+    kindsEl.innerHTML = KINDS.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + k + '</button>'; }).join('');
+    [].forEach.call(kindsEl.children, function(btn){ btn.onclick = function(){ state.binderKind = btn.getAttribute('data-kind'); state.binderOpen = state.binderKind === 'Collection'; if(state.binderOpen) state.binder = 'all'; save(); renderBinder(); }; });
+    var inPage = kind === 'Collection' || (state.binderOpen && binderOf(state.binder).kind === kind);
+    if(kind === 'Collection') state.binder = 'all';
+    document.getElementById('binder-list').hidden = inPage; document.getElementById('binder-page').hidden = !inPage;
+    if(!inPage){
+      var list = document.getElementById('binder-list');
+      list.innerHTML = BINDERS.filter(function(b){ return b.kind === kind; }).map(function(b){
+        var ids = b.ids.filter(function(id){ return card(id); }), have = ids.filter(function(id){ return placed(id); });
+        var covers = ids.map(function(id){ var r = placed(id); return r ? img(id, r) : null; }).filter(Boolean).slice(0, 3);
+        var fan = [0, 1, 2].map(function(i){ return '<i' + (covers[i] ? ' style="background-image:url(' + covers[i] + ')"' : '') + '></i>'; }).join('');
+        return '<button type="button" class="bcard" data-b="' + b.k + '">' + (binderDone(b) ? '<span class="done">Complet ✓</span>' : '') + '<span class="fan" aria-hidden="true">' + fan + '</span>' +
+          '<b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + Math.round(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></button>';
+      }).join('');
+      [].forEach.call(list.children, function(c){ c.onclick = function(){ openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
+      return;
+    }
+    document.getElementById('binder-back').hidden = kind === 'Collection';
+    document.getElementById('binder-back').textContent = '← ' + kind;
     var b = binderOf(state.binder);
     // emplacements numérotés de 1 à N dans le classeur, dans l'ordre des arcanes, comme les cases d'un album
     var dir = state.sortDir === 'desc' ? -1 : 1, pos = {};
     var list = b.ids.map(card).filter(Boolean).sort(function(x, y){ return roman(x.num) - roman(y.num); });
     list.forEach(function(c, i){ pos[c.id] = i + 1; }); if(dir < 0) list.reverse();
-    var sb = document.getElementById('sort-dir'); sb.textContent = dir > 0 ? 'N° ↑ croissant' : 'N° ↓ décroissant';
-    sb.onclick = function(){ state.sortDir = dir > 0 ? 'desc' : 'asc'; save(); renderBinder(); };
     var have = list.filter(function(c){ return placed(c.id); }).length;
     document.getElementById('binder-title').textContent = binderLabel(b);
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
@@ -1679,8 +1727,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var mode = state.view || 'pages';
     document.getElementById('grid').hidden = mode !== 'pages';
     var m = document.getElementById('matrix'); m.hidden = mode !== 'matrix';
-    [].forEach.call(document.querySelectorAll('.view-toggle button[data-mode]'), function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === mode));
+    [].forEach.call(document.querySelectorAll('#sort-sheet [data-mode]'), function(b){ b.setAttribute('aria-checked', String(b.getAttribute('data-mode') === mode));
       b.onclick = function(){ state.view = b.getAttribute('data-mode'); save(); renderBinder(); }; });
+    [].forEach.call(document.querySelectorAll('#sort-sheet [data-dir]'), function(b){ b.setAttribute('aria-checked', String(b.getAttribute('data-dir') === (dir > 0 ? 'asc' : 'desc')));
+      b.onclick = function(){ state.sortDir = b.getAttribute('data-dir'); save(); renderBinder(); }; });
     if(mode === 'matrix'){
       m.innerHTML = '<span></span>' + RARITIES.map(function(x){ return '<span class="mh" style="color:' + x.color + '">' + x.label + '</span>'; }).join('') +
         list.map(function(c){
@@ -1693,6 +1743,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       [].forEach.call(m.querySelectorAll('.cell'), function(b){ b.addEventListener('click', function(){ var id = b.getAttribute('data-id'), r = b.getAttribute('data-r'); openDetail(id, state.owned[id+'|'+r] ? r : null); }); });
     }
   }
+
+  // feuille de tri et d'affichage
+  var sortSheet = document.getElementById('sort-sheet');
+  document.getElementById('sort-open').addEventListener('click', function(){ sortSheet.hidden = false; });
+  document.getElementById('sort-done').addEventListener('click', function(){ sortSheet.hidden = true; });
+  sortSheet.addEventListener('click', function(e){ if(e.target === sortSheet) sortSheet.hidden = true; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sortSheet.hidden) sortSheet.hidden = true; });
+  document.getElementById('binder-back').addEventListener('click', function(){ state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); });
 
   // ---------- Détail ----------
   var sheet = document.getElementById('sheet');

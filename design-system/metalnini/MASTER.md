@@ -34,8 +34,13 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Barre d'onglets** : 2 entrées (Paquets, Classeur), fond encre, filet or fin, icônes SVG maison ; Réglages en haut à droite.
 - **Icônes** : SVG au trait 1,4-2 px, `currentColor`. Pas d'emoji ni de glyphes Unicode comme icônes.
 
+## Parcours Classeurs
+1. **Catégories** en puces : Collection, Styles, Instruments, Groupes. « Collection » ouvre directement toutes les cartes.
+2. **Cartes de classeur** dans la catégorie : éventail des cartes trouvées, nom, « x/N cartes », filet de progression, « Complet ✓ ».
+3. **Page du classeur** : « ← catégorie », titre, progression, cases numérotées de 1 à N ; tri et affichage dans une feuille du bas (icône réglages).
+
 ## Parcours Paquets (deux temps)
-1. **Choisir** : HUD, objectifs, « Choisis ton paquet du jour », grille de paquets (2 colonnes, 3 dès 700 px).
+1. **Choisir** : HUD, objectifs, « Choisis ton paquet du jour », carrousel de paquets, nom et description du paquet du centre dessous ; toucher le paquet du centre l'ouvre (pas de bouton). Paquet du jour utilisé : « Le merch est fermé » et le temps restant.
 2. **Ouvrir** : « ← Changer de paquet », nom et description du paquet, paquet en grand, geste pour déchirer. Un paquet serveur entamé rouvre directement cette étape.
 
 ## Interaction et mouvement

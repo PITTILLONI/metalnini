@@ -22,6 +22,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true }));
 function ptr(el, type, x) { const e = new w.Event(type, { bubbles: true }); e.clientX = x; e.clientY = 100; e.pointerId = 1; el.dispatchEvent(e); }
 const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
+async function openB(doc, k) {
+  if (k === 'all') { doc.querySelector('#binder-kinds [data-kind="Collection"]').click(); await sleep(20); return; }
+  for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15);
+    const c = doc.querySelector('#binder-list [data-b="' + k + '"]'); if (c) { c.click(); await sleep(20); return; } }
+}
+async function binderKeys(doc) { const keys = ['all']; for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15);
+  doc.querySelectorAll('#binder-list [data-b]').forEach(c => keys.push(c.getAttribute('data-b'))); } return keys; }
+async function binderCards(doc) { let t = ''; for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15); t += ' | ' + doc.getElementById('binder-list').textContent; } return t; }
 
 (async () => {
   await sleep(200);
@@ -84,15 +92,15 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const owned = state().owned;
   const ownedIds = new Set(Object.keys(owned).filter(k => owned[k] > 0).map(k => k.split('|')[0]));
   let shown = new Set();
-  for (const b of d.querySelectorAll('#binder-tabs button')) { b.click(); await sleep(20);
+  for (const k of await binderKeys(d)) { await openB(d, k);
     d.querySelectorAll('#grid .slot.owned').forEach(s => shown.add(s.getAttribute('data-id'))); }
   const extra = [...shown].filter(x => !ownedIds.has(x)), missing = [...ownedIds].filter(x => !shown.has(x));
   check('classeur = collection (aucun artiste en trop)', extra.length === 0 && missing.length === 0, 'en trop: ' + extra + ' / manquants: ' + missing);
-  { const w2 = [...d.querySelectorAll('#binder-tabs button')].map(b => b.textContent).join(' | '); const own = state().owned;
+  { const w2 = await binderCards(d); const own = state().owned;
     const slip = ['root','jordison'].some(id => Object.keys(own).some(k => k.startsWith(id + '|') && own[k] > 0));
     check('classeur de groupe : nom caché tant qu\'aucune carte n\'est trouvée', slip ? /Slipknot/.test(w2) : !/Slipknot/.test(w2) && /Groupe mystère/.test(w2), w2); }
   // « Toutes les cartes » : il y reste toujours des cases vides après quelques paquets
-  d.querySelector('#binder-tabs button[data-b="all"]').click(); await sleep(20);
+  await openB(d, 'all');
   const emptyText = [...d.querySelectorAll('#grid .slot:not(.owned)')].map(s => s.textContent).join(' | ');
   const nums = [...d.querySelectorAll('#grid .slot .cap')].map(c => +(c.textContent.match(/^(\d+)/) || [])[1]);
   check('cases numérotées de 1 à N dans le classeur', nums.length > 0 && nums.every((n, i) => n === i + 1), nums.join(' '));
@@ -104,14 +112,14 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('emplacements vides sans nom de groupe', !/Knocked|Slipknot|Korn|Gojira|Blink|Lorna|Heriot|Jinjer|Spiritbox|Landmvrks|Poppy|Hendrix|Rage|Guns|Chili/.test(emptyText), emptyText.slice(0, 160));
 
   // 4. Vue par rareté : 5 colonnes, une rangée par musicien du classeur
-  d.querySelector('.view-toggle [data-mode="matrix"]').click(); await sleep(30);
+  d.querySelector('#sort-sheet [data-mode="matrix"]').click(); await sleep(30);
   const m = d.getElementById('matrix');
   const rows = m.querySelectorAll('.who').length, cells = m.querySelectorAll('.cell').length;
   check('vue par rareté affichée', !m.hidden && d.getElementById('grid').hidden);
   check('grille rangées × 5 colonnes', rows > 0 && cells === rows * 5, rows + ' rangées, ' + cells + ' cases');
   const filled = m.querySelectorAll('.cell img').length, ownedHere = [...m.querySelectorAll('.cell')].filter(c => (state().owned[c.dataset.id + '|' + c.dataset.r] || 0) > 0).length;
   check('cases remplies = variantes possédées', filled === ownedHere, filled + ' / ' + ownedHere);
-  d.querySelector('.view-toggle [data-mode="pages"]').click(); await sleep(30);
+  d.querySelector('#sort-sheet [data-mode="pages"]').click(); await sleep(30);
 
   // 5. Fusion : 6 exemplaires d'une Commune -> 1 Rare, il en reste 1
   const s0 = state(); s0.owned = { 'korn|commune': 4 }; s0.mastered = {}; w.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s0));
@@ -123,7 +131,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   await sleep(150);
   const d2 = dom2.window.document;
   d2.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  d2.querySelector('#binder-tabs [data-b="numetal"]').click(); await sleep(30);
+  await openB(d2, 'numetal');
   d2.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(30);
   const fb = d2.querySelector('#detail .fuse button[data-from="commune"]');
   check('transformation proposée avec 3 doublons Commune (1er palier)', !!fb);
@@ -156,7 +164,9 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const toastTxt = seen.join(' | ');
   check('complétion du classeur Pop punk annoncée', /Classeur complété.*Pop punk/.test(toastTxt), toastTxt);
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  check('onglet du classeur complété marqué ✓', /Pop punk ✓/.test(d3.getElementById('binder-tabs').textContent));
+  { d3.querySelector('#binder-kinds [data-kind="Styles"]').click(); await sleep(20);
+    const pc = d3.querySelector('#binder-list [data-b="poppunk"]');
+    check('carte du classeur complété marquée « Complet »', !!pc && /Complet/.test(pc.textContent), pc && pc.textContent); }
 
   // 8. Paquet thématique : ne tire que dans son classeur ; prochain objectif affiché
   const s5 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'spiritbox|commune':1}, opened:0, fresh:{}, binder:'metalcore', sound:false, pending:null, fuseBase:3, mastered:{}, completed:{}, packType:'metalcore' };
@@ -183,7 +193,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   await sleep(150);
   const d5 = dom5.window.document;
   d5.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  check('onglet « Toutes les cartes » en premier', d5.querySelector('#binder-tabs button').getAttribute('data-b') === 'all');
+  check('catégorie « Collection » en premier, qui ouvre toutes les cartes', d5.querySelector('#binder-kinds button').getAttribute('data-kind') === 'Collection' && /Toutes les cartes/.test(d5.getElementById('binder-title').textContent));
   const kslot = d5.querySelector('#grid .slot[data-id="korn"]');
   check('doublons : 3 exemplaires = 2 cartes empilées derrière', kslot && kslot.querySelectorAll('.layers i').length === 2);
   d5.querySelector('.tabbar [data-v="packs"]').click(); await sleep(30);
