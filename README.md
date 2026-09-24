@@ -38,6 +38,7 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 
 ## Prochaines étapes possibles
 
+- **Architecture actée (2026-09-24)** : iOS natif (SwiftUI) d'abord, Android ensuite, back-end managé, espace admin web séparé ; 8 phases détaillées dans l'onglet Roadmap de `concept.html`, en commençant par la phase 0 (fondations).
 - **Feature 1 à développer : ouverture de paquet + visualisation du classeur** (décision du 2026-09-23, détail dans l'onglet Roadmap de `concept.html`). Avant de coder : trancher taille de paquet, probabilités par rareté, statut de la carte « de base », composition des deux classeurs de test et stack du prototype.
 - Compléter le catalogue de test : 10 à 12 artistes déclinés sur les 5 raretés (10 générés et déclinés, 60 cartes : cible atteinte).
 - Trancher les décisions listées en fin de `flows.html` — en priorité : le trou laissé dans un classeur par une carte qui évolue, le sort des doublons non échangés, et binder unique vs classeurs par sous-genre.
