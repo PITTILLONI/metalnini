@@ -206,6 +206,18 @@
 
   .fig-note{margin-top:14px; font-size:0.85rem; color:var(--text-muted); font-style:italic;}
 
+  .rarity-strip{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-top:24px;}
+  .rarity-strip figure{margin:0;}
+  .rarity-strip img{width:100%; aspect-ratio:2/3; object-fit:cover; display:block; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.45);}
+  .rarity-strip figcaption{font-family:var(--font-mono, ui-monospace, monospace); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; margin-top:8px; color:var(--rarity-common);}
+  .rarity-strip [data-r="rare"] figcaption{color:var(--rarity-rare);}
+  .rarity-strip [data-r="holo"] figcaption{color:var(--rarity-holo-b);}
+  .rarity-strip [data-r="signature"] figcaption{color:var(--rarity-signature);}
+  .rarity-strip [data-r="legendaire"] figcaption{color:#e08a8a;}
+  @media (max-width:640px){
+    .rarity-strip{grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:42%; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px;}
+    .rarity-strip figure{scroll-snap-align:start;}
+  }
   .card-preview{margin-top:24px; max-width:260px;}
   .card-preview img{width:100%; display:block; border-radius:14px; box-shadow:0 16px 40px rgba(0,0,0,0.45);}
 
@@ -408,39 +420,15 @@
   <p class="eyebrow">Les cartes</p>
   <h2>Un même objet, plusieurs degrés de rareté</h2>
   <p>Chaque carte suit un même gabarit visuel — seule la rareté change le traitement (bordure, texture, effet). Ça permet d'en produire beaucoup, tout en gardant un objet cohérent et reconnaissable.</p>
-  <div class="cards-demo">
-    <div class="card-chip c-common">
-      <div class="band">Landmvrks</div>
-      <div class="genre">Metalcore</div>
-      <div class="rarity">Commune</div>
-    </div>
-    <div class="card-chip c-rare">
-      <div class="band">Landmvrks</div>
-      <div class="genre">Live — 2019</div>
-      <div class="rarity">Rare</div>
-    </div>
-    <div class="card-chip c-holo">
-      <div class="band">Landmvrks</div>
-      <div class="genre">Clip exclusif</div>
-      <div class="rarity">Holo</div>
-    </div>
-    <div class="card-chip c-signature">
-      <div class="band">Landmvrks</div>
-      <div class="genre">Édition numérotée</div>
-      <div class="rarity">Signature</div>
-    </div>
-    <div class="card-chip c-legendary">
-      <div class="band">Landmvrks</div>
-      <div class="genre">Pièce unique</div>
-      <div class="rarity">Légendaire</div>
-    </div>
+  <div class="rarity-strip" role="list">
+    <figure role="listitem" data-r="commune"><img src="proto/cards/landmvrks-commune.jpg" alt="Carte Landmvrks, rareté Commune" loading="lazy"><figcaption>Commune</figcaption></figure>
+    <figure role="listitem" data-r="rare"><img src="proto/cards/landmvrks-rare.jpg" alt="Carte Landmvrks, rareté Rare" loading="lazy"><figcaption>Rare</figcaption></figure>
+    <figure role="listitem" data-r="holo"><img src="proto/cards/landmvrks-holo.jpg" alt="Carte Landmvrks, rareté Holo" loading="lazy"><figcaption>Holo</figcaption></figure>
+    <figure role="listitem" data-r="signature"><img src="proto/cards/landmvrks-signature.jpg" alt="Carte Landmvrks, rareté Signature" loading="lazy"><figcaption>Signature</figcaption></figure>
+    <figure role="listitem" data-r="legendaire"><img src="proto/cards/landmvrks-legendaire.jpg" alt="Carte Landmvrks, rareté Légendaire" loading="lazy"><figcaption>Légendaire</figcaption></figure>
   </div>
-  <p class="fig-note">Exemple avec le vrai nom du groupe (Landmvrks) — voir plus bas pour un vrai test visuel dans le même esprit.</p>
-
-  <div class="card-preview">
-    <img src="assets/carte-exemple-landmvrks.jpg" alt="Test de direction visuelle pour la carte Metalnini : cadre façon tarot vintage, exemple avec le vrai groupe Landmvrks" />
-  </div>
-  <p class="fig-note">Premier vrai test de direction visuelle (pas qu'une maquette de couleurs) : cadre façon tarot vintage, gravure à l'ancienne, humour porté par le jeu de mots et le détail visuel plutôt que par l'exagération. Fait avec le vrai nom du groupe (Landmvrks) et un portrait qui recherche la ressemblance avec le chanteur, à partir d'une photo réelle. Direction en cours de test, pas encore figée, et diffusée ici uniquement parce que cette page reste un usage privé entre proches.</p>
+  <p class="fig-note">Une vraie carte : Florent Salfati, chanteur de Landmvrks, en arcane VIII « Lost in the Waves ». L'illustration ne change pas d'une rareté à l'autre ; seuls le cadre et la finition montent en gamme, du papier mat de la Commune à l'or de la Signature et au foil noir et rouge de la Légendaire. Illustration générée par IA à partir d'une photo sous licence libre ; usage privé, le groupe n'a pas été consulté.</p>
+  <p class="fig-note"><a href="export/metalnini-cartes.html">Voir tous les artistes et leurs raretés</a> · <a href="proto/">Essayer d'ouvrir un paquet</a></p>
 </section>
 
 <section class="reveal">
