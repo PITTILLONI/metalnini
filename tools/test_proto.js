@@ -77,7 +77,9 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('bac « À ranger » affiché avec les nouvelles cartes', !d.getElementById('tray').hidden && d.querySelectorAll('#tray-cards button').length === nNew && nNew > 0, nNew + ' à ranger');
   check('classeur « Toutes les cartes » ouvert', /Toutes les cartes/.test(d.getElementById('binder-title').textContent));
   d.getElementById('tray-all').click();
-  await sleep(nNew * 1000 + 800);
+  // un doublon passe par le bonus plein écran : on attend que le bac soit vide (30 s au plus)
+  for (let t = 0; t < 300 && ((state().toPlace || []).length || !d.getElementById('tray').hidden); t++) await sleep(100);
+  await sleep(300);
   check('tout est rangé', (state().toPlace || []).length === 0 && d.getElementById('tray').hidden);
   const owned = state().owned;
   const ownedIds = new Set(Object.keys(owned).filter(k => owned[k] > 0).map(k => k.split('|')[0]));
@@ -124,9 +126,11 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('fusion : 1 Commune gardée + 1 Rare obtenue', st2['korn|commune'] === 1 && st2['korn|rare'] === 1, JSON.stringify(st2));
   check('fusion : reveal de la nouvelle carte', !d2.getElementById('reveal').hidden);
 
-  // 6. Remise à zéro en deux touches
+  // 6. Remise à zéro depuis les Réglages, après confirmation
   d2.getElementById('reveal').hidden = true; d2.querySelector('.tabbar [data-v="packs"]').click();
-  const rq = d2.getElementById('reset-quick'); rq.click(); rq.click(); await sleep(30);
+  d2.getElementById('reset').click(); await sleep(20);
+  check('remise à zéro : modale de confirmation', !d2.getElementById('confirm').hidden);
+  d2.getElementById('confirm-yes').click(); await sleep(30);
   const st3 = JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1'));
   check('remise à zéro : collection vide', Object.keys(st3.owned).length === 0 && st3.opened === 0);
 

@@ -12,18 +12,22 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-32.png">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="manifest" href="../icons/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
 <title>Metalnini — Prototype</title>
 <style>
   :root{
     --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94;
     --border:rgba(255,255,255,.1); --accent:#b23a3a; --gold:#d4af37;
     --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#d4af37; --r-legendaire:#dc2626;
-    --display:"Arial Narrow","Oswald",Impact,sans-serif; --mono:ui-monospace,Menlo,monospace;
+    --display:"Cinzel",Georgia,"Times New Roman",serif; --gold-hi:#f1d98a; --gold-lo:#9c7a2a; --ink:#0d0a08; --mono:ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-  html{color-scheme:dark; overflow-x:hidden; overscroll-behavior:none}
+  html{color-scheme:dark; overflow-x:hidden; overflow-x:clip; overscroll-behavior:none}
+  body{overflow-x:hidden; overflow-x:clip}
+  #fxlayer{position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:48}
   body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; line-height:1.45;
-       padding-bottom:calc(96px + env(safe-area-inset-bottom)); overscroll-behavior:none}
+       padding-bottom:calc(90px + env(safe-area-inset-bottom)); overscroll-behavior:none}
   button{font:inherit; color:inherit}
   button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .wrap{max-width:960px; margin:0 auto; padding:0 16px}
@@ -32,11 +36,16 @@
 
   /* ---------- Tab bar ---------- */
   /* barre d'onglets flottante, boutons en relief */
-  .tabbar{position:fixed; left:12px; right:12px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:20; display:flex; gap:6px; padding:6px; max-width:520px; margin:0 auto;
-          background:linear-gradient(#1f1915,#120e0c); border:1px solid rgba(212,175,55,.28); border-radius:22px; box-shadow:0 10px 30px rgba(0,0,0,.65)}
-  .tabbar button{flex:1; background:none; border:0; border-radius:16px; padding:8px 4px 7px; font:600 .6rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:background .15s ease, color .15s ease}
-  .tabbar button[aria-selected="true"]{color:#0c0b0a; background:linear-gradient(#e7c65a,#b8912a); box-shadow:0 3px 0 #6e5416}
-  .tabbar .ico{display:block; font-size:1.3rem; line-height:1.1; margin-bottom:2px}
+  /* barre d'onglets : bandeau gravé, comme le cadre des cartes (double filet or, glyphes de tarot) */
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; justify-content:center; padding:10px 12px calc(8px + env(safe-area-inset-bottom));
+          background:linear-gradient(180deg, rgba(13,10,8,.94), #0d0a08 40%);
+          border-top:1px solid rgba(212,175,55,.55); box-shadow:0 -1px 0 #0d0a08, 0 -3px 0 rgba(212,175,55,.22), 0 -18px 40px rgba(0,0,0,.6)}
+  .tabbar::before{content:"✦"; position:absolute; top:-9px; left:50%; transform:translateX(-50%); font-size:.8rem; line-height:1; color:var(--gold); background:#0d0a08; padding:0 8px}
+  .tabbar button{flex:1; max-width:160px; position:relative; background:none; border:0; padding:6px 4px 4px; font:600 .66rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:#8f877b; cursor:pointer; transition:color .2s ease}
+  .tabbar .ico{display:block; font-size:1.35rem; line-height:1.15; margin-bottom:3px; font-family:Georgia,serif; transition:transform .2s ease, text-shadow .2s ease}
+  .tabbar button[aria-selected="true"]{color:var(--gold-hi)}
+  .tabbar button[aria-selected="true"] .ico{color:var(--gold); transform:translateY(-2px); text-shadow:0 0 14px rgba(212,175,55,.55)}
+  .tabbar button[aria-selected="true"]::after{content:""; position:absolute; left:50%; bottom:-3px; width:5px; height:5px; background:var(--gold); transform:translateX(-50%) rotate(45deg)}
   .view[hidden], [hidden]{display:none !important}
 
   /* ---------- Packs ---------- */
@@ -58,8 +67,7 @@
   .home .pack-picker small{font-size:.46rem}
   .goal.quest{padding:8px 12px}
   .goal.quest > span > span{display:none}
-  .open-btn{max-width:420px}
-  .goal.quest{max-width:none; margin-top:2px}
+  .goal.quest{max-width:none; margin-top:2px; background:linear-gradient(180deg,#191410,#110d0a); border:0; box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 4px #110d0a, inset 0 0 0 5px rgba(212,175,55,.2)}
   .goal .qbar{display:block; height:6px; border-radius:3px; background:rgba(255,255,255,.1); margin-top:7px; overflow:hidden}
   .goal .qbar i{display:block; height:100%; border-radius:3px; background:linear-gradient(90deg,#b8912a,#f5c542)}
   .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
@@ -72,8 +80,21 @@
   .pack .p-moon{position:absolute; left:0; right:0; top:18%; text-align:center; font-size:1.8rem; color:var(--gold)}
   .pack.shake{animation:shake .5s ease}
   @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
-  .btn{background:var(--accent); border:0; border-radius:999px; padding:13px 26px; font-family:var(--display); text-transform:uppercase; letter-spacing:.06em; font-size:1rem; cursor:pointer}
-  .btn.ghost{background:var(--surface-2); border:1px solid var(--border)}
+  .btn{position:relative; border:0; border-radius:12px; padding:14px 26px; font:700 .92rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.12em; cursor:pointer; color:#1c140b;
+    background:linear-gradient(180deg, var(--gold-hi), var(--gold) 48%, var(--gold-lo)); box-shadow:inset 0 1px 0 rgba(255,248,220,.7), inset 0 0 0 1px rgba(90,64,20,.55), 0 8px 24px rgba(0,0,0,.45);
+    transition:transform .12s ease, filter .12s ease}
+  .btn::after{content:""; position:absolute; inset:4px; border-radius:8px; border:1px solid rgba(60,40,10,.35); pointer-events:none}
+  .btn:hover{filter:brightness(1.06)} .btn:active{transform:scale(.98)}
+  .btn.ghost{color:var(--gold-hi); background:rgba(212,175,55,.06); box-shadow:inset 0 0 0 1px rgba(212,175,55,.55)}
+  .btn.ghost::after{border-color:rgba(212,175,55,.18)}
+  .btn.danger{color:#fff; background:linear-gradient(180deg,#c24a3e,#8f231c); box-shadow:inset 0 1px 0 rgba(255,200,190,.35), inset 0 0 0 1px rgba(60,10,8,.6), 0 8px 24px rgba(0,0,0,.45)}
+  .btn.danger::after{border-color:rgba(255,220,210,.22)}
+  .modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
+  .modal[hidden]{display:none}
+  .modal-in{width:100%; max-width:380px; background:linear-gradient(180deg,#1b1511,#110d0a); border-radius:16px; padding:22px 20px 18px; text-align:center;
+    box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 5px #110d0a, inset 0 0 0 6px rgba(212,175,55,.22), 0 24px 60px rgba(0,0,0,.7)}
+  .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
+  .modal-actions{display:flex; flex-direction:column; gap:10px}
   .stats-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font:500 .72rem var(--mono); color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
   .stats-row span{border:1px solid var(--border); border-radius:4px; padding:5px 9px}
 
@@ -128,11 +149,11 @@
   .sum-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
   .summary h2{font-size:2rem; line-height:1}
   .sum-sub{margin:6px 0 0; font:500 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
-  .icon-btn{flex:0 0 auto; width:46px; height:46px; display:grid; place-items:center; border-radius:14px; border:1px solid rgba(212,175,55,.45); background:linear-gradient(#2a221c,#16110e); color:var(--gold); cursor:pointer;
-    box-shadow:0 4px 0 #0a0807, 0 8px 18px rgba(0,0,0,.5)}
-  .icon-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #0a0807}
+  .icon-btn{flex:0 0 auto; width:46px; height:46px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(212,175,55,.55); background:rgba(212,175,55,.07); color:var(--gold-hi); cursor:pointer;
+    backdrop-filter:blur(8px); transition:transform .12s ease, background .12s ease}
+  .icon-btn:active{transform:scale(.92); background:rgba(255,255,255,.14)}
   .carousel{flex:1; min-height:0; display:flex; align-items:center; gap:14px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none;
-    padding:12px calc(50% - var(--cw) / 2); --cw:min(76vw, calc((100vh - 290px) * .6667), 420px)}
+    padding:24px calc(50% - var(--cw) / 2); --cw:min(72vw, calc((100dvh - 370px) * .6667), 400px)}
   .carousel::-webkit-scrollbar{display:none}
   .carousel figure{flex:0 0 var(--cw); margin:0; scroll-snap-align:center; text-align:center; transition:transform .25s ease, opacity .25s ease; transform:scale(.86); opacity:.55}
   .carousel figure.on{transform:none; opacity:1}
@@ -145,8 +166,7 @@
   .dots i{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.22); transition:all .2s ease}
   .dots i.on{width:20px; border-radius:4px; background:var(--gold)}
   .sum-actions{display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
-  .btn.big{width:100%; padding:17px 20px; font-size:1.2rem; border-radius:16px; background:linear-gradient(#c94444,#962d2d); box-shadow:0 5px 0 #5a1a1a, 0 10px 24px rgba(0,0,0,.5); color:#fff}
-  .btn.big:active{transform:translateY(4px); box-shadow:0 1px 0 #5a1a1a}
+  .btn.big{width:100%; min-height:56px; padding:0 24px; font-size:1rem}
   .link-btn{background:none; border:0; color:var(--muted); font:600 .78rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:12px; cursor:pointer}
 
   /* ---------- Classeur ---------- */
@@ -215,7 +235,7 @@
   /* ---------- Déchirure du paquet ---------- */
   .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
   .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#d4af37}
-  .pack.art{aspect-ratio:var(--pa,.5783); width:max(130px, min(56vw, 240px, calc((100svh - 530px) * var(--pa,.5783)))); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
+  .pack.art{aspect-ratio:var(--pa,.5783); width:max(130px, min(56vw, 240px, calc((100svh - 450px) * var(--pa,.5783)))); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
   .pack.art::before, .pack.art .p-moon, .pack.art .p-title, .pack.art .p-sub{display:none}
   .pack .flap{position:absolute; left:0; right:0; top:0; height:10%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
               background:transparent var(--pimg,url(cards/pack-serie.jpg)) center top/100% auto no-repeat; transform-origin:100% 100%;
@@ -317,7 +337,7 @@
   @keyframes crack{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
   .ptilt.shake{animation:rumble .07s linear infinite}
   /* (2) ranger ses cartes */
-  .tray{position:fixed; left:0; right:0; bottom:calc(76px + env(safe-area-inset-bottom)); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(212,175,55,.35); padding:10px 16px}
+  .tray{position:fixed; left:0; right:0; bottom:calc(68px + env(safe-area-inset-bottom)); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(212,175,55,.35); padding:10px 16px}
   .tray-in{max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:8px}
   .tray p{margin:0; font:500 .62rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
   .tray .cards{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:6px 3px 8px; margin:0 -3px}
@@ -341,6 +361,25 @@
   .binder-tabs .tab-kind[data-k="Collection"]{display:none}
   /* ranger une carte déjà possédée : elle s'écrase sur la pile, la pile s'évase, le compteur saute, « +1 » s'envole */
   .slot.stacked, .slot.upgraded{position:relative}
+  .dupfx{position:fixed; inset:0; z-index:56; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; overflow:hidden;
+    background:radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--rc) 22%, transparent), rgba(5,4,4,.94) 62%); animation:dfin .2s ease-out}
+  .dupfx.out{animation:dfout .22s ease-in forwards}
+  @keyframes dfin{from{opacity:0}} @keyframes dfout{to{opacity:0}}
+  .df-card{position:relative; width:min(58vw, calc((100dvh - 280px) * .6667), 320px); aspect-ratio:2/3}
+  .df-card img, .df-card i{position:absolute; inset:0; border-radius:14px}
+  .df-card img{width:100%; height:100%; object-fit:cover; box-shadow:0 0 0 2px var(--rc), 0 0 50px 8px color-mix(in srgb, var(--rc) 50%, transparent); animation:dfdrop .55s cubic-bezier(.3,1.4,.5,1) both}
+  .df-card i{background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 8px 20px rgba(0,0,0,.6), inset 0 0 0 1px rgba(212,175,55,.4)}
+  .df-card i:nth-child(1){animation:dffan1 .8s cubic-bezier(.2,1.3,.4,1) .3s both}
+  .df-card i:nth-child(2){animation:dffan2 .8s cubic-bezier(.2,1.3,.4,1) .3s both}
+  .df-card i:nth-child(3){animation:dffan3 .8s cubic-bezier(.2,1.3,.4,1) .3s both}
+  @keyframes dfdrop{0%{transform:translateY(-80vh) rotate(-10deg)}70%{transform:translateY(8px) scale(1.02,.96)}100%{transform:none}}
+  @keyframes dffan1{0%{transform:none}45%{transform:translate(-34%,6%) rotate(-16deg)}100%{transform:translate(-8%,3%) rotate(-5deg)}}
+  @keyframes dffan2{0%{transform:none}45%{transform:translate(34%,6%) rotate(16deg)}100%{transform:translate(8%,3%) rotate(5deg)}}
+  @keyframes dffan3{0%{transform:none}45%{transform:translate(0,14%) rotate(3deg)}100%{transform:translate(0,4%) rotate(1deg)}}
+  .df-plus{font:700 clamp(3rem,16vw,5.5rem)/1 var(--display); color:var(--rc); text-shadow:0 0 30px var(--rc), 0 3px 0 #000; animation:dfpop .6s cubic-bezier(.2,1.8,.4,1) .45s both}
+  @keyframes dfpop{0%{transform:scale(0) rotate(-12deg)}100%{transform:none}}
+  .df-sub{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--text); animation:dfin .3s ease .7s both}
+  .df-skip{position:absolute; bottom:calc(24px + env(safe-area-inset-bottom)); margin:0; font:500 .6rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
   .slot.stacked .img{animation:stackhit .55s cubic-bezier(.3,1.5,.5,1)}
   @keyframes stackhit{0%{transform:translateY(-10px) scale(1.06)}30%{transform:translateY(4px) scale(1.04,.9)}60%{transform:translateY(-3px) scale(.98,1.03)}100%{transform:none}}
   .slot.stacked .img::after, .slot.upgraded .img::after{content:""; position:absolute; inset:0; border-radius:8px; box-shadow:inset 0 0 0 3px var(--rc), 0 0 30px 8px var(--rc); animation:ping .9s ease-out forwards}
@@ -395,7 +434,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -423,8 +462,6 @@
       <p class="pack-desc" id="pack-desc"></p>
       <p class="swipe-hint" id="swipe-hint">Glisse pour l'éventrer →</p>
     </div>
-    <button type="button" class="btn big open-btn" id="open-btn">Déchire-moi ça</button>
-    <button type="button" class="reset-link" id="reset-quick">Repartir de zéro</button>
   </div>
 </main>
 
@@ -463,8 +500,8 @@
       <label class="toggle">Vibrations <input type="checkbox" id="s-sound"></label>
     </div>
     <div class="field">
-      <p class="note">Réinitialiser efface ta collection (sur ton compte si tu es connecté).</p>
-      <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="reset">Réinitialiser la collection</button></p>
+      <p class="note">Efface toute ta collection (sur ton compte si tu es connecté). Pas de retour possible.</p>
+      <p style="margin:10px 0 0"><button type="button" class="btn danger" id="reset">Repartir de zéro</button></p>
     </div>
     <p class="note" style="margin-top:16px">Prototype pour tester les sensations. Illustrations générées par IA à partir de photos sous licence libre ; usage privé, les artistes n'ont pas été consultés.</p>
   </div>
@@ -501,7 +538,7 @@
     </header>
     <div class="carousel" id="sum-grid" aria-label="Cartes du paquet"></div>
     <div class="dots" id="sum-dots" aria-hidden="true"></div>
-    <button type="button" class="goal" id="goal-sum" hidden></button>
+    <button type="button" class="goal quest" id="goal-sum" hidden></button>
     <div class="sum-actions">
       <button type="button" class="btn big" id="to-binder">Ranger dans le classeur</button>
       <button type="button" class="link-btn" id="again">Rappel ! Un autre paquet</button>
@@ -548,8 +585,17 @@
   if(!has && !/type=|access_token|error=/.test(location.hash)) document.getElementById('auth-form').dataset.mode = 'signup';
 })();
 </script>
-<div id="stamp" aria-hidden="true"></div>
+<div class="modal" id="confirm" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirm-t" aria-describedby="confirm-d">
+  <div class="modal-in">
+    <p class="eyebrow">Réglages</p>
+    <h2 id="confirm-t">Tout brûler ?</h2>
+    <p id="confirm-d">Ta collection, tes doublons et tes maîtrises partent en fumée. Impossible de revenir en arrière.</p>
+    <div class="modal-actions"><button type="button" class="btn danger" id="confirm-yes">Oui, repartir de zéro</button><button type="button" class="btn ghost" id="confirm-no">Non, je garde tout</button></div>
+  </div>
+</div>
+<div id="fxlayer" aria-hidden="true"><div id="stamp"></div></div>
 <div id="vignette" aria-hidden="true"></div>
+<div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""></div><div class="df-plus" id="df-plus"></div><div class="df-sub" id="df-sub"></div><p class="df-skip">Touche pour passer</p></div>
 <div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="all" id="tray-all">Tout ranger d'un coup</button></div></div>
 <label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
@@ -564,8 +610,8 @@
 
 <nav class="tabbar" role="tablist" aria-label="Navigation">
   <button type="button" data-v="packs" aria-selected="true"><span class="ico">☾</span>Paquets</button>
-  <button type="button" data-v="binder" aria-selected="false"><span class="ico">▦</span>Classeur</button>
-  <button type="button" data-v="settings" aria-selected="false"><span class="ico">⚙</span>Réglages</button>
+  <button type="button" data-v="binder" aria-selected="false"><span class="ico">☼</span>Classeur</button>
+  <button type="button" data-v="settings" aria-selected="false"><span class="ico">✠</span>Réglages</button>
 </nav>
 
 <script src="cards/manifest.js"></script>
@@ -880,7 +926,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function quake(){ if(reduce) return; revealEl.classList.remove('quake'); void revealEl.offsetWidth; revealEl.classList.add('quake'); }
   function stamp(r){ if(reduce) return; var el = document.getElementById('stamp'); el.textContent = rarity(r).label; el.style.setProperty('--sc', COLORS[r]); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
   function flash(r){ if(reduce || r==='commune') return; var f = document.getElementById('flash'); f.style.setProperty('--flash', r==='rare' ? 'rgba(59,130,246,.5)' : COLORS[r]); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
-  function ring(r, at){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; if(at){ el.style.left = at.x + 'px'; el.style.top = at.y + 'px'; } el.style.setProperty('--ring', COLORS[r]); document.body.appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
+  function ring(r, at){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; if(at){ el.style.left = at.x + 'px'; el.style.top = at.y + 'px'; } el.style.setProperty('--ring', COLORS[r]); document.getElementById('fxlayer').appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
 
   // ---------- Déchirer le paquet ----------
   var packEl = document.getElementById('pack'), drag = null, opening = false;
@@ -1214,8 +1260,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var slot = document.querySelector('#grid .slot[data-id="' + id + '"]'); if(!slot){ finishPlace(k); if(done) done(); return; }
     var before = placed(id);   // rareté déjà rangée pour ce musicien, avant ce rangement
     placing = true; slot.scrollIntoView({block:'center', behavior: reduce ? 'auto' : 'smooth'});
-    setTimeout(function(){
-      var fr = (fromEl || document.getElementById('tray')).getBoundingClientRect(), to = slot.querySelector('.img').getBoundingClientRect();
+    // carte déjà possédée : d'abord le bonus en plein écran, puis la carte file vers son emplacement
+    if(before && !reduce){ dupFx(id, r, before, function(rect){ fly(rect); }); return; }
+    setTimeout(function(){ fly(null); }, reduce ? 0 : 260);
+    function fly(rect){
+      var fr = rect || (fromEl || document.getElementById('tray')).getBoundingClientRect(), to = slot.querySelector('.img').getBoundingClientRect();
       var fl = document.createElement('div'); fl.className = 'flyer'; fl.innerHTML = '<img src="' + img(id, r) + '" alt="">';
       fl.style.left = to.left + 'px'; fl.style.top = to.top + 'px'; fl.style.width = to.width + 'px'; fl.style.height = to.height + 'px';
       fl.style.transform = 'translate(' + (fr.left + fr.width/2 - to.left - to.width/2) + 'px,' + (fr.top + fr.height/2 - to.top - to.height/2) + 'px) scale(' + Math.max(.3, fr.width / to.width) + ') rotate(-8deg)';
@@ -1238,7 +1287,24 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
         if(done) setTimeout(done, before ? 520 : 180);
       }, reduce ? 0 : 560);
-    }, reduce ? 0 : 260);
+    }
+  }
+  function dupFx(id, r, before, done){
+    var el = document.getElementById('dupfx'), up = rank(r) > rank(before), shown = up ? r : before, ended = false;
+    el.style.setProperty('--rc', COLORS[up ? r : shown]);
+    document.getElementById('df-img').src = img(id, up ? r : shown);
+    document.getElementById('df-plus').textContent = up ? rarity(r).label : '+1';
+    document.getElementById('df-sub').textContent = up ? esc(card(id).who) + ' monte en grade' : esc(card(id).who) + ' · ' + rarity(r).label + ' · ×' + total(id);
+    el.classList.remove('out'); el.hidden = false; void el.offsetWidth;
+    setTimeout(function(){ if(up) SFX[r](); else buzz([20, 60, 30, 60, 50]); }, 420);
+    function end(){
+      if(ended) return; ended = true; clearTimeout(t);
+      var rect = document.getElementById('df-card').getBoundingClientRect();
+      el.classList.add('out'); setTimeout(function(){ el.hidden = true; }, 220);
+      done(rect);
+    }
+    var t = setTimeout(end, up ? 1600 : 1350);
+    el.onclick = end;
   }
   function finishPlace(k){ state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
@@ -1398,18 +1464,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // en ligne : même compte et même pseudo, collection vidée sur le serveur
     if(ONLINE){ var api = ONLINE; api.resetCollection().then(function(){ return api.inventory(); }).then(function(rows){ applyInventory(rows); renderStats(); }).catch(function(e){ toast(esc(e.message)); }); }
   }
-  var rq = document.getElementById('reset-quick'), rqTimer = null;
-  rq.addEventListener('click', function(){
-    if(!rq.classList.contains('armed')){ rq.classList.add('armed'); rq.textContent = 'Toucher encore pour tout effacer'; clearTimeout(rqTimer);
-      rqTimer = setTimeout(function(){ rq.classList.remove('armed'); rq.textContent = 'Repartir de zéro'; }, 3000); return; }
-    clearTimeout(rqTimer); resetAll(); rq.classList.remove('armed'); rq.textContent = 'Collection remise à zéro';
-    setTimeout(function(){ rq.textContent = 'Repartir de zéro'; }, 1800);
-  });
   document.getElementById('signout').addEventListener('click', signOut);
-  document.getElementById('open-btn').addEventListener('click', function(){ if(opening) return; prepTease(); autoTear(); });
-  document.getElementById('reset').addEventListener('click', function(){
-    resetAll(); go('packs');
-  });
+  var confirmEl = document.getElementById('confirm');
+  function closeConfirm(){ confirmEl.hidden = true; }
+  document.getElementById('reset').addEventListener('click', function(){ confirmEl.hidden = false; setTimeout(function(){ document.getElementById('confirm-no').focus(); }, 30); });
+  document.getElementById('confirm-no').addEventListener('click', closeConfirm);
+  confirmEl.addEventListener('click', function(e){ if(e.target === confirmEl) closeConfirm(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !confirmEl.hidden) closeConfirm(); });
+  document.getElementById('confirm-yes').addEventListener('click', function(){ closeConfirm(); resetAll(); go('packs'); toast('Collection brûlée. Le pit t\'attend.'); });
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   renderStats(); setNet(); setTimeout(packParallax, 0);
