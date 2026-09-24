@@ -155,12 +155,14 @@
   /* ---------- Déchirure du paquet ---------- */
   .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
   .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#d4af37}
-  .pack .flap{position:absolute; left:0; right:0; top:0; height:17%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
-              background:linear-gradient(160deg,#3a1414,#1a0b0b); transform-origin:100% 100%;
+  .pack.art{aspect-ratio:658/1138; width:min(56vw,230px); border-radius:4px; background:transparent url(cards/pack.jpg) center/100% 100% no-repeat; box-shadow:none; overflow:visible; filter:drop-shadow(0 22px 40px rgba(0,0,0,.8))}
+  .pack.art::before, .pack.art .p-moon, .pack.art .p-title, .pack.art .p-sub{display:none}
+  .pack .flap{position:absolute; left:0; right:0; top:0; height:10%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
+              background:transparent url(cards/pack.jpg) center top/100% auto no-repeat; transform-origin:100% 100%;
               transform:rotate(calc(var(--tear) * -7deg)) translateY(calc(var(--tear) * -6px)); transition:transform .08s linear}
   .pack .tear{position:absolute; left:0; bottom:-2px; height:4px; width:calc(var(--tear) * 100%); border-radius:4px;
               background:var(--tease); box-shadow:0 0 12px 3px var(--tease), 0 0 34px 8px var(--tease); opacity:calc(.35 + var(--tear) * .65)}
-  .pack .grip{position:absolute; top:6%; left:calc(6% + var(--tear) * 80%); z-index:3; font-size:1rem; color:var(--gold); opacity:.9; pointer-events:none}
+  .pack .grip{position:absolute; top:4%; left:calc(6% + var(--tear) * 80%); z-index:3; font-size:1rem; color:var(--gold); opacity:.9; pointer-events:none}
   .pack.torn .flap{transition:transform .55s cubic-bezier(.3,.7,.3,1), opacity .55s ease; transform:translate(120%,-160%) rotate(38deg); opacity:0}
   .pack.torn{animation:burst .65s ease forwards}
   @keyframes burst{0%{transform:scale(1)}35%{transform:scale(1.06); box-shadow:0 0 70px 20px var(--tease)}100%{transform:scale(1.12); opacity:0}}
@@ -232,7 +234,7 @@
   </div>
   <div class="pack-zone">
     <div class="pack-wrap">
-      <button type="button" class="pack" id="pack" aria-label="Déchirer le paquet (glisser vers la droite, ou toucher pour l'ouvrir)">
+      <button type="button" class="pack art" id="pack" aria-label="Déchirer le paquet (glisser vers la droite, ou toucher pour l'ouvrir)">
         <span class="flap"><span class="tear"></span></span><span class="grip" aria-hidden="true">✂</span>
         <span class="p-moon">☾</span><span class="p-title">Série I</span><span class="p-sub" id="pack-sub">5 cartes</span>
       </button>

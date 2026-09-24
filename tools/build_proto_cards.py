@@ -27,6 +27,10 @@ for aid in ids:
             subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst],
                            check=True, stdout=subprocess.DEVNULL)
     ready.append(aid)
+# paquet : rogné au ras du sachet (zone mesurée sur l'image 848 x 1264), puis allégé
+if os.path.exists(f"{CREAS}/pack-a.jpg"):
+    subprocess.run(["sips", "-c", "1138", "658", "--cropOffset", "66", "91", "-s", "format", "jpeg", "-s", "formatOptions", "80",
+                    f"{CREAS}/pack-a.jpg", "--out", f"{OUT}/pack.jpg"], check=True, stdout=subprocess.DEVNULL)
 if os.path.exists(f"{CREAS}/card-back.jpg"):
     subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
                     "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
