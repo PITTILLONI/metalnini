@@ -230,25 +230,56 @@ async function player(p){
   const inv = await sb.rpc('admin_player_inventory', { p_user: p.id }).then(must);
   const d = $('player-detail');
   d.innerHTML = `<div class="card"><p class="eyebrow">Joueur</p><h3>${esc(p.email || 'anonyme')} <span class="muted" style="font:500 .7rem var(--mono)">${p.id}</span></h3>
-    <div class="grid-cards">${inv.map(i => `<figure><img src="../proto/cards/${esc(i.musician_id)}-${i.rarity}.jpg" alt="" loading="lazy"><span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}</figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div>
-    <h3 style="margin-top:20px">Ajuster ses cartes</h3>
+    <label for="why">Motif de l'action (obligatoire, inscrit au journal)</label><input id="why" placeholder="ex. geste commercial, correction d'un bug, compte de test">
+    <p id="adj-msg" class="msg"></p>
+    <h3 style="margin-top:16px">Collection · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s)</h3>
+    <div class="grid-cards">${inv.map(i => `<figure><img src="../proto/cards/${esc(i.musician_id)}-${i.rarity}.jpg" alt="" loading="lazy">
+      <span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}
+      <span class="row" style="gap:4px; margin-top:4px"><button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="-1" style="padding:4px 10px" aria-label="Retirer un exemplaire">−</button>
+      <button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="1" style="padding:4px 10px" aria-label="Ajouter un exemplaire">+</button></span></figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div>
+    <h3 style="margin-top:20px">Donner une carte</h3>
     <div class="row"><div><label>Musicien</label><select id="adj-m">${catalog.musicians.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</select></div>
       <div><label>Rareté</label><select id="adj-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div>
-      <div class="fit"><label>Exemplaires (+/−)</label><input id="adj-d" type="number" value="1"></div></div>
-    <label>Motif (obligatoire, inscrit au journal)</label><input id="adj-why" placeholder="ex. geste commercial, correction d'un bug">
-    <div class="row" style="margin-top:10px"><button id="adj-go" class="fit">Appliquer</button>
-      <button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button></div>
-    <p id="adj-msg" class="msg"></p></div>`;
+      <div class="fit"><label>Exemplaires (+/−)</label><input id="adj-d" type="number" value="1"></div>
+      <div class="fit"><button id="adj-go">Appliquer</button></div></div>
+    <h3 style="margin-top:22px">Compte</h3>
+    <div class="row"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button>
+      <button id="clr-go" class="ghost fit">Vider la collection</button></div>
+    <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
+      <p class="err" style="margin:0 0 6px; font-weight:600">Supprimer le joueur</p>
+      <p class="muted" style="margin:0 0 8px; font-size:.85rem">Efface définitivement le compte, sa collection et son historique de paquets. Irréversible. Impossible sur un admin.</p>
+      <div class="row"><div><label for="del-confirm">Tape SUPPRIMER pour confirmer</label><input id="del-confirm" autocomplete="off"></div>
+        <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>`;
   d.scrollIntoView({ behavior: 'smooth' });
-  $('adj-go').onclick = async () => {
-    const r = await sb.rpc('admin_adjust_card', { p_user: p.id, p_musician: $('adj-m').value, p_rarity: $('adj-r').value, p_delta: parseInt($('adj-d').value, 10) || 0, p_reason: $('adj-why').value });
-    if(r.error) return say($('adj-msg'), r.error.message);
-    say($('adj-msg'), 'Fait, et inscrit au journal.', true); player(p);
+  const why = () => $('why').value.trim();
+  const needWhy = () => { if(!why()){ say($('adj-msg'), 'Indique d\'abord un motif.'); $('why').focus(); return true; } return false; };
+  const adjust = async (m, r, delta) => {
+    if(needWhy()) return;
+    const res = await sb.rpc('admin_adjust_card', { p_user: p.id, p_musician: m, p_rarity: r, p_delta: delta, p_reason: why() });
+    if(res.error) return say($('adj-msg'), res.error.message);
+    const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), 'Fait, et inscrit au journal.', true);
   };
+  d.querySelectorAll('button.q').forEach(b => b.onclick = () => adjust(b.dataset.m, b.dataset.r, parseInt(b.dataset.d, 10)));
+  $('adj-go').onclick = () => adjust($('adj-m').value, $('adj-r').value, parseInt($('adj-d').value, 10) || 0);
   $('blk-go').onclick = async () => {
-    const r = await sb.rpc('admin_set_blocked', { p_user: p.id, p_blocked: !p.blocked, p_reason: $('adj-why').value });
+    if(needWhy()) return;
+    const r = await sb.rpc('admin_set_blocked', { p_user: p.id, p_blocked: !p.blocked, p_reason: why() });
     if(r.error) return say($('adj-msg'), r.error.message);
-    p.blocked = !p.blocked; say($('adj-msg'), p.blocked ? 'Compte bloqué.' : 'Compte débloqué.', true); player(p);
+    p.blocked = !p.blocked; const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), p.blocked ? 'Compte bloqué.' : 'Compte débloqué.', true);
+  };
+  $('clr-go').onclick = async () => {
+    if(needWhy()) return;
+    const r = await sb.rpc('admin_clear_inventory', { p_user: p.id, p_reason: why() });
+    if(r.error) return say($('adj-msg'), r.error.message);
+    const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), `Collection vidée (${r.data} carte(s)).`, true);
+  };
+  $('del-go').onclick = async () => {
+    if(needWhy()) return;
+    if($('del-confirm').value.trim() !== 'SUPPRIMER') return say($('adj-msg'), 'Tape SUPPRIMER dans le champ de confirmation.');
+    const r = await sb.rpc('admin_delete_player', { p_user: p.id, p_reason: why() });
+    if(r.error) return say($('adj-msg'), r.error.message);
+    await openTab('players'); const m = document.createElement('p'); m.className = 'msg ok'; m.textContent = 'Joueur supprimé et inscrit au journal.';
+    document.querySelector('[data-p="players"]').prepend(m);
   };
 }
 
