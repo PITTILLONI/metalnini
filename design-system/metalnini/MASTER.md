@@ -43,6 +43,15 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 1. **Choisir** : HUD, objectifs, « Choisis ton paquet du jour », carrousel de paquets, nom et description du paquet du centre dessous ; toucher le paquet du centre l'ouvre (pas de bouton). Paquet du jour utilisé : « Le merch est fermé » et le temps restant.
 2. **Ouvrir** : « ← Changer de paquet », nom et description du paquet, paquet en grand, geste pour déchirer. Un paquet serveur entamé rouvre directement cette étape.
 
+## Parcours Révélation et rangement
+- **Révélation** : une carte à la fois ; phrase « combo » en bandeau incliné sur la carte (taille et couleur selon la rareté, ~3 s). La rangée du bas rouvre les cartes déjà vues. À la dernière carte : « Ranger dans le classeur » et partage (pas d'écran de résumé).
+- **Rangement** : chaque carte s'affiche en grand, bonus en bandeau (lettrage Metal Mania) ; consigne sur deux lignes au-dessus ; un toucher range et passe à la suivante. Transformation proposée quand elle devient possible.
+
+## Autres écrans
+- **Profil** : page à part (avatar, pseudo, capacité de metaleux en texte, cri). La capacité se modifie dans une feuille du bas : idées proposées ou texte perso (120 caractères).
+- **Notifications** : encadré arrondi à marges, en haut de l'écran ; descend et remonte, sans fondu ; une seule à la fois.
+- **Fermer** : bouton rond en surimpression en haut à droite, il ne prend pas de place.
+
 ## Interaction et mouvement
 - Cibles tactiles ≥ 44 × 44 px, 8 px d'écart minimum ; retour visuel à l'appui (échelle 0,97-0,98 ou opacité).
 - Focus clavier visible (`:focus-visible`, filet `--gold-hi`).

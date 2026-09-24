@@ -395,8 +395,11 @@ insert into public.pack_odds (pack_type_id, rarity, weight) values
 on conflict do nothing;
 
 insert into public.settings (key, value) values
-  ('fusion_cost', '5'),
-  ('packs_per_day', '20')
+  ('fusion_cost_commune', '3'),
+  ('fusion_cost_rare', '6'),
+  ('fusion_cost_holo', '12'),
+  ('fusion_cost_signature', '24'),
+  ('packs_per_day', '1')
 on conflict (key) do nothing;
 
 commit;

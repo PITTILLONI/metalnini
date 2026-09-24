@@ -72,8 +72,11 @@ public enum Catalog {
         .init(id: "legendes", label: "Légendes du rock", binderID: "legendes"),
     ]
 
-    /// Nombre de doublons identiques nécessaires pour une fusion (réglable depuis l'admin).
-    public static let fusionCost = 5
+    /// Doublons consommés pour transformer une rareté en la suivante : paliers ×2 (3, 6, 12, 24), réglables depuis l'admin.
+    public static func fusionCost(from rarity: Rarity) -> Int {
+        let tier = Rarity.allCases.firstIndex(of: rarity) ?? 0
+        return 3 << tier
+    }
 
     public static func musician(_ id: String) -> Musician? { musicians.first { $0.id == id } }
     public static func binder(_ id: String) -> Binder? { binders.first { $0.id == id } }

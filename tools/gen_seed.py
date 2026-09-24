@@ -17,7 +17,6 @@ q = lambda v: "'" + v.replace("'", "''") + "'"
 musicians = re.findall(r'\.init\(id: "([^"]+)", name: "([^"]+)", band: "([^"]+)", arcanaTitle: "([^"]+)", arcanaNumber: "([^"]+)", instruments: \[([^\]]*)\], subgenre: "([^"]+)"\)', src)
 binders = re.findall(r'\.init\(id: "([^"]+)", kind: \.(\w+), label: "([^"]+)", musicianIDs: (\[[^\]]*\]|musicians\.map\(\\\.id\))\)', src)
 packs = re.findall(r'\.init\(id: "([^"]+)", label: "([^"]+)"(?:, binderID: "([^"]+)")?\)', src)
-fusion = re.search(r"fusionCost = (\d+)", src).group(1)
 assert len(musicians) >= 1 and binders and packs, "catalogue introuvable"
 
 out = ["-- Généré par tools/gen_seed.py depuis Catalog.swift : ne pas modifier à la main.", "begin;", ""]
@@ -39,7 +38,8 @@ out.append(",\n".join(f"  ({q(i)}, {q(l)}, 5, {q(b) if b else 'null'})" for i, l
 out.append("insert into public.pack_odds (pack_type_id, rarity, weight) values")
 out.append(",\n".join(f"  ({q(i)}, '{r}', {ODDS[r]})" for i, _, _ in packs for r in RARITIES) + "\non conflict do nothing;\n")
 out.append("insert into public.settings (key, value) values")
-out.append(f"  ('fusion_cost', '{fusion}'),\n  ('packs_per_day', '20')\non conflict (key) do nothing;\n")
+# paliers de transformation ×2 et un paquet par jour, comme les migrations 0008 et 0009
+out.append(",\n".join(f"  ('fusion_cost_{r}', '{3 << i}')" for i, r in enumerate(RARITIES[:-1])) + ",\n  ('packs_per_day', '1')\non conflict (key) do nothing;\n")
 out.append("commit;")
 open(OUT, "w", encoding="utf-8").write("\n".join(out) + "\n")
 print(f"{len(musicians)} musiciens, {len(musicians) * 5} cartes, {len(binders)} classeurs, {len(packs)} paquets -> {OUT}")
