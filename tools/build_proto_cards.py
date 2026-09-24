@@ -61,6 +61,15 @@ if os.path.exists(f"{CREAS}/flames.jpg"):
 if os.path.exists(f"{CREAS}/card-back.jpg"):
     subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
                     "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
+# sons réellement déposés dans proto/sounds (évite de chercher des fichiers absents)
+snd_dir = "proto/sounds"
+sounds = {}
+if os.path.isdir(snd_dir):
+    for f in sorted(os.listdir(snd_dir)):
+        n, ext = os.path.splitext(f)
+        if ext.lower() in (".m4a", ".mp3", ".wav") and n not in sounds:
+            sounds[n] = f
 open(f"{OUT}/manifest.js", "w").write("window.METALNINI_READY = " + repr(ready).replace("'", '"') + ";\n"
-                                      + "window.METALNINI_PACKS = " + json.dumps(packs) + ";\n")
+                                      + "window.METALNINI_PACKS = " + json.dumps(packs) + ";\n"
+                                      + "window.METALNINI_SOUNDS = " + json.dumps(sounds) + ";\n")
 print(f"{len(ready)} musiciens prêts : {', '.join(ready)}")
