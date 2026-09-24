@@ -744,7 +744,8 @@
   function setTear(v){ packEl.style.setProperty('--tear', v.toFixed(3)); }
   function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
   packEl.addEventListener('pointerdown', function(e){
-    if(opening) return; prepTease(); audio(); loadSamples(); askMotion(); tick();
+    if(opening) return; if(pTarget && pTarget.root.id === 'pack-root') clearTarget(); packEl.style.transform = '';
+    prepTease(); audio(); loadSamples(); askMotion(); tick();
     drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
     packEl.setPointerCapture(e.pointerId);
   });
@@ -755,10 +756,10 @@
   });
   function endDrag(){
     if(!drag) return; var v = parseFloat(packEl.style.getPropertyValue('--tear')) || 0, moved = drag.moved; drag = null;
-    if(v > .6) tearOpen(); else if(!moved) autoTear(); else { packEl.style.transition = 'none'; animateTear(v, 0, 220); }
+    if(v > .6) tearOpen(); else if(!moved) autoTear(); else { packEl.style.transition = 'none'; animateTear(v, 0, 220); setTimeout(packParallax, 400); }
   }
   packEl.addEventListener('pointerup', endDrag);
-  packEl.addEventListener('pointercancel', function(){ drag = null; animateTear(parseFloat(packEl.style.getPropertyValue('--tear'))||0, 0, 200); });
+  packEl.addEventListener('pointercancel', function(){ drag = null; animateTear(parseFloat(packEl.style.getPropertyValue('--tear'))||0, 0, 200); setTimeout(packParallax, 400); });
   packEl.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); prepTease(); autoTear(); } });
   function animateTear(from, to, ms, done){
     var t0 = performance.now();
@@ -910,13 +911,13 @@
   });
   // léger balancement quand rien ne bouge, pour que la carte reste vivante
   (function idle(t){
-    if(pTarget && !g && t - lastInput > 1600){ var k = (t - idleT0) / 1000; parallax(Math.sin(k * .9) * .35, Math.cos(k * .7) * .22); }
+    if(pTarget && !g && !drag && t - lastInput > 1600){ var k = (t - idleT0) / 1000; parallax(Math.sin(k * .9) * .35, Math.cos(k * .7) * .22); }
     requestAnimationFrame(idle);
   })(0);
 
-  function packParallax(){ if(!opening && !document.getElementById('v-packs').hidden && revealEl.hidden) setTarget(document.getElementById('pack-root'), packEl, 'pack'); }
+  function packParallax(){ if(!opening && !drag && !document.getElementById('v-packs').hidden && revealEl.hidden) setTarget(document.getElementById('pack-root'), packEl, 'pack'); }
   document.getElementById('pack-root').addEventListener('pointermove', function(e){ if(drag || !pTarget || pTarget.root.id !== 'pack-root' || e.pointerType !== 'mouse') return;
-    var rr = packEl.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
+    var rr = packEl.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * .9), clamp(((e.clientY - rr.top) / rr.height - .5) * .9)); });
 
   // ---------- Geste : glisser pour retourner, glisser pour passer ----------
   var g = null;

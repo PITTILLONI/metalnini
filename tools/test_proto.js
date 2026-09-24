@@ -28,6 +28,17 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const results = [];
   const check = (name, ok, extra) => results.push((ok ? 'OK   ' : 'FAIL ') + name + (extra ? ' — ' + extra : ''));
 
+  // 0. Déchirer à la souris : le sachet reste à plat pendant le geste
+  const pk = d.getElementById('pack');
+  pk.getBoundingClientRect = () => ({ left: 0, top: 0, width: 200, height: 340 });
+  pk.style.transform = 'rotateY(20deg)';
+  ptr(pk, 'pointerdown', 10);
+  check('sachet figé à plat dès l\'appui', pk.style.transform === '');
+  ptr(pk, 'pointermove', 60); ptr(pk, 'pointerup', 60); await sleep(700);
+  check('déchirure abandonnée : le sachet revient', parseFloat(pk.style.getPropertyValue('--tear') || '0') < .05 && d.getElementById('reveal').hidden);
+  // (le contenu tiré reste le même : abandonner ne relance pas le tirage)
+  w.localStorage.setItem('metalnini-proto-v1', JSON.stringify(Object.assign(state(), { pending: null })));
+
   // 1. Ouvrir un paquet au clavier (toucher)
   key(d.getElementById('pack'), 'Enter');
   await sleep(3200);
