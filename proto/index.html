@@ -67,8 +67,10 @@
   .flip{position:absolute; inset:0; transform-style:preserve-3d; transition:transform .75s cubic-bezier(.2,.8,.2,1); cursor:pointer}
   .flip.on{transform:rotateY(180deg)}
   .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:14px; overflow:hidden}
-  .face.back{background:#140b0b url(cards/back.jpg) center/cover no-repeat; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4)}
-  .face.front{transform:rotateY(180deg); background:#000}
+  .face.back{background:#140b0b url(cards/back.jpg) center/cover no-repeat; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4); z-index:1}
+  .face.front{transform:rotateY(180deg) translateZ(2px); background:#000}
+  .face.back{transform:translateZ(2px)}
+  .edge{position:absolute; inset:0; border-radius:14px; background:#cbbd9c; box-shadow:inset 0 0 0 1px rgba(90,60,30,.55); pointer-events:none}
   .face.front img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.08) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
   .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px; mix-blend-mode:soft-light;
          background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,var(--ga,.35)), transparent 58%)}
@@ -170,7 +172,7 @@
   /* ---------- Déchirure du paquet ---------- */
   .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
   .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#d4af37}
-  .pack.art{aspect-ratio:var(--pa,.5783); width:min(52vw,220px); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; filter:drop-shadow(0 22px 40px rgba(0,0,0,.8))}
+  .pack.art{aspect-ratio:var(--pa,.5783); width:min(52vw,220px); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
   .pack.art::before, .pack.art .p-moon, .pack.art .p-title, .pack.art .p-sub{display:none}
   .pack .flap{position:absolute; left:0; right:0; top:0; height:10%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
               background:transparent var(--pimg,url(cards/pack-serie.jpg)) center top/100% auto no-repeat; transform-origin:100% 100%;
@@ -246,6 +248,9 @@
   /* (3) paquet fermé en parallaxe */
   .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
   .ptilt > .pack{transition:transform .12s linear}
+  .pack .ext{position:absolute; inset:1.2% 2.5%; border-radius:5px; pointer-events:none; background:linear-gradient(90deg,#0b0908,#2a221c 50%,#0b0908); box-shadow:inset 0 0 0 1px rgba(212,175,55,.18)}
+  .pack .pshadow{position:absolute; left:8%; right:8%; bottom:-4%; height:10%; border-radius:50%; background:rgba(0,0,0,.75); filter:blur(16px); transform:translateZ(-30px); pointer-events:none}
+  .pack .flap, .pack .tear, .pack .grip, .pack .glare{transform-style:flat}
   .pack .glare{border-radius:6px; z-index:4; mix-blend-mode:overlay}
   /* (6) montée en puissance selon la rareté */
   #rays{position:absolute; left:50%; top:50%; width:260%; aspect-ratio:1; margin:-130% 0 0 -130%; border-radius:50%; pointer-events:none; z-index:0; opacity:0;
@@ -333,6 +338,7 @@
         <span class="flap"><span class="tear"></span></span><span class="grip" aria-hidden="true">✂</span>
         <span class="p-moon">☾</span><span class="p-title">Mosh Pack</span><span class="p-sub" id="pack-sub">5 cartes</span>
         <span class="glare"></span>
+        <i class="ext" style="transform:translateZ(-2px)"></i><i class="ext" style="transform:translateZ(-4px)"></i><i class="ext" style="transform:translateZ(-6px)"></i><i class="ext" style="transform:translateZ(-8px)"></i><i class="pshadow"></i>
       </button>
       </div>
       <p class="pack-desc" id="pack-desc"></p>
@@ -396,6 +402,7 @@
       <div class="tilt" id="tilt">
         <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
           <div class="face back"></div>
+          <i class="edge" style="transform:translateZ(1.4px)"></i><i class="edge" style="transform:translateZ(.7px)"></i><i class="edge" style="transform:translateZ(0)"></i><i class="edge" style="transform:translateZ(-.7px)"></i><i class="edge" style="transform:translateZ(-1.4px)"></i>
           <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div><div class="glare" id="glare"></div></div>
         </div>
         <div class="glow" id="glow"></div>
@@ -628,17 +635,54 @@
     var seq = [].concat(p), t = 0; seq.forEach(function(ms, i){ if(i % 2 === 0){ setTimeout(tick, t); if(ms > 120) for(var k = 90; k < ms; k += 90) setTimeout(tick, t + k); } t += ms; });
   }
   var HAPTIC = {commune:[15], rare:[25,40,25], holo:[30,40,30,40,50], signature:[40,40,40,40,60,60,120], legendaire:[90,50,90,50,90,60,300]};
+  // ---------- Sound design metal : batterie et guitare saturée, synthétisées ----------
+  var master = null, shaper = null;
+  function bus(){
+    var a = audio(); if(!a) return null;
+    if(!master){ master = a.createDynamicsCompressor(); master.threshold.value = -14; master.ratio.value = 4; master.connect(a.destination); }
+    return a;
+  }
+  function env(a, g, t, peak, dur){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + .004); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
+  function noiseSrc(a, dur){ var b = a.createBuffer(1, Math.max(1, a.sampleRate * dur), a.sampleRate), d = b.getChannelData(0); for(var i=0;i<d.length;i++) d[i] = Math.random()*2-1; var s = a.createBufferSource(); s.buffer = b; return s; }
+  var DR = {
+    kick: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), o = a.createOscillator(), g = a.createGain();
+      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + .12); env(a, g, t, (v||1) * .9, .32); o.connect(g); g.connect(master); o.start(t); o.stop(t + .35); },
+    snare: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), n = noiseSrc(a, .22), f = a.createBiquadFilter(), g = a.createGain(), o = a.createOscillator(), og = a.createGain();
+      f.type = 'highpass'; f.frequency.value = 1400; env(a, g, t, (v||1) * .55, .2); n.connect(f); f.connect(g); g.connect(master); n.start(t);
+      o.frequency.setValueAtTime(220, t); env(a, og, t, (v||1) * .35, .09); o.connect(og); og.connect(master); o.start(t); o.stop(t + .12); },
+    tom: function(at, hz, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), o = a.createOscillator(), g = a.createGain();
+      o.frequency.setValueAtTime(hz, t); o.frequency.exponentialRampToValueAtTime(hz * .55, t + .28); env(a, g, t, (v||1) * .6, .38); o.connect(g); g.connect(master); o.start(t); o.stop(t + .4); },
+    hat: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), n = noiseSrc(a, .06), f = a.createBiquadFilter(), g = a.createGain();
+      f.type = 'highpass'; f.frequency.value = 7000; env(a, g, t, (v||1) * .28, .05); n.connect(f); f.connect(g); g.connect(master); n.start(t); },
+    crash: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), n = noiseSrc(a, 2), f = a.createBiquadFilter(), g = a.createGain();
+      f.type = 'highpass'; f.frequency.value = 4500; env(a, g, t, (v||1) * .42, 1.8); n.connect(f); f.connect(g); g.connect(master); n.start(t); }
+  };
+  // accord de quinte (power chord) saturé : fondamentale, quinte, octave, distorsion puis « baffle »
+  function chord(at, root, dur, v, mute){
+    var a = bus(); if(!a) return; var t = a.currentTime + (at||0);
+    if(!shaper){ shaper = a.createWaveShaper(); var c = new Float32Array(1024); for(var i=0;i<1024;i++){ var x = i/512 - 1; c[i] = Math.tanh(x * 9); } shaper.curve = c; shaper.oversample = '4x';
+      var cab = a.createBiquadFilter(); cab.type = 'lowpass'; cab.frequency.value = 3200; cab.Q.value = .7; var cab2 = a.createBiquadFilter(); cab2.type = 'peaking'; cab2.frequency.value = 900; cab2.gain.value = -6;
+      shaper.connect(cab); cab.connect(cab2); cab2.connect(master); }
+    var pre = a.createGain(); pre.connect(shaper);
+    [1, 1.498, 2].forEach(function(r, k){ [0, 4].forEach(function(det){ var o = a.createOscillator(); o.type = 'sawtooth'; o.frequency.value = root * r; o.detune.value = det + k; o.connect(pre); o.start(t); o.stop(t + dur + .05); }); });
+    var g = a.createGain(); pre.disconnect(); pre.connect(g); g.connect(shaper);
+    pre.gain.value = .22; env(a, g, t, (v||1) * (mute ? .35 : .5), mute ? .12 : dur);
+  }
+  var E2 = 82.41, G2 = 98, A2 = 110, D2 = 73.42;
   var SFX = {
-    tear: function(){ noise(.35, .3, 2600); },
-    flip: function(){ noise(.18, .18, 900); buzz([12]); },
-    commune: function(){ tone(523, 0, .25, 'triangle', .12); buzz(HAPTIC.commune); },
-    rare: function(){ tone(523,0,.3,'triangle'); tone(784,.09,.4,'triangle'); buzz(HAPTIC.rare); },
-    holo: function(){ [523,659,784,1047].forEach(function(f,i){ tone(f, i*.07, .5, 'sine', .16); }); buzz(HAPTIC.holo); },
-    signature: function(){ [392,523,659,784,1047,1319].forEach(function(f,i){ tone(f, i*.08, .7, 'triangle', .16); }); tone(131,0,.9,'sine',.25); buzz(HAPTIC.signature); },
-    legendaire: function(){ tone(55,0,1.6,'sawtooth',.22); tone(82,0,1.4,'sine',.3); [440,554,659,880,1109,1319].forEach(function(f,i){ tone(f, .25+i*.09, .9, 'triangle', .15); }); noise(.8,.35,400); buzz(HAPTIC.legendaire); },
-    heartbeat: function(){ tone(58,0,.18,'sine',.4); tone(52,.22,.2,'sine',.32); buzz([40,180,30]); },
-    land: function(){ tone(880,0,.12,'triangle',.1); tone(1320,.05,.18,'sine',.08); buzz([18]); },
-    rumble: function(ms){ tone(45, 0, ms/1000, 'sawtooth', .12); buzz([ms]); }
+    tear: function(){ var a = bus(); if(!a) return; var t = a.currentTime, n = noiseSrc(a, .4), f = a.createBiquadFilter(), g = a.createGain();
+      f.type = 'bandpass'; f.Q.value = 3; f.frequency.setValueAtTime(600, t); f.frequency.exponentialRampToValueAtTime(5000, t + .35); env(a, g, t, .35, .38); n.connect(f); f.connect(g); g.connect(master); n.start(t); buzz([20]); },
+    flip: function(){ DR.hat(0, .9); buzz([12]); },
+    commune: function(){ chord(0, E2, .12, .8, true); DR.kick(0, .7); buzz(HAPTIC.commune); },
+    rare: function(){ chord(0, E2, .12, .8, true); chord(.13, E2, .12, .8, true); DR.kick(0); DR.kick(.13); DR.crash(.26, .8); chord(.26, G2, .7, .9); buzz(HAPTIC.rare); },
+    holo: function(){ [0, .09, .18, .27].forEach(function(t, i){ DR.tom(t, [220, 180, 140, 110][i]); }); DR.crash(.36); DR.kick(.36); chord(.36, A2, 1.1, 1); buzz(HAPTIC.holo); },
+    signature: function(){ for(var i=0;i<8;i++){ if(i < 4) DR.snare(i*.07, .6 + i*.1); else DR.tom(i*.07, [240, 200, 160, 120][i-4]); }
+      DR.crash(.58, 1); DR.kick(.58); chord(.58, D2, 1.5, 1.1); chord(.58, D2*2, 1.5, .5); buzz(HAPTIC.signature); },
+    legendaire: function(){ DR.crash(0, 1.2); DR.kick(0, 1.2); DR.crash(.02, .8); chord(0, E2, 2.2, 1.2); chord(0, E2*.5, 2.2, .7); DR.tom(.5, 90, 1); DR.kick(.5); buzz(HAPTIC.legendaire); },
+    heartbeat: function(){ DR.kick(0, 1); DR.kick(.22, .8); buzz([40,180,30]); },
+    land: function(){ DR.tom(0, 170, .8); DR.hat(.05, .5); buzz([18]); },
+    // double pédale qui accélère pendant l'attente
+    rumble: function(ms){ var n = Math.floor(ms / 1000 * 14), t = 0; for(var i=0;i<n;i++){ DR.kick(t, .45 + .5 * i/n); t += Math.max(.045, .14 - .1 * i/n); if(t * 1000 > ms) break; } buzz([ms]); }
   };
 
   var fx = document.getElementById('fx'), ctx = fx.getContext('2d'), parts = [], looping = false;
