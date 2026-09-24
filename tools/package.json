@@ -1,0 +1,7 @@
+{
+  "name": "metalnini-tools",
+  "private": true,
+  "description": "Outils de test du prototype (jsdom). Installer : npm --prefix tools install",
+  "scripts": { "test": "node test_proto.js" },
+  "devDependencies": { "jsdom": "^24.1.0" }
+}

@@ -1,4 +1,4 @@
-// Tests automatiques du prototype (jsdom). Lancer : npm i jsdom@24 (une fois), puis node tools/test_proto.js
+// Tests automatiques du prototype (jsdom). Installer une fois : npm --prefix tools install ; lancer : node tools/test_proto.js
 // Banc de test du prototype : ouvre des paquets, retourne les cartes, vérifie le classeur.
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
