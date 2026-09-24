@@ -88,13 +88,19 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
     d.querySelectorAll('#grid .slot.owned').forEach(s => shown.add(s.getAttribute('data-id'))); }
   const extra = [...shown].filter(x => !ownedIds.has(x)), missing = [...ownedIds].filter(x => !shown.has(x));
   check('classeur = collection (aucun artiste en trop)', extra.length === 0 && missing.length === 0, 'en trop: ' + extra + ' / manquants: ' + missing);
+  { const w2 = [...d.querySelectorAll('#binder-tabs button')].map(b => b.textContent).join(' | '); const own = state().owned;
+    const slip = ['root','jordison'].some(id => Object.keys(own).some(k => k.startsWith(id + '|') && own[k] > 0));
+    check('classeur de groupe : nom caché tant qu\'aucune carte n\'est trouvée', slip ? /Slipknot/.test(w2) : !/Slipknot/.test(w2) && /Groupe mystère/.test(w2), w2); }
   // « Toutes les cartes » : il y reste toujours des cases vides après quelques paquets
   d.querySelector('#binder-tabs button[data-b="all"]').click(); await sleep(20);
   const emptyText = [...d.querySelectorAll('#grid .slot:not(.owned)')].map(s => s.textContent).join(' | ');
-  const nums = [...d.querySelectorAll('#grid .slot .cap')].map(c => (c.textContent.match(/^(?:N° )?([IVXLC]+)/) || [])[1]);
-  const rv = n => { const v = {I:1,V:5,X:10,L:50,C:100}; let t = 0; for (let i = 0; i < n.length; i++) { const a = v[n[i]], b = v[n[i+1]] || 0; t += a < b ? -a : a; } return t; };
-  check('emplacements rangés par numéro', nums.length > 0 && nums.every((n, i) => i === 0 || rv(nums[i-1]) <= rv(n)), nums.join(' '));
-  check('case vide : numéro et instrument', /N° [IVX]+/.test(d.querySelector('#grid .slot:not(.owned)').textContent));
+  const nums = [...d.querySelectorAll('#grid .slot .cap')].map(c => +(c.textContent.match(/^(\d+)/) || [])[1]);
+  check('cases numérotées de 1 à N dans le classeur', nums.length > 0 && nums.every((n, i) => n === i + 1), nums.join(' '));
+  check('case vide : numéro et instrument', /N° \d+/.test(d.querySelector('#grid .slot:not(.owned)').textContent));
+  { const empty = d.querySelector('#grid .slot:not(.owned)'), c = empty.getAttribute('data-id'); empty.click(); await sleep(30);
+    const txt = d.getElementById('detail').textContent;
+    check('fiche d\'une carte non trouvée : aucun nom de musicien ni de groupe', !/Knocked|Slipknot|Korn|Gojira|Blink|Lorna|Heriot|Jinjer|Spiritbox|Landmvrks|Poppy|Hendrix|Rage|Guns|Chili|Slash|Garris|Davis|Barker|Hoppus|Frusciante|Root|Jordison|Ramos|Duplantier|Shmayluk|LaPlante|Salfati|Gough|Hale|Rocha/.test(txt), c + ' : ' + txt.slice(0, 80));
+    d.getElementById('sheet-close').click(); await sleep(20); }
   check('emplacements vides sans nom de groupe', !/Knocked|Slipknot|Korn|Gojira|Blink|Lorna|Heriot|Jinjer|Spiritbox|Landmvrks|Poppy|Hendrix|Rage|Guns|Chili/.test(emptyText), emptyText.slice(0, 160));
 
   // 4. Vue par rareté : 5 colonnes, une rangée par musicien du classeur

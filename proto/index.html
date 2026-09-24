@@ -13,26 +13,26 @@
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="manifest" href="../icons/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Metalnini — Prototype</title>
 <style>
   :root{
     --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94;
     --border:rgba(255,255,255,.1); --accent:#b23a3a; --gold:#d4af37;
     --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#d4af37; --r-legendaire:#dc2626;
-    --display:"Cinzel",Georgia,"Times New Roman",serif; --gold-hi:#f1d98a; --gold-lo:#9c7a2a; --ink:#0d0a08; --mono:ui-monospace,Menlo,monospace;
+    --display:"Big Shoulders Display","Arial Narrow",sans-serif; --gold-hi:#f1d98a; --gold-lo:#9c7a2a; --ink:#0d0a08; --mono:"Inter",system-ui,sans-serif;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html{color-scheme:dark; overflow-x:hidden; overflow-x:clip; overscroll-behavior:none}
   body{overflow-x:hidden; overflow-x:clip}
   #fxlayer{position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:48}
-  body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; line-height:1.45;
+  body{margin:0; background:var(--bg); color:var(--text); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-feature-settings:"cv11","ss01"; -webkit-font-smoothing:antialiased; line-height:1.45;
        padding-bottom:calc(90px + env(safe-area-inset-bottom)); overscroll-behavior:none}
   button{font:inherit; color:inherit}
   button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .wrap{max-width:960px; margin:0 auto; padding:0 16px}
   .eyebrow{font:500 .7rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px}
-  h1,h2{font-family:var(--display); text-transform:uppercase; letter-spacing:.02em; margin:0}
+  h1,h2{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.01em; line-height:.95; margin:0}
 
   /* ---------- Tab bar ---------- */
   /* barre d'onglets flottante, boutons en relief */
@@ -41,12 +41,14 @@
           background:linear-gradient(180deg, rgba(13,10,8,.94), #0d0a08 40%);
           border-top:1px solid rgba(212,175,55,.55); box-shadow:0 -1px 0 #0d0a08, 0 -3px 0 rgba(212,175,55,.22), 0 -18px 40px rgba(0,0,0,.6)}
   .tabbar::before{content:"✦"; position:absolute; top:-9px; left:50%; transform:translateX(-50%); font-size:.8rem; line-height:1; color:var(--gold); background:#0d0a08; padding:0 8px}
-  .tabbar button{flex:1; max-width:160px; position:relative; background:none; border:0; padding:6px 4px 4px; font:600 .66rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:#8f877b; cursor:pointer; transition:color .2s ease}
+  .tabbar button{flex:1; max-width:160px; position:relative; background:none; border:0; padding:6px 4px 4px; font:600 .7rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:#8f877b; cursor:pointer; transition:color .2s ease}
   .tabbar .ico{display:block; margin:0 auto 3px; transition:transform .2s ease, filter .2s ease}
   .tabbar button[aria-selected="true"]{color:var(--gold-hi)}
   .tabbar button[aria-selected="true"] .ico{color:var(--gold); transform:translateY(-2px); filter:drop-shadow(0 0 8px rgba(212,175,55,.55))}
   .tabbar button[aria-selected="true"]::after{content:""; position:absolute; left:50%; bottom:-3px; width:5px; height:5px; background:var(--gold); transform:translateX(-50%) rotate(45deg)}
   .view[hidden], [hidden]{display:none !important}
+  :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px; border-radius:6px}
+  .num{font-variant-numeric:tabular-nums}
 
   /* ---------- Packs ---------- */
   /* accueil façon écran de jeu : HUD, quête, paquet, gros bouton */
@@ -54,22 +56,25 @@
   .hud-me{display:flex; align-items:center; gap:10px; min-width:0}
   .hud-me .av{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; font-size:1.3rem; color:var(--gold); padding:0; cursor:pointer; overflow:hidden;
     background:#16110e center/cover no-repeat; border:0; box-shadow:0 0 0 1px rgba(212,175,55,.7), 0 0 0 3px #0d0a08, 0 0 0 4px rgba(212,175,55,.3)}
-  .hud-me .av.has{font-size:0}
+  .hud-me .av.has svg{display:none}
   .hud-me b{display:block; font:700 1rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw}
-  .hud-me .net{display:block; font:500 .56rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:left; margin-top:2px}
+  .hud-me .net{display:block; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:left; margin-top:2px}
   .hud-me .net b{display:inline; color:#4ade80; font-size:.7rem}
   .hud-right{display:flex; align-items:center; gap:8px}
   .hud-stats{display:flex; gap:6px}
   .hud-stats span{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
-  .hud-stats i{font-style:normal; color:var(--gold); font-size:.8rem}
-  .home-title{font-size:1.3rem; line-height:1.05; margin:12px 0 0; text-align:center}
+  .hud-stats i{display:flex; color:var(--gold)}
+  .home-title{font-size:1.9rem; line-height:1.05; margin:12px 0 0; text-align:center}
   .pack-zone{display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px 0 6px}
   .home .pack-desc{display:none}
-  .home .pack-picker button{width:50px}
-  .home .pack-picker small{font-size:.46rem}
+  .home .pack-picker button{width:56px}
+  .home .pack-picker small{font-size:.7rem}
   .goal.quest{padding:8px 12px}
-  .goal.quest > span > span{display:none}
-  .goal.quest{max-width:none; margin-top:2px; background:linear-gradient(180deg,#191410,#110d0a); border:0; box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 4px #110d0a, inset 0 0 0 5px rgba(212,175,55,.2)}
+  .quests{margin-top:2px}
+  .quest-track{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; gap:12px}
+  .quest-track::-webkit-scrollbar{display:none}
+  .quest-dots{padding:8px 0 0}
+  .goal.quest{flex:0 0 100%; scroll-snap-align:start; max-width:none; background:linear-gradient(180deg,#191410,#110d0a); border:0; box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 4px #110d0a, inset 0 0 0 5px rgba(212,175,55,.2)}
   .goal .qbar{display:block; height:6px; border-radius:3px; background:rgba(255,255,255,.1); margin-top:7px; overflow:hidden}
   .goal .qbar i{display:block; height:100%; border-radius:3px; background:linear-gradient(90deg,#b8912a,#f5c542)}
   .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
@@ -159,14 +164,14 @@
   .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
-  .tag{display:inline-block; font:600 .62rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
+  .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
   .tag.new{background:var(--gold); color:#111}
   .tag.dup{background:var(--surface-2); color:var(--muted); border:1px solid var(--border)}
   .reveal .hint{font:500 .7rem var(--mono); color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:14px}
   .summary{position:absolute; inset:0; display:flex; flex-direction:column; padding:calc(14px + env(safe-area-inset-top)) 0 calc(14px + env(safe-area-inset-bottom))}
   .summary[hidden]{display:none}
   .sum-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
-  .summary h2{font-size:2rem; line-height:1}
+  .summary h2{font-size:2.4rem; line-height:.95}
   .sum-sub{margin:6px 0 0; font:500 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .icon-btn{flex:0 0 auto; width:46px; height:46px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(212,175,55,.55); background:rgba(212,175,55,.07); color:var(--gold-hi); cursor:pointer;
     backdrop-filter:blur(8px); transition:transform .12s ease, background .12s ease}
@@ -179,7 +184,7 @@
   .carousel img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:14px; display:block; box-shadow:0 0 0 2px var(--rc), 0 18px 40px rgba(0,0,0,.6)}
   .carousel figure.on img{box-shadow:0 0 0 2px var(--rc), 0 0 34px 4px color-mix(in srgb, var(--rc) 45%, transparent), 0 18px 40px rgba(0,0,0,.6)}
   .carousel figcaption{margin-top:10px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap}
-  .chip{font:600 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:999px; border:1px solid var(--rc, var(--border)); color:var(--rc, var(--muted)); background:rgba(0,0,0,.35)}
+  .chip{font:600 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:999px; border:1px solid var(--rc, var(--border)); color:var(--rc, var(--muted)); background:rgba(0,0,0,.35)}
   .chip.new{background:var(--accent); border-color:var(--accent); color:#fff}
   .dots{display:flex; justify-content:center; gap:7px; padding:4px 0 10px}
   .dots i{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.22); transition:all .2s ease}
@@ -189,12 +194,12 @@
 
   /* ---------- Classeur ---------- */
   .binder-head{position:relative; padding:calc(24px + env(safe-area-inset-top)) 0 6px}
-  .icon-btn.sm{width:38px; height:38px}
+  .icon-btn.sm{width:44px; height:44px}
   .icon-btn.corner{position:absolute; right:0; top:calc(18px + env(safe-area-inset-top))}
-  .back-btn{background:none; border:0; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
+  .back-btn{background:none; border:0; min-height:44px; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
   .binder-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 4px; scrollbar-width:none}
   .binder-tabs button{flex:0 0 auto; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
-  .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .56rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); padding:0 2px 0 8px}
+  .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); padding:0 2px 0 8px}
   .binder-tabs .tab-kind:first-child{padding-left:0}
   .binder-tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
@@ -203,12 +208,12 @@
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
   @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
   .view-toggle{display:flex; gap:6px; margin-top:10px}
-  .view-toggle button{background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:500 .66rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .view-toggle button{min-height:40px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer}
   .view-toggle button[aria-pressed="true"]{color:var(--text); border-color:var(--gold)}
   .view-toggle .sort{margin-left:auto; color:var(--text)}
   .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
-  .matrix .mh{font:500 .54rem var(--mono); letter-spacing:.06em; text-transform:uppercase; text-align:center}
-  .matrix .who{font:500 .62rem var(--mono); text-transform:uppercase; color:var(--muted); line-height:1.3; overflow:hidden}
+  .matrix .mh{font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; text-align:center}
+  .matrix .who{font:500 .7rem var(--mono); text-transform:uppercase; color:var(--muted); line-height:1.3; overflow:hidden}
   .matrix .who b{display:block; color:var(--text); font-family:var(--display); font-size:.8rem; letter-spacing:.02em}
   .matrix .cell{border:0; padding:0; background:none; cursor:pointer; position:relative}
   .matrix .cell img, .matrix .cell .ph{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px}
@@ -222,10 +227,10 @@
   .slot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
   .slot .empty{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:rgba(255,255,255,.4); font-family:var(--display); font-size:1.4rem}
   .slot .empty::before{content:""; position:absolute; inset:0; background:#140b0b url(cards/back.jpg) center/cover; opacity:.16}
-  .slot .empty small{font:500 .56rem var(--mono); letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:0 6px}
+  .slot .empty small{font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:0 6px}
   .slot .count{position:absolute; top:6px; right:6px; z-index:2; background:rgba(12,11,10,.88); border:1px solid rgba(212,175,55,.55); border-radius:6px; font:700 1rem/1 var(--display); letter-spacing:.02em; color:#fff; padding:4px 7px; box-shadow:0 3px 10px rgba(0,0,0,.6)}
   .slot .new-dot{position:absolute; top:6px; left:6px; z-index:2; width:10px; height:10px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px rgba(0,0,0,.6), 0 0 10px #e11d2e}
-  .slot .cap{display:block; font:500 .6rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .slot .cap{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
   /* ---------- Détail ---------- */
   .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center}
@@ -236,12 +241,12 @@
   .detail h2{font-size:1.5rem; margin-top:4px}
   .detail .sub{color:var(--muted); font-size:.9rem; margin:2px 0 10px}
   .chips{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 12px}
-  .chips span{font:500 .62rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:3px; padding:3px 7px}
+  .chips span{font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:3px; padding:3px 7px}
   .variants{display:grid; grid-template-columns:repeat(5,1fr); gap:6px}
   .variants button{border:0; padding:0; background:none; cursor:pointer}
   .variants img, .variants .lock{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; display:block}
   .variants .lock{background:var(--surface-2); border:1px dashed rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.25)}
-  .variants small{display:block; font:500 .54rem var(--mono); text-transform:uppercase; color:var(--muted); text-align:center; margin-top:3px}
+  .variants small{display:block; font:500 .7rem var(--mono); text-transform:uppercase; color:var(--muted); text-align:center; margin-top:3px}
 
   /* ---------- Réglages ---------- */
   .settings{padding:calc(24px + env(safe-area-inset-top)) 0 20px}
@@ -291,14 +296,14 @@
   .charge-legendaire .face.back{box-shadow:inset 0 0 0 2px #dc2626, 0 0 70px 20px rgba(220,38,38,.85)}
   .ring{position:fixed; left:50%; top:45%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--ring,#dc2626); pointer-events:none; z-index:46; animation:ring .9s ease-out forwards}
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
-  .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
 
   .fuse{margin-top:14px; display:flex; flex-direction:column; gap:8px}
   .fuse button{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; text-align:left; cursor:pointer; font-size:.88rem}
   .fuse button b{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em}
   .fuse .dis{opacity:.45; cursor:default}
   .mastery{margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid rgba(212,175,55,.35); background:rgba(212,175,55,.08); font-size:.86rem}
-  .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .62rem var(--mono); padding:2px 5px}
+  .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .7rem var(--mono); padding:2px 5px}
   .toast{position:fixed; left:50%; bottom:calc(92px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:60; background:#1b1508; border:1px solid var(--gold); color:var(--text); border-radius:12px; padding:12px 16px; font-size:.9rem; box-shadow:0 10px 40px rgba(0,0,0,.6); animation:toast 3.6s ease forwards; max-width:88vw; text-align:center}
   .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
   @keyframes toast{0%{opacity:0; transform:translate(-50%,16px)}10%,85%{opacity:1; transform:translate(-50%,0)}100%{opacity:0; transform:translate(-50%,8px)}}
@@ -314,7 +319,7 @@
   .pack-picker button{flex:0 0 auto; width:64px; border:0; padding:0; background:none; cursor:pointer; scroll-snap-align:center; text-align:center}
   .pack-picker img{display:block; width:100%; aspect-ratio:.58; object-fit:contain; opacity:.55; transition:opacity .2s ease, transform .2s ease}
   .pack-picker button[aria-pressed="true"] img{opacity:1; transform:translateY(-4px)}
-  .pack-picker small{display:block; font:500 .5rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:4px; line-height:1.25}
+  .pack-picker small{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:4px; line-height:1.25}
   .pack-picker button[aria-pressed="true"] small{color:var(--text)}
   .goal{display:flex; align-items:center; gap:12px; width:100%; max-width:420px; background:var(--surface); border:1px solid rgba(212,175,55,.35); border-radius:12px; padding:10px 12px; text-align:left; cursor:pointer}
   .goal .gi{flex:0 0 auto; display:flex; gap:3px}
@@ -322,7 +327,7 @@
   .goal .gi i.have{background-size:cover; box-shadow:0 0 0 1px var(--gold)}
   .goal b{display:block; font-family:var(--display); text-transform:uppercase; letter-spacing:.03em; font-size:.95rem}
   .goal span{font-size:.8rem; color:var(--muted)}
-  .goal .eyebrow{margin:0 0 3px; font-size:.58rem}
+  .goal .eyebrow{margin:0 0 3px; font-size:.7rem}
   .summary .goal{margin:0 auto 12px; width:calc(100% - 32px); max-width:608px}
   /* (3) paquet fermé en parallaxe */
   .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
@@ -357,7 +362,7 @@
   /* (2) ranger ses cartes */
   .tray{position:fixed; left:0; right:0; bottom:calc(68px + env(safe-area-inset-bottom)); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(212,175,55,.35); padding:10px 16px}
   .tray-in{max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:8px}
-  .tray p{margin:0; font:500 .62rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
+  .tray p{margin:0; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
   .tray .cards{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:6px 3px 8px; margin:0 -3px}
   .tray .cards button{flex:0 0 auto; width:46px; border:0; padding:0; background:none; cursor:pointer}
   .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc,#8a8a92)}
@@ -397,7 +402,7 @@
   .df-plus{font:700 clamp(3rem,16vw,5.5rem)/1 var(--display); color:var(--rc); text-shadow:0 0 30px var(--rc), 0 3px 0 #000; animation:dfpop .6s cubic-bezier(.2,1.8,.4,1) .45s both}
   @keyframes dfpop{0%{transform:scale(0) rotate(-12deg)}100%{transform:none}}
   .df-sub{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--text); animation:dfin .3s ease .7s both}
-  .df-skip{position:absolute; bottom:calc(24px + env(safe-area-inset-bottom)); margin:0; font:500 .6rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .df-skip{position:absolute; bottom:calc(24px + env(safe-area-inset-bottom)); margin:0; font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
   .slot.stacked .img{animation:stackhit .55s cubic-bezier(.3,1.5,.5,1)}
   @keyframes stackhit{0%{transform:translateY(-10px) scale(1.06)}30%{transform:translateY(4px) scale(1.04,.9)}60%{transform:translateY(-3px) scale(.98,1.03)}100%{transform:none}}
   .slot.stacked .img::after, .slot.upgraded .img::after{content:""; position:absolute; inset:0; border-radius:8px; box-shadow:inset 0 0 0 3px var(--rc), 0 0 30px 8px var(--rc); animation:ping .9s ease-out forwards}
@@ -410,7 +415,7 @@
   @keyframes countpop{0%{transform:scale(2.4) rotate(-8deg); background:var(--gold); color:#0c0b0a}55%{transform:scale(.88)}100%{transform:none}}
   .slot .plus{position:absolute; left:50%; top:34%; z-index:6; pointer-events:none; white-space:nowrap; font:700 1.5rem/1 var(--display); color:var(--rc); text-shadow:0 2px 0 #000, 0 0 18px var(--rc);
     animation:rise 1.1s cubic-bezier(.2,.8,.3,1) forwards}
-  .slot .plus small{display:block; font:600 .58rem var(--mono); letter-spacing:.1em; text-transform:uppercase; text-align:center; margin-top:4px}
+  .slot .plus small{display:block; font:600 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; text-align:center; margin-top:4px}
   @keyframes rise{0%{opacity:0; transform:translate(-50%,14px) scale(.5)}22%{opacity:1; transform:translate(-50%,0) scale(1.2)}70%{opacity:1}100%{opacity:0; transform:translate(-50%,-46px) scale(1)}}
   /* rareté supérieure : l'emplacement se retourne sur la nouvelle carte */
   .slot.upgraded .img{animation:upflip .65s cubic-bezier(.3,1.3,.5,1)}
@@ -433,6 +438,13 @@
   .pack-desc b{color:var(--text); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; font-weight:500}
   .uname{position:fixed; inset:0; z-index:70; background:rgba(8,7,6,.97); display:flex; align-items:center; justify-content:center; padding:24px}
   .uname-in{width:100%; max-width:380px}
+  .splash{position:fixed; inset:0; z-index:90; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:24px;
+    background:radial-gradient(ellipse at 50% 45%, #22150f 0%, #0d0a08 62%); transition:opacity .45s ease, visibility .45s}
+  .splash img{width:min(82vw, 520px); height:auto; filter:drop-shadow(0 10px 40px rgba(212,175,55,.25)); animation:splashin 1s cubic-bezier(.2,.8,.2,1) both}
+  .splash p{margin:0; font:600 .72rem var(--mono); letter-spacing:.24em; text-transform:uppercase; color:var(--muted); animation:splashin 1s ease .35s both}
+  .splash.out{opacity:0; visibility:hidden; pointer-events:none}
+  @keyframes splashin{from{opacity:0; transform:scale(.94)}}
+  .auth-logo{display:block; width:min(70%, 260px); height:auto; margin:0 auto 14px}
   .uname h2{font-size:2rem; margin:6px 0 10px}
   .uname input{width:100%; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:14px; font-size:1.1rem; margin:14px 0 8px}
   .uname .note{margin:0 0 14px}
@@ -446,13 +458,13 @@
   .auth[data-mode="signup"] [data-only~="signup"], .auth[data-mode="login"] [data-only~="login"], .auth[data-mode="forgot"] [data-only~="forgot"],
   .auth[data-mode="sent"] [data-only~="sent"], .auth[data-mode="newpw"] [data-only~="newpw"], .auth[data-mode="loading"] [data-only~="loading"]{display:block}
   .auth[data-mode="loading"] #auth-go{display:none}
-  .net{font:500 .64rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
+  .net{font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
   .net b{color:var(--ok, #4ade80)}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -461,10 +473,10 @@
 <!-- ============ PAQUETS ============ -->
 <main id="v-packs" class="view wrap home">
   <header class="hud">
-    <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri">☠</button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
+    <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg></button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
     <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
-  <button type="button" class="goal quest" id="goal" hidden></button>
+  <div class="quests" id="goal" hidden></div>
   <h1 class="home-title">Choisis et ouvre ton paquet du jour</h1>
   <div class="pack-zone">
     <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
@@ -579,9 +591,10 @@
     <button type="button" class="btn" id="uname-go">Sur scène !</button>
   </div>
 </div>
+<div class="splash" id="splash" aria-hidden="true"><img src="cards/logo.webp" alt="" width="900" height="534"><p>Balances en cours…</p></div>
 <div class="uname" id="auth" role="dialog" aria-modal="true" aria-labelledby="auth-t">
   <form class="uname-in auth" id="auth-form" data-mode="loading" novalidate>
-    <p class="eyebrow">Bienvenue dans le pit</p>
+    <img class="auth-logo" src="cards/logo.webp" alt="Metalnini" width="900" height="534">
     <h2 id="auth-t"><span data-only="loading">Balances en cours…</span><span data-only="signup">Rejoins le pit</span><span data-only="login">Re-bienvenue</span><span data-only="forgot">Trou de mémoire ?</span><span data-only="sent">Check tes mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
     <p class="note" data-only="signup" style="color:var(--muted)">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
     <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
@@ -608,7 +621,7 @@
     <button type="button" class="sheet-close" id="pf-close" aria-label="Fermer">✕</button>
     <p class="eyebrow">Backstage</p>
     <h2 id="pf-t">Ton profil</h2>
-    <button type="button" class="pf-av" id="pf-av" aria-label="Changer la photo de profil"><span>☠</span></button>
+    <button type="button" class="pf-av" id="pf-av" aria-label="Changer la photo de profil"><span><svg viewBox="0 0 24 24" width="54" height="54" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg></span></button>
     <p class="pf-name" id="pf-name"></p>
     <input type="file" id="pf-file" accept="image/*" hidden>
     <button type="button" class="btn ghost" id="pf-photo">Changer la photo</button>
@@ -739,6 +752,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     {k:'g-blink',   kind:'Groupes', label:'Blink-182', ids:['blink182','hoppus']},
     {k:'g-slipknot', kind:'Groupes', label:'Slipknot', ids:['root','jordison']}
   ];
+  // un classeur de groupe garde son nom secret tant qu'aucune carte du groupe n'a été trouvée
+  function binderLabel(b){ return b.kind === 'Groupes' && !b.ids.some(function(id){ return best(id); }) ? 'Groupe mystère' : b.label; }
   function binderOf(k){ for(var i=0;i<BINDERS.length;i++) if(BINDERS[i].k===k) return BINDERS[i]; return BINDERS[0]; }
   function styleOf(id){ for(var i=0;i<BINDERS.length;i++) if(BINDERS[i].kind==='Styles' && BINDERS[i].ids.indexOf(id)!==-1) return BINDERS[i].k; return BINDERS[0].k; }
   // id, musicien, groupe, titre d'arcane, numéro, instrument, sous-genre
@@ -806,12 +821,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('net').innerHTML = ONLINE ? '<b>●</b> En ligne' : 'Hors ligne';
     document.getElementById('hud-name').textContent = state.username || (ONLINE ? '…' : 'Invité');
   }
-  var AUTH = null;
+  var AUTH = null, splashT0 = performance.now();
+  function hideSplash(){ var sp = document.getElementById('splash'); if(!sp || sp.classList.contains('out')) return;
+    setTimeout(function(){ sp.classList.add('out'); }, Math.max(0, 1400 - (performance.now() - splashT0))); }
   window.metalniniOnline = async function(api){
     AUTH = api;
     try{
       if(api.onRecovery && !api._rec){ api._rec = true; api.onRecovery(function(){ showAuth('newpw'); }); }
       var user = await api.user();
+      hideSplash();
       if(!user){ ONLINE = null; setNet(); showAuth(/type=recovery/.test(location.hash) ? 'newpw' : 'signup'); return; }
       document.getElementById('auth').hidden = true;
       applyInventory(await api.inventory());
@@ -824,10 +842,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
       if(!state.username) askUsername();
-    }catch(e){ ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Le serveur a raté son stage diving : mode hors ligne'); }
+    }catch(e){ hideSplash(); ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Le serveur a raté son stage diving : mode hors ligne'); }
   };
   if(window.metalniniApi) window.metalniniOnline(window.metalniniApi);
-  setTimeout(function(){ if(!AUTH){ document.getElementById('auth').hidden = true; setNet(); toast('Le serveur a raté son stage diving : mode hors ligne'); } }, 10000);
+  setTimeout(function(){ if(!AUTH){ hideSplash(); document.getElementById('auth').hidden = true; setNet(); toast('Le serveur a raté son stage diving : mode hors ligne'); } }, 10000);
   function showAuth(mode){
     var box = document.getElementById('auth'), form = document.getElementById('auth-form'), err = document.getElementById('auth-err'), btn = document.getElementById('auth-go');
     var mail = document.getElementById('au-mail'), pw = document.getElementById('au-pw'), name = document.getElementById('au-name');
@@ -987,21 +1005,33 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
 
   // Prochain objectif : le classeur le plus proche d'être complété, sinon la maîtrise la plus avancée
-  function nextGoal(){
-    var bestB = null;
-    BINDERS.forEach(function(b){ var ids = b.ids.filter(function(id){ return card(id); }), miss = ids.filter(function(id){ return !best(id); });
-      if(ids.length && miss.length && (!bestB || miss.length < bestB.miss.length || (miss.length === bestB.miss.length && b.kind === 'Styles' && bestB.b.kind !== 'Styles'))) bestB = {b:b, ids:ids, miss:miss}; });
-    if(bestB) return {pct:Math.round((bestB.ids.length - bestB.miss.length) / bestB.ids.length * 100), title:'Plus que ' + bestB.miss.length + ' carte' + (bestB.miss.length > 1 ? 's' : '') + ' et ' + bestB.b.label + ' est plié',
-      sub:bestB.b.kind === 'Styles' ? 'Au bout : récompense garantie, pas de blabla' : 'Classeur ' + bestB.b.kind.toLowerCase().replace(/s$/,''), binder:bestB.b.k,
-      icons:bestB.ids.map(function(id){ var r = best(id); return r ? '<i class="have" style="background-image:url(' + img(id, r) + ')"></i>' : '<i></i>'; }).join('')};
-    var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
-    if(m) return {pct:m.n * 20, title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', sub:'Les 5 raretés, et le badge est à toi', binder:styleOf(m.c.id), icons:''};
-    return null;
+  // Objectifs : les classeurs les plus proches d'être complétés, puis la maîtrise la plus avancée
+  function goals(){
+    var list = [];
+    BINDERS.forEach(function(b){
+      var ids = b.ids.filter(function(id){ return card(id); }), miss = ids.filter(function(id){ return !best(id); });
+      if(ids.length && miss.length) list.push({b:b, ids:ids, miss:miss});
+    });
+    list.sort(function(x, y){ return (x.miss.length - y.miss.length) || ((y.b.kind === 'Styles') - (x.b.kind === 'Styles')); });
+    var out = list.slice(0, 4).map(function(g){ return {
+      pct:Math.round((g.ids.length - g.miss.length) / g.ids.length * 100), binder:g.b.k,
+      title:'Plus que ' + g.miss.length + ' carte' + (g.miss.length > 1 ? 's' : '') + ' et ' + binderLabel(g.b) + ' est plié',
+      icons:g.ids.map(function(id){ var r = best(id); return r ? '<i class="have" style="background-image:url(' + img(id, r) + ')"></i>' : '<i></i>'; }).join('')}; });
+    var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n >= 1 && n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
+    if(m) out.push({pct:m.n * 20, binder:styleOf(m.c.id), title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', icons:''});
+    return out;
   }
+  // bandeau d'objectifs : on glisse de l'un à l'autre, un point par objectif
   function renderGoal(id){
-    var el = document.getElementById(id), goal = nextGoal(); el.hidden = !goal; if(!goal) return;
-    el.innerHTML = (goal.icons ? '<span class="gi">' + goal.icons + '</span>' : '') + '<span style="flex:1; min-width:0"><p class="eyebrow">Prochain objectif</p><b>' + esc(goal.title) + '</b><span>' + esc(goal.sub) + '</span><i class="qbar"><i style="width:' + (goal.pct || 0) + '%"></i></i></span>';
-    el.onclick = function(){ revealEl.hidden = true; state.binder = goal.binder; save(); go('binder'); };
+    var el = document.getElementById(id), list = goals(); el.hidden = !list.length; if(!list.length) return;
+    el.innerHTML = '<div class="quest-track">' + list.map(function(g, i){
+      return '<button type="button" class="goal quest" data-b="' + g.binder + '">' + (g.icons ? '<span class="gi">' + g.icons + '</span>' : '') +
+        '<span style="flex:1; min-width:0"><p class="eyebrow">' + (i ? 'Objectif ' + (i + 1) + '/' + list.length : 'Prochain objectif') + '</p><b>' + esc(g.title) + '</b>' +
+        '<i class="qbar"><i style="width:' + g.pct + '%"></i></i></span></button>'; }).join('') + '</div>' +
+      (list.length > 1 ? '<div class="dots quest-dots">' + list.map(function(g, i){ return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '');
+    var track = el.querySelector('.quest-track'), dots = el.querySelectorAll('.quest-dots i');
+    track.onscroll = function(){ var k = Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); [].forEach.call(dots, function(d, j){ d.classList.toggle('on', j === k); }); };
+    [].forEach.call(el.querySelectorAll('.goal'), function(b){ b.onclick = function(){ revealEl.hidden = true; state.binder = b.getAttribute('data-b'); save(); go('binder'); }; });
   }
   function commitPack(){
     if(ONLINE){
@@ -1045,8 +1075,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     renderPacks(); renderGoal('goal');
     var nm = CARDS.filter(function(c){ return mastered(c.id); }).length;
     document.getElementById('stats-row').innerHTML =
-      '<span title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i>▦</i>' + ownedCount() + '/' + CARDS.length + '</span>' +
-      '<span title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i>★</i>' + nm + '</span>';
+      '<span class="num" title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/></svg></i>' + ownedCount() + '/' + CARDS.length + '</span>' +
+      '<span class="num" title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i><svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg></i>' + nm + '</span>';
   }
 
   // ---------- Effets : vibration, lumière ----------
@@ -1485,28 +1515,29 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     tabsEl.innerHTML = BINDERS.map(function(b){
       var head = b.kind !== lastKind ? '<span class="tab-kind">' + b.kind + '</span>' : ''; lastKind = b.kind;
       var done = b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); });
-      return head + '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(b.label) + (done ? ' ✓' : '') + '</button>';
+      return head + '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(binderLabel(b)) + (done ? ' ✓' : '') + '</button>';
     }).join('');
     [].forEach.call(tabsEl.querySelectorAll('button'), function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
     var b = binderOf(state.binder);
-    // emplacements rangés par numéro d'arcane, comme les numéros d'un album
-    var dir = state.sortDir === 'desc' ? -1 : 1;
-    var list = b.ids.map(card).filter(Boolean).sort(function(x, y){ return (roman(x.num) - roman(y.num)) * dir; });
+    // emplacements numérotés de 1 à N dans le classeur, dans l'ordre des arcanes, comme les cases d'un album
+    var dir = state.sortDir === 'desc' ? -1 : 1, pos = {};
+    var list = b.ids.map(card).filter(Boolean).sort(function(x, y){ return roman(x.num) - roman(y.num); });
+    list.forEach(function(c, i){ pos[c.id] = i + 1; }); if(dir < 0) list.reverse();
     var sb = document.getElementById('sort-dir'); sb.textContent = dir > 0 ? 'N° ↑ croissant' : 'N° ↓ décroissant';
     sb.onclick = function(){ state.sortDir = dir > 0 ? 'desc' : 'asc'; save(); renderBinder(); };
     var have = list.filter(function(c){ return placed(c.id); }).length;
-    document.getElementById('binder-title').textContent = b.label;
+    document.getElementById('binder-title').textContent = binderLabel(b);
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
     document.getElementById('prog-bar').style.width = pct + '%';
     document.getElementById('grid').innerHTML = list.map(function(c){
       var r = placed(c.id);
-      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Carte numéro ' + c.num + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + c.num + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">N° ' + c.num + ' · ???</span></button>';
+      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + pos[c.id] + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') +
-        '</span></span><span class="cap">' + c.num + ' · ' + esc(c.who) + '</span></button>';
+        '</span></span><span class="cap">' + pos[c.id] + ' · ' + esc(c.who) + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
     var mode = state.view || 'pages';
@@ -1518,7 +1549,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       m.innerHTML = '<span></span>' + RARITIES.map(function(x){ return '<span class="mh" style="color:' + x.color + '">' + x.label + '</span>'; }).join('') +
         list.map(function(c){
           var known = best(c.id);
-          return '<span class="who">' + (known ? '<b>' + esc(c.who) + '</b>N° ' + c.num + ' · ' + esc(c.band) : '<b>N° ' + c.num + '</b>' + esc(firstInst(c))) + '</span>' +
+          return '<span class="who">' + (known ? '<b>' + esc(c.who) + '</b>N° ' + pos[c.id] + ' · ' + esc(c.band) : '<b>N° ' + pos[c.id] + '</b>' + esc(firstInst(c))) + '</span>' +
             RARITIES.map(function(x){ var n = state.owned[c.id+'|'+x.k] || 0;
               return '<button type="button" class="cell" data-id="' + c.id + '" data-r="' + x.k + '" aria-label="' + (n ? esc(c.who) + ', ' + x.label : 'pas encore obtenue') + '">' +
                 (n ? '<img src="' + img(c.id, x.k) + '" alt="" loading="lazy">' + (n > 1 ? '<span class="n">×' + n + '</span>' : '') : '<span class="ph"></span>') + '</button>'; }).join('');
@@ -1536,8 +1567,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = head +
       '<p class="eyebrow">Arcane ' + c.num + (r ? ' · <span style="color:' + rarity(r).color + '">' + rarity(r).label + '</span>' : ' · pas encore obtenue') + '</p>' +
-      '<h2>' + esc(r ? c.title : '???') + '</h2><p class="sub">' + esc(c.who) + ' · ' + esc(c.band) + '</p>' +
-      '<div class="chips"><span>Membre</span><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>' +
+      // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
+      (r ? '<h2>' + esc(c.title) + '</h2><p class="sub">' + esc(c.who) + ' · ' + esc(c.band) + '</p>' +
+           '<div class="chips"><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>'
+         : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
       '<p class="note" style="margin:0 0 8px">Raretés obtenues</p><div class="variants">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0;
         return n ? '<button type="button" data-r="' + x.k + '"><img src="' + img(id, x.k) + '" alt="' + x.label + '" style="outline:2px solid ' + (x.k===r ? x.color : 'transparent') + ';outline-offset:1px"><small>' + x.label + (n>1?' ×'+n:'') + '</small></button>'
