@@ -27,5 +27,8 @@ for aid in ids:
             subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst],
                            check=True, stdout=subprocess.DEVNULL)
     ready.append(aid)
+if os.path.exists(f"{CREAS}/card-back.jpg"):
+    subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
+                    "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
 open(f"{OUT}/manifest.js", "w").write("window.METALNINI_READY = " + repr(ready).replace("'", '"') + ";\n")
 print(f"{len(ready)} musiciens prêts : {', '.join(ready)}")

@@ -33,7 +33,7 @@
   .tabbar button{flex:1; background:none; border:0; padding:12px 4px 10px; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
   .tabbar button[aria-selected="true"]{color:var(--text)}
   .tabbar .ico{display:block; font-size:1.25rem; margin-bottom:3px}
-  .view[hidden]{display:none}
+  .view[hidden], [hidden]{display:none !important}
 
   /* ---------- Packs ---------- */
   .packs-head{padding:calc(28px + env(safe-area-inset-top)) 0 10px}
@@ -63,8 +63,7 @@
   .flip{position:absolute; inset:0; transform-style:preserve-3d; transition:transform .75s cubic-bezier(.2,.8,.2,1); cursor:pointer}
   .flip.on{transform:rotateY(180deg)}
   .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:14px; overflow:hidden}
-  .face.back{background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%); box-shadow:inset 0 0 0 1px rgba(212,175,55,.4); display:flex; align-items:center; justify-content:center}
-  .face.back::after{content:"☾"; font-size:3rem; color:var(--gold); opacity:.85}
+  .face.back{background:#140b0b url(cards/back.jpg) center/cover no-repeat; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4)}
   .face.front{transform:rotateY(180deg); background:#000}
   .face.front img{width:100%; height:100%; object-fit:cover; display:block}
   .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:opacity .6s ease .35s}
@@ -101,14 +100,27 @@
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
   .bar{flex:1; height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden}
   .bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); width:0; transition:width .6s ease}
-  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:10px; padding:14px 0 30px}
-  .slot{border:0; padding:0; background:none; cursor:pointer; text-align:left}
-  .slot .img{aspect-ratio:2/3; border-radius:8px; overflow:hidden; position:relative; background:var(--surface); border:1px dashed rgba(255,255,255,.16)}
+  .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
+  @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
+  .view-toggle{display:flex; gap:6px; margin-top:10px}
+  .view-toggle button{background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:500 .66rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .view-toggle button[aria-pressed="true"]{color:var(--text); border-color:var(--gold)}
+  .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
+  .matrix .mh{font:500 .54rem var(--mono); letter-spacing:.06em; text-transform:uppercase; text-align:center}
+  .matrix .who{font:500 .62rem var(--mono); text-transform:uppercase; color:var(--muted); line-height:1.3; overflow:hidden}
+  .matrix .who b{display:block; color:var(--text); font-family:var(--display); font-size:.8rem; letter-spacing:.02em}
+  .matrix .cell{border:0; padding:0; background:none; cursor:pointer; position:relative}
+  .matrix .cell img, .matrix .cell .ph{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px}
+  .matrix .cell .ph{background:#140b0b url(cards/back.jpg) center/cover; opacity:.18}
+  .matrix .cell .n{position:absolute; right:2px; bottom:2px; background:rgba(0,0,0,.75); border-radius:3px; font:600 .5rem var(--mono); padding:1px 3px}
+  .slot{display:block; width:100%; min-width:0; border:0; padding:0; background:none; cursor:pointer; text-align:left}
+  .slot .img{display:block; aspect-ratio:2/3; border-radius:8px; overflow:hidden; position:relative; background:var(--surface); border:1px dashed rgba(255,255,255,.16)}
   .slot.owned .img{border:2px solid var(--r-commune)}
   .slot.owned[data-r="rare"] .img{border-color:var(--r-rare)} .slot.owned[data-r="holo"] .img{border-color:var(--r-holo)}
   .slot.owned[data-r="signature"] .img{border-color:var(--r-signature)} .slot.owned[data-r="legendaire"] .img{border-color:var(--r-legendaire)}
-  .slot img{width:100%; height:100%; object-fit:cover; display:block}
-  .slot .empty{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:rgba(255,255,255,.28); font-family:var(--display); font-size:1.4rem}
+  .slot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
+  .slot .empty{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:rgba(255,255,255,.4); font-family:var(--display); font-size:1.4rem}
+  .slot .empty::before{content:""; position:absolute; inset:0; background:#140b0b url(cards/back.jpg) center/cover; opacity:.16}
   .slot .empty small{font:500 .56rem var(--mono); letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:0 6px}
   .slot .count{position:absolute; top:5px; right:5px; background:rgba(0,0,0,.75); border-radius:4px; font:600 .62rem var(--mono); padding:2px 5px}
   .slot .new-dot{position:absolute; top:6px; left:6px; width:9px; height:9px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold)}
@@ -192,6 +204,15 @@
   .toast{position:fixed; left:50%; bottom:calc(92px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:60; background:#1b1508; border:1px solid var(--gold); color:var(--text); border-radius:12px; padding:12px 16px; font-size:.9rem; box-shadow:0 10px 40px rgba(0,0,0,.6); animation:toast 3.6s ease forwards; max-width:88vw; text-align:center}
   .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
   @keyframes toast{0%{opacity:0; transform:translate(-50%,16px)}10%,85%{opacity:1; transform:translate(-50%,0)}100%{opacity:0; transform:translate(-50%,8px)}}
+  .stage{touch-action:none; user-select:none; -webkit-user-select:none}
+  .stage.enter{animation:enter .38s cubic-bezier(.2,.8,.2,1)}
+  @keyframes enter{from{transform:translateY(40px) scale(.9); opacity:0}to{transform:none; opacity:1}}
+  .deck{display:flex; gap:6px; justify-content:center; margin-top:14px; min-height:62px; align-items:flex-end}
+  .deck i{display:block; width:36px; aspect-ratio:2/3; border-radius:4px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 4px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(212,175,55,.35); transition:transform .3s ease, opacity .3s ease}
+  .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc,#8a8a92)}
+  .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
+  .deck i.next{animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-3px)}}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
@@ -229,8 +250,10 @@
     <h1 id="binder-title">Classeur</h1>
     <div class="binder-tabs" id="binder-tabs" role="tablist" aria-label="Classeurs"></div>
     <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
+    <div class="view-toggle" role="group" aria-label="Affichage"><button type="button" data-mode="pages">Par musicien</button><button type="button" data-mode="matrix">Par rareté</button></div>
   </div>
   <div class="grid" id="grid"></div>
+  <div class="matrix" id="matrix" hidden></div>
 </main>
 
 <!-- ============ RÉGLAGES ============ -->
@@ -273,7 +296,8 @@
       </div>
     </div>
     <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
-    <div class="hint" id="hint">Touche la carte pour la retourner</div>
+    <div class="hint" id="hint">Glisse la carte pour la retourner</div>
+    <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
   </div>
   <div class="summary" id="summary" hidden>
     <h2>Ton paquet</h2>
@@ -518,57 +542,99 @@
 
   // ---------- Reveal carte par carte ----------
   var revealEl = document.getElementById('reveal'), flip = document.getElementById('flip'), stage = document.getElementById('stage'), tilt = document.getElementById('tilt');
-  var current = [], idx = 0, flipped = false, busy = false;
+  var current = [], idx = 0, flipped = false, busy = false, side = 1;
+  function renderDeck(){
+    document.getElementById('deck').innerHTML = current.map(function(x, i){
+      if(i < idx || (i === idx && flipped)) return '<i class="done' + (i === idx ? ' cur' : '') + '" style="background-image:url(' + img(x.c.id, x.r) + ');--rc:' + COLORS[x.r] + '" title="' + esc(x.c.who) + '"></i>';
+      return '<i class="' + (i === idx ? 'cur' : 'next') + '" style="animation-delay:' + (i*120) + 'ms"></i>';
+    }).join('');
+  }
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
-    flip.classList.remove('on'); stage.className = 'stage'; revealEl.classList.remove('dim'); tilt.style.transform = '';
+    flip.classList.remove('on'); flip.style.transition = ''; flip.style.transform = '';
+    stage.className = 'stage'; stage.style.transition = ''; stage.style.transform = ''; stage.style.opacity = '';
+    void stage.offsetWidth; if(!reduce) stage.classList.add('enter');
+    revealEl.classList.remove('dim'); tilt.style.transform = '';
     document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
-    document.getElementById('hint').textContent = 'Touche la carte pour la retourner';
-    setTimeout(function(){
-      document.getElementById('flip-img').src = img(x.c.id, x.r);
-      document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
-      document.getElementById('glow').setAttribute('data-r', x.r);
-      document.getElementById('sheen').setAttribute('data-r', x.r);
-      var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
-      document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
-    }, 260);
+    document.getElementById('hint').textContent = 'Glisse la carte pour la retourner';
+    renderDeck();
+    document.getElementById('flip-img').src = img(x.c.id, x.r);
+    document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
+    document.getElementById('glow').setAttribute('data-r', x.r);
+    document.getElementById('sheen').setAttribute('data-r', x.r);
+    var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
+    document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
   }
-  function reveal(){
-    var x = current[idx], r = x.r, ms = reduce ? 0 : CHARGE[r]; busy = true;
-    // anticipation : plus la carte est rare, plus l'attente est longue et chargée
-    if(ms){ stage.classList.add('charge-' + r); if(r === 'legendaire'){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); } if(rank(r) >= 2) embers(r, ms); }
+  function reveal(dir){
+    if(!current[idx]) return;
+    var x = current[idx], r = x.r, ms = reduce ? 0 : CHARGE[r]; busy = true; side = dir || side || 1;
+    // anticipation : la carte résiste d'autant plus longtemps qu'elle est rare
+    if(ms){
+      stage.classList.add('charge-' + r);
+      flip.style.transition = 'transform .25s ease-out'; flip.style.transform = 'rotateY(' + (side * 14) + 'deg)';
+      if(r === 'legendaire'){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); }
+      if(rank(r) >= 2) embers(r, ms);
+    }
     setTimeout(function(){
       stage.classList.remove('rumble'); SFX.flip();
+      flip.style.transition = 'transform ' + (reduce ? 0 : .55) + 's cubic-bezier(.2,.8,.2,1)'; flip.style.transform = 'rotateY(' + (side * 180) + 'deg)';
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
-        stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
-        document.getElementById('card-info').classList.add('on'); busy = false;
-        document.getElementById('hint').textContent = (rank(r) >= 2 ? 'Incline la carte du doigt · ' : '') + (idx < current.length-1 ? 'touche pour la suivante' : 'touche pour le résumé');
-      }, reduce ? 0 : 380);
+        stage.classList.remove('enter'); stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
+        document.getElementById('card-info').classList.add('on'); busy = false; renderDeck();
+        document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'le résumé') + (rank(r) >= 2 ? ' · appuie et bouge pour faire briller' : '');
+      }, reduce ? 0 : 320);
     }, ms);
   }
-  function tapCard(){
-    if(busy) return;
-    if(!flipped){ reveal(); return; }
-    if(idx < current.length-1){ idx++; showCard(); } else { showSummary(); }
+  function next(dir){
+    busy = true; stage.classList.remove('impact','enter');
+    stage.style.transition = 'transform .32s ease-in, opacity .32s ease-in';
+    stage.style.transform = 'translateX(' + (dir * 115) + 'vw) rotate(' + (dir * 16) + 'deg)'; stage.style.opacity = '0';
+    SFX.flip();
+    setTimeout(function(){ if(idx < current.length-1){ idx++; showCard(); } else { stage.style.transform = ''; stage.style.opacity = ''; showSummary(); } }, reduce ? 0 : 300);
   }
-  flip.addEventListener('click', function(){ if(!tilting) tapCard(); });
-  flip.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); tapCard(); } });
-
-  // Inclinaison au doigt une fois la carte révélée : le reflet suit le geste
-  var tilting = false, tStart = null;
-  stage.addEventListener('pointerdown', function(e){ if(!flipped || busy) return; tStart = {x:e.clientX, y:e.clientY}; tilting = false; });
-  stage.addEventListener('pointermove', function(e){
-    if(!flipped || reduce) return;
-    var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
-    if(tStart && (Math.abs(e.clientX - tStart.x) > 8 || Math.abs(e.clientY - tStart.y) > 8)) tilting = true;
-    tilt.style.transform = 'rotateY(' + (px * 22) + 'deg) rotateX(' + (-py * 18) + 'deg)';
-    document.getElementById('sheen').style.setProperty('--sx', (50 - px * 160) + '%');
+  function tapCard(){ if(busy) return; if(!flipped) reveal(1); else next(1); }
+  flip.addEventListener('keydown', function(e){
+    if(e.key==='Enter' || e.key===' ' || e.key==='ArrowRight'){ e.preventDefault(); tapCard(); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); if(busy) return; if(!flipped) reveal(-1); else next(-1); }
   });
-  function untilt(){ tilt.style.transform = ''; setTimeout(function(){ tilting = false; }, 30); tStart = null; }
-  stage.addEventListener('pointerleave', untilt);
-  stage.addEventListener('pointerup', function(){ if(tilting){ untilt(); } else { tStart = null; } });
+
+  // ---------- Geste : glisser pour retourner, glisser pour passer ----------
+  var g = null;
+  stage.addEventListener('pointerdown', function(e){
+    if(busy || revealEl.hidden) return; audio();
+    g = {x0:e.clientX, y0:e.clientY, w:stage.getBoundingClientRect().width, moved:false, a:0, dx:0};
+    stage.setPointerCapture(e.pointerId);
+    flip.style.transition = 'none'; stage.style.transition = 'none';
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(!g) return; var dx = e.clientX - g.x0, dy = e.clientY - g.y0; g.dx = dx;
+    if(Math.abs(dx) > 6 || Math.abs(dy) > 6) g.moved = true;
+    if(!flipped){
+      // la carte suit le doigt, mais ne montre pas sa face avant d'être lâchée
+      g.a = Math.max(-78, Math.min(78, dx / g.w * 160));
+      flip.style.transform = 'rotateY(' + g.a + 'deg)';
+      var x = current[idx]; if(Math.abs(g.a) > 28 && rank(x.r) >= 1) stage.classList.add('charge-' + x.r); else stage.className = stage.className.replace(/ ?charge-\w+/g, '');
+    } else {
+      var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      stage.style.transform = 'translateX(' + (dx * .75) + 'px) rotate(' + (dx / g.w * 10) + 'deg)';
+      if(!reduce){ tilt.style.transform = 'rotateY(' + (px * 22) + 'deg) rotateX(' + (-py * 18) + 'deg)'; document.getElementById('sheen').style.setProperty('--sx', (50 - px * 160) + '%'); }
+    }
+  });
+  function release(){
+    if(!g) return; var d = g; g = null; tilt.style.transform = '';
+    if(!flipped){
+      if(!d.moved){ reveal(1); return; }
+      if(Math.abs(d.a) >= 42){ reveal(d.a > 0 ? 1 : -1); return; }
+      flip.style.transition = 'transform .3s cubic-bezier(.3,1.4,.5,1)'; flip.style.transform = ''; stage.className = stage.className.replace(/ ?charge-\w+/g, '');
+    } else {
+      if(!d.moved || Math.abs(d.dx) > d.w * .28){ next(d.dx < 0 ? -1 : 1); return; }
+      stage.style.transition = 'transform .3s cubic-bezier(.3,1.4,.5,1)'; stage.style.transform = '';
+    }
+  }
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', release);
 
   document.getElementById('skip').addEventListener('click', showSummary);
   function showSummary(){
@@ -616,12 +682,28 @@
     document.getElementById('prog-bar').style.width = pct + '%';
     document.getElementById('grid').innerHTML = list.map(function(c){
       var r = best(c.id);
-      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '"><span class="img"><span class="empty">' + c.num + '<small>' + esc(c.band) + '</small></span></span><span class="cap">???</span></button>';
+      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Arcane ' + c.num + ', pas encore obtenue"><span class="img"><span class="empty"><span style="position:relative">' + c.num + '</span></span></span><span class="cap">???</span></button>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') +
         '</span><span class="cap">' + esc(c.who) + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
+    var mode = state.view || 'pages';
+    document.getElementById('grid').hidden = mode !== 'pages';
+    var m = document.getElementById('matrix'); m.hidden = mode !== 'matrix';
+    [].forEach.call(document.querySelectorAll('.view-toggle button'), function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === mode));
+      b.onclick = function(){ state.view = b.getAttribute('data-mode'); save(); renderBinder(); }; });
+    if(mode === 'matrix'){
+      m.innerHTML = '<span></span>' + RARITIES.map(function(x){ return '<span class="mh" style="color:' + x.color + '">' + x.label + '</span>'; }).join('') +
+        list.map(function(c){
+          var known = best(c.id);
+          return '<span class="who">' + (known ? '<b>' + esc(c.who) + '</b>' + esc(c.band) : '<b>' + c.num + '</b>???') + '</span>' +
+            RARITIES.map(function(x){ var n = state.owned[c.id+'|'+x.k] || 0;
+              return '<button type="button" class="cell" data-id="' + c.id + '" data-r="' + x.k + '" aria-label="' + (n ? esc(c.who) + ', ' + x.label : 'pas encore obtenue') + '">' +
+                (n ? '<img src="' + img(c.id, x.k) + '" alt="" loading="lazy">' + (n > 1 ? '<span class="n">×' + n + '</span>' : '') : '<span class="ph"></span>') + '</button>'; }).join('');
+        }).join('');
+      [].forEach.call(m.querySelectorAll('.cell'), function(b){ b.addEventListener('click', function(){ var id = b.getAttribute('data-id'), r = b.getAttribute('data-r'); openDetail(id, state.owned[id+'|'+r] ? r : null); }); });
+    }
   }
 
   // ---------- Détail ----------
