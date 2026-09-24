@@ -103,12 +103,14 @@
       <button data-t="packs">Paquets & probabilités</button>
       <button data-t="catalog">Catalogue</button>
       <button data-t="log">Journal</button>
+      <button data-t="account">Mon compte</button>
     </nav>
     <section data-p="dash"></section>
     <section data-p="players" hidden></section>
     <section data-p="packs" hidden></section>
     <section data-p="catalog" hidden></section>
     <section data-p="log" hidden></section>
+    <section data-p="account" hidden></section>
   </main>
   <footer class="muted" style="font-size:.78rem; padding:30px 0 50px">Toutes les actions passent par des fonctions serveur qui vérifient le rôle admin et la double authentification, et sont inscrites au journal.</footer>
 </div>
@@ -185,7 +187,7 @@ async function openTab(t){
   tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.t === t)));
   document.querySelectorAll('[data-p]').forEach(p => p.hidden = p.dataset.p !== t);
   const el = document.querySelector(`[data-p="${t}"]`); el.innerHTML = '<p class="muted">Chargement…</p>';
-  try { await ({dash, players, packs, catalogTab, log})[t === 'catalog' ? 'catalogTab' : t](el); }
+  try { await ({dash, players, packs, catalogTab, log, account})[t === 'catalog' ? 'catalogTab' : t](el); }
   catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; }
 }
 async function loadCatalog(){
@@ -346,6 +348,54 @@ async function log(el){
 }
 
 // ne jamais appeler Supabase directement dans ce rappel (risque de blocage) : on diffère
+// ---------------------------------------------------------------- mon compte
+async function account(el){
+  const { data: { user } } = await sb.auth.getUser();
+  const { data: f } = await sb.auth.mfa.listFactors();
+  const { data: adm } = await sb.from('admins').select('created_at').eq('user_id', user.id).maybeSingle();
+  const factors = (f.totp || []);
+  el.innerHTML = `
+    <div class="card"><h3>Mes informations</h3><div class="table-wrap"><table>
+      <tr><th>E-mail</th><td>${esc(user.email)}${user.new_email ? ` <span class="muted">(changement en attente vers ${esc(user.new_email)})</span>` : ''}</td></tr>
+      <tr><th>Identifiant</th><td><code>${esc(user.id)}</code></td></tr>
+      <tr><th>Compte créé</th><td>${fmt(user.created_at)}</td></tr>
+      <tr><th>Dernière connexion</th><td>${fmt(user.last_sign_in_at)}</td></tr>
+      <tr><th>E-mail confirmé</th><td>${user.email_confirmed_at ? '<span class="ok">oui</span>, le ' + fmt(user.email_confirmed_at) : '<span class="err">non</span>'}</td></tr>
+      <tr><th>Admin depuis</th><td>${adm ? fmt(adm.created_at) : '—'}</td></tr>
+      <tr><th>Double authentification</th><td>${factors.map(x => `<span class="ok">active</span> · ${esc(x.friendly_name || 'application')} · depuis le ${fmt(x.created_at)}`).join('<br>') || '<span class="err">aucune</span>'}</td></tr>
+    </table></div></div>
+
+    <div class="card" style="max-width:520px"><h3>Changer de mot de passe</h3>
+      <label for="pw1">Nouveau mot de passe (12 caractères minimum)</label><input id="pw1" type="password" autocomplete="new-password">
+      <label for="pw2">Confirmer</label><input id="pw2" type="password" autocomplete="new-password">
+      <div class="row" style="margin-top:12px"><button id="pw-go" class="fit">Changer le mot de passe</button></div><p id="pw-msg" class="msg"></p></div>
+
+    <div class="card" style="max-width:520px"><h3>Changer d'e-mail</h3>
+      <label for="em">Nouvelle adresse</label><input id="em" type="email" autocomplete="email">
+      <p class="muted" style="font-size:.82rem">Un lien de confirmation est envoyé ; le changement ne prend effet qu'après confirmation.</p>
+      <div class="row"><button id="em-go" class="fit">Changer l'e-mail</button></div><p id="em-msg" class="msg"></p></div>
+
+    <div class="card" style="max-width:520px"><h3>Sécurité</h3>
+      <p class="muted" style="font-size:.85rem">Te déconnecte de l'admin sur tous tes appareils et navigateurs (utile en cas de doute sur un appareil perdu ou partagé).</p>
+      <div class="row"><button id="all-out" class="ghost fit">Se déconnecter partout</button></div></div>`;
+
+  $('pw-go').onclick = async () => {
+    const a = $('pw1').value, b = $('pw2').value;
+    if(a.length < 12) return say($('pw-msg'), '12 caractères minimum.');
+    if(a !== b) return say($('pw-msg'), 'Les deux mots de passe ne correspondent pas.');
+    const { error } = await sb.auth.updateUser({ password: a });
+    if(error) return say($('pw-msg'), error.message);
+    $('pw1').value = $('pw2').value = ''; say($('pw-msg'), 'Mot de passe changé. Utilise-le à ta prochaine connexion.', true);
+  };
+  $('em-go').onclick = async () => {
+    const email = $('em').value.trim(); if(!email) return say($('em-msg'), 'Indique une adresse.');
+    const { error } = await sb.auth.updateUser({ email }, { emailRedirectTo: location.href.split('#')[0] });
+    if(error) return say($('em-msg'), error.message);
+    say($('em-msg'), 'Lien de confirmation envoyé. Selon les réglages, il faut confirmer depuis l\'ancienne et la nouvelle adresse.', true);
+  };
+  $('all-out').onclick = async () => { await sb.auth.signOut({ scope: 'global' }); route(); };
+}
+
 sb.auth.onAuthStateChange((event) => { if(event === 'SIGNED_IN' || event === 'SIGNED_OUT') setTimeout(route, 0); });
 route();
 </script>
