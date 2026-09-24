@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Metalnini">
 <meta name="theme-color" content="#0c0b0a">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-32.png">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+<link rel="manifest" href="../icons/site.webmanifest">
 <title>Metalnini — Prototype</title>
 <style>
   :root{
@@ -314,6 +317,14 @@
   #reveal-one{position:relative; z-index:1}
   .pack-desc{margin:4px 0 0; max-width:320px; text-align:center; font-size:.84rem; color:var(--muted); line-height:1.4}
   .pack-desc b{color:var(--text); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; font-weight:500}
+  .uname{position:fixed; inset:0; z-index:70; background:rgba(8,7,6,.97); display:flex; align-items:center; justify-content:center; padding:24px}
+  .uname-in{width:100%; max-width:380px}
+  .uname h2{font-size:2rem; margin:6px 0 10px}
+  .uname input{width:100%; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:14px; font-size:1.1rem; margin:14px 0 8px}
+  .uname .note{margin:0 0 14px}
+  .uname .err{color:#f87171; font-size:.85rem; min-height:1.2em; margin:0 0 10px}
+  .net{font:500 .64rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
+  .net b{color:var(--ok, #4ade80)}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
@@ -347,6 +358,7 @@
     <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
     <button type="button" class="goal" id="goal" hidden></button>
     <div class="stats-row" id="stats-row"></div>
+    <p class="net" id="net">Hors ligne</p>
     <button type="button" class="reset-link" id="reset-quick">Repartir de zéro</button>
   </div>
 </main>
@@ -377,6 +389,9 @@
       <p class="note">Probabilité de chaque rareté, tirée carte par carte (aucune rareté garantie). Le total doit faire 100 %.</p>
       <div id="odds"></div>
       <div class="total" id="odds-total"></div>
+    </div>
+    <div class="field" id="acct-field">
+      <p class="note" id="acct"></p>
     </div>
     <div class="field">
       <label class="toggle">Sons et vibrations <input type="checkbox" id="s-sound"></label>
@@ -429,6 +444,17 @@
   <feTurbulence type="fractalNoise" baseFrequency="0.008 0.02" numOctaves="1" seed="3" result="n"><animate attributeName="baseFrequency" dur="5s" values="0.008 0.02;0.01 0.03;0.008 0.02" repeatCount="indefinite"/></feTurbulence>
   <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 <div class="flames" id="flames-pack" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="uname" id="uname" hidden role="dialog" aria-modal="true" aria-labelledby="uname-t">
+  <div class="uname-in">
+    <p class="eyebrow">Bienvenue dans le pit</p>
+    <h2 id="uname-t">Choisis ton pseudo</h2>
+    <p class="note" style="color:var(--muted)">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
+    <input id="uname-in" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo">
+    <p class="note">3 à 20 caractères : lettres, chiffres, point, tiret ou tiret bas.</p>
+    <p class="err" id="uname-err"></p>
+    <button type="button" class="btn" id="uname-go">C'est parti</button>
+  </div>
+</div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="stamp" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
@@ -451,6 +477,24 @@
 </nav>
 
 <script src="cards/manifest.js"></script>
+<script type="module">
+// Connexion au serveur : joueur anonyme + pseudo, tirage et collection côté serveur. Clé publique uniquement.
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
+const must = r => { if(r.error) throw new Error(r.error.message); return r.data; };
+const api = {
+  async ensureSession(){ const { data: { session } } = await sb.auth.getSession(); if(session) return session.user.id; return must(await sb.auth.signInAnonymously()).user.id; },
+  async restart(){ await sb.auth.signOut(); return must(await sb.auth.signInAnonymously()).user.id; },
+  async username(){ const rows = must(await sb.from('profiles').select('username').limit(1)); return rows[0] ? rows[0].username : null; },
+  async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
+  async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed')); },
+  async setting(k){ const rows = must(await sb.from('settings').select('value').eq('key', k)); return rows[0] ? rows[0].value : null; },
+  async openPack(type, requestId){ return must(await sb.rpc('open_pack', { p_pack_type: type, p_request_id: requestId })); },
+  async place(m, r){ must(await sb.rpc('place_card', { p_musician: m, p_rarity: r })); },
+  async fuse(m, r){ return must(await sb.rpc('fuse_cards', { p_musician: m, p_rarity: r })); }
+};
+if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi = api;
+</script>
 <script>
 (function(){
   var RARITIES = [
@@ -528,8 +572,50 @@
   var PACKS = [{k:'serie', label:'Mosh Pack', desc:'Tous les styles dans le même pit : 5 cartes tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
     .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
   function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
+  // ---------- En ligne : le serveur tire les paquets et tient la collection ----------
+  var ONLINE = null, pendingReq = null;
+  function serverPack(k){ return k === 'serie' ? 'mosh' : k; }
+  function uuid(){ return (crypto.randomUUID && crypto.randomUUID()) || 'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g, function(){ return (Math.random()*16|0).toString(16); }); }
+  function applyInventory(rows){
+    state.owned = {}; state.toPlace = [];
+    rows.forEach(function(r){ if(r.copies > 0 && card(r.musician_id)){ var k = r.musician_id + '|' + r.rarity; state.owned[k] = r.copies; if(!r.placed) state.toPlace.push(k); } });
+    save();
+  }
+  function setNet(){ var n = document.getElementById('net'); n.innerHTML = ONLINE ? '<b>●</b> En ligne · ' + esc(state.username || '…') : 'Hors ligne · collection sur cet appareil'; }
+  window.metalniniOnline = async function(api){
+    try{
+      await api.ensureSession();
+      applyInventory(await api.inventory());
+      var fc = await api.setting('fusion_cost'); if(fc) state.fuse = +fc;
+      state.username = await api.username();
+      ONLINE = api; save(); setNet(); renderStats();
+      if(!state.username) askUsername();
+    }catch(e){ ONLINE = null; setNet(); toast('Serveur injoignable : mode hors ligne'); }
+  };
+  if(window.metalniniApi) window.metalniniOnline(window.metalniniApi);
+  function askUsername(){
+    var box = document.getElementById('uname'), inp = document.getElementById('uname-in'), err = document.getElementById('uname-err'), btn = document.getElementById('uname-go');
+    box.hidden = false; setTimeout(function(){ inp.focus(); }, 50);
+    var send = async function(){
+      var v = inp.value.trim(); if(!/^[A-Za-z0-9_.-]{3,20}$/.test(v)){ err.textContent = 'Pseudo invalide : 3 à 20 caractères, lettres, chiffres, point, tiret ou tiret bas.'; return; }
+      btn.disabled = true; err.textContent = '';
+      try{ state.username = await ONLINE.setUsername(v); save(); box.hidden = true; setNet(); SFX.land(); }
+      catch(e){ err.textContent = e.message; }
+      btn.disabled = false;
+    };
+    btn.onclick = send; inp.onkeydown = function(e){ if(e.key === 'Enter') send(); };
+  }
+  // en ligne : demande le paquet au serveur dès le début du geste (le tirage est alors figé côté serveur)
+  function requestServerPack(type){
+    if(pendingReq) return;
+    pendingReq = ONLINE.openPack(serverPack(type), uuid()).then(async function(rows){
+      state.pending = rows.map(function(r){ return {id:r.musician_id, r:r.rarity, isNew:r.is_new}; }); state.pendingType = type;
+      applyInventory(await ONLINE.inventory()); save(); prepTease(); pendingReq = null;
+    }).catch(function(e){ pendingReq = null; toast(esc(e.message)); });
+  }
   function pendingPack(){
     var type = state.packType || 'serie';
+    if(ONLINE){ if(state.pending && state.pending.length) return state.pending; requestServerPack(type); return []; }
     if(!state.pending || state.pending.length !== state.size || state.pendingType !== type){
       var pool = packPool(type); state.pending = []; state.pendingType = type;
       for(var i=0;i<state.size;i++){ state.pending.push({id:pool[Math.floor(Math.random()*pool.length)], r:drawRarity()}); }
@@ -544,7 +630,7 @@
     var el = document.getElementById('pack-picker');
     el.hidden = PACKS.length < 2;
     el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-pressed="' + (p.k === state.packType) + '"><img src="cards/pack-' + p.k + '.jpg" alt=""><small>' + esc(p.label) + '</small></button>'; }).join('');
-    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
+    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; if(ONLINE && state.pending && state.pending.length){ toast('Ouvre d\'abord le paquet entamé'); return; } state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
     var cur = PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0];
     pk.setAttribute('aria-label', 'Déchirer le paquet ' + cur.label);
     document.getElementById('pack-desc').innerHTML = '<b>' + esc(cur.label) + '</b> · ' + esc(cur.desc);
@@ -568,6 +654,12 @@
     el.onclick = function(){ revealEl.hidden = true; state.binder = goal.binder; save(); go('binder'); };
   }
   function commitPack(){
+    if(ONLINE){
+      var o = state.pending.map(function(d){ var c = card(d.id) || CARDS[0]; if(d.isNew) state.fresh[c.id] = true; return {c:c, r:d.r, isNew:!!d.isNew}; });
+      o.sort(function(a,b){ return rank(a.r) - rank(b.r); });
+      state.pending = null; state.opened++; save();
+      return o;
+    }
     var out = pendingPack().map(function(d){
       var c = card(d.id) || CARDS[0], key = c.id + '|' + d.r, isNew = !state.owned[key];
       state.owned[key] = (state.owned[key] || 0) + 1;
@@ -768,7 +860,16 @@
   }
   function autoTear(){ if(opening) return; animateTear(0, 1, 650, tearOpen); }
   function tearOpen(){
-    if(opening) return; opening = true; setTear(1); SFX.tear();
+    if(opening) return;
+    if(ONLINE && !(state.pending && state.pending.length)){
+      opening = true; setTear(1); pendingPack();
+      var tries = 0;
+      (function wait(){ if(state.pending && state.pending.length){ opening = false; tearOpen(); return; }
+        if(!pendingReq && tries > 2 || tries > 150){ opening = false; animateTear(1, 0, 250); return; }
+        tries++; setTimeout(wait, 100); })();
+      return;
+    }
+    opening = true; setTear(1); SFX.tear();
     var tease = bestOf(pendingPack()); clearTarget();
     var wait = {commune:0, rare:250, holo:500, signature:900, legendaire:2400}[tease];
     if(reduce) wait = 0;
@@ -1038,7 +1139,8 @@
       }, reduce ? 0 : 560);
     }, reduce ? 0 : 260);
   }
-  function finishPlace(k){ state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray(); }
+  function finishPlace(k){ state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
+    if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
   document.getElementById('tray-all').addEventListener('click', function(){
     (function one(){ var tp = state.toPlace || []; if(!tp.length) return; var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
   });
@@ -1144,8 +1246,17 @@
   function fuse(id, from){
     var i = rank(from), next = RARITIES[i+1].k, kFrom = id+'|'+from, kNext = id+'|'+next;
     if(!next || (state.owned[kFrom] || 0) - 1 < state.fuse) return;
+    if(ONLINE){
+      var wasNew = !state.owned[kNext];
+      ONLINE.fuse(id, from).then(async function(){ applyInventory(await ONLINE.inventory()); if(wasNew) state.fresh[id] = true; save(); showFusion(id, from, next, wasNew); })
+        .catch(function(e){ toast(esc(e.message)); });
+      return;
+    }
     state.owned[kFrom] -= state.fuse;
     var isNew = !state.owned[kNext]; state.owned[kNext] = (state.owned[kNext] || 0) + 1; if(isNew){ state.fresh[id] = true; state.toPlace = (state.toPlace || []).concat([kNext]); } save();
+    showFusion(id, from, next, isNew);
+  }
+  function showFusion(id, from, next, isNew){
     sheet.hidden = true; SFX.tear();
     current = [{c:card(id), r:next, isNew:isNew}]; idx = 0;
     revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
@@ -1159,6 +1270,9 @@
 
   // ---------- Réglages ----------
   function renderSettings(){
+    document.getElementById('acct').innerHTML = ONLINE ? 'Connecté au serveur en tant que <b>' + esc(state.username || '…') + '</b>. Paquets tirés par le serveur ; probabilités, taille des paquets et coût de fusion réglés depuis l\'admin.'
+                                                     : 'Hors ligne : collection gardée sur cet appareil, réglages ci-dessous modifiables.';
+    document.getElementById('odds-field').hidden = !!ONLINE; document.getElementById('s-size').closest('.field').hidden = !!ONLINE;
     var snd = document.getElementById('s-sound'); snd.checked = state.sound !== false; snd.onchange = function(){ state.sound = snd.checked; save(); };
     var fz = document.getElementById('s-fuse'); fz.value = state.fuse; fz.onchange = function(){ var v = Math.max(2, Math.min(20, parseInt(fz.value,10) || 5)); state.fuse = v; fz.value = v; save(); };
     var size = document.getElementById('s-size'); size.value = state.size;
@@ -1174,7 +1288,11 @@
     var el = document.getElementById('odds-total'); el.textContent = 'Total : ' + t + ' %' + (Math.abs(t-100) > .01 ? ' — les probabilités sont ramenées à 100 % au tirage' : '');
     el.className = 'total' + (Math.abs(t-100) > .01 ? ' bad' : '');
   }
-  function resetAll(){ state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; state.completed = {}; state.toPlace = []; save(); renderStats(); }
+  function resetAll(){
+    state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; state.completed = {}; state.toPlace = []; save(); renderStats();
+    // en ligne : un nouveau compte anonyme, donc une collection vierge et un nouveau pseudo
+    if(ONLINE){ var api = ONLINE; ONLINE = null; state.username = null; setNet(); api.restart().then(function(){ window.metalniniOnline(api); }).catch(function(e){ toast(esc(e.message)); }); }
+  }
   var rq = document.getElementById('reset-quick'), rqTimer = null;
   rq.addEventListener('click', function(){
     if(!rq.classList.contains('armed')){ rq.classList.add('armed'); rq.textContent = 'Toucher encore pour tout effacer'; clearTimeout(rqTimer);
@@ -1187,7 +1305,7 @@
   });
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
-  renderStats(); setTimeout(packParallax, 0);
+  renderStats(); setNet(); setTimeout(packParallax, 0);
 })();
 </script>
 </body>
