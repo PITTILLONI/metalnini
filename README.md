@@ -15,6 +15,7 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 | Roadmap, architecture et phases | https://pittilloni.github.io/metalnini/concept.html#roadmap-architecture | Mot de passe |
 | **User flows** détaillés | https://pittilloni.github.io/metalnini/flows.html | Mot de passe |
 | **Page de pitch** (pour les proches) | https://pittilloni.github.io/metalnini/ | Mot de passe |
+| **Espace admin** (catalogue, paquets et probabilités, joueurs, statistiques, journal) | https://pittilloni.github.io/metalnini/admin/ | Compte admin + double authentification |
 | Dépôt GitHub | https://github.com/PITTILLONI/metalnini | Public |
 
 Le mot de passe n'est qu'un filtre de politesse : le dépôt est public, tout son contenu est lisible sur GitHub.

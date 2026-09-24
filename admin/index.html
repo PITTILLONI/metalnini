@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Metalnini — Admin</title>
+<style>
+  :root{
+    --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94; --border:rgba(255,255,255,.1);
+    --accent:#b23a3a; --gold:#d4af37; --ok:#4ade80; --err:#f87171;
+    --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#d4af37; --r-legendaire:#dc2626;
+    --display:"Arial Narrow","Oswald",Impact,sans-serif; --mono:ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box} html{color-scheme:dark}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; font-size:15px; line-height:1.45}
+  h1,h2,h3{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em; margin:0 0 12px}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 16px}
+  .eyebrow{font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .muted{color:var(--muted)} .ok{color:var(--ok)} .err{color:var(--err)}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin:14px 0}
+  input,select,button,textarea{font:inherit; color:inherit}
+  input,select,textarea{background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:9px 11px; width:100%}
+  input[type=number]{width:90px}
+  button{background:var(--accent); border:0; border-radius:999px; padding:9px 18px; font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; cursor:pointer}
+  button.ghost{background:var(--surface-2); border:1px solid var(--border)}
+  button:disabled{opacity:.5; cursor:default}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  label{display:block; font-size:.85rem; color:var(--muted); margin:10px 0 4px}
+  .row{display:flex; gap:10px; align-items:end; flex-wrap:wrap}
+  .row > *{flex:1 1 160px}
+  .row > .fit{flex:0 0 auto}
+  table{width:100%; border-collapse:collapse; font-size:.88rem}
+  th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top}
+  th{font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+  tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
+  .table-wrap{overflow-x:auto}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding:10px 0; position:sticky; top:0; background:var(--bg); z-index:2}
+  .tabs button{background:var(--surface); border:1px solid var(--border); color:var(--muted); font:500 .72rem var(--mono); letter-spacing:.08em; padding:8px 12px}
+  .tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
+  .pill{display:inline-block; font:500 .64rem var(--mono); letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--border); border-radius:4px; padding:2px 6px}
+  .r-commune{color:var(--r-commune)} .r-rare{color:var(--r-rare)} .r-holo{color:var(--r-holo)} .r-signature{color:var(--r-signature)} .r-legendaire{color:var(--r-legendaire)}
+  .grid-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px}
+  .grid-cards figure{margin:0; font:500 .6rem var(--mono); text-transform:uppercase; color:var(--muted)}
+  .grid-cards img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; display:block}
+  .bar{height:8px; background:var(--surface-2); border-radius:99px; overflow:hidden; position:relative; min-width:120px}
+  .bar i{position:absolute; left:0; top:0; bottom:0; background:var(--gold)}
+  .bar b{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--text)}
+  .msg{margin-top:10px; font-size:.88rem}
+  .qr{background:#fff; padding:10px; border-radius:10px; display:inline-block}
+  .qr img{display:block; width:190px; height:190px}
+  code{font-family:var(--mono); font-size:.85em; background:var(--surface-2); padding:2px 6px; border-radius:4px; word-break:break-all}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="padding:26px 0 6px; display:flex; justify-content:space-between; align-items:end; gap:10px; flex-wrap:wrap">
+    <div><p class="eyebrow">Espace admin</p><h1 style="margin:0">Metalnini</h1></div>
+    <div id="who" class="muted" style="font:500 .75rem var(--mono)"></div>
+  </header>
+
+  <!-- ============ CONNEXION ============ -->
+  <section id="v-login" class="card" hidden style="max-width:440px">
+    <h2>Connexion</h2>
+    <label for="email">E-mail</label><input id="email" type="email" autocomplete="username">
+    <label for="password">Mot de passe (12 caractères minimum)</label><input id="password" type="password" autocomplete="current-password">
+    <div class="row" style="margin-top:14px"><button id="btn-login" class="fit">Se connecter</button><button id="btn-signup" class="ghost fit">Créer le compte</button></div>
+    <p id="login-msg" class="msg"></p>
+  </section>
+
+  <!-- ============ DOUBLE AUTHENTIFICATION ============ -->
+  <section id="v-mfa-enroll" class="card" hidden style="max-width:520px">
+    <h2>Activer la double authentification</h2>
+    <p class="muted">Obligatoire pour l'admin. Scanne ce QR code avec une application d'authentification (Apple Mots de passe, Google Authenticator, 1Password…), puis saisis le code à 6 chiffres.</p>
+    <div class="qr"><img id="qr" alt="QR code de double authentification"></div>
+    <p class="muted" style="font-size:.8rem">Ou saisis la clé : <code id="secret"></code></p>
+    <label for="code-enroll">Code à 6 chiffres</label><input id="code-enroll" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+    <div class="row" style="margin-top:12px"><button id="btn-enroll" class="fit">Valider</button></div>
+    <p id="enroll-msg" class="msg"></p>
+  </section>
+  <section id="v-mfa-verify" class="card" hidden style="max-width:440px">
+    <h2>Double authentification</h2>
+    <label for="code-verify">Code de ton application d'authentification</label><input id="code-verify" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+    <div class="row" style="margin-top:12px"><button id="btn-verify" class="fit">Valider</button></div>
+    <p id="verify-msg" class="msg"></p>
+  </section>
+
+  <!-- ============ COMPTE SANS DROIT ADMIN ============ -->
+  <section id="v-noadmin" class="card" hidden style="max-width:620px">
+    <h2>Compte sans droit admin</h2>
+    <p class="muted">Ce compte est connecté avec la double authentification, mais il n'est pas encore déclaré admin. Identifiant du compte à déclarer :</p>
+    <p><code id="my-id"></code></p>
+    <p class="muted" style="font-size:.85rem">Déclaration (une fois, côté base) : <code>insert into public.admins (user_id) values ('…');</code></p>
+    <button id="btn-recheck" class="ghost">Vérifier à nouveau</button>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <main id="v-app" hidden>
+    <nav class="tabs" role="tablist">
+      <button data-t="dash" aria-selected="true">Tableau de bord</button>
+      <button data-t="players">Joueurs</button>
+      <button data-t="packs">Paquets & probabilités</button>
+      <button data-t="catalog">Catalogue</button>
+      <button data-t="log">Journal</button>
+    </nav>
+    <section data-p="dash"></section>
+    <section data-p="players" hidden></section>
+    <section data-p="packs" hidden></section>
+    <section data-p="catalog" hidden></section>
+    <section data-p="log" hidden></section>
+  </main>
+  <footer class="muted" style="font-size:.78rem; padding:30px 0 50px">Toutes les actions passent par des fonctions serveur qui vérifient le rôle admin et la double authentification, et sont inscrites au journal.</footer>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
+const RARITIES = ['commune','rare','holo','signature','legendaire'];
+const RLABEL = {commune:'Commune', rare:'Rare', holo:'Holo', signature:'Signature', legendaire:'Légendaire'};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const views = ['v-login','v-mfa-enroll','v-mfa-verify','v-noadmin','v-app'];
+function show(v){ views.forEach(x => $(x).hidden = x !== v); }
+function say(el, text, ok){ el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
+const fmt = d => d ? new Date(d).toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'}) : '—';
+let catalog = {musicians:[], packs:[], odds:[], settings:[]};
+
+// ---------------------------------------------------------------- parcours de connexion
+async function route(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ $('who').textContent = ''; show('v-login'); return; }
+  $('who').innerHTML = esc(session.user.email || 'compte') + ' · <a href="#" id="logout" style="color:var(--gold)">déconnexion</a>';
+  $('logout').onclick = async e => { e.preventDefault(); await sb.auth.signOut(); route(); };
+  const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+  if(aal.currentLevel !== 'aal2'){
+    const { data: f } = await sb.auth.mfa.listFactors();
+    if((f.totp || []).length) { show('v-mfa-verify'); $('code-verify').focus(); }
+    else await startEnroll();
+    return;
+  }
+  const { data: isAdmin } = await sb.rpc('is_admin');
+  if(!isAdmin){ $('my-id').textContent = session.user.id; show('v-noadmin'); return; }
+  show('v-app'); await loadCatalog(); openTab('dash');
+}
+
+$('btn-login').onclick = async () => {
+  const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
+  if(error) return say($('login-msg'), error.message);
+  route();
+};
+$('btn-signup').onclick = async () => {
+  const { error } = await sb.auth.signUp({ email: $('email').value.trim(), password: $('password').value, options: { emailRedirectTo: location.href.split('#')[0] } });
+  if(error) return say($('login-msg'), error.message);
+  say($('login-msg'), 'Compte créé. Confirme ton adresse avec le lien reçu par e-mail, puis connecte-toi.', true);
+};
+async function startEnroll(){
+  const { data: f } = await sb.auth.mfa.listFactors();
+  for(const x of (f.all || [])) if(x.status !== 'verified') await sb.auth.mfa.unenroll({ factorId: x.id });
+  const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Metalnini admin' });
+  if(error){ show('v-mfa-enroll'); return say($('enroll-msg'), error.message); }
+  $('qr').src = data.totp.qr_code; $('secret').textContent = data.totp.secret; $('btn-enroll').dataset.f = data.id;
+  show('v-mfa-enroll'); $('code-enroll').focus();
+}
+$('btn-enroll').onclick = async () => {
+  const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: $('btn-enroll').dataset.f, code: $('code-enroll').value.trim() });
+  if(error) return say($('enroll-msg'), error.message);
+  route();
+};
+$('btn-verify').onclick = async () => {
+  const { data: f } = await sb.auth.mfa.listFactors();
+  const factor = (f.totp || [])[0];
+  const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: factor.id, code: $('code-verify').value.trim() });
+  if(error) return say($('verify-msg'), error.message);
+  route();
+};
+$('btn-recheck').onclick = route;
+['code-enroll','code-verify','password'].forEach(id => $(id).addEventListener('keydown', e => { if(e.key === 'Enter') ({'code-enroll':$('btn-enroll'),'code-verify':$('btn-verify'),'password':$('btn-login')})[id].click(); }));
+
+// ---------------------------------------------------------------- onglets
+const tabs = [...document.querySelectorAll('.tabs button')];
+tabs.forEach(b => b.onclick = () => openTab(b.dataset.t));
+async function openTab(t){
+  tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.t === t)));
+  document.querySelectorAll('[data-p]').forEach(p => p.hidden = p.dataset.p !== t);
+  const el = document.querySelector(`[data-p="${t}"]`); el.innerHTML = '<p class="muted">Chargement…</p>';
+  try { await ({dash, players, packs, catalogTab, log})[t === 'catalog' ? 'catalogTab' : t](el); }
+  catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; }
+}
+async function loadCatalog(){
+  const [m, p, o, s] = await Promise.all([
+    sb.from('musicians').select('*').order('name'), sb.from('pack_types').select('*'), sb.from('pack_odds').select('*'), sb.from('settings').select('*')]);
+  catalog = { musicians: m.data || [], packs: p.data || [], odds: o.data || [], settings: s.data || [] };
+}
+const must = r => { if(r.error) throw r.error; return r.data; };
+const musicianName = id => (catalog.musicians.find(m => m.id === id) || {}).name || id;
+
+// ---------------------------------------------------------------- tableau de bord
+async function dash(el){
+  const [stats, players] = await Promise.all([sb.rpc('admin_stats', { p_days: 30 }).then(must), sb.rpc('admin_list_players').then(must)]);
+  const byPack = {}; stats.forEach(s => (byPack[s.pack_type_id] ||= []).push(s));
+  const totalOpen = Object.values(byPack).reduce((a, rows) => a + Number(rows[0].openings), 0);
+  el.innerHTML = `
+    <div class="row" style="margin:14px 0">
+      <div class="card" style="margin:0"><p class="eyebrow">Joueurs</p><h2 style="margin:0">${players.length}</h2><p class="muted" style="margin:0">${players.filter(p => p.is_anonymous).length} anonymes</p></div>
+      <div class="card" style="margin:0"><p class="eyebrow">Paquets ouverts (30 j)</p><h2 style="margin:0">${totalOpen}</h2></div>
+      <div class="card" style="margin:0"><p class="eyebrow">Cartes distribuées</p><h2 style="margin:0">${players.reduce((a, p) => a + Number(p.cards), 0)}</h2></div>
+    </div>
+    <div class="card"><h3>Raretés tirées ou réglées (30 j)</h3><p class="muted" style="font-size:.85rem">La barre dorée montre le taux observé, le trait blanc le taux réglé. Un écart important sur beaucoup de tirages signale un problème.</p>
+    ${Object.entries(byPack).map(([pk, rows]) => `<h3 style="margin-top:16px; font-size:.95rem">${esc((catalog.packs.find(p => p.id === pk) || {}).label || pk)} <span class="muted" style="font:500 .7rem var(--mono)">· ${rows[0].openings} paquet(s)</span></h3>
+      <div class="table-wrap"><table><tr><th>Rareté</th><th>Tirées</th><th>Observé</th><th>Réglé</th><th></th></tr>
+      ${rows.map(r => `<tr><td class="r-${r.rarity}">${RLABEL[r.rarity]}</td><td>${r.drawn}</td><td>${r.observed_pct ?? '—'} %</td><td>${r.configured_pct} %</td>
+        <td><div class="bar"><i style="width:${Math.min(100, r.observed_pct || 0)}%"></i><b style="left:${Math.min(100, r.configured_pct)}%"></b></div></td></tr>`).join('')}
+      </table></div>`).join('')}</div>`;
+}
+
+// ---------------------------------------------------------------- joueurs
+async function players(el){
+  const list = await sb.rpc('admin_list_players').then(must);
+  el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
+    <tr><th>Compte</th><th>Créé</th><th>Dernière connexion</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
+    ${list.map(p => `<tr class="click" data-id="${p.id}"><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
+      <td>${fmt(p.created_at)}</td><td>${fmt(p.last_sign_in_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
+      <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
+    </table></div></div><div id="player-detail"></div>`;
+  el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => player(list.find(p => p.id === tr.dataset.id)));
+}
+async function player(p){
+  const inv = await sb.rpc('admin_player_inventory', { p_user: p.id }).then(must);
+  const d = $('player-detail');
+  d.innerHTML = `<div class="card"><p class="eyebrow">Joueur</p><h3>${esc(p.email || 'anonyme')} <span class="muted" style="font:500 .7rem var(--mono)">${p.id}</span></h3>
+    <div class="grid-cards">${inv.map(i => `<figure><img src="../proto/cards/${esc(i.musician_id)}-${i.rarity}.jpg" alt="" loading="lazy"><span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}</figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div>
+    <h3 style="margin-top:20px">Ajuster ses cartes</h3>
+    <div class="row"><div><label>Musicien</label><select id="adj-m">${catalog.musicians.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</select></div>
+      <div><label>Rareté</label><select id="adj-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div>
+      <div class="fit"><label>Exemplaires (+/−)</label><input id="adj-d" type="number" value="1"></div></div>
+    <label>Motif (obligatoire, inscrit au journal)</label><input id="adj-why" placeholder="ex. geste commercial, correction d'un bug">
+    <div class="row" style="margin-top:10px"><button id="adj-go" class="fit">Appliquer</button>
+      <button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button></div>
+    <p id="adj-msg" class="msg"></p></div>`;
+  d.scrollIntoView({ behavior: 'smooth' });
+  $('adj-go').onclick = async () => {
+    const r = await sb.rpc('admin_adjust_card', { p_user: p.id, p_musician: $('adj-m').value, p_rarity: $('adj-r').value, p_delta: parseInt($('adj-d').value, 10) || 0, p_reason: $('adj-why').value });
+    if(r.error) return say($('adj-msg'), r.error.message);
+    say($('adj-msg'), 'Fait, et inscrit au journal.', true); player(p);
+  };
+  $('blk-go').onclick = async () => {
+    const r = await sb.rpc('admin_set_blocked', { p_user: p.id, p_blocked: !p.blocked, p_reason: $('adj-why').value });
+    if(r.error) return say($('adj-msg'), r.error.message);
+    p.blocked = !p.blocked; say($('adj-msg'), p.blocked ? 'Compte bloqué.' : 'Compte débloqué.', true); player(p);
+  };
+}
+
+// ---------------------------------------------------------------- paquets et probabilités
+async function packs(el){
+  await loadCatalog();
+  const setting = k => ((catalog.settings.find(s => s.key === k) || {}).value);
+  el.innerHTML = catalog.packs.map(p => {
+    const w = r => (catalog.odds.find(o => o.pack_type_id === p.id && o.rarity === r) || {}).weight ?? 0;
+    return `<div class="card" data-pack="${esc(p.id)}"><h3>${esc(p.label)} <span class="muted" style="font:500 .7rem var(--mono)">${p.size} cartes · ${p.binder_id ? 'classeur ' + esc(p.binder_id) : 'tous les musiciens'}</span></h3>
+      <div class="row">${RARITIES.map(r => `<div class="fit"><label class="r-${r}">${RLABEL[r]}</label><input type="number" min="0" step="0.5" data-r="${r}" value="${w(r)}"></div>`).join('')}
+        <div class="fit"><label>Total</label><p class="total" style="margin:8px 0 0"></p></div></div>
+      <label>Motif (obligatoire)</label><input class="why" placeholder="ex. test d'un taux de Légendaire plus généreux">
+      <div class="row" style="margin-top:10px"><button class="save fit">Enregistrer</button></div><p class="msg"></p></div>`;
+  }).join('') + `<div class="card"><h3>Réglages de jeu</h3>
+    <div class="row"><div class="fit"><label>Doublons pour une fusion</label><input id="set-fusion" type="number" min="2" value="${esc(setting('fusion_cost'))}"></div>
+      <div class="fit"><label>Paquets max par jour et par joueur</label><input id="set-ppd" type="number" min="1" value="${esc(setting('packs_per_day'))}"></div></div>
+    <label>Motif (obligatoire)</label><input id="set-why">
+    <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
+  el.querySelectorAll('[data-pack]').forEach(card => {
+    const inputs = [...card.querySelectorAll('input[data-r]')], tot = card.querySelector('.total');
+    const upd = () => { const t = inputs.reduce((a, i) => a + (parseFloat(i.value) || 0), 0); tot.textContent = t + ' %'; tot.className = 'total ' + (Math.abs(t - 100) < .01 ? 'ok' : 'err'); };
+    inputs.forEach(i => i.oninput = upd); upd();
+    card.querySelector('.save').onclick = async () => {
+      const weights = Object.fromEntries(inputs.map(i => [i.dataset.r, parseFloat(i.value) || 0]));
+      const r = await sb.rpc('admin_set_odds', { p_pack_type: card.dataset.pack, p_weights: weights, p_reason: card.querySelector('.why').value });
+      say(card.querySelector('.msg'), r.error ? r.error.message : 'Probabilités enregistrées et inscrites au journal.', !r.error);
+    };
+  });
+  $('set-go').onclick = async () => {
+    const why = $('set-why').value;
+    const a = await sb.rpc('admin_set_setting', { p_key: 'fusion_cost', p_value: parseInt($('set-fusion').value, 10), p_reason: why });
+    const b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'packs_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
+    say($('set-msg'), (a.error || b.error) ? (a.error || b.error).message : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
+  };
+}
+
+// ---------------------------------------------------------------- catalogue
+async function catalogTab(el){
+  await loadCatalog();
+  el.innerHTML = `<div class="card"><h3>Musiciens (${catalog.musicians.length})</h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
+    <div class="table-wrap"><table><tr><th></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
+    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><img src="../proto/cards/${esc(m.id)}-commune.jpg" alt="" style="width:40px;border-radius:4px"></td>
+      <td><input data-f="name" value="${esc(m.name)}"></td><td><input data-f="band" value="${esc(m.band)}"></td><td><input data-f="arcana_title" value="${esc(m.arcana_title)}"></td>
+      <td style="width:80px"><input data-f="arcana_number" value="${esc(m.arcana_number)}"></td><td><input data-f="subgenre" value="${esc(m.subgenre)}"></td>
+      <td><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} style="width:auto"></td><td><button class="ghost save">OK</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
+    </table></div></div>`;
+  el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
+    const tr = btn.closest('tr'), patch = {};
+    tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
+    const r = await sb.from('musicians').update(patch).eq('id', tr.dataset.id).select();
+    const m = tr.querySelector('.msg');
+    if(r.error) say(m, r.error.message); else if(!r.data.length) say(m, 'Refusé (droits).'); else say(m, 'Enregistré', true);
+  });
+}
+
+// ---------------------------------------------------------------- journal
+async function log(el){
+  const rows = await sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(200).then(must);
+  el.innerHTML = `<div class="card"><h3>Journal des actions admin</h3><div class="table-wrap"><table><tr><th>Date</th><th>Action</th><th>Joueur</th><th>Détail</th><th>Motif</th></tr>
+    ${rows.map(r => `<tr><td>${fmt(r.created_at)}</td><td><span class="pill">${esc(r.action)}</span></td><td>${r.target_user ? esc(r.target_user.slice(0, 8)) : '—'}</td>
+      <td><code style="font-size:.72rem">${esc(JSON.stringify(r.payload)).slice(0, 220)}</code></td><td>${esc(r.reason)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">Aucune action pour l\'instant.</td></tr>'}
+    </table></div></div>`;
+}
+
+// ne jamais appeler Supabase directement dans ce rappel (risque de blocage) : on diffère
+sb.auth.onAuthStateChange((event) => { if(event === 'SIGNED_IN' || event === 'SIGNED_OUT') setTimeout(route, 0); });
+route();
+</script>
+</body>
+</html>

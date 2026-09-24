@@ -1,4 +1,5 @@
 import SwiftUI
+import ImageIO
 import MetalniniKit
 
 /// Couleurs et typographie de la DA : chrome d'app sombre et sobre, couleur réservée aux raretés.
@@ -41,14 +42,37 @@ enum CardImages {
     static func pack(_ id: String) -> URL? { url("pack-\(id == "mosh" ? "serie" : id)") }
 }
 
-/// Image locale chargée depuis le bundle, avec un fond neutre tant qu'elle n'est pas prête.
+/// Image locale du bundle, réduite à la taille d'affichage et mise en cache : décodée une seule fois,
+/// hors du fil principal, pour que les grilles de cartes restent fluides.
 struct BundleImage: View {
     let url: URL?
+    var maxPixel: CGFloat = 600
+    @State private var image: UIImage?
+
     var body: some View {
-        if let url, let img = UIImage(contentsOfFile: url.path) {
-            Image(uiImage: img).resizable().scaledToFit()
-        } else {
-            Rectangle().fill(Theme.surface)
+        Group {
+            if let image { Image(uiImage: image).resizable().scaledToFit() }
+            else { Rectangle().fill(Theme.surface).aspectRatio(2/3, contentMode: .fit) }
         }
+        .task(id: url) { image = await ImageCache.shared.image(url, maxPixel: maxPixel) }
+    }
+}
+
+actor ImageCache {
+    static let shared = ImageCache()
+    private let cache = NSCache<NSString, UIImage>()
+
+    func image(_ url: URL?, maxPixel: CGFloat) -> UIImage? {
+        guard let url else { return nil }
+        let key = "\(url.lastPathComponent)@\(Int(maxPixel))" as NSString
+        if let hit = cache.object(forKey: key) { return hit }
+        guard let src = CGImageSourceCreateWithURL(url as CFURL, nil),
+              let cg = CGImageSourceCreateThumbnailAtIndex(src, 0, [
+                  kCGImageSourceCreateThumbnailFromImageAlways: true,
+                  kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+                  kCGImageSourceCreateThumbnailWithTransform: true] as CFDictionary) else { return nil }
+        let img = UIImage(cgImage: cg)
+        cache.setObject(img, forKey: key)
+        return img
     }
 }

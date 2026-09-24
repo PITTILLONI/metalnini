@@ -33,6 +33,16 @@ Vérifié sur la vraie base, avec deux joueurs fictifs dans une transaction annu
 | Profil créé à l'inscription, rangement | OK |
 | Un joueur voit l'inventaire d'un autre | non (0 ligne) |
 
+## Espace admin
+
+Application web statique (`admin/index.html`, publiée sur GitHub Pages), qui n'utilise que la clé publique : toute la sécurité est côté serveur.
+
+- **Accès** : compte e-mail + mot de passe, **double authentification TOTP obligatoire**, et présence dans `public.admins`. `is_admin()` exige une session de niveau `aal2` (migration `0002_admin.sql`).
+- **Écrans** : tableau de bord (joueurs, paquets ouverts, raretés observées ou réglées), joueurs (inventaire, ajustement de cartes, blocage), paquets et probabilités, réglages (coût de fusion, paquets par jour), catalogue, journal.
+- **Journal** : chaque écriture admin exige un motif et s'inscrit dans `admin_audit_log` ; les éditions du catalogue sont journalisées par déclencheur ; les probabilités et réglages ne se modifient que par fonction.
+
+Vérifié sur la base : admin sans double authentification refusé ; réglage des probabilités journalisé ; motif vide refusé ; écriture directe sur les probabilités sans effet ; statistiques disponibles ; non-admin refusé.
+
 ## Commandes
 
 Les secrets sont dans le Trousseau macOS (jamais dans le dépôt) :
