@@ -69,7 +69,7 @@
   .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:14px; overflow:hidden}
   .face.back{background:#140b0b url(cards/back.jpg) center/cover no-repeat; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4)}
   .face.front{transform:rotateY(180deg); background:#000}
-  .face.front img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.045) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
+  .face.front img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.08) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
   .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px; mix-blend-mode:soft-light;
          background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,var(--ga,.35)), transparent 58%)}
   .tilt.live{transition:transform .12s linear}
@@ -77,10 +77,10 @@
   .stage::after{content:""; position:absolute; left:6%; right:6%; bottom:-6%; height:10%; border-radius:50%; background:rgba(0,0,0,.55); filter:blur(14px); z-index:-1; transform:translate(var(--shx),calc(var(--shy) - 18px)); transition:transform .12s linear}
   .pcard{perspective:1000px; margin:6px auto 12px; width:min(100%,360px)}
   .pcard .pin{position:relative; border-radius:12px; overflow:hidden; transform-style:preserve-3d; transition:transform .12s linear; box-shadow:0 18px 40px rgba(0,0,0,.6)}
-  .pcard .pin img{display:block; width:100%; transform:scale(1.045) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
+  .pcard .pin img{display:block; width:100%; transform:scale(1.08) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
   .pcard .detail-img{margin:0; width:100%; border-radius:0}
-  .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:opacity .6s ease .35s}
-  .flip.on + .glow{opacity:1}
+  .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:none}
+  .flip.on + .glow{opacity:1; transition:opacity .6s ease .35s}
   .glow[data-r="rare"]{box-shadow:0 0 38px 6px rgba(59,130,246,.55)}
   .glow[data-r="holo"]{box-shadow:0 0 44px 10px rgba(167,139,250,.6), 0 0 80px 18px rgba(45,212,191,.25)}
   .glow[data-r="signature"]{box-shadow:0 0 50px 12px rgba(212,175,55,.65)}
@@ -243,11 +243,61 @@
   .goal span{font-size:.8rem; color:var(--muted)}
   .goal .eyebrow{margin:0 0 3px; font-size:.58rem}
   .summary .goal{margin:16px auto 0}
+  /* (3) paquet fermé en parallaxe */
+  .ptilt{perspective:900px; transform-style:preserve-3d}
+  .ptilt > .pack{transition:transform .12s linear}
+  .pack .glare{border-radius:6px; z-index:4; mix-blend-mode:overlay}
+  /* (6) montée en puissance selon la rareté */
+  #rays{position:absolute; left:50%; top:50%; width:260%; aspect-ratio:1; margin:-130% 0 0 -130%; border-radius:50%; pointer-events:none; z-index:0; opacity:0;
+        background:repeating-conic-gradient(from 0deg, var(--rc,#fff) 0deg 6deg, transparent 6deg 22deg); -webkit-mask:radial-gradient(closest-side, #000 30%, transparent 72%); mask:radial-gradient(closest-side, #000 30%, transparent 72%)}
+  #rays.on{opacity:.55; animation:spin 9s linear infinite}
+  #rays.on.fast{animation-duration:3.5s; opacity:.8}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .reveal.quake{animation:quake .5s cubic-bezier(.36,.07,.19,.97)}
+  @keyframes quake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}}
+  #stamp{position:fixed; left:0; right:0; top:14%; z-index:48; text-align:center; pointer-events:none; font-family:var(--display); font-size:clamp(2.6rem,12vw,5rem); letter-spacing:.08em; text-transform:uppercase;
+         color:#fff; text-shadow:0 0 18px var(--sc,#ef4444), 0 0 50px var(--sc,#ef4444); transform:scale(0); visibility:hidden}
+  #stamp.go{visibility:visible; animation:stamp 1.6s cubic-bezier(.2,1.4,.4,1) forwards}
+  @keyframes stamp{0%{transform:scale(2.6)}18%{transform:scale(1)}82%{transform:scale(1)}100%{transform:scale(0)}}
+  /* (7) paquet contenant une Légendaire */
+  #vignette{position:fixed; inset:0; z-index:30; pointer-events:none; background:radial-gradient(ellipse at center, transparent 18%, #000 75%); visibility:hidden}
+  #vignette.on{visibility:visible; animation:vig .5s ease forwards}
+  @keyframes vig{from{transform:scale(1.6)}to{transform:scale(1)}}
+  .pack.legend{animation:legend 2.4s cubic-bezier(.5,0,.8,.4) forwards; z-index:31}
+  @keyframes legend{0%{transform:translateY(0)}20%{transform:translateY(-18px) scale(1.04)}100%{transform:translateY(-26px) scale(1.12)}}
+  .pack.legend .flap, .pack.legend::after{box-shadow:0 0 30px 8px #ef4444}
+  .pack.legend::after{content:""; position:absolute; inset:0; border-radius:6px; pointer-events:none; animation:crack 2.4s steps(12) forwards;
+         background:linear-gradient(115deg, transparent 46%, rgba(255,60,60,.95) 49%, transparent 52%), linear-gradient(35deg, transparent 58%, rgba(255,90,40,.9) 60%, transparent 62%), linear-gradient(160deg, transparent 30%, rgba(255,40,40,.9) 32%, transparent 34%)}
+  @keyframes crack{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
+  .ptilt.shake{animation:rumble .07s linear infinite}
+  /* (2) ranger ses cartes */
+  .tray{position:fixed; left:0; right:0; bottom:calc(64px + env(safe-area-inset-bottom)); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(212,175,55,.35); padding:10px 16px}
+  .tray-in{max-width:960px; margin:0 auto; display:flex; align-items:center; gap:10px}
+  .tray p{margin:0; flex:0 0 auto; font:500 .62rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
+  .tray .cards{flex:1; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none}
+  .tray .cards button{flex:0 0 auto; width:40px; border:0; padding:0; background:none; cursor:pointer}
+  .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc,#8a8a92); animation:bob 2.2s ease-in-out infinite}
+  .tray .all{flex:0 0 auto; background:var(--accent); border:0; border-radius:999px; padding:8px 12px; font-family:var(--display); text-transform:uppercase; font-size:.8rem; letter-spacing:.04em; cursor:pointer}
+  body.placing #v-binder .grid{padding-bottom:110px}
+  .flyer{position:fixed; z-index:55; pointer-events:none; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
+  .flyer img{display:block; width:100%; height:100%; object-fit:cover}
+  .slot.landed .img{animation:land .45s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes land{0%{transform:scale(1.18)}100%{transform:scale(1)}}
+  .slot.landed .img::after{content:""; position:absolute; inset:0; box-shadow:inset 0 0 0 3px var(--gold), 0 0 28px 6px var(--gold); border-radius:8px; animation:ping .8s ease-out forwards}
+  @keyframes ping{to{box-shadow:inset 0 0 0 0 transparent, 0 0 60px 18px transparent}}
+  /* (9) doublons empilés dans le classeur */
+  .slot .sw{position:relative; display:block}
+  .slot .layers i{position:absolute; inset:0; border-radius:8px; background:#1a1310 var(--li) center/cover; box-shadow:0 3px 8px rgba(0,0,0,.6); border:1px solid rgba(212,175,55,.3)}
+  .slot .layers i:nth-child(1){transform:translate(4px,4px) rotate(2.2deg)}
+  .slot .layers i:nth-child(2){transform:translate(-3px,6px) rotate(-2.6deg)}
+  .slot .layers i:nth-child(3){transform:translate(6px,8px) rotate(3.4deg)}
+  .slot .sw .img{z-index:1}
+  .binder-tabs .tab-kind[data-k="Collection"]{display:none}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} .pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette{display:none!important} .reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -261,11 +311,14 @@
     <p>Ouvre un paquet, découvre tes cartes une par une, puis complète tes classeurs.</p>
   </div>
   <div class="pack-zone">
-    <div class="pack-wrap">
+    <div class="pack-wrap" id="pack-root">
+      <div class="ptilt" id="ptilt">
       <button type="button" class="pack art" id="pack" aria-label="Déchirer le paquet (glisser vers la droite, ou toucher pour l'ouvrir)">
         <span class="flap"><span class="tear"></span></span><span class="grip" aria-hidden="true">✂</span>
         <span class="p-moon">☾</span><span class="p-title">Série I</span><span class="p-sub" id="pack-sub">5 cartes</span>
+        <span class="glare"></span>
       </button>
+      </div>
       <p class="swipe-hint" id="swipe-hint">Glisse le doigt sur le paquet pour le déchirer →</p>
     </div>
     <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
@@ -319,6 +372,7 @@
   <div id="reveal-one">
     <div class="counter" id="counter"></div>
     <div class="pile" id="pile">
+    <div id="rays" aria-hidden="true"></div>
     <div id="unders" aria-hidden="true"></div>
     <div class="stage" id="stage">
       <div class="tilt" id="tilt">
@@ -341,12 +395,16 @@
     <div class="sum-actions">
       <button type="button" class="btn ghost" id="share">Partager ma meilleure carte</button>
       <button type="button" class="btn" id="again">Un autre</button>
-      <button type="button" class="btn ghost" id="to-binder">Voir le classeur</button>
+      <button type="button" class="btn ghost" id="to-binder">Ranger mes cartes</button>
     </div>
   </div>
 </div>
 
 <canvas id="fx" aria-hidden="true"></canvas>
+<div id="stamp" aria-hidden="true"></div>
+<div id="vignette" aria-hidden="true"></div>
+<div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="all" id="tray-all">Tout ranger</button></div></div>
+<label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
 
 <!-- ============ DÉTAIL ============ -->
@@ -375,6 +433,7 @@
   ];
   // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
+    {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
     {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot']},
     {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier']},
     {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy']},
@@ -411,6 +470,7 @@
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
+  BINDERS[0].ids = CARDS.map(function(c){ return c.id; });
 
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
@@ -419,7 +479,7 @@
 
   // ---------- État (navigateur uniquement) ----------
   var KEY = 'metalnini-proto-v1';
-  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'metalcore', sound:true, pending:null, fuse:5, mastered:{}};
+  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'all', sound:true, pending:null, fuse:5, mastered:{}};
   var state = load();
   function load(){
     try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && s.owned) return Object.assign({}, DEFAULT, s); }catch(e){}
@@ -480,7 +540,7 @@
     var out = pendingPack().map(function(d){
       var c = card(d.id) || CARDS[0], key = c.id + '|' + d.r, isNew = !state.owned[key];
       state.owned[key] = (state.owned[key] || 0) + 1;
-      if(isNew) state.fresh[c.id] = true;
+      if(isNew){ state.fresh[c.id] = true; state.toPlace = (state.toPlace || []).concat([key]); }
       return {c:c, r:d.r, isNew:isNew};
     });
     // les plus rares en dernier, pour finir en apothéose
@@ -496,7 +556,8 @@
     ['packs','binder','settings'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder();
-    if(v === 'packs') renderStats();
+    if(v === 'packs'){ renderStats(); setTimeout(packParallax, 0); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
+    document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
     if(v === 'settings') renderSettings();
     window.scrollTo(0,0);
   }
@@ -516,8 +577,8 @@
 
   // ---------- Effets : son, vibration, particules ----------
   var COLORS = {commune:'#c9c3b8', rare:'#3b82f6', holo:'#a78bfa', signature:'#f5c542', legendaire:'#ef4444'};
-  var CHARGE = {commune:0, rare:320, holo:750, signature:1100, legendaire:1700};
-  var BURST  = {commune:0, rare:26, holo:70, signature:110, legendaire:190};
+  var CHARGE = {commune:0, rare:350, holo:850, signature:1400, legendaire:2300};
+  var BURST  = {commune:0, rare:30, holo:90, signature:170, legendaire:300};
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ac = null;
   function audio(){ if(!state.sound) return null; try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if(ac.state === 'suspended') ac.resume(); }catch(e){ ac = null; } return ac; }
@@ -535,15 +596,24 @@
     s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq || 1800; g.gain.value = vol || .25;
     s.connect(f); f.connect(g); g.connect(a.destination); s.start();
   }
-  function buzz(p){ if(state.sound && navigator.vibrate) try{ navigator.vibrate(p); }catch(e){} }
+  var hapticLabel = document.getElementById('haptic');
+  function tick(){ try{ hapticLabel.click(); }catch(e){} }
+  function buzz(p){
+    if(!state.sound) return;
+    if(navigator.vibrate){ try{ navigator.vibrate(p); }catch(e){} return; }
+    var seq = [].concat(p), t = 0; seq.forEach(function(ms, i){ if(i % 2 === 0){ setTimeout(tick, t); if(ms > 120) for(var k = 90; k < ms; k += 90) setTimeout(tick, t + k); } t += ms; });
+  }
+  var HAPTIC = {commune:[15], rare:[25,40,25], holo:[30,40,30,40,50], signature:[40,40,40,40,60,60,120], legendaire:[90,50,90,50,90,60,300]};
   var SFX = {
     tear: function(){ noise(.35, .3, 2600); },
-    flip: function(){ noise(.18, .18, 900); },
-    commune: function(){ tone(523, 0, .25, 'triangle', .12); },
-    rare: function(){ tone(523,0,.3,'triangle'); tone(784,.09,.4,'triangle'); buzz(20); },
-    holo: function(){ [523,659,784,1047].forEach(function(f,i){ tone(f, i*.07, .5, 'sine', .16); }); buzz([20,40,20]); },
-    signature: function(){ [392,523,659,784,1047,1319].forEach(function(f,i){ tone(f, i*.08, .7, 'triangle', .16); }); tone(131,0,.9,'sine',.25); buzz([30,50,30,50,60]); },
-    legendaire: function(){ tone(55,0,1.6,'sawtooth',.22); tone(82,0,1.4,'sine',.3); [440,554,659,880,1109,1319].forEach(function(f,i){ tone(f, .25+i*.09, .9, 'triangle', .15); }); noise(.8,.35,400); buzz([80,40,80,40,200]); },
+    flip: function(){ noise(.18, .18, 900); buzz([12]); },
+    commune: function(){ tone(523, 0, .25, 'triangle', .12); buzz(HAPTIC.commune); },
+    rare: function(){ tone(523,0,.3,'triangle'); tone(784,.09,.4,'triangle'); buzz(HAPTIC.rare); },
+    holo: function(){ [523,659,784,1047].forEach(function(f,i){ tone(f, i*.07, .5, 'sine', .16); }); buzz(HAPTIC.holo); },
+    signature: function(){ [392,523,659,784,1047,1319].forEach(function(f,i){ tone(f, i*.08, .7, 'triangle', .16); }); tone(131,0,.9,'sine',.25); buzz(HAPTIC.signature); },
+    legendaire: function(){ tone(55,0,1.6,'sawtooth',.22); tone(82,0,1.4,'sine',.3); [440,554,659,880,1109,1319].forEach(function(f,i){ tone(f, .25+i*.09, .9, 'triangle', .15); }); noise(.8,.35,400); buzz(HAPTIC.legendaire); },
+    heartbeat: function(){ tone(58,0,.18,'sine',.4); tone(52,.22,.2,'sine',.32); buzz([40,180,30]); },
+    land: function(){ tone(880,0,.12,'triangle',.1); tone(1320,.05,.18,'sine',.08); buzz([18]); },
     rumble: function(ms){ tone(45, 0, ms/1000, 'sawtooth', .12); buzz([ms]); }
   };
 
@@ -551,8 +621,8 @@
   function sizeFx(){ var d = window.devicePixelRatio || 1; fx.width = innerWidth * d; fx.height = innerHeight * d; ctx.setTransform(d,0,0,d,0,0); }
   addEventListener('resize', sizeFx); sizeFx();
   function stageCenter(){ var r = document.getElementById('stage').getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2, w:r.width, h:r.height}; }
-  function burst(r){
-    if(reduce) return; var n = BURST[r], c = stageCenter(), col = COLORS[r];
+  function burst(r, at){
+    if(reduce) return; var n = BURST[r], c = at || stageCenter(), col = COLORS[r];
     for(var i=0;i<n;i++){ var a = Math.random()*Math.PI*2, v = 3 + Math.random()*(r==='legendaire'?11:8);
       parts.push({x:c.x, y:c.y, vx:Math.cos(a)*v, vy:Math.sin(a)*v - 2, life:1, decay:.012+Math.random()*.02, size:1.5+Math.random()*(r==='legendaire'?4:3),
                   col: r==='holo' ? ['#2dd4bf','#a78bfa','#f472b6','#fcd34d'][i%4] : col, g:.12}); }
@@ -575,15 +645,18 @@
       if(parts.length) requestAnimationFrame(step); else { looping = false; ctx.clearRect(0,0,innerWidth,innerHeight); }
     })();
   }
+  function rays(r){ var el = document.getElementById('rays'); el.className = ''; if(reduce || rank(r) < 2) return; el.style.setProperty('--rc', COLORS[r]); void el.offsetWidth; el.className = 'on' + (rank(r) >= 3 ? ' fast' : ''); }
+  function quake(){ if(reduce) return; revealEl.classList.remove('quake'); void revealEl.offsetWidth; revealEl.classList.add('quake'); }
+  function stamp(r){ if(reduce) return; var el = document.getElementById('stamp'); el.textContent = rarity(r).label; el.style.setProperty('--sc', COLORS[r]); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
   function flash(r){ if(reduce || r==='commune') return; var f = document.getElementById('flash'); f.style.setProperty('--flash', r==='rare' ? 'rgba(59,130,246,.5)' : COLORS[r]); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
-  function ring(r){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; el.style.setProperty('--ring', COLORS[r]); document.body.appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
+  function ring(r, at){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; if(at){ el.style.left = at.x + 'px'; el.style.top = at.y + 'px'; } el.style.setProperty('--ring', COLORS[r]); document.body.appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
 
   // ---------- Déchirer le paquet ----------
   var packEl = document.getElementById('pack'), drag = null, opening = false;
   function setTear(v){ packEl.style.setProperty('--tear', v.toFixed(3)); }
   function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
   packEl.addEventListener('pointerdown', function(e){
-    if(opening) return; prepTease(); audio(); askMotion();
+    if(opening) return; prepTease(); audio(); askMotion(); tick();
     drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
     packEl.setPointerCapture(e.pointerId);
   });
@@ -606,17 +679,25 @@
   function autoTear(){ if(opening) return; animateTear(0, 1, 650, tearOpen); }
   function tearOpen(){
     if(opening) return; opening = true; setTear(1); SFX.tear();
-    var tease = bestOf(pendingPack());
-    var wait = {commune:0, rare:250, holo:500, signature:800, legendaire:1100}[tease];
-    if(wait && !reduce){ packEl.classList.add('charging'); if(rank(tease) >= 3) SFX.rumble(wait); }
+    var tease = bestOf(pendingPack()); clearTarget();
+    var wait = {commune:0, rare:250, holo:500, signature:900, legendaire:2400}[tease];
+    if(reduce) wait = 0;
+    if(wait && tease === 'legendaire'){
+      // le sachet s'élève, se fissure de lumière rouge, l'écran s'assombrit, le cœur bat
+      document.getElementById('vignette').classList.add('on'); packEl.classList.add('legend'); document.getElementById('ptilt').classList.add('shake');
+      SFX.heartbeat(); setTimeout(SFX.heartbeat, 800); setTimeout(SFX.heartbeat, 1500); setTimeout(function(){ SFX.rumble(700); }, 1650);
+      var pr = packEl.getBoundingClientRect(), at = {x:pr.left + pr.width/2, y:pr.top + pr.height/2, w:pr.width, h:pr.height};
+      (function emb(n){ if(n <= 0) return; parts.push({x:at.x + (Math.random()-.5)*at.w, y:at.y + at.h/2, vx:(Math.random()-.5)*.8, vy:-1.5-Math.random()*2.5, life:1, decay:.012, size:1+Math.random()*2.5, col:'#ef4444', g:-.01}); loop(); setTimeout(function(){ emb(n-1); }, 30); })(70);
+      setTimeout(function(){ burst('legendaire', at); ring('legendaire', at); stamp('legendaire'); }, wait - 120);
+    } else if(wait){ packEl.classList.add('charging'); if(rank(tease) >= 3) SFX.rumble(wait); }
     setTimeout(function(){
-      packEl.classList.remove('charging'); packEl.classList.add('torn'); flash(tease);
+      packEl.classList.remove('charging', 'legend'); document.getElementById('ptilt').classList.remove('shake'); packEl.classList.add('torn'); flash(tease);
       current = commitPack(); idx = 0;
       current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); });
       setTimeout(function(){
         revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
         document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
-        packEl.classList.remove('torn'); setTear(0); opening = false; renderStats();
+        packEl.classList.remove('torn'); setTear(0); opening = false; document.getElementById('vignette').classList.remove('on'); renderStats();
       }, 600);
     }, wait);
   }
@@ -632,7 +713,8 @@
   }
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
-    flip.classList.remove('on'); flip.style.transition = ''; flip.style.transform = '';
+    flip.style.transition = 'none'; flip.classList.remove('on'); flip.style.transform = ''; void flip.offsetWidth; flip.style.transition = '';
+    document.getElementById('rays').className = '';
     stage.className = 'stage';
     renderUnders();
     revealEl.classList.remove('dim'); clearTarget();
@@ -644,6 +726,9 @@
     document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
     document.getElementById('glow').setAttribute('data-r', x.r);
     document.getElementById('sheen').setAttribute('data-r', x.r);
+    document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = '';
+  }
+  function fillInfo(x){
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
   }
@@ -664,18 +749,20 @@
     if(ms){
       stage.classList.add('charge-' + r);
       flip.style.transition = 'transform .25s ease-out'; flip.style.transform = 'rotateY(' + (side * 14) + 'deg)';
-      if(r === 'legendaire'){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); }
-      if(rank(r) >= 2) embers(r, ms);
+      if(rank(r) >= 3){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); }
+      if(rank(r) >= 2){ embers(r, ms); rays(r); }
     }
     setTimeout(function(){
       stage.classList.remove('rumble'); SFX.flip();
-      flip.style.transition = 'transform ' + (reduce ? 0 : .55) + 's cubic-bezier(.2,.8,.2,1)'; flip.style.transform = 'rotateY(' + (side * 180) + 'deg)';
+      var dur = reduce ? 0 : ({signature:.8, legendaire:1.1}[r] || .55);
+      flip.style.transition = 'transform ' + dur + 's cubic-bezier(.2,.8,.2,1)'; flip.style.transform = 'rotateY(' + (side * 180) + 'deg)';
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
-        stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
+        fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r); burst(r);
+        if(rank(r) >= 3){ ring(r); quake(); stamp(r); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); burst(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'le résumé') + (rank(r) >= 2 ? ' · appuie et bouge pour faire briller' : '');
-      }, reduce ? 0 : 320);
+      }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
   }
   // la carte révélée est lancée hors de l'écran du côté du geste, sans fondu ni rétrécissement ; celle du dessous est déjà en place
@@ -704,15 +791,15 @@
   });
 
   // ---------- Parallaxe : gyroscope, souris ou doigt ----------
-  var GLARE = {commune:.22, rare:.32, holo:.5, signature:.5, legendaire:.45};
+  var GLARE = {commune:.3, rare:.42, holo:.6, signature:.62, legendaire:.55, pack:.5};
   var pTarget = null, lastInput = 0, idleT0 = 0, orient0 = null, motionAsked = false;
   function clamp(v){ return Math.max(-1, Math.min(1, v)); }
   // nx, ny entre -1 et 1 : la carte pivote, l'illustration glisse en sens inverse, le reflet et l'ombre suivent
   function parallax(nx, ny){
     if(reduce || !pTarget) return;
     var t = pTarget;
-    t.tilt.style.transform = 'rotateY(' + (nx * 16) + 'deg) rotateX(' + (-ny * 12) + 'deg)';
-    t.root.style.setProperty('--ix', (-nx * 2.2).toFixed(2) + '%'); t.root.style.setProperty('--iy', (-ny * 2.2).toFixed(2) + '%');
+    t.tilt.style.transform = 'rotateY(' + (nx * 24) + 'deg) rotateX(' + (-ny * 18) + 'deg)';
+    t.root.style.setProperty('--ix', (-nx * 3.6).toFixed(2) + '%'); t.root.style.setProperty('--iy', (-ny * 3.6).toFixed(2) + '%');
     t.root.style.setProperty('--gx', (50 + nx * 42).toFixed(1) + '%'); t.root.style.setProperty('--gy', (38 + ny * 38).toFixed(1) + '%');
     t.root.style.setProperty('--sx', (50 - nx * 150).toFixed(1) + '%');
     t.root.style.setProperty('--shx', (-nx * 14).toFixed(1) + 'px'); t.root.style.setProperty('--shy', (18 - ny * 8).toFixed(1) + 'px');
@@ -730,13 +817,17 @@
     if(!pTarget || g || e.gamma == null) return;
     if(!orient0) orient0 = {g:e.gamma, b:e.beta};
     lastInput = performance.now();
-    parallax(clamp((e.gamma - orient0.g) / 22), clamp((e.beta - orient0.b) / 22));
+    parallax(clamp((e.gamma - orient0.g) / 15), clamp((e.beta - orient0.b) / 15));
   });
   // léger balancement quand rien ne bouge, pour que la carte reste vivante
   (function idle(t){
     if(pTarget && !g && t - lastInput > 1600){ var k = (t - idleT0) / 1000; parallax(Math.sin(k * .9) * .35, Math.cos(k * .7) * .22); }
     requestAnimationFrame(idle);
   })(0);
+
+  function packParallax(){ if(!opening && !document.getElementById('v-packs').hidden && revealEl.hidden) setTarget(document.getElementById('pack-root'), packEl, 'pack'); }
+  document.getElementById('pack-root').addEventListener('pointermove', function(e){ if(drag || !pTarget || pTarget.root.id !== 'pack-root' || e.pointerType !== 'mouse') return;
+    var rr = packEl.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
 
   // ---------- Geste : glisser pour retourner, glisser pour passer ----------
   var g = null;
@@ -777,9 +868,7 @@
 
   document.getElementById('skip').addEventListener('click', showSummary);
   function showSummary(){
-    var comps = newCompletions();
-    comps.forEach(function(b, i){ setTimeout(function(){ SFX.signature(); burst('signature'); toast('<b>Classeur complété</b> · ' + esc(b.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
-    setTimeout(function(){ celebrate(newMasteries()); }, comps.length * 1300);
+
     document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
     revealEl.classList.remove('dim');
     var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); burst(b); }
@@ -814,13 +903,52 @@
   document.getElementById('again').addEventListener('click', function(){ revealEl.hidden = true; go('packs'); prepTease(); autoTear(); });
   document.getElementById('to-binder').addEventListener('click', function(){
     revealEl.hidden = true;
-    var last = current.length ? styleOf(current[current.length-1].c.id) : state.binder;
-    state.binder = last; save(); go('binder');
+    state.binder = 'all'; save(); go('binder');
   });
 
   // ---------- Classeur ----------
   function best(id){ var b = null; RARITIES.forEach(function(r){ if(state.owned[id+'|'+r.k]) b = r.k; }); return b; }
-  function mastered(id){ return RARITIES.every(function(r){ return state.owned[id+'|'+r.k]; }); }
+  // meilleure rareté déjà rangée dans le classeur (les cartes « à ranger » n'y apparaissent qu'une fois posées)
+  function placed(id){ var tp = state.toPlace || [], b = null; RARITIES.forEach(function(r){ var k = id+'|'+r.k; if(state.owned[k] && tp.indexOf(k) === -1) b = r.k; }); return b; }
+  function renderTray(){
+    var tp = (state.toPlace || []).filter(function(k){ return state.owned[k]; }); state.toPlace = tp;
+    var tray = document.getElementById('tray'); tray.hidden = !tp.length || document.getElementById('v-binder').hidden;
+    document.body.classList.toggle('placing', !tray.hidden);
+    document.getElementById('tray-n').textContent = 'À ranger · ' + tp.length;
+    document.getElementById('tray-cards').innerHTML = tp.map(function(k){ var p = k.split('|'); return '<button type="button" data-k="' + k + '" aria-label="Ranger ' + esc(card(p[0]).who) + '"><img src="' + img(p[0], p[1]) + '" alt="" style="--rc:' + COLORS[p[1]] + '"></button>'; }).join('');
+    [].forEach.call(document.querySelectorAll('#tray-cards button'), function(b){ b.addEventListener('click', function(){ placeCard(b.getAttribute('data-k'), b); }); });
+  }
+  // ranger une carte : elle vole du bac jusqu'à son emplacement, qui l'accueille
+  var placing = false;
+  function placeCard(k, fromEl, done){
+    if(placing) return; var id = k.split('|')[0], r = k.split('|')[1];
+    var b = binderOf(state.binder); if(b.ids.indexOf(id) === -1){ state.binder = 'all'; renderBinder(); }
+    var slot = document.querySelector('#grid .slot[data-id="' + id + '"]'); if(!slot){ finishPlace(k); if(done) done(); return; }
+    placing = true; slot.scrollIntoView({block:'center', behavior: reduce ? 'auto' : 'smooth'});
+    setTimeout(function(){
+      var fr = (fromEl || document.getElementById('tray')).getBoundingClientRect(), to = slot.querySelector('.img').getBoundingClientRect();
+      var fl = document.createElement('div'); fl.className = 'flyer'; fl.innerHTML = '<img src="' + img(id, r) + '" alt="">';
+      fl.style.left = to.left + 'px'; fl.style.top = to.top + 'px'; fl.style.width = to.width + 'px'; fl.style.height = to.height + 'px';
+      fl.style.transform = 'translate(' + (fr.left + fr.width/2 - to.left - to.width/2) + 'px,' + (fr.top + fr.height/2 - to.top - to.height/2) + 'px) scale(' + Math.max(.3, fr.width / to.width) + ') rotate(-8deg)';
+      fl.style.transition = 'none'; document.body.appendChild(fl); void fl.offsetWidth;
+      fl.style.transition = ''; fl.style.transform = 'none';
+      setTimeout(function(){
+        fl.remove(); finishPlace(k);
+        var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]');
+        if(s2){ s2.classList.add('landed'); var rr = s2.getBoundingClientRect(); burst(r === 'commune' ? 'rare' : r, {x:rr.left + rr.width/2, y:rr.top + rr.height/2, w:rr.width, h:rr.height}); }
+        SFX.land(); placing = false;
+        var comps = newCompletions(), mast = newMasteries();
+        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.signature(); burst('signature'); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
+        setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
+        if(done) setTimeout(done, 180);
+      }, reduce ? 0 : 560);
+    }, reduce ? 0 : 260);
+  }
+  function finishPlace(k){ state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray(); }
+  document.getElementById('tray-all').addEventListener('click', function(){
+    (function one(){ var tp = state.toPlace || []; if(!tp.length) return; var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
+  });
+  function mastered(id){ var tp = state.toPlace || []; return RARITIES.every(function(r){ var k = id+'|'+r.k; return state.owned[k] && tp.indexOf(k) === -1; }); }
   function newMasteries(){
     state.mastered = state.mastered || {}; var out = [];
     CARDS.forEach(function(c){ if(mastered(c.id) && !state.mastered[c.id]){ state.mastered[c.id] = true; out.push(c); } });
@@ -829,7 +957,7 @@
   function newCompletions(){
     state.completed = state.completed || {}; var out = [];
     BINDERS.forEach(function(b){ var ids = b.ids.filter(function(id){ return card(id); });
-      if(ids.length && ids.every(function(id){ return best(id); }) && !state.completed[b.k]){ state.completed[b.k] = true; out.push(b); } });
+      if(ids.length && ids.every(function(id){ return placed(id); }) && !state.completed[b.k]){ state.completed[b.k] = true; out.push(b); } });
     if(out.length) save(); return out;
   }
   function toast(html){ var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
@@ -844,24 +972,25 @@
     var lastKind = null;
     tabsEl.innerHTML = BINDERS.map(function(b){
       var head = b.kind !== lastKind ? '<span class="tab-kind">' + b.kind + '</span>' : ''; lastKind = b.kind;
-      var done = b.ids.filter(function(id){ return card(id); }).every(function(id){ return best(id); });
+      var done = b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); });
       return head + '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(b.label) + (done ? ' ✓' : '') + '</button>';
     }).join('');
     [].forEach.call(tabsEl.querySelectorAll('button'), function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
     var b = binderOf(state.binder);
     var list = b.ids.map(card).filter(Boolean);
-    var have = list.filter(function(c){ return best(c.id); }).length;
+    var have = list.filter(function(c){ return placed(c.id); }).length;
     document.getElementById('binder-title').textContent = b.label;
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
     document.getElementById('prog-bar').style.width = pct + '%';
     document.getElementById('grid').innerHTML = list.map(function(c){
-      var r = best(c.id);
+      var r = placed(c.id);
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Arcane ' + c.num + ', pas encore obtenue"><span class="img"><span class="empty"><span style="position:relative">' + c.num + '</span></span></span><span class="cap">???</span></button>';
-      return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
+      var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
+      return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') +
-        '</span><span class="cap">' + esc(c.who) + '</span></button>';
+        '</span></span><span class="cap">' + esc(c.who) + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
     var mode = state.view || 'pages';
@@ -921,7 +1050,7 @@
     var i = rank(from), next = RARITIES[i+1].k, kFrom = id+'|'+from, kNext = id+'|'+next;
     if(!next || (state.owned[kFrom] || 0) - 1 < state.fuse) return;
     state.owned[kFrom] -= state.fuse;
-    var isNew = !state.owned[kNext]; state.owned[kNext] = (state.owned[kNext] || 0) + 1; if(isNew) state.fresh[id] = true; save();
+    var isNew = !state.owned[kNext]; state.owned[kNext] = (state.owned[kNext] || 0) + 1; if(isNew){ state.fresh[id] = true; state.toPlace = (state.toPlace || []).concat([kNext]); } save();
     sheet.hidden = true; SFX.tear();
     current = [{c:card(id), r:next, isNew:isNew}]; idx = 0;
     revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
@@ -950,7 +1079,7 @@
     var el = document.getElementById('odds-total'); el.textContent = 'Total : ' + t + ' %' + (Math.abs(t-100) > .01 ? ' — les probabilités sont ramenées à 100 % au tirage' : '');
     el.className = 'total' + (Math.abs(t-100) > .01 ? ' bad' : '');
   }
-  function resetAll(){ state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; state.completed = {}; save(); renderStats(); }
+  function resetAll(){ state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; state.completed = {}; state.toPlace = []; save(); renderStats(); }
   var rq = document.getElementById('reset-quick'), rqTimer = null;
   rq.addEventListener('click', function(){
     if(!rq.classList.contains('armed')){ rq.classList.add('armed'); rq.textContent = 'Toucher encore pour tout effacer'; clearTimeout(rqTimer);
@@ -963,7 +1092,7 @@
   });
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
-  renderStats();
+  renderStats(); setTimeout(packParallax, 0);
 })();
 </script>
 </body>

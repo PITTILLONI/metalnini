@@ -12,7 +12,7 @@ const dom = new JSDOM(html, {
   beforeParse(w) {
     w.matchMedia = () => ({ matches: false }); w.scrollTo = () => {};
     w.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} });
-    w.HTMLElement.prototype.setPointerCapture = () => {};
+    w.HTMLElement.prototype.setPointerCapture = () => {}; w.HTMLElement.prototype.scrollIntoView = () => {};
     w.AudioContext = undefined; w.webkitAudioContext = undefined;
     w.addEventListener('error', e => errors.push(e.message));
   }
@@ -49,17 +49,24 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
       const o1 = new w.Event('deviceorientation'); o1.gamma = 0; o1.beta = 40; w.dispatchEvent(o1);
       const o2 = new w.Event('deviceorientation'); o2.gamma = 15; o2.beta = 40; w.dispatchEvent(o2);
       const tf = d.getElementById('tilt').style.transform, ix = d.getElementById('pile').style.getPropertyValue('--ix');
-      check('parallaxe : le téléphone penché incline la carte', /rotateY\(10\.9/.test(tf) && ix.indexOf('-1.5') === 0, tf + ' / --ix ' + ix);
+      check('parallaxe : le téléphone penché incline la carte', /rotateY\(24deg/.test(tf) && ix.indexOf('-3.6') === 0, tf + ' / --ix ' + ix);
     }
     ptr(stage, 'pointerdown', 150); ptr(stage, 'pointermove', 280); ptr(stage, 'pointerup', 280);
     await sleep(500);
+    if (i < 4) check('carte suivante ' + (i + 2) + ' : rien de dévoilé avant retournement', !d.getElementById('flip').classList.contains('on') && d.getElementById('ci-n').textContent === '' && d.getElementById('flip').style.transition !== '' ? true : (!d.getElementById('flip').classList.contains('on') && d.getElementById('ci-n').textContent === ''));
   }
   check('résumé affiché à la fin', !d.getElementById('summary').hidden);
   check('aucune transparence sur la carte', !/opacity/.test(d.getElementById('stage').getAttribute('style') || ''));
 
-  // 3. Classeur : les emplacements remplis correspondent exactement à la collection
+  // 3. Ranger : les cartes nouvelles attendent dans le bac, puis rejoignent leur emplacement
   d.getElementById('to-binder').click();
   await sleep(100);
+  const nNew = (state().toPlace || []).length;
+  check('bac « À ranger » affiché avec les nouvelles cartes', !d.getElementById('tray').hidden && d.querySelectorAll('#tray-cards button').length === nNew && nNew > 0, nNew + ' à ranger');
+  check('classeur « Toutes les cartes » ouvert', /Toutes les cartes/.test(d.getElementById('binder-title').textContent));
+  d.getElementById('tray-all').click();
+  await sleep(nNew * 1000 + 800);
+  check('tout est rangé', (state().toPlace || []).length === 0 && d.getElementById('tray').hidden);
   const owned = state().owned;
   const ownedIds = new Set(Object.keys(owned).filter(k => owned[k] > 0).map(k => k.split('|')[0]));
   let shown = new Set();
@@ -85,7 +92,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   dom.window.location.reload && 0;
   const dom2 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w2){
     w2.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s0)); w2.matchMedia = () => ({ matches: false }); w2.scrollTo = () => {};
-    w2.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w2.HTMLElement.prototype.setPointerCapture = () => {};
+    w2.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w2.HTMLElement.prototype.setPointerCapture = () => {}; w2.HTMLElement.prototype.scrollIntoView = () => {};
     w2.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
   const d2 = dom2.window.document;
@@ -109,13 +116,16 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const s4 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'blink182|commune':1,'hoppus|commune':1}, opened:1, fresh:{}, binder:'poppunk', sound:false, pending:null, fuse:5, mastered:{}, completed:{} };
   const dom3 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w3){
     w3.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s4)); w3.matchMedia = () => ({ matches: false }); w3.scrollTo = () => {};
-    w3.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w3.HTMLElement.prototype.setPointerCapture = () => {};
+    w3.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w3.HTMLElement.prototype.setPointerCapture = () => {}; w3.HTMLElement.prototype.scrollIntoView = () => {};
     w3.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
   const d3 = dom3.window.document;
+  const seen = []; new dom3.window.MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.classList && n.classList.contains('toast')) seen.push(n.textContent); }))).observe(d3.body, { childList: true });
   key(d3.getElementById('pack'), 'Enter'); await sleep(3200);
-  d3.getElementById('skip').click(); await sleep(600);
-  const toastTxt = [...d3.querySelectorAll('.toast')].map(t => t.textContent).join(' | ');
+  d3.getElementById('skip').click(); await sleep(300);
+  d3.getElementById('to-binder').click(); await sleep(100);
+  d3.getElementById('tray-all').click(); await sleep(6500);
+  const toastTxt = seen.join(' | ');
   check('complétion du classeur Pop punk annoncée', /Classeur complété.*Pop punk/.test(toastTxt), toastTxt);
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
   check('onglet du classeur complété marqué ✓', /Pop punk ✓/.test(d3.getElementById('binder-tabs').textContent));
@@ -124,7 +134,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const s5 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'spiritbox|commune':1}, opened:0, fresh:{}, binder:'metalcore', sound:false, pending:null, fuse:5, mastered:{}, completed:{}, packType:'metalcore' };
   const dom4 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w4){
     w4.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s5)); w4.matchMedia = () => ({ matches: false }); w4.scrollTo = () => {};
-    w4.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w4.HTMLElement.prototype.setPointerCapture = () => {};
+    w4.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w4.HTMLElement.prototype.setPointerCapture = () => {}; w4.HTMLElement.prototype.scrollIntoView = () => {};
     w4.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
   const d4 = dom4.window.document;
@@ -135,6 +145,24 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
   check('résumé : objectif et bouton partager', !d4.getElementById('goal-sum').hidden && !!d4.getElementById('share'));
+
+  // 9. Doublons empilés, onglet Toutes les cartes, ouverture spéciale d'une Légendaire
+  const s6 = { size:5, odds:{commune:0,rare:0,holo:0,signature:0,legendaire:100}, owned:{'korn|rare':3}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuse:5, mastered:{}, completed:{}, packType:'serie', toPlace:[] };
+  const dom5 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w5){
+    w5.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s6)); w5.matchMedia = () => ({ matches: false }); w5.scrollTo = () => {};
+    w5.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w5.HTMLElement.prototype.setPointerCapture = () => {}; w5.HTMLElement.prototype.scrollIntoView = () => {};
+    w5.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const d5 = dom5.window.document;
+  d5.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
+  check('onglet « Toutes les cartes » en premier', d5.querySelector('#binder-tabs button').getAttribute('data-b') === 'all');
+  const kslot = d5.querySelector('#grid .slot[data-id="korn"]');
+  check('doublons : 3 exemplaires = 2 cartes empilées derrière', kslot && kslot.querySelectorAll('.layers i').length === 2);
+  d5.querySelector('.tabbar [data-v="packs"]').click(); await sleep(30);
+  key(d5.getElementById('pack'), 'Enter'); await sleep(1400);
+  check('paquet avec Légendaire : ouverture spéciale', d5.getElementById('pack').classList.contains('legend') && d5.getElementById('vignette').classList.contains('on'));
+  await sleep(2600);
+  check('puis la pile de cartes s\'ouvre', !d5.getElementById('reveal').hidden);
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
