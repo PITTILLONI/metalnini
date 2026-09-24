@@ -193,17 +193,17 @@
   .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
   /* phrase « combo » façon arcade : claque au-dessus de la carte, tient un instant, puis s'envole */
-  .combo{position:absolute; left:0; right:0; top:40%; z-index:30; margin:0; padding:0 18px; text-align:center; pointer-events:none; opacity:0;
-    font:800 1.5rem/1.05 var(--display); text-transform:uppercase; letter-spacing:.02em; color:var(--text); --cb:rgba(243,240,234,.4)}
-  .combo span{display:inline-block; max-width:100%; padding:10px 16px 8px; background:rgba(10,8,7,.9); border:2px solid var(--cb); transform:skewX(-8deg); box-shadow:0 10px 30px rgba(0,0,0,.6)}
-  .combo.go{animation:combo 1.9s cubic-bezier(.2,.9,.3,1) forwards}
-  .combo[data-r="commune"]{font-size:1.25rem}
-  .combo[data-r="rare"]{font-size:1.55rem; color:#9cc2ff; --cb:#3b82f6}
-  .combo[data-r="holo"]{font-size:1.9rem; color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
-  .combo[data-r="signature"]{font-size:2.3rem; color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(237,164,43,.65)}
-  .combo[data-r="legendaire"]{font-size:2.7rem; font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
-  .combo[data-r="legendaire"].go{animation:combo 2.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .2s 5}
-  @keyframes combo{0%{opacity:0; transform:scale(2.6) rotate(-6deg)}14%{opacity:1; transform:scale(.94) rotate(2deg)}22%{transform:scale(1.04) rotate(-1deg)}30%{transform:none}72%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-60px) scale(1.1)}}
+  .combo{position:absolute; left:0; right:0; top:36%; z-index:30; margin:0; padding:0 18px; text-align:center; pointer-events:none; opacity:0;
+    font:800 clamp(1.8rem, 9vw, 2.4rem)/1 var(--display); text-transform:uppercase; letter-spacing:.01em; color:var(--text); --cb:rgba(243,240,234,.4)}
+  .combo span{display:inline-block; max-width:100%; padding:12px 18px 10px; background:rgba(10,8,7,.9); border:2px solid var(--cb); transform:skewX(-8deg); box-shadow:0 10px 30px rgba(0,0,0,.6)}
+  .combo.go{animation:combo 2.8s cubic-bezier(.2,.9,.3,1) forwards}
+  .combo[data-r="commune"]{font-size:clamp(1.7rem, 8.5vw, 2.3rem)}
+  .combo[data-r="rare"]{font-size:clamp(1.9rem, 9.5vw, 2.6rem); color:#9cc2ff; --cb:#3b82f6}
+  .combo[data-r="holo"]{font-size:clamp(2.1rem, 10.5vw, 2.9rem); color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
+  .combo[data-r="signature"]{font-size:clamp(2.3rem, 11.5vw, 3.2rem); color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(237,164,43,.65)}
+  .combo[data-r="legendaire"]{font-size:clamp(2.5rem, 12.5vw, 3.5rem); font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
+  .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
+  @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
   @keyframes comboshake{50%{translate:4px 0}}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
