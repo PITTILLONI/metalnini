@@ -70,7 +70,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   for (let i = 0; i < 5; i++) {
     ptr(stage, 'pointerdown', 10); ptr(stage, 'pointermove', 200); ptr(stage, 'pointerup', 200);
     check('pile avant la carte ' + (i + 1) + ' : ' + (4 - i) + ' dessous', d.querySelectorAll('#unders .under').length === 4 - i);
-    await sleep(2400);
+    // une Légendaire se retourne plus lentement : on attend la face visible (6 s au plus)
+    for (let t = 0; t < 60 && !d.getElementById('card-info').classList.contains('on'); t++) await sleep(100);
+    await sleep(300);
     check('carte ' + (i + 1) + ' retournée par glissé', d.getElementById('flip').classList.contains('on'));
     if (i === 0) {
       const o1 = new w.Event('deviceorientation'); o1.gamma = 0; o1.beta = 40; w.dispatchEvent(o1);

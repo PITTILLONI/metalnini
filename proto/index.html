@@ -381,6 +381,7 @@
   .deck i.next{animation:bob 2.4s ease-in-out infinite}
   .deck i.done{cursor:pointer}
   .rev-done{max-width:420px; margin-top:16px}
+  .rev-next{margin:10px 0 0; font:600 .82rem var(--mono); letter-spacing:.04em; color:var(--gold-hi); text-align:center}
   .rev-share{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:5}
   @keyframes bob{50%{transform:translateY(-3px)}}
   /* (3) paquet fermé en parallaxe */
@@ -673,6 +674,7 @@
     <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
     <button type="button" class="btn block rev-done" id="to-binder" hidden>Ranger dans le classeur</button>
+    <p class="rev-next" id="rev-next" hidden></p>
   </div>
 </div>
 
@@ -1207,8 +1209,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var closed = state.packsLeft === 0, box = document.querySelector('.choose');
     box.classList.toggle('closed', closed);
     document.getElementById('home-title').textContent = closed ? 'Le merch est fermé' : 'Choisis ton paquet du jour';
+    // le compteur du jour peut arriver après la dernière carte : on met aussi à jour la fin de révélation
+    var nx = document.getElementById('rev-next'); if(!document.getElementById('to-binder').hidden){ nx.hidden = !closed; nx.textContent = 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.'; }
     var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
-    wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() : '';
+    wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.' : '';
   }
   function refreshDaily(){ if(!ONLINE){ state.packsLeft = null; renderDaily(); return; } ONLINE.packsLeft().then(function(n){ state.packsLeft = n; renderDaily(); }).catch(function(){}); }
   setInterval(function(){ if(state.packsLeft === 0) renderDaily(); }, 60000);
@@ -1423,7 +1427,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
-    document.getElementById('to-binder').hidden = true; document.getElementById('share').hidden = true; document.getElementById('hint').hidden = false;
+    document.getElementById('to-binder').hidden = true; document.getElementById('share').hidden = true; document.getElementById('rev-next').hidden = true; document.getElementById('hint').hidden = false;
     var cb = document.getElementById('combo'); cb.classList.remove('go'); cb.innerHTML = ''; cb.style.opacity = '';
     flip.style.transition = 'none'; flip.classList.remove('on'); flip.style.transform = ''; void flip.offsetWidth; flip.style.transition = '';
     document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on');
@@ -1529,6 +1533,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       else if(current.every(function(x){ return x.r === 'commune'; })) toast(pick(WEAK_PACK));
     }
     document.getElementById('to-binder').hidden = false; document.getElementById('share').hidden = false;
+    // quand revenir : le paquet du jour vient d'être ouvert (en ligne, hors compte illimité)
+    var nx = document.getElementById('rev-next'); nx.hidden = state.packsLeft !== 0; nx.textContent = 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.';
   }
   // réaffiche une carte déjà retournée, sans rejouer la révélation
   function viewCard(i){
