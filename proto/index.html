@@ -42,9 +42,9 @@
           border-top:1px solid rgba(212,175,55,.55); box-shadow:0 -1px 0 #0d0a08, 0 -3px 0 rgba(212,175,55,.22), 0 -18px 40px rgba(0,0,0,.6)}
   .tabbar::before{content:"✦"; position:absolute; top:-9px; left:50%; transform:translateX(-50%); font-size:.8rem; line-height:1; color:var(--gold); background:#0d0a08; padding:0 8px}
   .tabbar button{flex:1; max-width:160px; position:relative; background:none; border:0; padding:6px 4px 4px; font:600 .66rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:#8f877b; cursor:pointer; transition:color .2s ease}
-  .tabbar .ico{display:block; font-size:1.35rem; line-height:1.15; margin-bottom:3px; font-family:Georgia,serif; transition:transform .2s ease, text-shadow .2s ease}
+  .tabbar .ico{display:block; margin:0 auto 3px; transition:transform .2s ease, filter .2s ease}
   .tabbar button[aria-selected="true"]{color:var(--gold-hi)}
-  .tabbar button[aria-selected="true"] .ico{color:var(--gold); transform:translateY(-2px); text-shadow:0 0 14px rgba(212,175,55,.55)}
+  .tabbar button[aria-selected="true"] .ico{color:var(--gold); transform:translateY(-2px); filter:drop-shadow(0 0 8px rgba(212,175,55,.55))}
   .tabbar button[aria-selected="true"]::after{content:""; position:absolute; left:50%; bottom:-3px; width:5px; height:5px; background:var(--gold); transform:translateX(-50%) rotate(45deg)}
   .view[hidden], [hidden]{display:none !important}
 
@@ -58,6 +58,7 @@
   .hud-me b{display:block; font:700 1rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw}
   .hud-me .net{display:block; font:500 .56rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:left; margin-top:2px}
   .hud-me .net b{display:inline; color:#4ade80; font-size:.7rem}
+  .hud-right{display:flex; align-items:center; gap:8px}
   .hud-stats{display:flex; gap:6px}
   .hud-stats span{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
   .hud-stats i{font-style:normal; color:var(--gold); font-size:.8rem}
@@ -105,6 +106,10 @@
   .pf-note{font-size:.86rem; margin:0 0 10px}
   .pf-meter{height:8px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; margin:0 0 12px; box-shadow:inset 0 0 0 1px rgba(212,175,55,.2)}
   .pf-meter i{display:block; height:100%; width:0; background:linear-gradient(90deg,#b8912a,#f5c542 60%,#e0413f); transition:width .06s linear}
+  .pf-count{height:0; overflow:visible; position:relative; z-index:2; pointer-events:none}
+  .pf-count span{position:absolute; left:50%; top:-150px; transform:translateX(-50%); font:700 5rem/1 var(--display); color:var(--gold-hi); text-shadow:0 0 30px rgba(212,175,55,.6), 0 4px 0 #000; animation:cdpop .9s cubic-bezier(.2,1.6,.4,1) both}
+  .pf-count span.go{font-size:3rem; color:#ff5a4f; text-shadow:0 0 30px rgba(224,65,63,.7), 0 4px 0 #000; white-space:nowrap}
+  @keyframes cdpop{0%{transform:translateX(-50%) scale(2.2); opacity:0}25%{transform:translateX(-50%) scale(1); opacity:1}80%{opacity:1}100%{transform:translateX(-50%) scale(.8); opacity:0}}
   .pf-row{display:flex; gap:10px} .pf-row .btn{flex:1; padding-left:10px; padding-right:10px}
   #pf-save{width:100%; margin-top:10px}
   .btn.rec{animation:recpulse 1s ease-in-out infinite}
@@ -181,10 +186,12 @@
   .dots i.on{width:20px; border-radius:4px; background:var(--gold)}
   .sum-actions{display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
   .btn.big{width:100%; min-height:56px; padding:0 24px; font-size:1rem}
-  .link-btn{background:none; border:0; color:var(--muted); font:600 .78rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:12px; cursor:pointer}
 
   /* ---------- Classeur ---------- */
-  .binder-head{padding:calc(24px + env(safe-area-inset-top)) 0 6px}
+  .binder-head{position:relative; padding:calc(24px + env(safe-area-inset-top)) 0 6px}
+  .icon-btn.sm{width:38px; height:38px}
+  .icon-btn.corner{position:absolute; right:0; top:calc(18px + env(safe-area-inset-top))}
+  .back-btn{background:none; border:0; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
   .binder-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 4px; scrollbar-width:none}
   .binder-tabs button{flex:0 0 auto; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
   .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .56rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); padding:0 2px 0 8px}
@@ -286,9 +293,6 @@
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
   .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
 
-  @keyframes rise{to{opacity:1; transform:none}}
-  .reset-link{background:none; border:0; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:8px}
-  .reset-link.armed{color:#f87171}
   .fuse{margin-top:14px; display:flex; flex-direction:column; gap:8px}
   .fuse button{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; text-align:left; cursor:pointer; font-size:.88rem}
   .fuse button b{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em}
@@ -448,7 +452,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -458,7 +462,7 @@
 <main id="v-packs" class="view wrap home">
   <header class="hud">
     <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri">☠</button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
-    <div class="hud-stats" id="stats-row"></div>
+    <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
   <button type="button" class="goal quest" id="goal" hidden></button>
   <h1 class="home-title">Choisis et ouvre ton paquet du jour</h1>
@@ -482,6 +486,7 @@
 <!-- ============ CLASSEUR ============ -->
 <main id="v-binder" class="view wrap" hidden>
   <div class="binder-head">
+    <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button>
     <p class="eyebrow">Collection</p>
     <h1 id="binder-title">Classeur</h1>
     <div class="binder-tabs" id="binder-tabs" role="tablist" aria-label="Classeurs"></div>
@@ -495,6 +500,7 @@
 <!-- ============ RÉGLAGES ============ -->
 <main id="v-settings" class="view wrap" hidden>
   <div class="settings">
+    <button type="button" class="back-btn" id="settings-back" aria-label="Retour">← Retour</button>
     <p class="eyebrow">Réglages du test</p>
     <h1>Paquets</h1>
     <div class="field">
@@ -609,6 +615,7 @@
     <div class="pf-cry">
       <p class="eyebrow" style="margin-top:18px">Ton cri</p>
       <p class="pf-note" id="pf-cry-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque.</p>
+      <div class="pf-count" id="pf-count" aria-live="assertive"></div>
       <div class="pf-meter" aria-hidden="true"><i id="pf-level"></i></div>
       <div class="pf-row">
         <button type="button" class="btn danger" id="pf-rec">● Enregistrer</button>
@@ -643,9 +650,8 @@
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Navigation">
-  <button type="button" data-v="packs" aria-selected="true"><span class="ico">☾</span>Paquets</button>
-  <button type="button" data-v="binder" aria-selected="false"><span class="ico">☼</span>Classeur</button>
-  <button type="button" data-v="settings" aria-selected="false"><span class="ico">✠</span>Réglages</button>
+  <button type="button" data-v="packs" aria-selected="true"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l1 1 1-1 1 1 1-1 1 1 1-1 1 1 1-1 1 1 1-1 1 1v15l-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1z"/><path d="M13.6 8.6a3.8 3.8 0 1 0 0 6.8 3.2 3.2 0 1 1 0-6.8z" fill="currentColor" stroke="none"/><circle cx="14.4" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M14.4 9.7v-.9M14.4 15.2v-.9M16.7 12h.9"/></svg>Paquets</button>
+  <button type="button" data-v="binder" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="3.2" y="6.2" width="8" height="12" rx="1.2" transform="rotate(-16 7.2 12.2)"/><rect x="12.8" y="6.2" width="8" height="12" rx="1.2" transform="rotate(16 16.8 12.2)"/><rect x="8" y="4" width="8" height="13" rx="1.2" fill="#0d0a08"/><path d="M12 7.6l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"/></svg>Classeur</button>
 </nav>
 
 <script src="cards/manifest.js"></script>
@@ -886,12 +892,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     im.src = u;
   });
   // cri : 6 secondes max, vumètre pendant la prise
-  var rec = null, recStream = null, recTimer = null, meterRaf = 0, player = null;
+  var rec = null, recStream = null, recTimer = null, meterRaf = 0, player = null, countTimers = [], counting = false;
+  var countEl = document.getElementById('pf-count');
+  function showCount(txt, go){ countEl.innerHTML = '<span' + (go ? ' class="go"' : '') + '>' + txt + '</span>'; }
   var recBtn = document.getElementById('pf-rec'), playBtn = document.getElementById('pf-play'), saveBtn = document.getElementById('pf-save'), level = document.getElementById('pf-level');
   function resetCry(){ recBlob = null; saveBtn.hidden = true; playBtn.hidden = !crySrc(); recBtn.textContent = crySrc() ? '● Refaire mon cri' : '● Enregistrer'; level.style.width = '0'; }
-  function stopRec(){ clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
+  function stopRec(){ countTimers.forEach(clearTimeout); countTimers = []; counting = false; countEl.innerHTML = ''; clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
   recBtn.addEventListener('click', async function(){
     pfErr.textContent = '';
+    if(counting){ stopRec(); resetCry(); return; }
     if(rec && rec.state === 'recording'){ stopRec(); return; }
     if(!navigator.mediaDevices || !window.MediaRecorder){ pfErr.textContent = 'Ce navigateur ne sait pas enregistrer le son.'; return; }
     try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
@@ -909,10 +918,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var ac = new (window.AudioContext || window.webkitAudioContext)(), an = ac.createAnalyser(); an.fftSize = 512; ac.createMediaStreamSource(recStream).connect(an);
       var buf = new Uint8Array(an.fftSize);
       (function meter(){ an.getByteTimeDomainData(buf); var pk = 0; for(var i = 0; i < buf.length; i++){ pk = Math.max(pk, Math.abs(buf[i] - 128)); }
-        level.style.width = Math.min(100, pk / 1.1) + '%'; if(rec && rec.state === 'recording') meterRaf = requestAnimationFrame(meter); else ac.close(); })();
+        level.style.width = Math.min(100, pk / 1.1) + '%'; if(counting || (rec && rec.state === 'recording')) meterRaf = requestAnimationFrame(meter); else ac.close(); })();
     }catch(e){}
-    rec.start(); recBtn.textContent = '■ Stop'; recBtn.classList.add('rec'); buzz([30]);
-    recTimer = setTimeout(stopRec, 6000);
+    // 3, 2, 1… hurle ! puis 6 secondes de prise, secondes restantes sur le bouton
+    counting = true; recBtn.textContent = '■ Annuler'; playBtn.hidden = true; saveBtn.hidden = true;
+    [3, 2, 1].forEach(function(n, i){ countTimers.push(setTimeout(function(){ showCount(n); buzz([25]); }, i * 900)); });
+    countTimers.push(setTimeout(function(){
+      counting = false; showCount('Hurle !', true); buzz([60]);
+      rec.start(); recBtn.classList.add('rec');
+      var left = 6; recBtn.textContent = '■ Stop · ' + left + ' s';
+      (function tick(){ countTimers.push(setTimeout(function(){ if(!rec || rec.state !== 'recording') return; left--; recBtn.textContent = '■ Stop · ' + left + ' s'; if(left > 0) tick(); }, 1000)); })();
+      recTimer = setTimeout(stopRec, 6000);
+    }, 3 * 900));
   });
   playBtn.addEventListener('click', function(){ var src = recBlob ? recUrl : crySrc(); if(!src) return; if(player) player.pause(); player = new Audio(src); player.play().catch(function(){ pfErr.textContent = 'Lecture impossible sur ce navigateur.'; }); });
   saveBtn.addEventListener('click', async function(){
@@ -1018,16 +1035,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     window.scrollTo(0,0);
   }
   tabs.forEach(function(t){ t.addEventListener('click', function(){ go(t.getAttribute('data-v')); }); });
+  var lastView = 'packs';
+  [].forEach.call(document.querySelectorAll('[data-go="settings"]'), function(b){ b.addEventListener('click', function(){ lastView = document.getElementById('v-binder').hidden ? 'packs' : 'binder'; go('settings'); }); });
+  document.getElementById('settings-back').addEventListener('click', function(){ go(lastView); });
 
   // ---------- Paquets ----------
   function ownedCount(){ var n=0; CARDS.forEach(function(c){ if(best(c.id)) n++; }); return n; }
   function renderStats(){
     renderPacks(); renderGoal('goal');
-    var variants = Object.keys(state.owned).length;
     var nm = CARDS.filter(function(c){ return mastered(c.id); }).length;
     document.getElementById('stats-row').innerHTML =
       '<span title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i>▦</i>' + ownedCount() + '/' + CARDS.length + '</span>' +
-      '<span title="Variantes (raretés) trouvées" aria-label="' + variants + ' variantes"><i>◆</i>' + variants + '</span>' +
       '<span title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i>★</i>' + nm + '</span>';
   }
 
@@ -1223,7 +1241,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   // ---------- Parallaxe : gyroscope, souris ou doigt ----------
   var GLARE = {commune:.3, rare:.42, holo:.6, signature:.62, legendaire:.55, pack:.5};
-  var pTarget = null, lastInput = 0, idleT0 = 0, orient0 = null, motionAsked = false;
+  var pTarget = null, orient0 = null, motionAsked = false;
   function clamp(v){ return Math.max(-1, Math.min(1, v)); }
   // nx, ny entre -1 et 1 : la carte pivote, l'illustration glisse en sens inverse, le reflet et l'ombre suivent
   // les mouvements (gyroscope, souris, doigt) sont regroupés : au plus une mise à jour par image
@@ -1240,11 +1258,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     t.tilt.style.transform = 'rotateY(' + (nx * 24) + 'deg) rotateX(' + (-ny * 18) + 'deg)';
     t.root.style.setProperty('--ix', (-nx * 3.6).toFixed(2) + '%'); t.root.style.setProperty('--iy', (-ny * 3.6).toFixed(2) + '%');
     t.root.style.setProperty('--gx', (50 + nx * 42).toFixed(1) + '%'); t.root.style.setProperty('--gy', (38 + ny * 38).toFixed(1) + '%');
-    t.root.style.setProperty('--sx', (50 - nx * 150).toFixed(1) + '%');
     t.root.style.setProperty('--shx', (-nx * 14).toFixed(1) + 'px'); t.root.style.setProperty('--shy', (18 - ny * 8).toFixed(1) + 'px');
   }
   function setTarget(root, tiltEl, r){
-    pTarget = root ? {root:root, tilt:tiltEl} : null; orient0 = null; idleT0 = performance.now();
+    pTarget = root ? {root:root, tilt:tiltEl} : null; orient0 = null;
     if(root){ root.style.setProperty('--ga', GLARE[r] || .3); tiltEl.classList.add('live'); armIdle(); }
   }
   function clearTarget(){ clearTimeout(idleTimer); if(pTarget){ pTarget.tilt.style.transform = ''; pTarget.tilt.classList.remove('live', 'sway'); } pTarget = null; }
@@ -1255,7 +1272,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   addEventListener('deviceorientation', function(e){
     if(!pTarget || g || e.gamma == null) return;
     if(!orient0) orient0 = {g:e.gamma, b:e.beta};
-    lastInput = performance.now();
     parallax(clamp((e.gamma - orient0.g) / 15), clamp((e.beta - orient0.b) / 15));
   });
   // au repos : léger balancement en CSS (géré par la carte graphique), aucune mise à jour image par image
@@ -1268,7 +1284,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   function packParallax(){ if(!opening && !drag && !document.getElementById('v-packs').hidden && revealEl.hidden) setTarget(document.getElementById('pack-root'), packEl, 'pack'); }
   document.getElementById('pack-root').addEventListener('pointermove', function(e){ if(drag || !pTarget || pTarget.root.id !== 'pack-root' || e.pointerType !== 'mouse') return;
-    var rr = packEl.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * .9), clamp(((e.clientY - rr.top) / rr.height - .5) * .9)); });
+    var rr = packEl.getBoundingClientRect(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * .9), clamp(((e.clientY - rr.top) / rr.height - .5) * .9)); });
 
   // ---------- Geste : glisser pour retourner, glisser pour passer ----------
   var g = null;
@@ -1279,7 +1295,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     flip.style.transition = 'none'; stage.style.transition = 'none';
   });
   stage.addEventListener('pointermove', function(e){
-    if(!g){ if(flipped && pTarget && e.pointerType === 'mouse'){ var rr = stage.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); } return; } var dx = e.clientX - g.x0, dy = e.clientY - g.y0; g.dx = dx;
+    if(!g){ if(flipped && pTarget && e.pointerType === 'mouse'){ var rr = stage.getBoundingClientRect(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); } return; } var dx = e.clientX - g.x0, dy = e.clientY - g.y0; g.dx = dx;
     if(Math.abs(dx) > 6 || Math.abs(dy) > 6) g.moved = true;
     if(!flipped){
       // la carte suit le doigt, mais ne montre pas sa face avant d'être lâchée
@@ -1289,11 +1305,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     } else {
       var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
       stage.style.transform = 'translateX(' + (dx * .75) + 'px) rotate(' + (dx / g.w * 10) + 'deg)';
-      lastInput = performance.now(); parallax(clamp(px * 2), clamp(py * 2));
+      parallax(clamp(px * 2), clamp(py * 2));
     }
   });
   function release(){
-    if(!g) return; var d = g; g = null; lastInput = 0;
+    if(!g) return; var d = g; g = null;
     if(!flipped){
       if(!d.moved){ reveal(1); return; }
       if(Math.abs(d.a) >= 42){ reveal(d.a > 0 ? 1 : -1); return; }
@@ -1534,7 +1550,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     sheet.hidden = false;
     var pc = document.getElementById('pcard');
     if(pc){ setTarget(pc, document.getElementById('pin'), r);
-      pc.addEventListener('pointermove', function(e){ var rr = pc.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
+      pc.addEventListener('pointermove', function(e){ var rr = pc.getBoundingClientRect(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
       pc.addEventListener('pointerdown', askMotion); } else clearTarget();
   }
   function fuseBlock(id){
