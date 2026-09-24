@@ -129,7 +129,6 @@
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
   .modal-in.profile{max-height:92dvh; overflow:auto; position:relative}
-  .modal-in.profile .sheet-close{position:absolute; top:12px; right:12px; float:none}
   .pf-av{display:grid; place-items:center; width:132px; height:132px; margin:10px auto 8px; border-radius:50%; border:0; padding:0; cursor:pointer; font-size:3rem; color:var(--gold);
     background:#16110e center/cover no-repeat; box-shadow:0 0 0 1px rgba(237,164,43,.6), 0 14px 30px rgba(0,0,0,.6)}
   .pf-av.has span{display:none}
@@ -200,6 +199,8 @@
   .combo span{display:inline-block; max-width:100%; padding:14px 18px 12px; background:rgba(10,8,7,.9); border:2px solid var(--cb); transform:skewX(-8deg); box-shadow:0 10px 30px rgba(0,0,0,.6)}
   .combo.go{animation:combo 2.8s cubic-bezier(.2,.9,.3,1) forwards}
   .combo[data-r="commune"]{font-size:clamp(2.2rem, 11vw, 3rem)}
+  .combo[data-r="triple"]{font-size:clamp(2.6rem, 13vw, 3.6rem); color:#b7f7a0; --cb:#6ee07a} .combo[data-r="triple"] span{transform:skewX(-8deg) rotate(-3deg)}
+  .combo[data-r="triple"].go{animation:combo 3s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 4}
   .combo[data-r="rare"]{font-size:clamp(2.5rem, 12.5vw, 3.4rem); color:#9cc2ff; --cb:#3b82f6}
   .combo[data-r="holo"]{font-size:clamp(2.8rem, 14vw, 3.8rem); color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
   .combo[data-r="signature"]{font-size:clamp(3.1rem, 15.5vw, 4.2rem); color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(237,164,43,.65)}
@@ -282,8 +283,9 @@
   /* ---------- Détail ---------- */
   .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center}
   .sheet[hidden]{display:none}
-  .sheet-in{width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
-  .sheet-close{float:right; position:relative; z-index:5; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; width:34px; height:34px; cursor:pointer}
+  .sheet-in{position:relative; width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+  /* bouton fermer : en surimpression, il ne prend pas de place */
+  .sheet-close{position:absolute; top:12px; right:12px; z-index:6; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(255,255,255,.18); background:rgba(10,8,7,.72); color:var(--text); font-size:1rem; cursor:pointer}
   .detail-img{width:min(100%,360px); margin:6px auto 12px; display:block; border-radius:12px}
   .detail h2{font-size:1.5rem; margin-top:4px}
   .detail .sub{color:var(--muted); font-size:.9rem; margin:2px 0 10px}
@@ -390,10 +392,6 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .reveal.quake{animation:quake .5s cubic-bezier(.36,.07,.19,.97)}
   @keyframes quake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}}
-  #stamp{position:fixed; left:0; right:0; top:14%; z-index:48; text-align:center; pointer-events:none; font-family:var(--display); font-size:clamp(2.6rem,12vw,5rem); letter-spacing:.08em; text-transform:uppercase;
-         color:#fff; text-shadow:0 0 18px var(--sc,#ef4444), 0 0 50px var(--sc,#ef4444); transform:scale(0); visibility:hidden}
-  #stamp.go{visibility:visible; animation:stamp 1.6s cubic-bezier(.2,1.4,.4,1) forwards}
-  @keyframes stamp{0%{transform:scale(2.6)}18%{transform:scale(1)}82%{transform:scale(1)}100%{transform:scale(0)}}
   /* (7) paquet contenant une Légendaire */
   #vignette{position:fixed; inset:0; z-index:30; pointer-events:none; background:radial-gradient(ellipse at center, transparent 18%, #000 75%); visibility:hidden}
   #vignette.on{visibility:visible; animation:vig .5s ease forwards}
@@ -513,7 +511,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -716,7 +714,7 @@
     <div class="modal-actions"><button type="button" class="btn danger" id="confirm-yes"></button><button type="button" class="btn ghost" id="confirm-no"></button></div>
   </div>
 </div>
-<div id="fxlayer" aria-hidden="true"><div id="stamp"></div></div>
+<div id="fxlayer" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
 <div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""><div class="df-plus" id="df-plus"></div></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div><p class="df-skip" id="df-skip"></p></div>
 <div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
@@ -1306,7 +1304,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   function rays(r){ var el = document.getElementById('rays'); el.className = ''; if(reduce || rank(r) < 2) return; el.style.setProperty('--rc', COLORS[r]); void el.offsetWidth; el.className = 'on' + (rank(r) >= 3 ? ' fast' : ''); }
   function quake(){ if(reduce) return; revealEl.classList.remove('quake'); void revealEl.offsetWidth; revealEl.classList.add('quake'); }
-  function stamp(r){ if(reduce) return; var el = document.getElementById('stamp'); el.textContent = rarity(r).label; el.style.setProperty('--sc', COLORS[r]); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
   function flash(r){ if(reduce || r==='commune') return; var f = document.getElementById('flash'); f.style.setProperty('--flash', r==='rare' ? 'rgba(59,130,246,.5)' : COLORS[r]); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
   function ring(r, at){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; if(at){ el.style.left = at.x + 'px'; el.style.top = at.y + 'px'; } el.style.setProperty('--ring', COLORS[r]); document.getElementById('fxlayer').appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
 
@@ -1365,7 +1362,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       document.getElementById('vignette').classList.add('on'); document.getElementById('flames-pack').classList.add('on'); packEl.classList.add('legend'); document.getElementById('ptilt').classList.add('shake');
       SFX.heartbeat(); setTimeout(SFX.heartbeat, 800); setTimeout(SFX.heartbeat, 1500); setTimeout(function(){ SFX.rumble(700); }, 1650);
       var pr = packEl.getBoundingClientRect(), at = {x:pr.left + pr.width/2, y:pr.top + pr.height/2, w:pr.width, h:pr.height};
-      setTimeout(function(){ ring('legendaire', at); stamp('legendaire'); }, wait - 120);
+      setTimeout(function(){ ring('legendaire', at); }, wait - 120);
     } else if(wait){ packEl.classList.add('charging'); if(rank(tease) >= 3) SFX.rumble(wait); }
     setTimeout(function(){
       packEl.classList.remove('charging', 'legend'); document.getElementById('ptilt').classList.remove('shake'); packEl.classList.add('torn'); flash(tease);
@@ -1416,13 +1413,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   };
   var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.', 'Encore ? Il te suit ou quoi ?', 'Doublon. Le destin a de l\'humour.', 'T\'as déjà le t-shirt, là.',
     'Doublon. Même setlist qu\'hier.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Il ira grossir la pile.'];
+  // même carte trois fois dans le paquet : le destin s'acharne
+  var TRIPLE_LINES = ['Trois fois la même. T\'es maudit, avoue.', 'Triplé ! Le mauvais, hein.', 'Trois fois. Même le merch n\'en veut plus.', 'Tu collectionnes ou tu te venges ?'];
+  var TWICE_LINES = ['Encore elle, dans le même paquet ?!', 'Deux fois. Le paquet bégaie.'];
   // paquet faible : une pique au moment de ranger
   var WEAK_PACK = ['Que des Communes. Le pit te regarde avec pitié.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Demain, tu souffles sur le paquet.'];
   var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf sous le soleil noir. Transforme tout ça.'];
   function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
   function fillInfo(x){
     var line = document.getElementById('combo');
-    line.innerHTML = '<span>' + esc(!x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r])) + '</span>'; line.setAttribute('data-r', x.r);
+    var same = current.slice(0, idx + 1).filter(function(y){ return y.c.id === x.c.id && y.r === x.r; }).length;
+    var text = same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]);
+    line.innerHTML = '<span>' + esc(text) + '</span>'; line.setAttribute('data-r', same >= 3 ? 'triple' : x.r);
     line.classList.remove('go'); void line.offsetWidth; if(!reduce) line.classList.add('go'); else line.style.opacity = 1;
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
@@ -1455,7 +1457,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
         fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r);
-        if(rank(r) >= 3){ ring(r); quake(); stamp(r); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
+        if(rank(r) >= 3){ ring(r); quake(); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; seenUpTo = Math.max(seenUpTo, idx); renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = 'Glisse pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
         if(idx === current.length - 1) showDone();

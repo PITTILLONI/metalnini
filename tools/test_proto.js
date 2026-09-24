@@ -173,10 +173,10 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d3.getElementById('to-binder').click(); await sleep(100);
   await placeAll(d3, () => JSON.parse(dom3.window.localStorage.getItem('metalnini-proto-v1'))); await sleep(2600);
   const toastTxt = seen.join(' | ');
-  check('complétion du classeur Pop punk annoncée', /Classeur complété.*Pop punk/.test(toastTxt), toastTxt);
+  check('complétion du classeur Blink-182 annoncée', /Classeur complété.*Blink-182/.test(toastTxt), toastTxt);
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  { d3.querySelector('#binder-kinds [data-kind="Styles"]').click(); await sleep(20);
-    const pc = d3.querySelector('#binder-list [data-b="poppunk"]');
+  { d3.querySelector('#binder-kinds [data-kind="Groupes"]').click(); await sleep(20);
+    const pc = d3.querySelector('#binder-list [data-b="g-blink"]');
     check('carte du classeur complété marquée « Complet »', !!pc && /Complet/.test(pc.textContent), pc && pc.textContent); }
 
   // 8. Paquet thématique : ne tire que dans son classeur ; prochain objectif affiché

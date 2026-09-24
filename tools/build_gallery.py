@@ -4,35 +4,31 @@
 Lancer d'abord tools/build_proto_cards.py.
 
 Usage : python3 tools/build_gallery.py   (depuis la racine du dépôt)
-Pour ajouter un artiste : compléter ARTISTS ci-dessous ; ses images sont lues dans proto/cards/.
+Les artistes viennent du catalogue du prototype (tableau CARDS de proto/index.html) ; images lues dans proto/cards/.
 """
-import html, os
+import html, os, re
 
 CREAS = "assets/da/creas"
 OUT = "export/metalnini-cartes.html"
 RARITIES = [("Base", "base"), ("Commune", "commune"), ("Rare", "rare"), ("Holo", "holo"),
             ("Signature", "signature"), ("Légendaire", "legendaire")]
-# id, groupe, artiste, titre d'arcane, numéro, instrument, sous-genre
-ARTISTS = [
-    ("knocked-loose", "Knocked Loose", "Bryan Garris", "The Deadringer", "IV", "Chant", "Hardcore"),
-    ("isaac-hale", "Knocked Loose", "Isaac Hale", "Counting Worms", "X", "Guitare", "Hardcore"),
-    ("jinjer", "Jinjer", "Tatiana Shmayluk", "Pisces", "V", "Chant", "Metalcore progressif"),
-    ("spiritbox", "Spiritbox", "Courtney LaPlante", "Holy Roller", "VI", "Chant", "Metalcore"),
-    ("blink182", "Blink-182", "Travis Barker", "All the Small Things", "VII", "Batterie", "Pop punk"),
-    ("hoppus", "Blink-182", "Mark Hoppus", "What's My Age Again?", "XII", "Basse, chant", "Pop punk"),
-    ("landmvrks", "Landmvrks", "Florent Salfati", "Lost in the Waves", "VIII", "Chant", "Metalcore"),
-    ("hendrix", "Jimi Hendrix", "Jimi Hendrix", "Purple Haze", "IX", "Guitare", "Rock psychédélique"),
-    ("korn", "Korn", "Jonathan Davis", "Freak on a Leash", "XI", "Chant", "Nu metal"),
-    ("poppy", "Poppy", "Poppy", "I Disagree", "XIII", "Chant", "Métal expérimental"),
-    ("ramos", "Lorna Shore", "Will Ramos", "To the Hellfire", "XIV", "Chant", "Deathcore"),
-    ("slash", "Guns N' Roses", "Slash", "Welcome to the Jungle", "XV", "Guitare", "Hard rock"),
-    ("duplantier", "Gojira", "Mario Duplantier", "Flying Whales", "XVI", "Batterie", "Death metal progressif"),
-    ("zack", "Rage Against the Machine", "Zack de la Rocha", "Bulls on Parade", "XVII", "Chant", "Rap metal"),
-    ("heriot", "Heriot", "Debbie Gough", "Devoured by the Mouth of Hell", "XVIII", "Chant, guitare", "Metalcore"),
-    ("frusciante", "Red Hot Chili Peppers", "John Frusciante", "Under the Bridge", "XIX", "Guitare", "Funk rock"),
-    ("root", "Slipknot", "Jim Root", "Duality", "XX", "Guitare", "Nu metal"),
-    ("jordison", "Slipknot", "Joey Jordison", "Wait and Bleed", "XXI", "Batterie", "Nu metal"),
-]
+# le catalogue vient du prototype (proto/index.html, tableau CARDS) : une seule source, triée par numéro d'arcane
+def roman(n):
+    v = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100}; t = 0
+    for i, c in enumerate(n): t += -v[c] if i + 1 < len(n) and v[c] < v[n[i + 1]] else v[c]
+    return t
+
+
+def load_artists():
+    src_html = open("proto/index.html", encoding="utf-8").read()
+    block = src_html[src_html.index("var CARDS = ["):src_html.index("].map(function(c){ return {id:c[0]")]
+    rows = re.findall(r"\['([^']+)','((?:[^'\\]|\\.)*)','((?:[^'\\]|\\.)*)','((?:[^'\\]|\\.)*)','([IVXLC]+)','([^']+)','([^']+)'\]", block)
+    rows += re.findall(r"\['([^']+)','((?:[^'\\]|\\.)*)',\"([^\"]+)\",'((?:[^'\\]|\\.)*)','([IVXLC]+)','([^']+)','([^']+)'\]", block)
+    rows += re.findall(r"\['([^']+)','((?:[^'\\]|\\.)*)','((?:[^'\\]|\\.)*)',\"([^\"]+)\",'([IVXLC]+)','([^']+)','([^']+)'\]", block)
+    ready = [a for a in {r[0] for r in rows} if os.path.exists(f"proto/cards/{a}-commune.jpg")]
+    arts = [(i, band.replace("\\'", "'"), who.replace("\\'", "'"), title.replace("\\'", "'"), num, inst, genre)
+            for i, who, band, title, num, inst, genre in rows if i in ready]
+    return sorted(arts, key=lambda a: roman(a[4]))
 
 
 def src(aid, key):
@@ -41,6 +37,7 @@ def src(aid, key):
 
 def main():
     btns, panels, n = "", "", 0
+    ARTISTS = load_artists()
     for i, (aid, band, who, title, num, inst, genre) in enumerate(ARTISTS):
         e = html.escape
         btns += f'<button type="button" class="ab" data-a="{aid}" aria-selected="{str(i == 0).lower()}">{e(who)}</button>'
