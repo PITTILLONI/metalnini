@@ -9,7 +9,7 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 | Quoi | Lien | Accès |
 |---|---|---|
 | **Prototype jouable** (ouverture de paquets + classeur) | https://pittilloni.github.io/metalnini/proto/ | Libre, marche sur téléphone (ajout à l'écran d'accueil possible) |
-| **Galerie des cartes** (tous les artistes et leurs raretés) | https://pittilloni.github.io/metalnini/export/metalnini-cartes.html | Libre, à partager |
+| **Galerie des cartes** (18 musiciens et leurs raretés) | https://pittilloni.github.io/metalnini/export/metalnini-cartes.html | Libre, à partager |
 | **Document concept** (Concept, Direction artistique, Architecture, Roadmap) | https://pittilloni.github.io/metalnini/concept.html | Mot de passe |
 | Direction artistique des cartes | https://pittilloni.github.io/metalnini/concept.html#da-exemples-crea | Mot de passe |
 | Roadmap, architecture et phases | https://pittilloni.github.io/metalnini/concept.html#roadmap-architecture | Mot de passe |
@@ -37,7 +37,7 @@ Le mot de passe n'est qu'un filtre de politesse : le dépôt est public, tout so
 
 Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboard/` et `assets/da/creas/`, sous les noms indiqués sur chaque case : elles s'affichent automatiquement.
 
-**V1 perso des cartes** (décision du 2026-09-23) : artistes reconnaissables, usage strictement perso. Les cartes de `assets/da/creas/` sont publiées dans le dépôt public et s'affichent en ligne (choix du 2026-09-23, pour y accéder depuis plusieurs machines). Le moodboard (`assets/da/moodboard/`) reste local car il contient des illustrations de tiers. `export/metalnini-cartes.html` est une galerie autonome à envoyer directement, régénérée avec `python3 tools/build_gallery.py`. Générées avec `tools/krea_generate.py` (API REST Krea, clé lue dans le Trousseau macOS).
+**V1 perso des cartes** (décision du 2026-09-23) : artistes reconnaissables, usage strictement perso. Les cartes de `assets/da/creas/` sont publiées dans le dépôt public et s'affichent en ligne (choix du 2026-09-23, pour y accéder depuis plusieurs machines). Le moodboard (`assets/da/moodboard/`) reste local car il contient des illustrations de tiers. `export/metalnini-cartes.html` est la galerie à partager : régénérer les images avec `python3 tools/build_proto_cards.py`, puis la galerie avec `python3 tools/build_gallery.py`. Générées avec `tools/krea_generate.py` (API REST Krea, clé lue dans le Trousseau macOS).
 
 ## Où en est-on
 
@@ -55,7 +55,7 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 
 - **Architecture actée (2026-09-24)** : iOS natif (SwiftUI) d'abord, Android ensuite, back-end managé, espace admin web séparé ; 8 phases détaillées dans l'onglet Roadmap de `concept.html`, en commençant par la phase 0 (fondations).
 - **Feature 1 à développer : ouverture de paquet + visualisation du classeur** (décision du 2026-09-23, détail dans l'onglet Roadmap de `concept.html`). Avant de coder : trancher taille de paquet, probabilités par rareté, statut de la carte « de base », composition des deux classeurs de test et stack du prototype.
-- Compléter le catalogue de test : 10 à 12 artistes déclinés sur les 5 raretés (10 générés et déclinés, 60 cartes : cible atteinte).
+- Compléter le catalogue de test : 10 à 12 artistes déclinés sur les 5 raretés (18 musiciens générés et déclinés, 90 cartes jouables : cible dépassée).
 - Trancher les décisions listées en fin de `flows.html` — en priorité : le trou laissé dans un classeur par une carte qui évolue, le sort des doublons non échangés, et binder unique vs classeurs par sous-genre.
 - Spécifier les state machines Rive des 5 séquences majeures identifiées (niveau 1 de la carte des animations) une fois le gabarit de carte stabilisé.
 - Wireframer en basse fidélité les écrans de la feature 1 (Flow B et Collection), puis ceux du Flow A.

@@ -1,1 +1,1 @@
-window.METALNINI_READY = ["blink182", "duplantier", "hendrix", "heriot", "hoppus", "isaac-hale", "jinjer", "knocked-loose", "korn", "landmvrks", "poppy", "ramos", "slash", "spiritbox", "zack"];
+window.METALNINI_READY = ["blink182", "duplantier", "frusciante", "hendrix", "heriot", "hoppus", "isaac-hale", "jinjer", "jordison", "knocked-loose", "korn", "landmvrks", "poppy", "ramos", "root", "slash", "spiritbox", "zack"];

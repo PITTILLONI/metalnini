@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Construit export/metalnini-cartes.html : galerie autonome (images intégrées) à partager.
+"""Construit export/metalnini-cartes.html : galerie à partager, qui charge les images allégées de proto/cards/.
+
+Lancer d'abord tools/build_proto_cards.py.
 
 Usage : python3 tools/build_gallery.py   (depuis la racine du dépôt)
-Pour ajouter un artiste : compléter ARTISTS ci-dessous. Fichiers attendus dans assets/da/creas/ :
-<id>-base.jpg, <id>-commune.jpg, <id>-rare.jpg, <id>-holo.jpg, <id>-signature.jpg, <id>-legendaire.jpg
-(OVERRIDES permet de pointer vers un autre nom de fichier).
+Pour ajouter un artiste : compléter ARTISTS ci-dessous ; ses images sont lues dans proto/cards/.
 """
-import base64, html, os, subprocess, tempfile
+import html, os
 
 CREAS = "assets/da/creas"
 OUT = "export/metalnini-cartes.html"
@@ -24,38 +24,36 @@ ARTISTS = [
     ("hendrix", "Jimi Hendrix", "Jimi Hendrix", "Purple Haze", "IX", "Guitare", "Rock psychédélique"),
     ("korn", "Korn", "Jonathan Davis", "Freak on a Leash", "XI", "Chant", "Nu metal"),
     ("poppy", "Poppy", "Poppy", "I Disagree", "XIII", "Chant", "Métal expérimental"),
+    ("ramos", "Lorna Shore", "Will Ramos", "To the Hellfire", "XIV", "Chant", "Deathcore"),
+    ("slash", "Guns N' Roses", "Slash", "Welcome to the Jungle", "XV", "Guitare", "Hard rock"),
+    ("duplantier", "Gojira", "Mario Duplantier", "Flying Whales", "XVI", "Batterie", "Death metal progressif"),
+    ("zack", "Rage Against the Machine", "Zack de la Rocha", "Bulls on Parade", "XVII", "Chant", "Rap metal"),
+    ("heriot", "Heriot", "Debbie Gough", "Devoured by the Mouth of Hell", "XVIII", "Chant, guitare", "Metalcore"),
+    ("frusciante", "Red Hot Chili Peppers", "John Frusciante", "Under the Bridge", "XIX", "Guitare", "Funk rock"),
+    ("root", "Slipknot", "Jim Root", "Duality", "XX", "Guitare", "Nu metal"),
+    ("jordison", "Slipknot", "Joey Jordison", "Wait and Bleed", "XXI", "Batterie", "Nu metal"),
 ]
-OVERRIDES = {
-    ("knocked-loose", "base"): "test-knocked-loose-03",
-    ("knocked-loose", "holo"): "knocked-loose-holo-v2",
-    ("knocked-loose", "legendaire"): "knocked-loose-legendaire-v2",
-}
 
 
-def data_uri(name, tmp):
-    out = os.path.join(tmp, name + ".jpg")
-    subprocess.run(["sips", "-Z", "900", "-s", "format", "jpeg", "-s", "formatOptions", "78",
-                    f"{CREAS}/{name}.jpg", "--out", out], check=True, stdout=subprocess.DEVNULL)
-    return "data:image/jpeg;base64," + base64.b64encode(open(out, "rb").read()).decode()
+def src(aid, key):
+    return f"../proto/cards/{aid}-{key}.jpg"
 
 
 def main():
     btns, panels, n = "", "", 0
-    with tempfile.TemporaryDirectory() as tmp:
-        for i, (aid, band, who, title, num, inst, genre) in enumerate(ARTISTS):
-            e = html.escape
-            btns += f'<button type="button" class="ab" data-a="{aid}" aria-selected="{str(i == 0).lower()}">{e(who)}</button>'
-            figs = ""
-            for label, key in RARITIES:
-                name = OVERRIDES.get((aid, key), f"{aid}-{key}")
-                figs += (f'<figure data-r="{key}"><button type="button" class="zoom" aria-label="Agrandir {e(who)}, {label}">'
-                         f'<img src="{data_uri(name, tmp)}" alt="{e(who)}, {label}" loading="lazy"></button>'
-                         f'<figcaption>{label}</figcaption></figure>')
-                n += 1
-            panels += (f'<section class="panel" data-a="{aid}"{"" if i == 0 else " hidden"}>'
-                       f'<h2>{e(who)} <span>· {e(band)}</span></h2>'
-                       f'<p class="meta">« {e(title)} » · arcane {num} · {e(inst)} · {e(genre)}</p>'
-                       f'<div class="grid">{figs}</div></section>')
+    for i, (aid, band, who, title, num, inst, genre) in enumerate(ARTISTS):
+        e = html.escape
+        btns += f'<button type="button" class="ab" data-a="{aid}" aria-selected="{str(i == 0).lower()}">{e(who)}</button>'
+        figs = ""
+        for label, key in RARITIES:
+            figs += (f'<figure data-r="{key}"><button type="button" class="zoom" aria-label="Agrandir {e(who)}, {label}">'
+                     f'<img src="{src(aid, key)}" alt="{e(who)}, {label}" loading="lazy"></button>'
+                     f'<figcaption>{label}</figcaption></figure>')
+            n += 1
+        panels += (f'<section class="panel" data-a="{aid}"{"" if i == 0 else " hidden"}>'
+                   f'<h2>{e(who)} <span>· {e(band)}</span></h2>'
+                   f'<p class="meta">« {e(title)} » · arcane {num} · {e(inst)} · {e(genre)}</p>'
+                   f'<div class="grid">{figs}</div></section>')
     tpl = open(os.path.join(os.path.dirname(__file__), "gallery_template.html"), encoding="utf-8").read()
     os.makedirs("export", exist_ok=True)
     open(OUT, "w", encoding="utf-8").write(tpl.replace("<!--BUTTONS-->", btns).replace("<!--PANELS-->", panels))

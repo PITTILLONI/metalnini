@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Metalnini">
@@ -17,7 +18,7 @@
     --display:"Arial Narrow","Oswald",Impact,sans-serif; --mono:ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-  html{color-scheme:dark}
+  html{color-scheme:dark; overflow-x:hidden}
   body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; line-height:1.45;
        padding-bottom:calc(76px + env(safe-area-inset-bottom)); overscroll-behavior-y:none}
   button{font:inherit; color:inherit}
@@ -138,8 +139,64 @@
   .field .total.bad{color:#f87171}
   .note{font:500 .72rem var(--mono); color:var(--muted); line-height:1.5}
 
+
+  /* ---------- Déchirure du paquet ---------- */
+  .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
+  .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#d4af37}
+  .pack .flap{position:absolute; left:0; right:0; top:0; height:17%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
+              background:linear-gradient(160deg,#3a1414,#1a0b0b); transform-origin:100% 100%;
+              transform:rotate(calc(var(--tear) * -7deg)) translateY(calc(var(--tear) * -6px)); transition:transform .08s linear}
+  .pack .tear{position:absolute; left:0; bottom:-2px; height:4px; width:calc(var(--tear) * 100%); border-radius:4px;
+              background:var(--tease); box-shadow:0 0 12px 3px var(--tease), 0 0 34px 8px var(--tease); opacity:calc(.35 + var(--tear) * .65)}
+  .pack .grip{position:absolute; top:6%; left:calc(6% + var(--tear) * 80%); z-index:3; font-size:1rem; color:var(--gold); opacity:.9; pointer-events:none}
+  .pack.torn .flap{transition:transform .55s cubic-bezier(.3,.7,.3,1), opacity .55s ease; transform:translate(120%,-160%) rotate(38deg); opacity:0}
+  .pack.torn{animation:burst .65s ease forwards}
+  @keyframes burst{0%{transform:scale(1)}35%{transform:scale(1.06); box-shadow:0 0 70px 20px var(--tease)}100%{transform:scale(1.12); opacity:0}}
+  .pack.charging{animation:charge .45s ease-in-out infinite}
+  @keyframes charge{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px) rotate(-.6deg)}75%{transform:translateX(2px) rotate(.6deg)}}
+  .swipe-hint{font:500 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0; animation:nudge 1.8s ease-in-out infinite}
+  @keyframes nudge{50%{transform:translateX(6px); color:var(--text)}}
+
+  /* ---------- Mise en scène du reveal ---------- */
+  .reveal{transition:background .6s ease}
+  .reveal.dim{background:radial-gradient(ellipse at center,#120404 0%,#000 75%)}
+  #fx{position:fixed; left:0; top:0; width:100vw; height:100vh; pointer-events:none; z-index:45}
+  #flash{position:fixed; inset:0; pointer-events:none; z-index:46; opacity:0; background:var(--flash,#fff)}
+  #flash.go{animation:flash .55s ease-out}
+  @keyframes flash{0%{opacity:.85}100%{opacity:0}}
+  .tilt{position:absolute; inset:0; transform-style:preserve-3d; transition:transform .25s ease-out}
+  .stage.rumble{animation:rumble .09s linear infinite}
+  @keyframes rumble{0%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-3px)}100%{transform:translate(2px,3px)}}
+  .stage.impact{animation:impact .5s cubic-bezier(.2,.9,.3,1.3)}
+  @keyframes impact{0%{transform:scale(.92)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+  .face.back{transition:box-shadow .3s ease}
+  .charge-rare .face.back{box-shadow:inset 0 0 0 2px #3b82f6, 0 0 30px 4px rgba(59,130,246,.6)}
+  .charge-holo .face.back{animation:hue 0.7s linear infinite; box-shadow:inset 0 0 0 2px #a78bfa, 0 0 40px 8px rgba(167,139,250,.7)}
+  @keyframes hue{to{filter:hue-rotate(360deg)}}
+  .charge-signature .face.back{box-shadow:inset 0 0 0 2px #d4af37, 0 0 50px 12px rgba(212,175,55,.75)}
+  .charge-legendaire .face.back{box-shadow:inset 0 0 0 2px #dc2626, 0 0 70px 20px rgba(220,38,38,.85)}
+  .ring{position:fixed; left:50%; top:45%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--ring,#dc2626); pointer-events:none; z-index:46; animation:ring .9s ease-out forwards}
+  @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
+  .sheen{background-position:var(--sx,150%) 0}
+  .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .sum-grid figure{opacity:0; transform:translateY(14px) scale(.95); animation:rise .45s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes rise{to{opacity:1; transform:none}}
+  .reset-link{background:none; border:0; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:8px}
+  .reset-link.armed{color:#f87171}
+  .fuse{margin-top:14px; display:flex; flex-direction:column; gap:8px}
+  .fuse button{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; text-align:left; cursor:pointer; font-size:.88rem}
+  .fuse button b{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em}
+  .fuse .dis{opacity:.45; cursor:default}
+  .mastery{margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid rgba(212,175,55,.35); background:rgba(212,175,55,.08); font-size:.86rem}
+  .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .62rem var(--mono); padding:2px 5px}
+  .toast{position:fixed; left:50%; bottom:calc(92px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:60; background:#1b1508; border:1px solid var(--gold); color:var(--text); border-radius:12px; padding:12px 16px; font-size:.9rem; box-shadow:0 10px 40px rgba(0,0,0,.6); animation:toast 3.6s ease forwards; max-width:88vw; text-align:center}
+  .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
+  @keyframes toast{0%{opacity:0; transform:translate(-50%,16px)}10%,85%{opacity:1; transform:translate(-50%,0)}100%{opacity:0; transform:translate(-50%,8px)}}
+  .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
+  .toggle input{width:22px; height:22px; accent-color:var(--accent)}
+
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} .pack.shake{animation:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} .pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -153,11 +210,15 @@
     <p>Ouvre un paquet, découvre tes cartes une par une, puis complète tes classeurs.</p>
   </div>
   <div class="pack-zone">
-    <button type="button" class="pack" id="pack" aria-label="Ouvrir un paquet">
-      <span class="p-moon">☾</span><span class="p-title">Série I</span><span class="p-sub" id="pack-sub">5 cartes</span>
-    </button>
-    <button type="button" class="btn" id="open-btn">Ouvrir un paquet</button>
+    <div class="pack-wrap">
+      <button type="button" class="pack" id="pack" aria-label="Déchirer le paquet (glisser vers la droite, ou toucher pour l'ouvrir)">
+        <span class="flap"><span class="tear"></span></span><span class="grip" aria-hidden="true">✂</span>
+        <span class="p-moon">☾</span><span class="p-title">Série I</span><span class="p-sub" id="pack-sub">5 cartes</span>
+      </button>
+      <p class="swipe-hint" id="swipe-hint">Glisse le doigt sur le paquet pour le déchirer →</p>
+    </div>
     <div class="stats-row" id="stats-row"></div>
+    <button type="button" class="reset-link" id="reset-quick">Repartir de zéro</button>
   </div>
 </main>
 
@@ -179,11 +240,15 @@
     <h1>Paquets</h1>
     <div class="field">
       <label>Cartes par paquet <input type="number" id="s-size" min="1" max="10" step="1"></label>
+      <label>Doublons pour une fusion <input type="number" id="s-fuse" min="2" max="20" step="1"></label>
     </div>
     <div class="field" id="odds-field">
       <p class="note">Probabilité de chaque rareté, tirée carte par carte (aucune rareté garantie). Le total doit faire 100 %.</p>
       <div id="odds"></div>
       <div class="total" id="odds-total"></div>
+    </div>
+    <div class="field">
+      <label class="toggle">Sons et vibrations <input type="checkbox" id="s-sound"></label>
     </div>
     <div class="field">
       <p class="note">Réinitialiser efface ta collection et ton compteur de paquets sur cet appareil.</p>
@@ -195,14 +260,17 @@
 
 <!-- ============ REVEAL ============ -->
 <div class="reveal" id="reveal" hidden aria-live="polite">
+  <button type="button" class="skip" id="skip">Tout révéler</button>
   <div id="reveal-one">
     <div class="counter" id="counter"></div>
-    <div class="stage">
-      <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
-        <div class="face back"></div>
-        <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div></div>
+    <div class="stage" id="stage">
+      <div class="tilt" id="tilt">
+        <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
+          <div class="face back"></div>
+          <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div></div>
+        </div>
+        <div class="glow" id="glow"></div>
       </div>
-      <div class="glow" id="glow"></div>
     </div>
     <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
     <div class="hint" id="hint">Touche la carte pour la retourner</div>
@@ -216,6 +284,9 @@
     </div>
   </div>
 </div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="flash" aria-hidden="true"></div>
 
 <!-- ============ DÉTAIL ============ -->
 <div class="sheet" id="sheet" hidden>
@@ -276,7 +347,7 @@
 
   // ---------- État (navigateur uniquement) ----------
   var KEY = 'metalnini-proto-v1';
-  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'heavy'};
+  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'heavy', sound:true, pending:null, fuse:5, mastered:{}};
   var state = load();
   function load(){
     try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && s.owned) return Object.assign({}, DEFAULT, s); }catch(e){}
@@ -291,18 +362,28 @@
     for(var i=0;i<RARITIES.length;i++){ acc += Math.max(0, +state.odds[RARITIES[i].k] || 0); if(x < acc) return RARITIES[i].k; }
     return 'commune';
   }
-  function drawPack(){
-    var out = [];
-    for(var i=0;i<state.size;i++){
-      var c = CARDS[Math.floor(Math.random()*CARDS.length)], r = drawRarity(), key = c.id + '|' + r;
-      var isNew = !state.owned[key];
+  // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
+  function pendingPack(){
+    if(!state.pending || state.pending.length !== state.size){
+      state.pending = [];
+      for(var i=0;i<state.size;i++){ state.pending.push({id:CARDS[Math.floor(Math.random()*CARDS.length)].id, r:drawRarity()}); }
+      save();
+    }
+    return state.pending;
+  }
+  function commitPack(){
+    var out = pendingPack().map(function(d){
+      var c = card(d.id) || CARDS[0], key = c.id + '|' + d.r, isNew = !state.owned[key];
       state.owned[key] = (state.owned[key] || 0) + 1;
       if(isNew) state.fresh[c.id] = true;
-      out.push({c:c, r:r, isNew:isNew});
-    }
-    state.opened++; save();
+      return {c:c, r:d.r, isNew:isNew};
+    });
+    // les plus rares en dernier, pour finir en apothéose
+    out.sort(function(a,b){ return rank(a.r) - rank(b.r); });
+    state.pending = null; state.opened++; save();
     return out;
   }
+  function bestOf(list){ var b = 'commune'; list.forEach(function(d){ if(rank(d.r) > rank(b)) b = d.r; }); return b; }
 
   // ---------- Navigation ----------
   var tabs = [].slice.call(document.querySelectorAll('.tabbar button'));
@@ -324,23 +405,124 @@
     document.getElementById('stats-row').innerHTML =
       '<span>' + state.opened + ' paquet' + (state.opened>1?'s':'') + ' ouvert' + (state.opened>1?'s':'') + '</span>' +
       '<span>' + ownedCount() + '/' + CARDS.length + ' musiciens</span>' +
-      '<span>' + variants + '/' + (CARDS.length*RARITIES.length) + ' variantes</span>';
+      '<span>' + variants + '/' + (CARDS.length*RARITIES.length) + ' variantes</span>' +
+      '<span>★ ' + CARDS.filter(function(c){ return mastered(c.id); }).length + ' maîtrise' + (CARDS.filter(function(c){ return mastered(c.id); }).length>1?'s':'') + '</span>';
   }
 
-  // ---------- Reveal ----------
-  var revealEl = document.getElementById('reveal'), flip = document.getElementById('flip'), current = [], idx = 0, flipped = false;
-  function openPack(){
-    var p = document.getElementById('pack'); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake');
-    current = drawPack(); idx = 0;
-    current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); }); // préchargement
-    setTimeout(function(){
-      revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
-      showCard();
-    }, 420);
+  // ---------- Effets : son, vibration, particules ----------
+  var COLORS = {commune:'#c9c3b8', rare:'#3b82f6', holo:'#a78bfa', signature:'#f5c542', legendaire:'#ef4444'};
+  var CHARGE = {commune:0, rare:320, holo:750, signature:1100, legendaire:1700};
+  var BURST  = {commune:0, rare:26, holo:70, signature:110, legendaire:190};
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ac = null;
+  function audio(){ if(!state.sound) return null; try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if(ac.state === 'suspended') ac.resume(); }catch(e){ ac = null; } return ac; }
+  function tone(f, t0, dur, type, vol){
+    var a = audio(); if(!a) return; var o = a.createOscillator(), g = a.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(f, a.currentTime + t0);
+    g.gain.setValueAtTime(0.0001, a.currentTime + t0); g.gain.exponentialRampToValueAtTime(vol || .18, a.currentTime + t0 + .02);
+    g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + t0 + dur);
+    o.connect(g); g.connect(a.destination); o.start(a.currentTime + t0); o.stop(a.currentTime + t0 + dur + .05);
   }
+  function noise(dur, vol, freq){
+    var a = audio(); if(!a) return; var b = a.createBuffer(1, a.sampleRate * dur, a.sampleRate), d = b.getChannelData(0);
+    for(var i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+    var s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq || 1800; g.gain.value = vol || .25;
+    s.connect(f); f.connect(g); g.connect(a.destination); s.start();
+  }
+  function buzz(p){ if(state.sound && navigator.vibrate) try{ navigator.vibrate(p); }catch(e){} }
+  var SFX = {
+    tear: function(){ noise(.35, .3, 2600); },
+    flip: function(){ noise(.18, .18, 900); },
+    commune: function(){ tone(523, 0, .25, 'triangle', .12); },
+    rare: function(){ tone(523,0,.3,'triangle'); tone(784,.09,.4,'triangle'); buzz(20); },
+    holo: function(){ [523,659,784,1047].forEach(function(f,i){ tone(f, i*.07, .5, 'sine', .16); }); buzz([20,40,20]); },
+    signature: function(){ [392,523,659,784,1047,1319].forEach(function(f,i){ tone(f, i*.08, .7, 'triangle', .16); }); tone(131,0,.9,'sine',.25); buzz([30,50,30,50,60]); },
+    legendaire: function(){ tone(55,0,1.6,'sawtooth',.22); tone(82,0,1.4,'sine',.3); [440,554,659,880,1109,1319].forEach(function(f,i){ tone(f, .25+i*.09, .9, 'triangle', .15); }); noise(.8,.35,400); buzz([80,40,80,40,200]); },
+    rumble: function(ms){ tone(45, 0, ms/1000, 'sawtooth', .12); buzz([ms]); }
+  };
+
+  var fx = document.getElementById('fx'), ctx = fx.getContext('2d'), parts = [], looping = false;
+  function sizeFx(){ var d = window.devicePixelRatio || 1; fx.width = innerWidth * d; fx.height = innerHeight * d; ctx.setTransform(d,0,0,d,0,0); }
+  addEventListener('resize', sizeFx); sizeFx();
+  function stageCenter(){ var r = document.getElementById('stage').getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2, w:r.width, h:r.height}; }
+  function burst(r){
+    if(reduce) return; var n = BURST[r], c = stageCenter(), col = COLORS[r];
+    for(var i=0;i<n;i++){ var a = Math.random()*Math.PI*2, v = 3 + Math.random()*(r==='legendaire'?11:8);
+      parts.push({x:c.x, y:c.y, vx:Math.cos(a)*v, vy:Math.sin(a)*v - 2, life:1, decay:.012+Math.random()*.02, size:1.5+Math.random()*(r==='legendaire'?4:3),
+                  col: r==='holo' ? ['#2dd4bf','#a78bfa','#f472b6','#fcd34d'][i%4] : col, g:.12}); }
+    loop();
+  }
+  function embers(r, ms){
+    if(reduce) return; var c = stageCenter(), end = Date.now() + ms;
+    (function spawn(){ if(Date.now() > end) return;
+      for(var i=0;i<(r==='legendaire'?4:2);i++) parts.push({x:c.x + (Math.random()-.5)*c.w*1.2, y:c.y + c.h/2, vx:(Math.random()-.5)*.8, vy:-1.5-Math.random()*2.5, life:1, decay:.01+Math.random()*.01, size:1+Math.random()*2.5, col:COLORS[r], g:-.01});
+      loop(); setTimeout(spawn, 40); })();
+  }
+  function loop(){
+    if(looping) return; looping = true;
+    (function step(){
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      parts = parts.filter(function(p){ return p.life > 0; });
+      parts.forEach(function(p){ p.x += p.vx; p.y += p.vy; p.vy += p.g; p.vx *= .985; p.life -= p.decay;
+        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.col; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+      ctx.globalAlpha = 1;
+      if(parts.length) requestAnimationFrame(step); else { looping = false; ctx.clearRect(0,0,innerWidth,innerHeight); }
+    })();
+  }
+  function flash(r){ if(reduce || r==='commune') return; var f = document.getElementById('flash'); f.style.setProperty('--flash', r==='rare' ? 'rgba(59,130,246,.5)' : COLORS[r]); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+  function ring(r){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; el.style.setProperty('--ring', COLORS[r]); document.body.appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
+
+  // ---------- Déchirer le paquet ----------
+  var packEl = document.getElementById('pack'), drag = null, opening = false;
+  function setTear(v){ packEl.style.setProperty('--tear', v.toFixed(3)); }
+  function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
+  packEl.addEventListener('pointerdown', function(e){
+    if(opening) return; prepTease(); audio();
+    drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
+    packEl.setPointerCapture(e.pointerId);
+  });
+  packEl.addEventListener('pointermove', function(e){
+    if(!drag) return; var v = Math.max(0, Math.min(1, (e.clientX - drag.x0) / (drag.w * .75)));
+    if(v > .04) drag.moved = true; setTear(v);
+    if(v >= 1){ drag = null; tearOpen(); }
+  });
+  function endDrag(){
+    if(!drag) return; var v = parseFloat(packEl.style.getPropertyValue('--tear')) || 0, moved = drag.moved; drag = null;
+    if(v > .6) tearOpen(); else if(!moved) autoTear(); else { packEl.style.transition = 'none'; animateTear(v, 0, 220); }
+  }
+  packEl.addEventListener('pointerup', endDrag);
+  packEl.addEventListener('pointercancel', function(){ drag = null; animateTear(parseFloat(packEl.style.getPropertyValue('--tear'))||0, 0, 200); });
+  packEl.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); prepTease(); autoTear(); } });
+  function animateTear(from, to, ms, done){
+    var t0 = performance.now();
+    (function f(t){ var k = Math.min(1, (t - t0) / ms); setTear(from + (to - from) * (1 - Math.pow(1 - k, 3))); if(k < 1) requestAnimationFrame(f); else if(done) done(); })(t0);
+  }
+  function autoTear(){ if(opening) return; animateTear(0, 1, 650, tearOpen); }
+  function tearOpen(){
+    if(opening) return; opening = true; setTear(1); SFX.tear();
+    var tease = bestOf(pendingPack());
+    var wait = {commune:0, rare:250, holo:500, signature:800, legendaire:1100}[tease];
+    if(wait && !reduce){ packEl.classList.add('charging'); if(rank(tease) >= 3) SFX.rumble(wait); }
+    setTimeout(function(){
+      packEl.classList.remove('charging'); packEl.classList.add('torn'); flash(tease);
+      current = commitPack(); idx = 0;
+      current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); });
+      setTimeout(function(){
+        revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
+        document.getElementById('skip').hidden = false; showCard();
+        packEl.classList.remove('torn'); setTear(0); opening = false; renderStats();
+      }, 600);
+    }, wait);
+  }
+
+  // ---------- Reveal carte par carte ----------
+  var revealEl = document.getElementById('reveal'), flip = document.getElementById('flip'), stage = document.getElementById('stage'), tilt = document.getElementById('tilt');
+  var current = [], idx = 0, flipped = false, busy = false;
   function showCard(){
-    var x = current[idx]; flipped = false;
-    flip.classList.remove('on'); document.getElementById('card-info').classList.remove('on');
+    var x = current[idx]; flipped = false; busy = false;
+    flip.classList.remove('on'); stage.className = 'stage'; revealEl.classList.remove('dim'); tilt.style.transform = '';
+    document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
     document.getElementById('hint').textContent = 'Touche la carte pour la retourner';
     setTimeout(function(){
@@ -350,25 +532,56 @@
       document.getElementById('sheen').setAttribute('data-r', x.r);
       var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
       document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
-    }, flip.classList.contains('on') ? 0 : 10);
+    }, 260);
+  }
+  function reveal(){
+    var x = current[idx], r = x.r, ms = reduce ? 0 : CHARGE[r]; busy = true;
+    // anticipation : plus la carte est rare, plus l'attente est longue et chargée
+    if(ms){ stage.classList.add('charge-' + r); if(r === 'legendaire'){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); } if(rank(r) >= 2) embers(r, ms); }
+    setTimeout(function(){
+      stage.classList.remove('rumble'); SFX.flip();
+      flip.classList.add('on'); flipped = true;
+      setTimeout(function(){
+        stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
+        document.getElementById('card-info').classList.add('on'); busy = false;
+        document.getElementById('hint').textContent = (rank(r) >= 2 ? 'Incline la carte du doigt · ' : '') + (idx < current.length-1 ? 'touche pour la suivante' : 'touche pour le résumé');
+      }, reduce ? 0 : 380);
+    }, ms);
   }
   function tapCard(){
-    if(!flipped){ flipped = true; flip.classList.add('on'); document.getElementById('card-info').classList.add('on');
-      document.getElementById('hint').textContent = idx < current.length-1 ? 'Touche pour la suivante' : 'Touche pour voir le résumé'; return; }
+    if(busy) return;
+    if(!flipped){ reveal(); return; }
     if(idx < current.length-1){ idx++; showCard(); } else { showSummary(); }
   }
-  flip.addEventListener('click', tapCard);
+  flip.addEventListener('click', function(){ if(!tilting) tapCard(); });
   flip.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); tapCard(); } });
+
+  // Inclinaison au doigt une fois la carte révélée : le reflet suit le geste
+  var tilting = false, tStart = null;
+  stage.addEventListener('pointerdown', function(e){ if(!flipped || busy) return; tStart = {x:e.clientX, y:e.clientY}; tilting = false; });
+  stage.addEventListener('pointermove', function(e){
+    if(!flipped || reduce) return;
+    var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+    if(tStart && (Math.abs(e.clientX - tStart.x) > 8 || Math.abs(e.clientY - tStart.y) > 8)) tilting = true;
+    tilt.style.transform = 'rotateY(' + (px * 22) + 'deg) rotateX(' + (-py * 18) + 'deg)';
+    document.getElementById('sheen').style.setProperty('--sx', (50 - px * 160) + '%');
+  });
+  function untilt(){ tilt.style.transform = ''; setTimeout(function(){ tilting = false; }, 30); tStart = null; }
+  stage.addEventListener('pointerleave', untilt);
+  stage.addEventListener('pointerup', function(){ if(tilting){ untilt(); } else { tStart = null; } });
+
+  document.getElementById('skip').addEventListener('click', showSummary);
   function showSummary(){
-    document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false;
-    document.getElementById('sum-grid').innerHTML = current.map(function(x){
-      return '<figure><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + '" style="border-color:' + rarity(x.r).color + '"><figcaption>' +
+    celebrate(newMasteries());
+    document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
+    revealEl.classList.remove('dim');
+    var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); burst(b); }
+    document.getElementById('sum-grid').innerHTML = current.map(function(x, i){
+      return '<figure style="animation-delay:' + (i*90) + 'ms"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + '" style="border-color:' + rarity(x.r).color + '"><figcaption>' +
         rarity(x.r).label + (x.isNew ? ' · Nouveau' : ' · Doublon') + '</figcaption></figure>';
     }).join('');
   }
-  document.getElementById('pack').addEventListener('click', openPack);
-  document.getElementById('open-btn').addEventListener('click', openPack);
-  document.getElementById('again').addEventListener('click', openPack);
+  document.getElementById('again').addEventListener('click', function(){ revealEl.hidden = true; go('packs'); prepTease(); autoTear(); });
   document.getElementById('to-binder').addEventListener('click', function(){
     revealEl.hidden = true;
     var last = current.length ? current[current.length-1].c.binder : state.binder;
@@ -377,6 +590,17 @@
 
   // ---------- Classeur ----------
   function best(id){ var b = null; RARITIES.forEach(function(r){ if(state.owned[id+'|'+r.k]) b = r.k; }); return b; }
+  function mastered(id){ return RARITIES.every(function(r){ return state.owned[id+'|'+r.k]; }); }
+  function newMasteries(){
+    state.mastered = state.mastered || {}; var out = [];
+    CARDS.forEach(function(c){ if(mastered(c.id) && !state.mastered[c.id]){ state.mastered[c.id] = true; out.push(c); } });
+    if(out.length) save(); return out;
+  }
+  function toast(html){ var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
+  function celebrate(list){
+    list.forEach(function(c, i){ setTimeout(function(){ SFX.signature(); burst('signature');
+      toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies : badge débloqué'); }, 500 + i*1200); });
+  }
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
   function renderBinder(){
     var tabsEl = document.getElementById('binder-tabs');
@@ -394,7 +618,7 @@
       var r = best(c.id);
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '"><span class="img"><span class="empty">' + c.num + '<small>' + esc(c.band) + '</small></span></span><span class="cap">???</span></button>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
-        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') +
+        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') +
         '</span><span class="cap">' + esc(c.who) + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
@@ -415,9 +639,32 @@
         var n = state.owned[id+'|'+x.k] || 0;
         return n ? '<button type="button" data-r="' + x.k + '"><img src="' + img(id, x.k) + '" alt="' + x.label + '" style="outline:2px solid ' + (x.k===r ? x.color : 'transparent') + ';outline-offset:1px"><small>' + x.label + (n>1?' ×'+n:'') + '</small></button>'
                  : '<div><div class="lock">?</div><small>' + x.label + '</small></div>';
-      }).join('') + '</div>';
+      }).join('') + '</div>' + fuseBlock(id) +
+      (mastered(id) ? '<div class="mastery">★ <b>Maîtrise</b> : tu possèdes les 5 raretés de ' + esc(c.who) + '.</div>'
+                    : (r ? '<p class="note" style="margin-top:12px">Maîtrise : ' + RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }).length + '/5 raretés. Réunis-les toutes pour le badge.</p>' : ''));
+    [].forEach.call(document.querySelectorAll('#detail .fuse button[data-from]'), function(b){ b.addEventListener('click', function(){ fuse(id, b.getAttribute('data-from')); }); });
     [].forEach.call(document.querySelectorAll('#detail .variants button'), function(b){ b.addEventListener('click', function(){ openDetail(id, b.getAttribute('data-r')); }); });
     sheet.hidden = false;
+  }
+  function fuseBlock(id){
+    var rows = RARITIES.slice(0, -1).map(function(x, i){
+      var n = state.owned[id+'|'+x.k] || 0; if(!n) return '';
+      var dup = n - 1, next = RARITIES[i+1], ok = dup >= state.fuse;
+      return '<button type="button"' + (ok ? ' data-from="' + x.k + '"' : ' class="dis" disabled') + '>Fusionner <b>' + state.fuse + ' doublons ' + x.label + '</b> → <b style="color:' + next.color + '">1 ' + next.label + '</b>' +
+             (ok ? '' : '<br><span class="note">' + dup + '/' + state.fuse + ' doublons</span>') + '</button>';
+    }).join('');
+    return rows ? '<div class="fuse"><p class="note" style="margin:0">Fusion des doublons (on garde toujours un exemplaire)</p>' + rows + '</div>' : '';
+  }
+  function fuse(id, from){
+    var i = rank(from), next = RARITIES[i+1].k, kFrom = id+'|'+from, kNext = id+'|'+next;
+    if(!next || (state.owned[kFrom] || 0) - 1 < state.fuse) return;
+    state.owned[kFrom] -= state.fuse;
+    var isNew = !state.owned[kNext]; state.owned[kNext] = (state.owned[kNext] || 0) + 1; if(isNew) state.fresh[id] = true; save();
+    sheet.hidden = true; SFX.tear();
+    current = [{c:card(id), r:next, isNew:isNew}]; idx = 0;
+    revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
+    document.getElementById('skip').hidden = true; showCard();
+    setTimeout(function(){ document.getElementById('counter').textContent = 'Fusion · ' + rarity(from).label + ' → ' + rarity(next).label; }, 0);
   }
   function closeDetail(){ sheet.hidden = true; if(!document.getElementById('v-binder').hidden) renderBinder(); }
   document.getElementById('sheet-close').addEventListener('click', closeDetail);
@@ -426,8 +673,10 @@
 
   // ---------- Réglages ----------
   function renderSettings(){
+    var snd = document.getElementById('s-sound'); snd.checked = state.sound !== false; snd.onchange = function(){ state.sound = snd.checked; save(); };
+    var fz = document.getElementById('s-fuse'); fz.value = state.fuse; fz.onchange = function(){ var v = Math.max(2, Math.min(20, parseInt(fz.value,10) || 5)); state.fuse = v; fz.value = v; save(); };
     var size = document.getElementById('s-size'); size.value = state.size;
-    size.onchange = function(){ var v = Math.max(1, Math.min(10, parseInt(size.value,10) || 5)); state.size = v; size.value = v; save(); };
+    size.onchange = function(){ var v = Math.max(1, Math.min(10, parseInt(size.value,10) || 5)); state.size = v; size.value = v; state.pending = null; save(); };
     document.getElementById('odds').innerHTML = RARITIES.map(function(r){
       return '<label><span style="color:' + r.color + '">' + r.label + '</span><span><input type="number" min="0" max="100" step="0.5" data-k="' + r.k + '" value="' + state.odds[r.k] + '"> %</span></label>';
     }).join('');
@@ -439,8 +688,16 @@
     var el = document.getElementById('odds-total'); el.textContent = 'Total : ' + t + ' %' + (Math.abs(t-100) > .01 ? ' — les probabilités sont ramenées à 100 % au tirage' : '');
     el.className = 'total' + (Math.abs(t-100) > .01 ? ' bad' : '');
   }
+  function resetAll(){ state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; save(); renderStats(); }
+  var rq = document.getElementById('reset-quick'), rqTimer = null;
+  rq.addEventListener('click', function(){
+    if(!rq.classList.contains('armed')){ rq.classList.add('armed'); rq.textContent = 'Toucher encore pour tout effacer'; clearTimeout(rqTimer);
+      rqTimer = setTimeout(function(){ rq.classList.remove('armed'); rq.textContent = 'Repartir de zéro'; }, 3000); return; }
+    clearTimeout(rqTimer); resetAll(); rq.classList.remove('armed'); rq.textContent = 'Collection remise à zéro';
+    setTimeout(function(){ rq.textContent = 'Repartir de zéro'; }, 1800);
+  });
   document.getElementById('reset').addEventListener('click', function(){
-    state.owned = {}; state.opened = 0; state.fresh = {}; save(); renderStats(); go('packs');
+    resetAll(); go('packs');
   });
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
