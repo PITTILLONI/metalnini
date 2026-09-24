@@ -55,7 +55,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
 
   // 1. Ouvrir un paquet au clavier (toucher)
   key(d.getElementById('pack'), 'Enter');
-  await sleep(3200);
+  // une Légendaire dans le paquet allonge l'ouverture : on attend l'écran de révélation (8 s au plus)
+  for (let t = 0; t < 80 && d.getElementById('reveal').hidden; t++) await sleep(100);
+  await sleep(800);
   check('le reveal s\'ouvre après la déchirure', !d.getElementById('reveal').hidden);
   const st = state();
   check('5 cartes ajoutées à la collection', Object.values(st.owned).reduce((a, b) => a + b, 0) === 5, JSON.stringify(st.owned));
