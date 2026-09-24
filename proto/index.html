@@ -52,8 +52,9 @@
   /* accueil façon écran de jeu : HUD, quête, paquet, gros bouton */
   .hud{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:calc(12px + env(safe-area-inset-top)) 0 10px}
   .hud-me{display:flex; align-items:center; gap:10px; min-width:0}
-  .hud-me .av{flex:0 0 auto; width:40px; height:40px; display:grid; place-items:center; border-radius:12px; font-size:1.3rem; color:var(--gold);
-    background:linear-gradient(#2a221c,#16110e); border:1px solid rgba(212,175,55,.5); box-shadow:0 3px 0 #0a0807}
+  .hud-me .av{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; font-size:1.3rem; color:var(--gold); padding:0; cursor:pointer; overflow:hidden;
+    background:#16110e center/cover no-repeat; border:0; box-shadow:0 0 0 1px rgba(212,175,55,.7), 0 0 0 3px #0d0a08, 0 0 0 4px rgba(212,175,55,.3)}
+  .hud-me .av.has{font-size:0}
   .hud-me b{display:block; font:700 1rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw}
   .hud-me .net{display:block; font:500 .56rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:left; margin-top:2px}
   .hud-me .net b{display:inline; color:#4ade80; font-size:.7rem}
@@ -95,6 +96,19 @@
     box-shadow:inset 0 0 0 1px rgba(212,175,55,.5), inset 0 0 0 5px #110d0a, inset 0 0 0 6px rgba(212,175,55,.22), 0 24px 60px rgba(0,0,0,.7)}
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
+  .modal-in.profile{max-height:92dvh; overflow:auto; position:relative}
+  .modal-in.profile .sheet-close{position:absolute; top:12px; right:12px; float:none}
+  .pf-av{display:grid; place-items:center; width:132px; height:132px; margin:10px auto 8px; border-radius:50%; border:0; padding:0; cursor:pointer; font-size:3rem; color:var(--gold);
+    background:#16110e center/cover no-repeat; box-shadow:0 0 0 2px rgba(212,175,55,.8), 0 0 0 6px #110d0a, 0 0 0 7px rgba(212,175,55,.3), 0 14px 30px rgba(0,0,0,.6)}
+  .pf-av.has span{display:none}
+  .pf-name{font:700 1.2rem var(--display); text-transform:uppercase; letter-spacing:.06em; color:var(--text); margin:0 0 12px}
+  .pf-note{font-size:.86rem; margin:0 0 10px}
+  .pf-meter{height:8px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; margin:0 0 12px; box-shadow:inset 0 0 0 1px rgba(212,175,55,.2)}
+  .pf-meter i{display:block; height:100%; width:0; background:linear-gradient(90deg,#b8912a,#f5c542 60%,#e0413f); transition:width .06s linear}
+  .pf-row{display:flex; gap:10px} .pf-row .btn{flex:1; padding-left:10px; padding-right:10px}
+  #pf-save{width:100%; margin-top:10px}
+  .btn.rec{animation:recpulse 1s ease-in-out infinite}
+  @keyframes recpulse{50%{filter:brightness(1.35)}}
   .stats-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font:500 .72rem var(--mono); color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
   .stats-row span{border:1px solid var(--border); border-radius:4px; padding:5px 9px}
 
@@ -153,13 +167,13 @@
     backdrop-filter:blur(8px); transition:transform .12s ease, background .12s ease}
   .icon-btn:active{transform:scale(.92); background:rgba(255,255,255,.14)}
   .carousel{flex:1; min-height:0; display:flex; align-items:center; gap:14px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none;
-    padding:24px calc(50% - var(--cw) / 2); --cw:min(72vw, calc((100dvh - 370px) * .6667), 400px)}
+    padding:0 calc(50% - var(--cw) / 2); --cw:min(72vw, calc((100dvh - 300px) * .6667), 400px)}
   .carousel::-webkit-scrollbar{display:none}
   .carousel figure{flex:0 0 var(--cw); margin:0; scroll-snap-align:center; text-align:center; transition:transform .25s ease, opacity .25s ease; transform:scale(.86); opacity:.55}
   .carousel figure.on{transform:none; opacity:1}
   .carousel img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:14px; display:block; box-shadow:0 0 0 2px var(--rc), 0 18px 40px rgba(0,0,0,.6)}
   .carousel figure.on img{box-shadow:0 0 0 2px var(--rc), 0 0 34px 4px color-mix(in srgb, var(--rc) 45%, transparent), 0 18px 40px rgba(0,0,0,.6)}
-  .carousel figcaption{margin-top:12px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap}
+  .carousel figcaption{margin-top:10px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap}
   .chip{font:600 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:999px; border:1px solid var(--rc, var(--border)); color:var(--rc, var(--muted)); background:rgba(0,0,0,.35)}
   .chip.new{background:var(--accent); border-color:var(--accent); color:#fff}
   .dots{display:flex; justify-content:center; gap:7px; padding:4px 0 10px}
@@ -443,7 +457,7 @@
 <!-- ============ PAQUETS ============ -->
 <main id="v-packs" class="view wrap home">
   <header class="hud">
-    <div class="hud-me"><span class="av" aria-hidden="true">☠</span><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
+    <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri">☠</button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
     <div class="hud-stats" id="stats-row"></div>
   </header>
   <button type="button" class="goal quest" id="goal" hidden></button>
@@ -538,10 +552,8 @@
     </header>
     <div class="carousel" id="sum-grid" aria-label="Cartes du paquet"></div>
     <div class="dots" id="sum-dots" aria-hidden="true"></div>
-    <button type="button" class="goal quest" id="goal-sum" hidden></button>
     <div class="sum-actions">
       <button type="button" class="btn big" id="to-binder">Ranger dans le classeur</button>
-      <button type="button" class="link-btn" id="again">Rappel ! Un autre paquet</button>
     </div>
   </div>
 </div>
@@ -585,6 +597,28 @@
   if(!has && !/type=|access_token|error=/.test(location.hash)) document.getElementById('auth-form').dataset.mode = 'signup';
 })();
 </script>
+<div class="modal" id="profile" hidden role="dialog" aria-modal="true" aria-labelledby="pf-t">
+  <div class="modal-in profile">
+    <button type="button" class="sheet-close" id="pf-close" aria-label="Fermer">✕</button>
+    <p class="eyebrow">Backstage</p>
+    <h2 id="pf-t">Ton profil</h2>
+    <button type="button" class="pf-av" id="pf-av" aria-label="Changer la photo de profil"><span>☠</span></button>
+    <p class="pf-name" id="pf-name"></p>
+    <input type="file" id="pf-file" accept="image/*" hidden>
+    <button type="button" class="btn ghost" id="pf-photo">Changer la photo</button>
+    <div class="pf-cry">
+      <p class="eyebrow" style="margin-top:18px">Ton cri</p>
+      <p class="pf-note" id="pf-cry-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque.</p>
+      <div class="pf-meter" aria-hidden="true"><i id="pf-level"></i></div>
+      <div class="pf-row">
+        <button type="button" class="btn danger" id="pf-rec">● Enregistrer</button>
+        <button type="button" class="btn ghost" id="pf-play" hidden>▶ Écouter</button>
+      </div>
+      <button type="button" class="btn" id="pf-save" hidden>Garder ce cri</button>
+    </div>
+    <p class="err" id="pf-err"></p>
+  </div>
+</div>
 <div class="modal" id="confirm" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirm-t" aria-describedby="confirm-d">
   <div class="modal-in">
     <p class="eyebrow">Réglages</p>
@@ -651,6 +685,21 @@ const api = {
   async signOut(){ await sb.auth.signOut(); },
   onRecovery(cb){ sb.auth.onAuthStateChange(e => { if(e === 'PASSWORD_RECOVERY') cb(); }); },
   async resetCollection(){ must(await sb.rpc('reset_my_collection')); },
+  // photo et cri : fichiers privés dans le dossier du joueur, lus par lien signé
+  async media(){
+    const rows = must(await sb.from('profiles').select('avatar_path, cry_path').limit(1)), r = rows[0] || {};
+    const url = async (b, p) => p ? (must(await sb.storage.from(b).createSignedUrl(p, 3600))).signedUrl : null;
+    return { avatar: await url('avatars', r.avatar_path), cry: await url('cries', r.cry_path) };
+  },
+  async uploadMedia(kind, blob, ext){
+    const { data: { user } } = await sb.auth.getUser(), bucket = kind === 'avatar' ? 'avatars' : 'cries';
+    const rows = must(await sb.from('profiles').select(kind + '_path').limit(1)), old = rows[0] && rows[0][kind + '_path'];
+    const path = user.id + '/' + kind + '-' + Date.now() + '.' + ext;
+    must(await sb.storage.from(bucket).upload(path, blob, { contentType: blob.type, upsert: false }));
+    must(await sb.rpc('set_profile_media', { p_kind: kind, p_path: path }));
+    if(old) await sb.storage.from(bucket).remove([old]);
+    return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
+  },
   async username(){ const rows = must(await sb.from('profiles').select('username').limit(1)); return rows[0] ? rows[0].username : null; },
   async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
   async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed')); },
@@ -766,6 +815,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats();
+      api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
       if(!state.username) askUsername();
     }catch(e){ ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Le serveur a raté son stage diving : mode hors ligne'); }
@@ -798,6 +848,83 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       btn.disabled = false;
     };
   }
+  // ---------- Profil : photo et cri ----------
+  var MEDIA = {avatar:null, cry:null};
+  function avatarSrc(){ return ONLINE ? MEDIA.avatar : state.avatar; }
+  function crySrc(){ return ONLINE ? MEDIA.cry : state.cry; }
+  function paintAvatar(){
+    var src = avatarSrc();
+    [document.getElementById('hud-av'), document.getElementById('pf-av')].forEach(function(el){
+      el.style.backgroundImage = src ? 'url("' + src + '")' : ''; el.classList.toggle('has', !!src); });
+  }
+  var pf = document.getElementById('profile'), pfErr = document.getElementById('pf-err'), recBlob = null, recUrl = null;
+  function openProfile(){ pfErr.textContent = ''; document.getElementById('pf-name').textContent = state.username || 'Invité'; paintAvatar(); resetCry(); pf.hidden = false; }
+  function closeProfile(){ stopRec(); pf.hidden = true; }
+  document.getElementById('hud-av').addEventListener('click', openProfile);
+  document.getElementById('pf-close').addEventListener('click', closeProfile);
+  pf.addEventListener('click', function(e){ if(e.target === pf) closeProfile(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !pf.hidden) closeProfile(); });
+  // photo : recadrée au carré et réduite à 320 px avant l'envoi
+  var fileIn = document.getElementById('pf-file');
+  document.getElementById('pf-photo').addEventListener('click', function(){ fileIn.click(); });
+  document.getElementById('pf-av').addEventListener('click', function(){ fileIn.click(); });
+  fileIn.addEventListener('change', function(){
+    var f = fileIn.files && fileIn.files[0]; fileIn.value = ''; if(!f) return;
+    var im = new Image(), u = URL.createObjectURL(f);
+    im.onload = function(){
+      URL.revokeObjectURL(u); var S = 320, c = document.createElement('canvas'); c.width = c.height = S;
+      var side = Math.min(im.width, im.height); c.getContext('2d').drawImage(im, (im.width - side) / 2, (im.height - side) / 2, side, side, 0, 0, S, S);
+      c.toBlob(async function(blob){
+        try{
+          if(ONLINE){ MEDIA.avatar = await ONLINE.uploadMedia('avatar', blob, 'jpg'); }
+          else { state.avatar = c.toDataURL('image/jpeg', .82); save(); }
+          paintAvatar(); toast('Nouvelle tête validée');
+        }catch(e){ pfErr.textContent = e.message; }
+      }, 'image/jpeg', .85);
+    };
+    im.onerror = function(){ pfErr.textContent = 'Image illisible, essaie un JPEG ou un PNG.'; };
+    im.src = u;
+  });
+  // cri : 6 secondes max, vumètre pendant la prise
+  var rec = null, recStream = null, recTimer = null, meterRaf = 0, player = null;
+  var recBtn = document.getElementById('pf-rec'), playBtn = document.getElementById('pf-play'), saveBtn = document.getElementById('pf-save'), level = document.getElementById('pf-level');
+  function resetCry(){ recBlob = null; saveBtn.hidden = true; playBtn.hidden = !crySrc(); recBtn.textContent = crySrc() ? '● Refaire mon cri' : '● Enregistrer'; level.style.width = '0'; }
+  function stopRec(){ clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
+  recBtn.addEventListener('click', async function(){
+    pfErr.textContent = '';
+    if(rec && rec.state === 'recording'){ stopRec(); return; }
+    if(!navigator.mediaDevices || !window.MediaRecorder){ pfErr.textContent = 'Ce navigateur ne sait pas enregistrer le son.'; return; }
+    try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
+    catch(e){ pfErr.textContent = 'Micro refusé. Autorise-le dans les réglages du navigateur pour hurler.'; return; }
+    var type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].filter(function(t){ return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t); })[0] || '';
+    var chunks = []; rec = new MediaRecorder(recStream, type ? { mimeType: type } : undefined);
+    rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = function(){
+      recBlob = new Blob(chunks, { type: (rec.mimeType || type || 'audio/webm').split(';')[0] });
+      if(recUrl) URL.revokeObjectURL(recUrl); recUrl = URL.createObjectURL(recBlob);
+      recBtn.textContent = '● Recommencer'; playBtn.hidden = false; saveBtn.hidden = false; level.style.width = '0';
+    };
+    // vumètre
+    try{
+      var ac = new (window.AudioContext || window.webkitAudioContext)(), an = ac.createAnalyser(); an.fftSize = 512; ac.createMediaStreamSource(recStream).connect(an);
+      var buf = new Uint8Array(an.fftSize);
+      (function meter(){ an.getByteTimeDomainData(buf); var pk = 0; for(var i = 0; i < buf.length; i++){ pk = Math.max(pk, Math.abs(buf[i] - 128)); }
+        level.style.width = Math.min(100, pk / 1.1) + '%'; if(rec && rec.state === 'recording') meterRaf = requestAnimationFrame(meter); else ac.close(); })();
+    }catch(e){}
+    rec.start(); recBtn.textContent = '■ Stop'; recBtn.classList.add('rec'); buzz([30]);
+    recTimer = setTimeout(stopRec, 6000);
+  });
+  playBtn.addEventListener('click', function(){ var src = recBlob ? recUrl : crySrc(); if(!src) return; if(player) player.pause(); player = new Audio(src); player.play().catch(function(){ pfErr.textContent = 'Lecture impossible sur ce navigateur.'; }); });
+  saveBtn.addEventListener('click', async function(){
+    if(!recBlob) return; saveBtn.disabled = true; pfErr.textContent = '';
+    try{
+      var ext = /mp4/.test(recBlob.type) ? 'm4a' : /ogg/.test(recBlob.type) ? 'ogg' : 'webm';
+      if(ONLINE){ MEDIA.cry = await ONLINE.uploadMedia('cry', recBlob, ext); }
+      else { state.cry = await new Promise(function(ok){ var fr = new FileReader(); fr.onload = function(){ ok(fr.result); }; fr.readAsDataURL(recBlob); }); save(); }
+      recBlob = null; resetCry(); toast('Cri enregistré. Les voisins s\'en souviendront.');
+    }catch(e){ pfErr.textContent = e.message; }
+    saveBtn.disabled = false;
+  });
   function signOut(){ if(!AUTH) return; var api = AUTH; ONLINE = null; state.username = null; state.owned = {}; state.toPlace = []; state.pending = null; save(); setNet(); renderStats(); api.signOut().then(function(){ showAuth('login'); }); }
   function askUsername(){
     var box = document.getElementById('uname'), inp = document.getElementById('uname-in'), err = document.getElementById('uname-err'), btn = document.getElementById('uname-go');
@@ -1187,7 +1314,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
     revealEl.classList.remove('dim');
     var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); }
-    renderGoal('goal-sum');
     var news = current.filter(function(x){ return x.isNew; }).length;
     document.getElementById('sum-sub').textContent = current.length + ' cartes · ' + (news ? news + ' inédite' + (news > 1 ? 's' : '') : 'que des doublons, dur');
     // meilleure carte d'abord, au centre
@@ -1198,8 +1324,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<span class="chip">' + rarity(x.r).label + '</span>' + (x.isNew ? '<span class="chip new">Inédite</span>' : '<span class="chip">Doublon</span>') + '</figcaption></figure>';
     }).join('');
     dots.innerHTML = order.map(function(){ return '<i></i>'; }).join('');
-    car.scrollLeft = 0; carActive();
+    sizeCarousel(); car.scrollLeft = 0; carActive();
   }
+  // la carte + sa légende tiennent dans la hauteur réellement disponible, halo compris
+  function sizeCarousel(){
+    var car = document.getElementById('sum-grid'); if(document.getElementById('summary').hidden) return;
+    car.style.removeProperty('--cw'); var h = car.clientHeight, w = car.clientWidth;
+    var cw = Math.floor(Math.min(w * .72, (h - 44 - 36) * 2 / 3, 400));
+    if(cw > 60) car.style.setProperty('--cw', cw + 'px');
+  }
+  addEventListener('resize', function(){ sizeCarousel(); carActive(); });
   // carte au centre du carrousel mise en avant
   var carRaf = 0;
   function carActive(){
@@ -1232,7 +1366,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     };
     im.src = img(b.c.id, b.r);
   });
-  document.getElementById('again').addEventListener('click', function(){ revealEl.hidden = true; go('packs'); prepTease(); autoTear(); });
   document.getElementById('to-binder').addEventListener('click', function(){
     revealEl.hidden = true;
     state.binder = 'all'; save(); go('binder');
@@ -1474,7 +1607,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('confirm-yes').addEventListener('click', function(){ closeConfirm(); resetAll(); go('packs'); toast('Collection brûlée. Le pit t\'attend.'); });
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
-  renderStats(); setNet(); setTimeout(packParallax, 0);
+  renderStats(); setNet(); paintAvatar(); setTimeout(packParallax, 0);
 })();
 </script>
 </body>

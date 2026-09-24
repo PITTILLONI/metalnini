@@ -166,7 +166,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
   check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
-  check('résumé : objectif et bouton partager', !d4.getElementById('goal-sum').hidden && !!d4.getElementById('share'));
+  check('résumé : bouton partager', !!d4.getElementById('share'));
 
   // 9. Doublons empilés, onglet Toutes les cartes, ouverture spéciale d'une Légendaire
   const s6 = { size:5, odds:{commune:0,rare:0,holo:0,signature:0,legendaire:100}, owned:{'korn|rare':3}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuse:5, mastered:{}, completed:{}, packType:'serie', toPlace:[] };
