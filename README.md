@@ -4,6 +4,21 @@ Le "Panini du metal/rock" : une app de collection de cartes d'artistes metal/roc
 
 Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub Pages) et de mémoire de travail pour le concept : chaque décision prise est documentée pour pouvoir reprendre le projet à tout moment sans tout re-discuter.
 
+## Liens en ligne
+
+| Quoi | Lien | Accès |
+|---|---|---|
+| **Prototype jouable** (ouverture de paquets + classeur) | https://pittilloni.github.io/metalnini/proto/ | Libre, marche sur téléphone (ajout à l'écran d'accueil possible) |
+| **Galerie des cartes** (tous les artistes et leurs raretés) | https://pittilloni.github.io/metalnini/export/metalnini-cartes.html | Libre, à partager |
+| **Document concept** (Concept, Direction artistique, Architecture, Roadmap) | https://pittilloni.github.io/metalnini/concept.html | Mot de passe |
+| Direction artistique des cartes | https://pittilloni.github.io/metalnini/concept.html#da-exemples-crea | Mot de passe |
+| Roadmap, architecture et phases | https://pittilloni.github.io/metalnini/concept.html#roadmap-architecture | Mot de passe |
+| **User flows** détaillés | https://pittilloni.github.io/metalnini/flows.html | Mot de passe |
+| **Page de pitch** (pour les proches) | https://pittilloni.github.io/metalnini/ | Mot de passe |
+| Dépôt GitHub | https://github.com/PITTILLONI/metalnini | Public |
+
+Le mot de passe n'est qu'un filtre de politesse : le dépôt est public, tout son contenu est lisible sur GitHub.
+
 ## Page de pitch
 
 **https://pittilloni.github.io/metalnini/** — page de présentation (vision, mécaniques, craintes, sans jargon) créée pour recueillir les retours de proches (accès protégé par un mot de passe simple — filtre de politesse, pas une vraie confidentialité puisque ce dépôt public existe).

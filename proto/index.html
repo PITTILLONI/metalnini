@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Metalnini">
+<meta name="theme-color" content="#0c0b0a">
+<title>Metalnini — Prototype</title>
+<style>
+  :root{
+    --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94;
+    --border:rgba(255,255,255,.1); --accent:#b23a3a; --gold:#d4af37;
+    --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#d4af37; --r-legendaire:#dc2626;
+    --display:"Arial Narrow","Oswald",Impact,sans-serif; --mono:ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html{color-scheme:dark}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; line-height:1.45;
+       padding-bottom:calc(76px + env(safe-area-inset-bottom)); overscroll-behavior-y:none}
+  button{font:inherit; color:inherit}
+  button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
+  .wrap{max-width:960px; margin:0 auto; padding:0 16px}
+  .eyebrow{font:500 .7rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px}
+  h1,h2{font-family:var(--display); text-transform:uppercase; letter-spacing:.02em; margin:0}
+
+  /* ---------- Tab bar ---------- */
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; background:rgba(12,11,10,.96); backdrop-filter:blur(10px);
+          border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom)}
+  .tabbar button{flex:1; background:none; border:0; padding:12px 4px 10px; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .tabbar button[aria-selected="true"]{color:var(--text)}
+  .tabbar .ico{display:block; font-size:1.25rem; margin-bottom:3px}
+  .view[hidden]{display:none}
+
+  /* ---------- Packs ---------- */
+  .packs-head{padding:calc(28px + env(safe-area-inset-top)) 0 10px}
+  .packs-head h1{font-size:2.2rem}
+  .packs-head p{color:var(--muted); margin:6px 0 0; font-size:.92rem}
+  .pack-zone{display:flex; flex-direction:column; align-items:center; gap:18px; padding:26px 0 10px}
+  .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
+        background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%), #111; box-shadow:0 18px 50px rgba(0,0,0,.6), inset 0 0 0 1px rgba(212,175,55,.35);
+        transition:transform .2s ease}
+  .pack:active{transform:scale(.97)}
+  .pack::before{content:""; position:absolute; inset:10px; border:1px solid rgba(212,175,55,.5); border-radius:10px}
+  .pack .p-title{position:absolute; left:0; right:0; top:38%; text-align:center; font-family:var(--display); font-size:2rem; text-transform:uppercase; letter-spacing:.06em; color:var(--gold)}
+  .pack .p-sub{position:absolute; left:0; right:0; top:55%; text-align:center; font:500 .7rem var(--mono); letter-spacing:.2em; text-transform:uppercase; color:var(--muted)}
+  .pack .p-moon{position:absolute; left:0; right:0; top:18%; text-align:center; font-size:1.8rem; color:var(--gold)}
+  .pack.shake{animation:shake .5s ease}
+  @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
+  .btn{background:var(--accent); border:0; border-radius:999px; padding:13px 26px; font-family:var(--display); text-transform:uppercase; letter-spacing:.06em; font-size:1rem; cursor:pointer}
+  .btn.ghost{background:var(--surface-2); border:1px solid var(--border)}
+  .stats-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font:500 .72rem var(--mono); color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
+  .stats-row span{border:1px solid var(--border); border-radius:4px; padding:5px 9px}
+
+  /* ---------- Reveal ---------- */
+  .reveal{position:fixed; inset:0; z-index:40; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+  .reveal[hidden]{display:none}
+  .reveal .counter{font:500 .72rem var(--mono); letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:14px}
+  .stage{perspective:1400px; width:min(78vw,340px, calc((100vh - 200px) * .6667)); aspect-ratio:2/3; position:relative}
+  .flip{position:absolute; inset:0; transform-style:preserve-3d; transition:transform .75s cubic-bezier(.2,.8,.2,1); cursor:pointer}
+  .flip.on{transform:rotateY(180deg)}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:14px; overflow:hidden}
+  .face.back{background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%); box-shadow:inset 0 0 0 1px rgba(212,175,55,.4); display:flex; align-items:center; justify-content:center}
+  .face.back::after{content:"☾"; font-size:3rem; color:var(--gold); opacity:.85}
+  .face.front{transform:rotateY(180deg); background:#000}
+  .face.front img{width:100%; height:100%; object-fit:cover; display:block}
+  .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:opacity .6s ease .35s}
+  .flip.on + .glow{opacity:1}
+  .glow[data-r="rare"]{box-shadow:0 0 38px 6px rgba(59,130,246,.55)}
+  .glow[data-r="holo"]{box-shadow:0 0 44px 10px rgba(167,139,250,.6), 0 0 80px 18px rgba(45,212,191,.25)}
+  .glow[data-r="signature"]{box-shadow:0 0 50px 12px rgba(212,175,55,.65)}
+  .glow[data-r="legendaire"]{box-shadow:0 0 60px 16px rgba(220,38,38,.7); animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:0 0 80px 26px rgba(220,38,38,.85)}}
+  .sheen{position:absolute; inset:0; border-radius:14px; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 48%,transparent 62%); background-size:250% 100%; opacity:0; mix-blend-mode:screen}
+  .flip.on .sheen[data-r="holo"], .flip.on .sheen[data-r="signature"], .flip.on .sheen[data-r="legendaire"]{opacity:1; animation:sheen 2.4s ease .8s infinite}
+  @keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
+  .card-info{margin-top:16px; text-align:center; min-height:64px; opacity:0; transition:opacity .4s ease .5s}
+  .card-info.on{opacity:1}
+  .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
+  .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
+  .tag{display:inline-block; font:600 .62rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
+  .tag.new{background:var(--gold); color:#111}
+  .tag.dup{background:var(--surface-2); color:var(--muted); border:1px solid var(--border)}
+  .reveal .hint{font:500 .7rem var(--mono); color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:14px}
+  .summary{width:100%; max-width:560px}
+  .summary h2{font-size:1.6rem; text-align:center; margin-bottom:14px}
+  .sum-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px}
+  .sum-grid figure{margin:0; text-align:center}
+  .sum-grid img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:7px; display:block; border:2px solid transparent}
+  .sum-grid figcaption{font:500 .56rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:4px}
+  .sum-actions{display:flex; gap:10px; justify-content:center; margin-top:20px; flex-wrap:wrap}
+
+  /* ---------- Classeur ---------- */
+  .binder-head{padding:calc(24px + env(safe-area-inset-top)) 0 6px}
+  .binder-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 4px; scrollbar-width:none}
+  .binder-tabs button{flex:0 0 auto; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .binder-tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
+  .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
+  .bar{flex:1; height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden}
+  .bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); width:0; transition:width .6s ease}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:10px; padding:14px 0 30px}
+  .slot{border:0; padding:0; background:none; cursor:pointer; text-align:left}
+  .slot .img{aspect-ratio:2/3; border-radius:8px; overflow:hidden; position:relative; background:var(--surface); border:1px dashed rgba(255,255,255,.16)}
+  .slot.owned .img{border:2px solid var(--r-commune)}
+  .slot.owned[data-r="rare"] .img{border-color:var(--r-rare)} .slot.owned[data-r="holo"] .img{border-color:var(--r-holo)}
+  .slot.owned[data-r="signature"] .img{border-color:var(--r-signature)} .slot.owned[data-r="legendaire"] .img{border-color:var(--r-legendaire)}
+  .slot img{width:100%; height:100%; object-fit:cover; display:block}
+  .slot .empty{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:rgba(255,255,255,.28); font-family:var(--display); font-size:1.4rem}
+  .slot .empty small{font:500 .56rem var(--mono); letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:0 6px}
+  .slot .count{position:absolute; top:5px; right:5px; background:rgba(0,0,0,.75); border-radius:4px; font:600 .62rem var(--mono); padding:2px 5px}
+  .slot .new-dot{position:absolute; top:6px; left:6px; width:9px; height:9px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold)}
+  .slot .cap{display:block; font:500 .6rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+  /* ---------- Détail ---------- */
+  .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center}
+  .sheet[hidden]{display:none}
+  .sheet-in{width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+  .sheet-close{float:right; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; width:34px; height:34px; cursor:pointer}
+  .detail-img{width:min(100%,360px); margin:6px auto 12px; display:block; border-radius:12px}
+  .detail h2{font-size:1.5rem; margin-top:4px}
+  .detail .sub{color:var(--muted); font-size:.9rem; margin:2px 0 10px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 12px}
+  .chips span{font:500 .62rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:3px; padding:3px 7px}
+  .variants{display:grid; grid-template-columns:repeat(5,1fr); gap:6px}
+  .variants button{border:0; padding:0; background:none; cursor:pointer}
+  .variants img, .variants .lock{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; display:block}
+  .variants .lock{background:var(--surface-2); border:1px dashed rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.25)}
+  .variants small{display:block; font:500 .54rem var(--mono); text-transform:uppercase; color:var(--muted); text-align:center; margin-top:3px}
+
+  /* ---------- Réglages ---------- */
+  .settings{padding:calc(24px + env(safe-area-inset-top)) 0 20px}
+  .field{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:14px}
+  .field label{display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:.9rem; margin:8px 0}
+  .field input[type=number]{width:74px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:7px 8px; font:inherit; text-align:right}
+  .field .total{font:500 .74rem var(--mono); color:var(--muted); margin-top:8px}
+  .field .total.bad{color:#f87171}
+  .note{font:500 .72rem var(--mono); color:var(--muted); line-height:1.5}
+
+  @media (prefers-reduced-motion:reduce){
+    .flip{transition:none} .pack.shake{animation:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ PAQUETS ============ -->
+<main id="v-packs" class="view wrap">
+  <div class="packs-head">
+    <p class="eyebrow">Prototype · feature 1</p>
+    <h1>Metalnini</h1>
+    <p>Ouvre un paquet, découvre tes cartes une par une, puis complète tes classeurs.</p>
+  </div>
+  <div class="pack-zone">
+    <button type="button" class="pack" id="pack" aria-label="Ouvrir un paquet">
+      <span class="p-moon">☾</span><span class="p-title">Série I</span><span class="p-sub" id="pack-sub">5 cartes</span>
+    </button>
+    <button type="button" class="btn" id="open-btn">Ouvrir un paquet</button>
+    <div class="stats-row" id="stats-row"></div>
+  </div>
+</main>
+
+<!-- ============ CLASSEUR ============ -->
+<main id="v-binder" class="view wrap" hidden>
+  <div class="binder-head">
+    <p class="eyebrow">Collection</p>
+    <h1 id="binder-title">Classeur</h1>
+    <div class="binder-tabs" id="binder-tabs" role="tablist" aria-label="Classeurs"></div>
+    <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<!-- ============ RÉGLAGES ============ -->
+<main id="v-settings" class="view wrap" hidden>
+  <div class="settings">
+    <p class="eyebrow">Réglages du test</p>
+    <h1>Paquets</h1>
+    <div class="field">
+      <label>Cartes par paquet <input type="number" id="s-size" min="1" max="10" step="1"></label>
+    </div>
+    <div class="field" id="odds-field">
+      <p class="note">Probabilité de chaque rareté, tirée carte par carte (aucune rareté garantie). Le total doit faire 100 %.</p>
+      <div id="odds"></div>
+      <div class="total" id="odds-total"></div>
+    </div>
+    <div class="field">
+      <p class="note">Réinitialiser efface ta collection et ton compteur de paquets sur cet appareil.</p>
+      <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="reset">Réinitialiser la collection</button></p>
+    </div>
+    <p class="note" style="margin-top:16px">Prototype jetable pour tester les sensations : pas de compte, pas de serveur, la collection est gardée dans ce navigateur uniquement. Illustrations générées par IA à partir de photos sous licence libre ; usage privé, les artistes n'ont pas été consultés.</p>
+  </div>
+</main>
+
+<!-- ============ REVEAL ============ -->
+<div class="reveal" id="reveal" hidden aria-live="polite">
+  <div id="reveal-one">
+    <div class="counter" id="counter"></div>
+    <div class="stage">
+      <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
+        <div class="face back"></div>
+        <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div></div>
+      </div>
+      <div class="glow" id="glow"></div>
+    </div>
+    <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
+    <div class="hint" id="hint">Touche la carte pour la retourner</div>
+  </div>
+  <div class="summary" id="summary" hidden>
+    <h2>Ton paquet</h2>
+    <div class="sum-grid" id="sum-grid"></div>
+    <div class="sum-actions">
+      <button type="button" class="btn" id="again">Un autre</button>
+      <button type="button" class="btn ghost" id="to-binder">Voir le classeur</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DÉTAIL ============ -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-in detail" role="dialog" aria-modal="true" aria-label="Détail de la carte">
+    <button type="button" class="sheet-close" id="sheet-close" aria-label="Fermer">✕</button>
+    <div id="detail"></div>
+  </div>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="Navigation">
+  <button type="button" data-v="packs" aria-selected="true"><span class="ico">☾</span>Paquets</button>
+  <button type="button" data-v="binder" aria-selected="false"><span class="ico">▦</span>Classeur</button>
+  <button type="button" data-v="settings" aria-selected="false"><span class="ico">⚙</span>Réglages</button>
+</nav>
+
+<script src="cards/manifest.js"></script>
+<script>
+(function(){
+  var RARITIES = [
+    {k:'commune',    label:'Commune',    color:'var(--r-commune)'},
+    {k:'rare',       label:'Rare',       color:'var(--r-rare)'},
+    {k:'holo',       label:'Holo',       color:'var(--r-holo)'},
+    {k:'signature',  label:'Signature',  color:'var(--r-signature)'},
+    {k:'legendaire', label:'Légendaire', color:'var(--r-legendaire)'}
+  ];
+  var BINDERS = [
+    {k:'heavy', label:'Heavy : core & extrême'},
+    {k:'rock',  label:'Rock, punk & nu metal'}
+  ];
+  // id, musicien, groupe, titre d'arcane, numéro, instrument, sous-genre, classeur
+  var CARDS = [
+    ['knocked-loose','Bryan Garris','Knocked Loose','The Deadringer','IV','Chant','Hardcore','heavy'],
+    ['isaac-hale','Isaac Hale','Knocked Loose','Counting Worms','X','Guitare','Hardcore','heavy'],
+    ['jinjer','Tatiana Shmayluk','Jinjer','Pisces','V','Chant','Metalcore progressif','heavy'],
+    ['spiritbox','Courtney LaPlante','Spiritbox','Holy Roller','VI','Chant','Metalcore','heavy'],
+    ['landmvrks','Florent Salfati','Landmvrks','Lost in the Waves','VIII','Chant','Metalcore','heavy'],
+    ['ramos','Will Ramos','Lorna Shore','To the Hellfire','XIV','Chant','Deathcore','heavy'],
+    ['heriot','Debbie Gough','Heriot','Devoured by the Mouth of Hell','XVIII','Chant, guitare','Metalcore','heavy'],
+    ['duplantier','Mario Duplantier','Gojira','Flying Whales','XVI','Batterie','Death metal progressif','heavy'],
+    ['blink182','Travis Barker','Blink-182','All the Small Things','VII','Batterie','Pop punk','rock'],
+    ['hoppus','Mark Hoppus','Blink-182',"What's My Age Again?",'XII','Basse, chant','Pop punk','rock'],
+    ['hendrix','Jimi Hendrix','Jimi Hendrix','Purple Haze','IX','Guitare','Rock psychédélique','rock'],
+    ['korn','Jonathan Davis','Korn','Freak on a Leash','XI','Chant','Nu metal','rock'],
+    ['poppy','Poppy','Poppy','I Disagree','XIII','Chant','Métal expérimental','rock'],
+    ['slash','Slash',"Guns N' Roses",'Welcome to the Jungle','XV','Guitare','Hard rock','rock'],
+    ['zack','Zack de la Rocha','Rage Against the Machine','Bulls on Parade','XVII','Chant','Rap metal','rock'],
+    ['frusciante','John Frusciante','Red Hot Chili Peppers','Under the Bridge','XIX','Guitare','Funk rock','rock'],
+    ['root','Jim Root','Slipknot','Duality','XX','Guitare','Nu metal','rock'],
+    ['jordison','Joey Jordison','Slipknot','Wait and Bleed','XXI','Batterie','Nu metal','rock']
+  ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6], binder:c[7]}; });
+  // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
+  if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
+
+  function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
+  function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
+  function rank(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return i; return -1; }
+  function card(id){ for(var i=0;i<CARDS.length;i++) if(CARDS[i].id===id) return CARDS[i]; }
+
+  // ---------- État (navigateur uniquement) ----------
+  var KEY = 'metalnini-proto-v1';
+  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'heavy'};
+  var state = load();
+  function load(){
+    try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && s.owned) return Object.assign({}, DEFAULT, s); }catch(e){}
+    return JSON.parse(JSON.stringify(DEFAULT));
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  // ---------- Tirage ----------
+  function drawRarity(){
+    var total = 0; RARITIES.forEach(function(r){ total += Math.max(0, +state.odds[r.k] || 0); });
+    var x = Math.random() * total, acc = 0;
+    for(var i=0;i<RARITIES.length;i++){ acc += Math.max(0, +state.odds[RARITIES[i].k] || 0); if(x < acc) return RARITIES[i].k; }
+    return 'commune';
+  }
+  function drawPack(){
+    var out = [];
+    for(var i=0;i<state.size;i++){
+      var c = CARDS[Math.floor(Math.random()*CARDS.length)], r = drawRarity(), key = c.id + '|' + r;
+      var isNew = !state.owned[key];
+      state.owned[key] = (state.owned[key] || 0) + 1;
+      if(isNew) state.fresh[c.id] = true;
+      out.push({c:c, r:r, isNew:isNew});
+    }
+    state.opened++; save();
+    return out;
+  }
+
+  // ---------- Navigation ----------
+  var tabs = [].slice.call(document.querySelectorAll('.tabbar button'));
+  function go(v){
+    ['packs','binder','settings'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
+    if(v === 'binder') renderBinder();
+    if(v === 'packs') renderStats();
+    if(v === 'settings') renderSettings();
+    window.scrollTo(0,0);
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ go(t.getAttribute('data-v')); }); });
+
+  // ---------- Paquets ----------
+  function ownedCount(){ var n=0; CARDS.forEach(function(c){ if(best(c.id)) n++; }); return n; }
+  function renderStats(){
+    document.getElementById('pack-sub').textContent = state.size + ' carte' + (state.size>1?'s':'');
+    var variants = Object.keys(state.owned).length;
+    document.getElementById('stats-row').innerHTML =
+      '<span>' + state.opened + ' paquet' + (state.opened>1?'s':'') + ' ouvert' + (state.opened>1?'s':'') + '</span>' +
+      '<span>' + ownedCount() + '/' + CARDS.length + ' musiciens</span>' +
+      '<span>' + variants + '/' + (CARDS.length*RARITIES.length) + ' variantes</span>';
+  }
+
+  // ---------- Reveal ----------
+  var revealEl = document.getElementById('reveal'), flip = document.getElementById('flip'), current = [], idx = 0, flipped = false;
+  function openPack(){
+    var p = document.getElementById('pack'); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake');
+    current = drawPack(); idx = 0;
+    current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); }); // préchargement
+    setTimeout(function(){
+      revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
+      showCard();
+    }, 420);
+  }
+  function showCard(){
+    var x = current[idx]; flipped = false;
+    flip.classList.remove('on'); document.getElementById('card-info').classList.remove('on');
+    document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
+    document.getElementById('hint').textContent = 'Touche la carte pour la retourner';
+    setTimeout(function(){
+      document.getElementById('flip-img').src = img(x.c.id, x.r);
+      document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
+      document.getElementById('glow').setAttribute('data-r', x.r);
+      document.getElementById('sheen').setAttribute('data-r', x.r);
+      var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
+      document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
+    }, flip.classList.contains('on') ? 0 : 10);
+  }
+  function tapCard(){
+    if(!flipped){ flipped = true; flip.classList.add('on'); document.getElementById('card-info').classList.add('on');
+      document.getElementById('hint').textContent = idx < current.length-1 ? 'Touche pour la suivante' : 'Touche pour voir le résumé'; return; }
+    if(idx < current.length-1){ idx++; showCard(); } else { showSummary(); }
+  }
+  flip.addEventListener('click', tapCard);
+  flip.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); tapCard(); } });
+  function showSummary(){
+    document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false;
+    document.getElementById('sum-grid').innerHTML = current.map(function(x){
+      return '<figure><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + '" style="border-color:' + rarity(x.r).color + '"><figcaption>' +
+        rarity(x.r).label + (x.isNew ? ' · Nouveau' : ' · Doublon') + '</figcaption></figure>';
+    }).join('');
+  }
+  document.getElementById('pack').addEventListener('click', openPack);
+  document.getElementById('open-btn').addEventListener('click', openPack);
+  document.getElementById('again').addEventListener('click', openPack);
+  document.getElementById('to-binder').addEventListener('click', function(){
+    revealEl.hidden = true;
+    var last = current.length ? current[current.length-1].c.binder : state.binder;
+    state.binder = last; save(); go('binder');
+  });
+
+  // ---------- Classeur ----------
+  function best(id){ var b = null; RARITIES.forEach(function(r){ if(state.owned[id+'|'+r.k]) b = r.k; }); return b; }
+  function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
+  function renderBinder(){
+    var tabsEl = document.getElementById('binder-tabs');
+    tabsEl.innerHTML = BINDERS.map(function(b){ return '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(b.label) + '</button>'; }).join('');
+    [].forEach.call(tabsEl.children, function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
+    var list = CARDS.filter(function(c){ return c.binder === state.binder; });
+    var have = list.filter(function(c){ return best(c.id); }).length;
+    var b = BINDERS.filter(function(x){ return x.k===state.binder; })[0];
+    document.getElementById('binder-title').textContent = b.label;
+    document.getElementById('prog-txt').textContent = have + '/' + list.length;
+    var pct = Math.round(have / list.length * 100);
+    document.getElementById('prog-pct').textContent = pct + ' %';
+    document.getElementById('prog-bar').style.width = pct + '%';
+    document.getElementById('grid').innerHTML = list.map(function(c){
+      var r = best(c.id);
+      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '"><span class="img"><span class="empty">' + c.num + '<small>' + esc(c.band) + '</small></span></span><span class="cap">???</span></button>';
+      return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
+        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') +
+        '</span><span class="cap">' + esc(c.who) + '</span></button>';
+    }).join('');
+    [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
+  }
+
+  // ---------- Détail ----------
+  var sheet = document.getElementById('sheet');
+  function openDetail(id, shown){
+    var c = card(id), r = shown || best(id);
+    delete state.fresh[id]; save();
+    var head = r ? '<img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '">' :
+      '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
+    document.getElementById('detail').innerHTML = head +
+      '<p class="eyebrow">Arcane ' + c.num + (r ? ' · <span style="color:' + rarity(r).color + '">' + rarity(r).label + '</span>' : ' · pas encore obtenue') + '</p>' +
+      '<h2>' + esc(r ? c.title : '???') + '</h2><p class="sub">' + esc(c.who) + ' · ' + esc(c.band) + '</p>' +
+      '<div class="chips"><span>Membre</span><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>' +
+      '<p class="note" style="margin:0 0 8px">Raretés obtenues</p><div class="variants">' + RARITIES.map(function(x){
+        var n = state.owned[id+'|'+x.k] || 0;
+        return n ? '<button type="button" data-r="' + x.k + '"><img src="' + img(id, x.k) + '" alt="' + x.label + '" style="outline:2px solid ' + (x.k===r ? x.color : 'transparent') + ';outline-offset:1px"><small>' + x.label + (n>1?' ×'+n:'') + '</small></button>'
+                 : '<div><div class="lock">?</div><small>' + x.label + '</small></div>';
+      }).join('') + '</div>';
+    [].forEach.call(document.querySelectorAll('#detail .variants button'), function(b){ b.addEventListener('click', function(){ openDetail(id, b.getAttribute('data-r')); }); });
+    sheet.hidden = false;
+  }
+  function closeDetail(){ sheet.hidden = true; if(!document.getElementById('v-binder').hidden) renderBinder(); }
+  document.getElementById('sheet-close').addEventListener('click', closeDetail);
+  sheet.addEventListener('click', function(e){ if(e.target === sheet) closeDetail(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeDetail(); });
+
+  // ---------- Réglages ----------
+  function renderSettings(){
+    var size = document.getElementById('s-size'); size.value = state.size;
+    size.onchange = function(){ var v = Math.max(1, Math.min(10, parseInt(size.value,10) || 5)); state.size = v; size.value = v; save(); };
+    document.getElementById('odds').innerHTML = RARITIES.map(function(r){
+      return '<label><span style="color:' + r.color + '">' + r.label + '</span><span><input type="number" min="0" max="100" step="0.5" data-k="' + r.k + '" value="' + state.odds[r.k] + '"> %</span></label>';
+    }).join('');
+    [].forEach.call(document.querySelectorAll('#odds input'), function(i){ i.addEventListener('input', function(){ state.odds[i.getAttribute('data-k')] = parseFloat(i.value) || 0; save(); showTotal(); }); });
+    showTotal();
+  }
+  function showTotal(){
+    var t = 0; RARITIES.forEach(function(r){ t += +state.odds[r.k] || 0; });
+    var el = document.getElementById('odds-total'); el.textContent = 'Total : ' + t + ' %' + (Math.abs(t-100) > .01 ? ' — les probabilités sont ramenées à 100 % au tirage' : '');
+    el.className = 'total' + (Math.abs(t-100) > .01 ? ' bad' : '');
+  }
+  document.getElementById('reset').addEventListener('click', function(){
+    state.owned = {}; state.opened = 0; state.fresh = {}; save(); renderStats(); go('packs');
+  });
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  renderStats();
+})();
+</script>
+</body>
+</html>
