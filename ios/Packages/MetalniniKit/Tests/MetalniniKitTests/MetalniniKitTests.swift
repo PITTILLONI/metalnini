@@ -23,7 +23,8 @@ struct CatalogTests {
 
     @Test func stylePackPoolIsItsBinder() {
         let pack = Catalog.packTypes.first { $0.id == "metalcore" }!
-        #expect(Set(Catalog.pool(for: pack)) == ["spiritbox", "jinjer", "landmvrks", "heriot"])
+        #expect(Set(Catalog.pool(for: pack)) == Set(Catalog.binder("metalcore")!.musicianIDs))
+        #expect(Catalog.pool(for: pack).contains("spiritbox") && !Catalog.pool(for: pack).contains("korn"))
         #expect(Catalog.pool(for: Catalog.packTypes[0]).count == Catalog.musicians.count)
     }
 }
@@ -90,7 +91,7 @@ struct CollectionTests {
     }
 
     @Test func binderCompletesWhenEveryMusicianIsPlaced() {
-        let b = Catalog.binder("poppunk")!
+        let b = Catalog.binder("g-blink")!   // Travis Barker et Mark Hoppus
         var c = PlayerCollection()
         c.add(CardKey("blink182", .commune)); c.place(CardKey("blink182", .commune))
         #expect(!c.isComplete(b)); #expect(c.missing(in: b) == ["hoppus"])
