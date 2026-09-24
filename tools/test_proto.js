@@ -86,6 +86,8 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
     d.querySelectorAll('#grid .slot.owned').forEach(s => shown.add(s.getAttribute('data-id'))); }
   const extra = [...shown].filter(x => !ownedIds.has(x)), missing = [...ownedIds].filter(x => !shown.has(x));
   check('classeur = collection (aucun artiste en trop)', extra.length === 0 && missing.length === 0, 'en trop: ' + extra + ' / manquants: ' + missing);
+  // « Toutes les cartes » : il y reste toujours des cases vides après quelques paquets
+  d.querySelector('#binder-tabs button[data-b="all"]').click(); await sleep(20);
   const emptyText = [...d.querySelectorAll('#grid .slot:not(.owned)')].map(s => s.textContent).join(' | ');
   const nums = [...d.querySelectorAll('#grid .slot .cap')].map(c => (c.textContent.match(/^(?:N° )?([IVXLC]+)/) || [])[1]);
   const rv = n => { const v = {I:1,V:5,X:10,L:50,C:100}; let t = 0; for (let i = 0; i < n.length; i++) { const a = v[n[i]], b = v[n[i+1]] || 0; t += a < b ? -a : a; } return t; };
