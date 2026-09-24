@@ -4,7 +4,7 @@
 Usage : python3 tools/build_proto_cards.py   (depuis la racine du dépôt)
 Un musicien n'entre dans le prototype que si ses 5 raretés existent dans assets/da/creas/.
 """
-import os, subprocess
+import json, os, subprocess
 
 CREAS, OUT = "assets/da/creas", "proto/cards"
 RARITIES = ["commune", "rare", "holo", "signature", "legendaire"]
@@ -27,12 +27,37 @@ for aid in ids:
             subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst],
                            check=True, stdout=subprocess.DEVNULL)
     ready.append(aid)
-# paquet : rogné au ras du sachet (zone mesurée sur l'image 848 x 1264), puis allégé
-if os.path.exists(f"{CREAS}/pack-a.jpg"):
-    subprocess.run(["sips", "-c", "1138", "658", "--cropOffset", "66", "91", "-s", "format", "jpeg", "-s", "formatOptions", "80",
-                    f"{CREAS}/pack-a.jpg", "--out", f"{OUT}/pack.jpg"], check=True, stdout=subprocess.DEVNULL)
+# paquets : rognés automatiquement au ras du sachet (bords non noirs), puis allégés
+def crop_pack(src, dst):
+    import struct, tempfile
+    with tempfile.TemporaryDirectory() as t:
+        bmp = f"{t}/p.bmp"
+        subprocess.run(["sips", "-Z", "300", "-s", "format", "bmp", src, "--out", bmp], check=True, stdout=subprocess.DEVNULL)
+        b = open(bmp, "rb").read()
+    off = struct.unpack("<I", b[10:14])[0]; w, hh = struct.unpack("<ii", b[18:26]); bpp = struct.unpack("<H", b[28:30])[0] // 8
+    row, H = (w * bpp + 3) // 4 * 4, abs(hh)
+    xs, ys = [], []
+    for y in range(H):
+        yy = (H - 1 - y) if hh > 0 else y
+        for x in range(w):
+            i = off + yy * row + x * bpp
+            if max(b[i], b[i + 1], b[i + 2]) > 40: xs.append(x); ys.append(y)
+    sw = int(subprocess.check_output(["sips", "-g", "pixelWidth", src], text=True).split()[-1])
+    sh = int(subprocess.check_output(["sips", "-g", "pixelHeight", src], text=True).split()[-1])
+    k = sw / w
+    x0, x1, y0, y1 = max(0, int(min(xs) * k) - 6), min(sw, int((max(xs) + 1) * k) + 6), max(0, int(min(ys) * k) - 6), min(sh, int((max(ys) + 1) * k) + 6)
+    subprocess.run(["sips", "-c", str(y1 - y0), str(x1 - x0), "--cropOffset", str(y0), str(x0), "-s", "format", "jpeg",
+                    "-s", "formatOptions", "80", src, "--out", dst], check=True, stdout=subprocess.DEVNULL)
+    return round((x1 - x0) / (y1 - y0), 4)
+
+packs = {}
+for key, name in (("serie", "pack-a"), ("metalcore", "pack-metalcore"), ("hardcore", "pack-hardcore"), ("numetal", "pack-numetal"),
+                  ("poppunk", "pack-poppunk"), ("legendes", "pack-legendes")):
+    if os.path.exists(f"{CREAS}/{name}.jpg"):
+        packs[key] = crop_pack(f"{CREAS}/{name}.jpg", f"{OUT}/pack-{key}.jpg")
 if os.path.exists(f"{CREAS}/card-back.jpg"):
     subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
                     "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
-open(f"{OUT}/manifest.js", "w").write("window.METALNINI_READY = " + repr(ready).replace("'", '"') + ";\n")
+open(f"{OUT}/manifest.js", "w").write("window.METALNINI_READY = " + repr(ready).replace("'", '"') + ";\n"
+                                      + "window.METALNINI_PACKS = " + json.dumps(packs) + ";\n")
 print(f"{len(ready)} musiciens prêts : {', '.join(ready)}")

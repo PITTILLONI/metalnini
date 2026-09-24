@@ -3,8 +3,9 @@
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const ROOT = require('path').join(__dirname, '..', 'proto') + '/';
+const manifest = fs.readFileSync(ROOT + 'cards/manifest.js', 'utf8').replace(/window.METALNINI_PACKS = .*/, 'window.METALNINI_PACKS = {"serie":0.58,"metalcore":0.58,"hardcore":0.58};');
 const html = fs.readFileSync(ROOT + 'index.html', 'utf8')
-  .replace('<script src="cards/manifest.js"></script>', '<script>' + fs.readFileSync(ROOT + 'cards/manifest.js', 'utf8') + '</script>');
+  .replace('<script src="cards/manifest.js"></script>', '<script>' + manifest + '</script>');
 const errors = [];
 const dom = new JSDOM(html, {
   runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/',
@@ -118,6 +119,22 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('complétion du classeur Pop punk annoncée', /Classeur complété.*Pop punk/.test(toastTxt), toastTxt);
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
   check('onglet du classeur complété marqué ✓', /Pop punk ✓/.test(d3.getElementById('binder-tabs').textContent));
+
+  // 8. Paquet thématique : ne tire que dans son classeur ; prochain objectif affiché
+  const s5 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'spiritbox|commune':1}, opened:0, fresh:{}, binder:'metalcore', sound:false, pending:null, fuse:5, mastered:{}, completed:{}, packType:'metalcore' };
+  const dom4 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w4){
+    w4.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s5)); w4.matchMedia = () => ({ matches: false }); w4.scrollTo = () => {};
+    w4.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w4.HTMLElement.prototype.setPointerCapture = () => {};
+    w4.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const d4 = dom4.window.document;
+  check('sélecteur : 3 paquets proposés', d4.querySelectorAll('#pack-picker button').length === 3);
+  check('objectif affiché sur l\'écran paquets', !d4.getElementById('goal').hidden && /Prochain objectif/.test(d4.getElementById('goal').textContent), d4.getElementById('goal').textContent);
+  key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
+  const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
+  check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot'].includes(id)), got.join(','));
+  d4.getElementById('skip').click(); await sleep(400);
+  check('résumé : objectif et bouton partager', !d4.getElementById('goal-sum').hidden && !!d4.getElementById('share'));
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');

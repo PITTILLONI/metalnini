@@ -89,8 +89,8 @@
   .sheen{position:absolute; inset:0; border-radius:14px; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 48%,transparent 62%); background-size:250% 100%; opacity:0; mix-blend-mode:screen}
   .flip.on .sheen[data-r="holo"], .flip.on .sheen[data-r="signature"], .flip.on .sheen[data-r="legendaire"]{opacity:1; animation:sheen 2.4s ease .8s infinite}
   @keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
-  .card-info{margin-top:16px; text-align:center; min-height:64px; opacity:0; transition:opacity .4s ease .5s}
-  .card-info.on{opacity:1}
+  .card-info{margin-top:16px; text-align:center; min-height:64px; visibility:hidden; transform:translateY(8px); transition:transform .3s ease .35s}
+  .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .62rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
@@ -170,10 +170,10 @@
   /* ---------- Déchirure du paquet ---------- */
   .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
   .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#d4af37}
-  .pack.art{aspect-ratio:658/1138; width:min(56vw,230px); border-radius:4px; background:transparent url(cards/pack.jpg) center/100% 100% no-repeat; box-shadow:none; overflow:visible; filter:drop-shadow(0 22px 40px rgba(0,0,0,.8))}
+  .pack.art{aspect-ratio:var(--pa,.5783); width:min(52vw,220px); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; filter:drop-shadow(0 22px 40px rgba(0,0,0,.8))}
   .pack.art::before, .pack.art .p-moon, .pack.art .p-title, .pack.art .p-sub{display:none}
   .pack .flap{position:absolute; left:0; right:0; top:0; height:10%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
-              background:transparent url(cards/pack.jpg) center top/100% auto no-repeat; transform-origin:100% 100%;
+              background:transparent var(--pimg,url(cards/pack-serie.jpg)) center top/100% auto no-repeat; transform-origin:100% 100%;
               transform:rotate(calc(var(--tear) * -7deg)) translateY(calc(var(--tear) * -6px)); transition:transform .08s linear}
   .pack .tear{position:absolute; left:0; bottom:-2px; height:4px; width:calc(var(--tear) * 100%); border-radius:4px;
               background:var(--tease); box-shadow:0 0 12px 3px var(--tease), 0 0 34px 8px var(--tease); opacity:calc(.35 + var(--tear) * .65)}
@@ -228,6 +228,21 @@
   .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
   .deck i.next{animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-3px)}}
+  .pack-picker{display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; padding:4px 2px 2px; max-width:100%; scroll-snap-type:x mandatory}
+  .pack-picker::-webkit-scrollbar{display:none}
+  .pack-picker button{flex:0 0 auto; width:64px; border:0; padding:0; background:none; cursor:pointer; scroll-snap-align:center; text-align:center}
+  .pack-picker img{display:block; width:100%; aspect-ratio:.58; object-fit:contain; opacity:.55; transition:opacity .2s ease, transform .2s ease}
+  .pack-picker button[aria-pressed="true"] img{opacity:1; transform:translateY(-4px)}
+  .pack-picker small{display:block; font:500 .5rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:4px; line-height:1.25}
+  .pack-picker button[aria-pressed="true"] small{color:var(--text)}
+  .goal{display:flex; align-items:center; gap:12px; width:100%; max-width:420px; background:var(--surface); border:1px solid rgba(212,175,55,.35); border-radius:12px; padding:10px 12px; text-align:left; cursor:pointer}
+  .goal .gi{flex:0 0 auto; display:flex; gap:3px}
+  .goal .gi i{display:block; width:18px; aspect-ratio:2/3; border-radius:2px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4)}
+  .goal .gi i.have{background-size:cover; box-shadow:0 0 0 1px var(--gold)}
+  .goal b{display:block; font-family:var(--display); text-transform:uppercase; letter-spacing:.03em; font-size:.95rem}
+  .goal span{font-size:.8rem; color:var(--muted)}
+  .goal .eyebrow{margin:0 0 3px; font-size:.58rem}
+  .summary .goal{margin:16px auto 0}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
@@ -253,6 +268,8 @@
       </button>
       <p class="swipe-hint" id="swipe-hint">Glisse le doigt sur le paquet pour le déchirer →</p>
     </div>
+    <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
+    <button type="button" class="goal" id="goal" hidden></button>
     <div class="stats-row" id="stats-row"></div>
     <button type="button" class="reset-link" id="reset-quick">Repartir de zéro</button>
   </div>
@@ -320,7 +337,9 @@
   <div class="summary" id="summary" hidden>
     <h2>Ton paquet</h2>
     <div class="sum-grid" id="sum-grid"></div>
+    <button type="button" class="goal" id="goal-sum" hidden></button>
     <div class="sum-actions">
+      <button type="button" class="btn ghost" id="share">Partager ma meilleure carte</button>
       <button type="button" class="btn" id="again">Un autre</button>
       <button type="button" class="btn ghost" id="to-binder">Voir le classeur</button>
     </div>
@@ -416,13 +435,46 @@
     return 'commune';
   }
   // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
+  // Paquets : la Série I tire dans tous les musiciens, un paquet de style seulement dans son classeur
+  var PACKS = [{k:'serie', label:'Série I'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label}; }))
+    .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
+  function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
   function pendingPack(){
-    if(!state.pending || state.pending.length !== state.size){
-      state.pending = [];
-      for(var i=0;i<state.size;i++){ state.pending.push({id:CARDS[Math.floor(Math.random()*CARDS.length)].id, r:drawRarity()}); }
+    var type = state.packType || 'serie';
+    if(!state.pending || state.pending.length !== state.size || state.pendingType !== type){
+      var pool = packPool(type); state.pending = []; state.pendingType = type;
+      for(var i=0;i<state.size;i++){ state.pending.push({id:pool[Math.floor(Math.random()*pool.length)], r:drawRarity()}); }
       save();
     }
     return state.pending;
+  }
+  function renderPacks(){
+    if(!PACKS.some(function(p){ return p.k === state.packType; })) state.packType = 'serie';
+    var pk = document.getElementById('pack'), ratio = (window.METALNINI_PACKS || {})[state.packType] || .5783;
+    pk.style.setProperty('--pimg', 'url(cards/pack-' + state.packType + '.jpg)'); pk.style.setProperty('--pa', ratio);
+    var el = document.getElementById('pack-picker');
+    el.hidden = PACKS.length < 2;
+    el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-pressed="' + (p.k === state.packType) + '"><img src="cards/pack-' + p.k + '.jpg" alt=""><small>' + esc(p.label) + '</small></button>'; }).join('');
+    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
+    pk.setAttribute('aria-label', 'Déchirer le paquet ' + (PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0]).label);
+  }
+
+  // Prochain objectif : le classeur le plus proche d'être complété, sinon la maîtrise la plus avancée
+  function nextGoal(){
+    var bestB = null;
+    BINDERS.forEach(function(b){ var ids = b.ids.filter(function(id){ return card(id); }), miss = ids.filter(function(id){ return !best(id); });
+      if(ids.length && miss.length && (!bestB || miss.length < bestB.miss.length || (miss.length === bestB.miss.length && b.kind === 'Styles' && bestB.b.kind !== 'Styles'))) bestB = {b:b, ids:ids, miss:miss}; });
+    if(bestB) return {title:'Plus que ' + bestB.miss.length + ' carte' + (bestB.miss.length > 1 ? 's' : '') + ' pour ' + bestB.b.label,
+      sub:bestB.b.kind === 'Styles' ? 'Récompense garantie à la complétion' : 'Classeur ' + bestB.b.kind.toLowerCase().replace(/s$/,''), binder:bestB.b.k,
+      icons:bestB.ids.map(function(id){ var r = best(id); return r ? '<i class="have" style="background-image:url(' + img(id, r) + ')"></i>' : '<i></i>'; }).join('')};
+    var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
+    if(m) return {title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', sub:'Réunis les 5 raretés pour le badge', binder:styleOf(m.c.id), icons:''};
+    return null;
+  }
+  function renderGoal(id){
+    var el = document.getElementById(id), goal = nextGoal(); el.hidden = !goal; if(!goal) return;
+    el.innerHTML = (goal.icons ? '<span class="gi">' + goal.icons + '</span>' : '') + '<span><p class="eyebrow">Prochain objectif</p><b>' + esc(goal.title) + '</b><span>' + esc(goal.sub) + '</span></span>';
+    el.onclick = function(){ revealEl.hidden = true; state.binder = goal.binder; save(); go('binder'); };
   }
   function commitPack(){
     var out = pendingPack().map(function(d){
@@ -453,7 +505,7 @@
   // ---------- Paquets ----------
   function ownedCount(){ var n=0; CARDS.forEach(function(c){ if(best(c.id)) n++; }); return n; }
   function renderStats(){
-    document.getElementById('pack-sub').textContent = state.size + ' carte' + (state.size>1?'s':'');
+    renderPacks(); renderGoal('goal');
     var variants = Object.keys(state.owned).length;
     document.getElementById('stats-row').innerHTML =
       '<span>' + state.opened + ' paquet' + (state.opened>1?'s':'') + ' ouvert' + (state.opened>1?'s':'') + '</span>' +
@@ -626,23 +678,24 @@
       }, reduce ? 0 : 320);
     }, ms);
   }
-  // la carte révélée rejoint sa miniature dans la rangée du bas ; celle du dessous est déjà en place
-  function next(dir){
+  // la carte révélée est lancée hors de l'écran du côté du geste, sans fondu ni rétrécissement ; celle du dessous est déjà en place
+  function next(dir, vx){
     busy = true; stage.classList.remove('impact'); clearTarget();
-    var mini = document.querySelectorAll('#deck i')[idx], sr = document.getElementById('pile').getBoundingClientRect(), mr = mini ? mini.getBoundingClientRect() : null;
-    var t = mr && sr.width ? 'translate(' + (mr.left + mr.width/2 - (sr.left + sr.width/2)) + 'px,' + (mr.top + mr.height/2 - (sr.top + sr.height/2)) + 'px) scale(' + (mr.width / sr.width) + ') rotate(' + (dir * 6) + 'deg)'
-                           : 'translateX(' + (dir * 115) + 'vw) rotate(' + (dir * 16) + 'deg)';
-    stage.style.transition = 'transform ' + (reduce ? 0 : .42) + 's cubic-bezier(.5,0,.3,1)'; stage.style.transform = t;
+    document.getElementById('card-info').classList.remove('on');
+    var cur = stage.style.transform || '', dx = (/translateX\((-?[\d.]+)px\)/.exec(cur) || [0, 0])[1] * 1;
+    var dist = Math.max(innerWidth, 500) * 1.1, ms = reduce ? 0 : Math.max(220, Math.min(380, 380 - Math.abs(vx || 0) * 120));
+    stage.style.transition = 'transform ' + ms + 'ms cubic-bezier(.3,.6,.4,1)';
+    stage.style.transform = 'translateX(' + (dir * dist + dx * .2) + 'px) translateY(-30px) rotate(' + (dir * 22) + 'deg)';
     SFX.flip();
     setTimeout(function(){
       if(idx < current.length-1){
         idx++;
-        // la nouvelle carte du dessus part de la position qu'elle occupait dans la pile, puis se replace
+        // la nouvelle carte du dessus part de sa place dans la pile, puis se replace
         stage.style.transition = 'none'; stage.style.transform = offset(1);
         showCard(); void stage.offsetWidth;
         stage.style.transition = 'transform ' + (reduce ? 0 : .22) + 's ease-out'; stage.style.transform = '';
       } else { showSummary(); stage.style.transition = 'none'; stage.style.transform = ''; }
-    }, reduce ? 0 : 420);
+    }, ms);
   }
   function tapCard(){ if(busy) return; if(!flipped) reveal(1); else next(1); }
   flip.addEventListener('keydown', function(e){
@@ -689,7 +742,7 @@
   var g = null;
   stage.addEventListener('pointerdown', function(e){
     if(busy || revealEl.hidden) return; audio();
-    g = {x0:e.clientX, y0:e.clientY, w:stage.getBoundingClientRect().width, moved:false, a:0, dx:0};
+    g = {x0:e.clientX, y0:e.clientY, w:stage.getBoundingClientRect().width, moved:false, a:0, dx:0, t0:performance.now()};
     stage.setPointerCapture(e.pointerId);
     flip.style.transition = 'none'; stage.style.transition = 'none';
   });
@@ -714,7 +767,8 @@
       if(Math.abs(d.a) >= 42){ reveal(d.a > 0 ? 1 : -1); return; }
       flip.style.transition = 'transform .3s cubic-bezier(.3,1.4,.5,1)'; flip.style.transform = ''; stage.className = stage.className.replace(/ ?charge-\w+/g, '');
     } else {
-      if(!d.moved || Math.abs(d.dx) > d.w * .28){ next(d.dx < 0 ? -1 : 1); return; }
+      var vx = d.dx / Math.max(1, performance.now() - d.t0);
+      if(!d.moved || Math.abs(d.dx) > d.w * .28 || Math.abs(vx) > .6){ next(d.dx < 0 ? -1 : 1, vx); return; }
       stage.style.transition = 'transform .3s cubic-bezier(.3,1.4,.5,1)'; stage.style.transform = '';
     }
   }
@@ -729,11 +783,34 @@
     document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
     revealEl.classList.remove('dim');
     var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); burst(b); }
+    renderGoal('goal-sum');
     document.getElementById('sum-grid').innerHTML = current.map(function(x, i){
       return '<figure style="animation-delay:' + (i*90) + 'ms"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + '" style="border-color:' + rarity(x.r).color + '"><figcaption>' +
         rarity(x.r).label + (x.isNew ? ' · Nouveau' : ' · Doublon') + '</figcaption></figure>';
     }).join('');
   }
+  // Partager la meilleure carte du paquet : image générée à la volée
+  document.getElementById('share').addEventListener('click', function(){
+    var b = current.reduce(function(a, x){ return rank(x.r) > rank(a.r) ? x : a; }, current[0]); if(!b) return;
+    var W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; var cx = cv.getContext('2d');
+    var bg = cx.createRadialGradient(W/2, H*.42, 50, W/2, H*.42, H*.8); bg.addColorStop(0, '#2a0f0f'); bg.addColorStop(1, '#050404');
+    cx.fillStyle = bg; cx.fillRect(0, 0, W, H);
+    var im = new Image(); im.onload = function(){
+      var ch = 900, cw = ch * 2/3, x0 = (W - cw)/2, y0 = 150;
+      cx.shadowColor = COLORS[b.r]; cx.shadowBlur = rank(b.r) >= 1 ? 70 : 20; cx.drawImage(im, x0, y0, cw, ch); cx.shadowBlur = 0;
+      cx.fillStyle = COLORS[b.r]; cx.font = '600 34px ui-monospace, Menlo, monospace'; cx.textAlign = 'center';
+      cx.fillText(rarity(b.r).label.toUpperCase(), W/2, 100);
+      cx.fillStyle = '#f3f0ea'; cx.font = '700 58px "Arial Narrow", Impact, sans-serif'; cx.fillText(b.c.who.toUpperCase(), W/2, y0 + ch + 90);
+      cx.fillStyle = '#a49e94'; cx.font = '500 30px ui-monospace, Menlo, monospace'; cx.fillText('METALNINI · ' + b.c.band.toUpperCase(), W/2, y0 + ch + 145);
+      cv.toBlob(function(blob){
+        var file = new File([blob], 'metalnini-' + b.c.id + '.png', {type:'image/png'}), text = 'Je viens de tirer ' + b.c.who + ' en ' + rarity(b.r).label + ' sur Metalnini';
+        if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file], text:text, url:location.href}).catch(function(){}); return; }
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+        toast('Image enregistrée : ' + esc(file.name));
+      }, 'image/png');
+    };
+    im.src = img(b.c.id, b.r);
+  });
   document.getElementById('again').addEventListener('click', function(){ revealEl.hidden = true; go('packs'); prepTease(); autoTear(); });
   document.getElementById('to-binder').addEventListener('click', function(){
     revealEl.hidden = true;
