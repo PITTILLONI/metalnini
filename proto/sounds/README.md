@@ -1,6 +1,6 @@
 # Sons du prototype
 
-Déposer ici des fichiers **MP3** portant exactement ces noms. Chaque fichier présent remplace le son synthétisé correspondant ; un fichier absent garde la synthèse.
+Déposer ici des fichiers **M4A, MP3 ou WAV** portant exactement ces noms (extension au choix, cherchée dans cet ordre). Chaque fichier présent remplace le son synthétisé correspondant ; un fichier absent garde la synthèse.
 
 | Fichier | Moment | Durée conseillée |
 |---|---|---|

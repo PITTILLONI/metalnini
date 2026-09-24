@@ -4,3 +4,6 @@ assets/da/moodboard/*
 .DS_Store
 node_modules/
 package-lock.json
+
+# Sons bruts avant préparation (licences à vérifier une par une)
+sounds-raw/

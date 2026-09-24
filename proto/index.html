@@ -675,7 +675,8 @@
   function loadSamples(){
     if(samplesAsked) return; var a = bus(); if(!a) return; samplesAsked = true;
     SOUND_FILES.forEach(function(n){
-      fetch('sounds/' + n + '.mp3').then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); })
+      var tryExt = function(exts){ if(!exts.length) return Promise.reject(0); return fetch('sounds/' + n + '.' + exts[0]).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); }).catch(function(){ return tryExt(exts.slice(1)); }); };
+      tryExt(['m4a','mp3','wav'])
         .then(function(buf){ return new Promise(function(ok, ko){ a.decodeAudioData(buf, ok, ko); }); })
         .then(function(b){ samples[n] = b; }).catch(function(){});
     });
