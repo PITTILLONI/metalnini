@@ -12,7 +12,7 @@ struct SettingsView: View {
                 Section("Compte") {
                     switch store.mode {
                     case .connecting: Label("Connexion au serveur…", systemImage: "hourglass")
-                    case .online(let id): Label("Connecté · joueur \(id.uuidString.prefix(8))", systemImage: "checkmark.icloud")
+                    case .online(let id): Label("Connecté · \(store.username ?? "joueur \(id.uuidString.prefix(8))")", systemImage: "checkmark.icloud")
                     case .offline(let reason): Label("Hors ligne (\(reason)) · rien n'est sauvegardé", systemImage: "icloud.slash")
                     }
                 }

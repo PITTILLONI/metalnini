@@ -21,15 +21,18 @@ struct MetalniniApp: App {
 }
 
 struct RootView: View {
+    @Environment(GameStore.self) private var store
     var body: some View {
-        TabView {
+        @Bindable var store = store
+        TabView(selection: $store.tab) {
             PacksView()
-                .tabItem { Label("Paquets", systemImage: "moon.stars") }
+                .tabItem { Label("Paquets", systemImage: "moon.stars") }.tag(GameStore.Tab.packs)
             BinderView()
-                .tabItem { Label("Classeur", systemImage: "square.grid.3x3") }
+                .tabItem { Label("Classeur", systemImage: "square.grid.3x3") }.tag(GameStore.Tab.binder)
             SettingsView()
-                .tabItem { Label("Réglages", systemImage: "gearshape") }
+                .tabItem { Label("Réglages", systemImage: "gearshape") }.tag(GameStore.Tab.settings)
         }
         .tint(Theme.gold)
+        .fullScreenCover(isPresented: .constant(store.needsUsername)) { UsernameView() }
     }
 }

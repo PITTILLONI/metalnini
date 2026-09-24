@@ -1,58 +1,65 @@
 import SwiftUI
 import MetalniniKit
 
-/// Écran Paquets, phase 0 : choix du paquet et ouverture simple.
-/// La mise en scène (déchirure, pile, retournement, raretés) arrive en phase 1, en Rive.
+/// Écran Paquets : choix du paquet, déchirure, puis révélation plein écran.
 struct PacksView: View {
     @Environment(GameStore.self) private var store
+    @State private var revealing = false
+    @State private var tearID = UUID()          // recrée le sachet (neuf) après chaque ouverture
 
     var body: some View {
         @Bindable var store = store
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    BundleImage(url: CardImages.pack(store.packType.id))
-                        .frame(maxWidth: 220)
-                        .shadow(color: .black.opacity(0.8), radius: 20, y: 18)
-                        .accessibilityLabel("Paquet \(store.packType.label)")
+                VStack(spacing: 18) {
+                    PackTearView(packID: store.packType.id,
+                                 tease: store.pending.map { PackDraw.revealOrder($0.cards).last?.rarity ?? .commune },
+                                 onBegin: { Task { await store.prepareOpening() } },
+                                 onTorn: { Task { await presentWhenReady() } })
+                        .id(tearID)
+                        .frame(maxWidth: 230)
+                        .padding(.top, 8)
+                        .disabled(store.mode == .connecting)
+
+                    Text(store.busy ? "Ouverture…" : "Glisse le doigt sur le haut du paquet pour le déchirer →")
+                        .font(.caption.monospaced()).textCase(.uppercase).foregroundStyle(Theme.muted)
+                        .multilineTextAlignment(.center)
 
                     Picker("Paquet", selection: $store.packType) {
                         ForEach(Catalog.packTypes) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.menu)
-
-                    Button {
-                        Task { await store.openPack(); UIImpactFeedbackGenerator(style: .heavy).impactOccurred() }
-                    } label: {
-                        Text(store.busy ? "Ouverture…" : "Ouvrir un paquet").font(Theme.display(20)).textCase(.uppercase)
-                            .padding(.horizontal, 28).padding(.vertical, 14)
-                            .background(Theme.accent, in: Capsule())
-                    }
-                    .foregroundStyle(Theme.text)
-                    .disabled(store.busy || store.mode == .connecting)
+                    .disabled(store.pending != nil)
 
                     if let err = store.errorMessage { Text(err).font(.footnote).foregroundStyle(.red).multilineTextAlignment(.center).padding(.horizontal) }
-
-                    if !store.lastPack.isEmpty {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 5), spacing: 8) {
-                            ForEach(Array(store.lastPack.enumerated()), id: \.offset) { _, key in
-                                VStack(spacing: 4) {
-                                    BundleImage(url: CardImages.card(key))
-                                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(Theme.color(key.rarity), lineWidth: 2))
-                                    Text(Theme.label(key.rarity)).font(.caption2.monospaced()).foregroundStyle(Theme.color(key.rarity))
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
                 }
-                .padding(.vertical, 24)
+                .padding(.vertical, 20)
                 .frame(maxWidth: .infinity)
             }
             .background(Theme.background)
             .navigationTitle("Metalnini")
         }
+        #if DEBUG
+        .task(id: store.mode) {
+            // démonstration pour captures : `-demoReveal` ouvre un paquet dès la connexion
+            guard ProcessInfo.processInfo.arguments.contains("-demoReveal"), store.mode != .connecting, !revealing else { return }
+            await store.prepareOpening(); revealing = store.pending != nil
+        }
+        #endif
+        .fullScreenCover(isPresented: $revealing) {
+            if let p = store.pending {
+                RevealView(cards: p.cards, newFlags: p.isNew) { goToBinder in
+                    store.finishOpening(); revealing = false; tearID = UUID()
+                    if goToBinder { store.tab = .binder }
+                }
+            }
+        }
+    }
+
+    /// Le serveur a souvent déjà répondu pendant la déchirure ; sinon on attend sa réponse.
+    private func presentWhenReady() async {
+        for _ in 0..<100 where store.pending == nil && store.errorMessage == nil { try? await Task.sleep(for: .milliseconds(100)) }
+        if store.pending != nil { revealing = true } else { tearID = UUID() }
     }
 }
 

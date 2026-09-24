@@ -221,8 +221,8 @@ async function dash(el){
 async function players(el){
   const list = await sb.rpc('admin_list_players').then(must);
   el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
-    <tr><th>Compte</th><th>Créé</th><th>Dernière connexion</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
-    ${list.map(p => `<tr class="click" data-id="${p.id}"><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
+    <tr><th>Pseudo</th><th>Compte</th><th>Créé</th><th>Dernière connexion</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
+    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b></td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
       <td>${fmt(p.created_at)}</td><td>${fmt(p.last_sign_in_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
       <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
     </table></div></div><div id="player-detail"></div>`;
@@ -231,7 +231,7 @@ async function players(el){
 async function player(p){
   const inv = await sb.rpc('admin_player_inventory', { p_user: p.id }).then(must);
   const d = $('player-detail');
-  d.innerHTML = `<div class="card"><p class="eyebrow">Joueur</p><h3>${esc(p.email || 'anonyme')} <span class="muted" style="font:500 .7rem var(--mono)">${p.id}</span></h3>
+  d.innerHTML = `<div class="card"><p class="eyebrow">Joueur</p><h3>${esc(p.username || p.email || 'sans pseudo')}${p.username && p.email ? ' · ' + esc(p.email) : ''} <span class="muted" style="font:500 .7rem var(--mono)">${p.id}</span></h3>
     <label for="why">Motif de l'action (obligatoire, inscrit au journal)</label><input id="why" placeholder="ex. geste commercial, correction d'un bug, compte de test">
     <p id="adj-msg" class="msg"></p>
     <h3 style="margin-top:16px">Collection · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s)</h3>

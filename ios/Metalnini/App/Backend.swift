@@ -21,6 +21,19 @@ final class Backend: Sendable {
         return try await client.auth.signInAnonymously().user.id
     }
 
+    struct ProfileRow: Decodable, Sendable { let username: String? }
+
+    func username() async throws -> String? {
+        let rows: [ProfileRow] = try await client.from("profiles").select("username").limit(1).execute().value
+        return rows.first?.username
+    }
+
+    /// Enregistre le pseudo (vérifié et rendu unique côté serveur) ; renvoie le pseudo retenu.
+    func setUsername(_ name: String) async throws -> String {
+        struct Params: Encodable, Sendable { let p_username: String }
+        return try await client.rpc("set_username", params: Params(p_username: name)).execute().value
+    }
+
     struct InventoryRow: Decodable, Sendable {
         let musician_id: String
         let rarity: String
@@ -48,10 +61,16 @@ final class Backend: Sendable {
     }
 
     /// Ouvre un paquet côté serveur. `requestID` rend l'appel rejouable sans ouvrir deux paquets.
-    func openPack(_ packType: String, requestID: UUID) async throws -> [CardKey] {
+    func openPack(_ packType: String, requestID: UUID) async throws -> [(key: CardKey, isNew: Bool)] {
         struct Params: Encodable, Sendable { let p_pack_type: String; let p_request_id: UUID }
         let rows: [OpenedCard] = try await client.rpc("open_pack", params: Params(p_pack_type: packType, p_request_id: requestID)).execute().value
-        return rows.compactMap { r in Rarity(rawValue: r.rarity).map { CardKey(r.musician_id, $0) } }
+        return rows.compactMap { r in Rarity(rawValue: r.rarity).map { (CardKey(r.musician_id, $0), r.is_new) } }
+    }
+
+    /// Message lisible d'une erreur serveur (celles levées par nos fonctions SQL sont déjà en français).
+    static func message(_ error: Error) -> String {
+        if let e = error as? PostgrestError { return e.message }
+        return error.localizedDescription
     }
 
     func place(_ key: CardKey) async throws {
