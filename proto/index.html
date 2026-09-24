@@ -331,7 +331,8 @@
   .auth .links button{background:none; border:0; color:var(--gold, #d4a24c); padding:0; font:inherit; cursor:pointer; text-decoration:underline}
   .auth [data-only]{display:none}
   .auth[data-mode="signup"] [data-only~="signup"], .auth[data-mode="login"] [data-only~="login"], .auth[data-mode="forgot"] [data-only~="forgot"],
-  .auth[data-mode="sent"] [data-only~="sent"], .auth[data-mode="newpw"] [data-only~="newpw"]{display:block}
+  .auth[data-mode="sent"] [data-only~="sent"], .auth[data-mode="newpw"] [data-only~="newpw"], .auth[data-mode="loading"] [data-only~="loading"]{display:block}
+  .auth[data-mode="loading"] #auth-go{display:none}
   .net{font:500 .64rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
   .net b{color:var(--ok, #4ade80)}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
@@ -465,10 +466,10 @@
     <button type="button" class="btn" id="uname-go">C'est parti</button>
   </div>
 </div>
-<div class="uname" id="auth" hidden role="dialog" aria-modal="true" aria-labelledby="auth-t">
-  <form class="uname-in auth" id="auth-form" data-mode="signup" novalidate>
+<div class="uname" id="auth" role="dialog" aria-modal="true" aria-labelledby="auth-t">
+  <form class="uname-in auth" id="auth-form" data-mode="loading" novalidate>
     <p class="eyebrow">Bienvenue dans le pit</p>
-    <h2 id="auth-t"><span data-only="signup">Crée ton compte</span><span data-only="login">Connexion</span><span data-only="forgot">Mot de passe oublié</span><span data-only="sent">Vérifie tes e-mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
+    <h2 id="auth-t"><span data-only="loading">Connexion au pit…</span><span data-only="signup">Crée ton compte</span><span data-only="login">Connexion</span><span data-only="forgot">Mot de passe oublié</span><span data-only="sent">Vérifie tes e-mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
     <p class="note" data-only="signup" style="color:var(--muted)">Ta collection est sauvegardée sur ton compte. Un lien de confirmation t'est envoyé par e-mail.</p>
     <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
@@ -483,6 +484,12 @@
     </div>
   </form>
 </div>
+<script>
+(function(){
+  var has = false; try{ for(var i = 0; i < localStorage.length; i++){ if(/^sb-.*-auth-token$/.test(localStorage.key(i))) has = true; } }catch(e){}
+  if(!has && !/type=|access_token|error=/.test(location.hash)) document.getElementById('auth-form').dataset.mode = 'signup';
+})();
+</script>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="stamp" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
@@ -655,9 +662,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       ONLINE = api; save(); setNet(); renderStats();
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
       if(!state.username) askUsername();
-    }catch(e){ ONLINE = null; setNet(); toast('Serveur injoignable : mode hors ligne'); }
+    }catch(e){ ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Serveur injoignable : mode hors ligne'); }
   };
   if(window.metalniniApi) window.metalniniOnline(window.metalniniApi);
+  setTimeout(function(){ if(!AUTH){ document.getElementById('auth').hidden = true; setNet(); toast('Serveur injoignable : mode hors ligne'); } }, 10000);
   function showAuth(mode){
     var box = document.getElementById('auth'), form = document.getElementById('auth-form'), err = document.getElementById('auth-err'), btn = document.getElementById('auth-go');
     var mail = document.getElementById('au-mail'), pw = document.getElementById('au-pw'), name = document.getElementById('au-name');
