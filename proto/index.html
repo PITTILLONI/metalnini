@@ -96,6 +96,8 @@
   .binder-head{padding:calc(24px + env(safe-area-inset-top)) 0 6px}
   .binder-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 4px; scrollbar-width:none}
   .binder-tabs button{flex:0 0 auto; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .56rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); padding:0 2px 0 8px}
+  .binder-tabs .tab-kind:first-child{padding-left:0}
   .binder-tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
   .bar{flex:1; height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden}
@@ -338,31 +340,42 @@
     {k:'signature',  label:'Signature',  color:'var(--r-signature)'},
     {k:'legendaire', label:'Légendaire', color:'var(--r-legendaire)'}
   ];
+  // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
-    {k:'heavy', label:'Heavy : core & extrême'},
-    {k:'rock',  label:'Rock, punk & nu metal'}
+    {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot']},
+    {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier']},
+    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy']},
+    {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus']},
+    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante']},
+    {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison']},
+    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root']},
+    {k:'g-kl',      kind:'Groupes', label:'Knocked Loose', ids:['knocked-loose','isaac-hale']},
+    {k:'g-blink',   kind:'Groupes', label:'Blink-182', ids:['blink182','hoppus']},
+    {k:'g-slipknot', kind:'Groupes', label:'Slipknot', ids:['root','jordison']}
   ];
-  // id, musicien, groupe, titre d'arcane, numéro, instrument, sous-genre, classeur
+  function binderOf(k){ for(var i=0;i<BINDERS.length;i++) if(BINDERS[i].k===k) return BINDERS[i]; return BINDERS[0]; }
+  function styleOf(id){ for(var i=0;i<BINDERS.length;i++) if(BINDERS[i].kind==='Styles' && BINDERS[i].ids.indexOf(id)!==-1) return BINDERS[i].k; return BINDERS[0].k; }
+  // id, musicien, groupe, titre d'arcane, numéro, instrument, sous-genre
   var CARDS = [
-    ['knocked-loose','Bryan Garris','Knocked Loose','The Deadringer','IV','Chant','Hardcore','heavy'],
-    ['isaac-hale','Isaac Hale','Knocked Loose','Counting Worms','X','Guitare','Hardcore','heavy'],
-    ['jinjer','Tatiana Shmayluk','Jinjer','Pisces','V','Chant','Metalcore progressif','heavy'],
-    ['spiritbox','Courtney LaPlante','Spiritbox','Holy Roller','VI','Chant','Metalcore','heavy'],
-    ['landmvrks','Florent Salfati','Landmvrks','Lost in the Waves','VIII','Chant','Metalcore','heavy'],
-    ['ramos','Will Ramos','Lorna Shore','To the Hellfire','XIV','Chant','Deathcore','heavy'],
-    ['heriot','Debbie Gough','Heriot','Devoured by the Mouth of Hell','XVIII','Chant, guitare','Metalcore','heavy'],
-    ['duplantier','Mario Duplantier','Gojira','Flying Whales','XVI','Batterie','Death metal progressif','heavy'],
-    ['blink182','Travis Barker','Blink-182','All the Small Things','VII','Batterie','Pop punk','rock'],
-    ['hoppus','Mark Hoppus','Blink-182',"What's My Age Again?",'XII','Basse, chant','Pop punk','rock'],
-    ['hendrix','Jimi Hendrix','Jimi Hendrix','Purple Haze','IX','Guitare','Rock psychédélique','rock'],
-    ['korn','Jonathan Davis','Korn','Freak on a Leash','XI','Chant','Nu metal','rock'],
-    ['poppy','Poppy','Poppy','I Disagree','XIII','Chant','Métal expérimental','rock'],
-    ['slash','Slash',"Guns N' Roses",'Welcome to the Jungle','XV','Guitare','Hard rock','rock'],
-    ['zack','Zack de la Rocha','Rage Against the Machine','Bulls on Parade','XVII','Chant','Rap metal','rock'],
-    ['frusciante','John Frusciante','Red Hot Chili Peppers','Under the Bridge','XIX','Guitare','Funk rock','rock'],
-    ['root','Jim Root','Slipknot','Duality','XX','Guitare','Nu metal','rock'],
-    ['jordison','Joey Jordison','Slipknot','Wait and Bleed','XXI','Batterie','Nu metal','rock']
-  ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6], binder:c[7]}; });
+    ['knocked-loose','Bryan Garris','Knocked Loose','The Deadringer','IV','Chant','Hardcore'],
+    ['isaac-hale','Isaac Hale','Knocked Loose','Counting Worms','X','Guitare','Hardcore'],
+    ['jinjer','Tatiana Shmayluk','Jinjer','Pisces','V','Chant','Metalcore progressif'],
+    ['spiritbox','Courtney LaPlante','Spiritbox','Holy Roller','VI','Chant','Metalcore'],
+    ['landmvrks','Florent Salfati','Landmvrks','Lost in the Waves','VIII','Chant','Metalcore'],
+    ['ramos','Will Ramos','Lorna Shore','To the Hellfire','XIV','Chant','Deathcore'],
+    ['heriot','Debbie Gough','Heriot','Devoured by the Mouth of Hell','XVIII','Chant, guitare','Metalcore'],
+    ['duplantier','Mario Duplantier','Gojira','Flying Whales','XVI','Batterie','Death metal progressif'],
+    ['blink182','Travis Barker','Blink-182','All the Small Things','VII','Batterie','Pop punk'],
+    ['hoppus','Mark Hoppus','Blink-182',"What's My Age Again?",'XII','Basse, chant','Pop punk'],
+    ['hendrix','Jimi Hendrix','Jimi Hendrix','Purple Haze','IX','Guitare','Rock psychédélique'],
+    ['korn','Jonathan Davis','Korn','Freak on a Leash','XI','Chant','Nu metal'],
+    ['poppy','Poppy','Poppy','I Disagree','XIII','Chant','Métal expérimental'],
+    ['slash','Slash',"Guns N' Roses",'Welcome to the Jungle','XV','Guitare','Hard rock'],
+    ['zack','Zack de la Rocha','Rage Against the Machine','Bulls on Parade','XVII','Chant','Rap metal'],
+    ['frusciante','John Frusciante','Red Hot Chili Peppers','Under the Bridge','XIX','Guitare','Funk rock'],
+    ['root','Jim Root','Slipknot','Duality','XX','Guitare','Nu metal'],
+    ['jordison','Joey Jordison','Slipknot','Wait and Bleed','XXI','Batterie','Nu metal']
+  ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
 
@@ -373,7 +386,7 @@
 
   // ---------- État (navigateur uniquement) ----------
   var KEY = 'metalnini-proto-v1';
-  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'heavy', sound:true, pending:null, fuse:5, mastered:{}};
+  var DEFAULT = {size:5, odds:{commune:60, rare:25, holo:10, signature:4, legendaire:1}, owned:{}, opened:0, fresh:{}, binder:'metalcore', sound:true, pending:null, fuse:5, mastered:{}};
   var state = load();
   function load(){
     try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && s.owned) return Object.assign({}, DEFAULT, s); }catch(e){}
@@ -640,7 +653,9 @@
 
   document.getElementById('skip').addEventListener('click', showSummary);
   function showSummary(){
-    celebrate(newMasteries());
+    var comps = newCompletions();
+    comps.forEach(function(b, i){ setTimeout(function(){ SFX.signature(); burst('signature'); toast('<b>Classeur complété</b> · ' + esc(b.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
+    setTimeout(function(){ celebrate(newMasteries()); }, comps.length * 1300);
     document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
     revealEl.classList.remove('dim');
     var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); burst(b); }
@@ -652,7 +667,7 @@
   document.getElementById('again').addEventListener('click', function(){ revealEl.hidden = true; go('packs'); prepTease(); autoTear(); });
   document.getElementById('to-binder').addEventListener('click', function(){
     revealEl.hidden = true;
-    var last = current.length ? current[current.length-1].c.binder : state.binder;
+    var last = current.length ? styleOf(current[current.length-1].c.id) : state.binder;
     state.binder = last; save(); go('binder');
   });
 
@@ -664,6 +679,12 @@
     CARDS.forEach(function(c){ if(mastered(c.id) && !state.mastered[c.id]){ state.mastered[c.id] = true; out.push(c); } });
     if(out.length) save(); return out;
   }
+  function newCompletions(){
+    state.completed = state.completed || {}; var out = [];
+    BINDERS.forEach(function(b){ var ids = b.ids.filter(function(id){ return card(id); });
+      if(ids.length && ids.every(function(id){ return best(id); }) && !state.completed[b.k]){ state.completed[b.k] = true; out.push(b); } });
+    if(out.length) save(); return out;
+  }
   function toast(html){ var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
   function celebrate(list){
     list.forEach(function(c, i){ setTimeout(function(){ SFX.signature(); burst('signature');
@@ -672,11 +693,17 @@
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
   function renderBinder(){
     var tabsEl = document.getElementById('binder-tabs');
-    tabsEl.innerHTML = BINDERS.map(function(b){ return '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(b.label) + '</button>'; }).join('');
-    [].forEach.call(tabsEl.children, function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
-    var list = CARDS.filter(function(c){ return c.binder === state.binder; });
+    if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
+    var lastKind = null;
+    tabsEl.innerHTML = BINDERS.map(function(b){
+      var head = b.kind !== lastKind ? '<span class="tab-kind">' + b.kind + '</span>' : ''; lastKind = b.kind;
+      var done = b.ids.filter(function(id){ return card(id); }).every(function(id){ return best(id); });
+      return head + '<button type="button" role="tab" data-b="' + b.k + '" aria-selected="' + (b.k===state.binder) + '">' + esc(b.label) + (done ? ' ✓' : '') + '</button>';
+    }).join('');
+    [].forEach.call(tabsEl.querySelectorAll('button'), function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
+    var b = binderOf(state.binder);
+    var list = b.ids.map(card).filter(Boolean);
     var have = list.filter(function(c){ return best(c.id); }).length;
-    var b = BINDERS.filter(function(x){ return x.k===state.binder; })[0];
     document.getElementById('binder-title').textContent = b.label;
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
@@ -772,7 +799,7 @@
     var el = document.getElementById('odds-total'); el.textContent = 'Total : ' + t + ' %' + (Math.abs(t-100) > .01 ? ' — les probabilités sont ramenées à 100 % au tirage' : '');
     el.className = 'total' + (Math.abs(t-100) > .01 ? ' bad' : '');
   }
-  function resetAll(){ state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; save(); renderStats(); }
+  function resetAll(){ state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; state.completed = {}; save(); renderStats(); }
   var rq = document.getElementById('reset-quick'), rqTimer = null;
   rq.addEventListener('click', function(){
     if(!rq.classList.contains('armed')){ rq.classList.add('armed'); rq.textContent = 'Toucher encore pour tout effacer'; clearTimeout(rqTimer);

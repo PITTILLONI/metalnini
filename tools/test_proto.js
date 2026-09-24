@@ -80,7 +80,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   await sleep(150);
   const d2 = dom2.window.document;
   d2.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  d2.querySelector('#binder-tabs [data-b="rock"]').click(); await sleep(30);
+  d2.querySelector('#binder-tabs [data-b="numetal"]').click(); await sleep(30);
   d2.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(30);
   const fb = d2.querySelector('#detail .fuse button[data-from="commune"]');
   check('bouton de fusion proposé avec 5 doublons', !!fb);
@@ -94,6 +94,21 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const rq = d2.getElementById('reset-quick'); rq.click(); rq.click(); await sleep(30);
   const st3 = JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1'));
   check('remise à zéro : collection vide', Object.keys(st3.owned).length === 0 && st3.opened === 0);
+
+  // 7. Complétion d'un classeur : Pop punk (2 musiciens) complété -> récompense annoncée
+  const s4 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'blink182|commune':1,'hoppus|commune':1}, opened:1, fresh:{}, binder:'poppunk', sound:false, pending:null, fuse:5, mastered:{}, completed:{} };
+  const dom3 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w3){
+    w3.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s4)); w3.matchMedia = () => ({ matches: false }); w3.scrollTo = () => {};
+    w3.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w3.HTMLElement.prototype.setPointerCapture = () => {};
+    w3.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const d3 = dom3.window.document;
+  key(d3.getElementById('pack'), 'Enter'); await sleep(3200);
+  d3.getElementById('skip').click(); await sleep(600);
+  const toastTxt = [...d3.querySelectorAll('.toast')].map(t => t.textContent).join(' | ');
+  check('complétion du classeur Pop punk annoncée', /Classeur complété.*Pop punk/.test(toastTxt), toastTxt);
+  d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
+  check('onglet du classeur complété marqué ✓', /Pop punk ✓/.test(d3.getElementById('binder-tabs').textContent));
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
