@@ -363,10 +363,11 @@
   .slot .tf{position:absolute; left:50%; bottom:6px; transform:translateX(-50%); z-index:2; white-space:nowrap; background:var(--gold); color:var(--ink); border-radius:999px; font:700 .7rem/1 var(--mono); letter-spacing:.04em; padding:4px 8px; box-shadow:0 3px 10px rgba(0,0,0,.6)}
   .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .7rem var(--mono); padding:2px 5px}
   /* notification système : bandeau pleine largeur, descend du haut et y repart, sans fondu */
-  .toast{position:fixed; left:0; right:0; top:0; z-index:85; padding:calc(12px + env(safe-area-inset-top)) 18px 12px; background:#1b1508; border-bottom:1px solid var(--gold); color:var(--text);
-    font-size:.92rem; line-height:1.35; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.6); transform:translateY(-110%); animation:toast 3.6s cubic-bezier(.2,.8,.2,1) forwards; pointer-events:none}
+  .toast{position:fixed; left:12px; right:12px; top:calc(12px + env(safe-area-inset-top)); z-index:85; max-width:560px; margin:0 auto; padding:16px 18px; border-radius:16px;
+    background:#1b1508; border:1px solid var(--gold); color:var(--text); font-size:.98rem; line-height:1.4; text-align:center; box-shadow:0 14px 36px rgba(0,0,0,.65);
+    transform:translateY(calc(-100% - 40px)); animation:toast 3.6s cubic-bezier(.2,.8,.2,1) forwards; pointer-events:none}
   .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
-  @keyframes toast{0%{transform:translateY(-110%)}9%,88%{transform:none}100%{transform:translateY(-110%)}}
+  @keyframes toast{0%{transform:translateY(calc(-100% - 40px))}9%,88%{transform:none}100%{transform:translateY(calc(-100% - 40px))}}
   .stage{touch-action:none; user-select:none; -webkit-user-select:none}
   .deck{display:flex; gap:6px; justify-content:center; margin-top:14px; min-height:62px; align-items:flex-end}
   .deck i{display:block; width:36px; aspect-ratio:2/3; border-radius:4px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 4px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(237,164,43,.35); transition:transform .3s ease, opacity .3s ease}
