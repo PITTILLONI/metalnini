@@ -196,7 +196,6 @@
   /* ---------- Mise en scène du reveal ---------- */
   .reveal{transition:background .6s ease}
   .reveal.dim{background:radial-gradient(ellipse at center,#120404 0%,#000 75%)}
-  #fx{position:fixed; left:0; top:0; width:100vw; height:100vh; pointer-events:none; z-index:45}
   #flash{position:fixed; inset:0; pointer-events:none; z-index:46; opacity:0; background:var(--flash,#fff)}
   #flash.go{animation:flash .55s ease-out}
   @keyframes flash{0%{opacity:.85}100%{opacity:0}}
@@ -405,7 +404,7 @@
       <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="signout" hidden>Se déconnecter</button></p>
     </div>
     <div class="field">
-      <label class="toggle">Sons et vibrations <input type="checkbox" id="s-sound"></label>
+      <label class="toggle">Vibrations <input type="checkbox" id="s-sound"></label>
     </div>
     <div class="field">
       <p class="note">Réinitialiser efface ta collection (sur ton compte si tu es connecté).</p>
@@ -490,7 +489,6 @@
   if(!has && !/type=|access_token|error=/.test(location.hash)) document.getElementById('auth-form').dataset.mode = 'signup';
 })();
 </script>
-<canvas id="fx" aria-hidden="true"></canvas>
 <div id="stamp" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
 <div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="all" id="tray-all">Tout ranger</button></div></div>
@@ -798,27 +796,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       '<span>★ ' + CARDS.filter(function(c){ return mastered(c.id); }).length + ' maîtrise' + (CARDS.filter(function(c){ return mastered(c.id); }).length>1?'s':'') + '</span>';
   }
 
-  // ---------- Effets : son, vibration, particules ----------
+  // ---------- Effets : vibration, lumière ----------
   var COLORS = {commune:'#c9c3b8', rare:'#3b82f6', holo:'#a78bfa', signature:'#f5c542', legendaire:'#ef4444'};
   var CHARGE = {commune:0, rare:350, holo:850, signature:1400, legendaire:2300};
-  var BURST  = {commune:0, rare:30, holo:90, signature:170, legendaire:300};
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ac = null;
-  function audio(){ if(!state.sound) return null; try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if(ac.state === 'suspended') ac.resume(); }catch(e){ ac = null; } return ac; }
-  function tone(f, t0, dur, type, vol){
-    var a = audio(); if(!a) return; var o = a.createOscillator(), g = a.createGain();
-    o.type = type || 'sine'; o.frequency.setValueAtTime(f, a.currentTime + t0);
-    g.gain.setValueAtTime(0.0001, a.currentTime + t0); g.gain.exponentialRampToValueAtTime(vol || .18, a.currentTime + t0 + .02);
-    g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + t0 + dur);
-    o.connect(g); g.connect(a.destination); o.start(a.currentTime + t0); o.stop(a.currentTime + t0 + dur + .05);
-  }
-  function noise(dur, vol, freq){
-    var a = audio(); if(!a) return; var b = a.createBuffer(1, a.sampleRate * dur, a.sampleRate), d = b.getChannelData(0);
-    for(var i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
-    var s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
-    s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq || 1800; g.gain.value = vol || .25;
-    s.connect(f); f.connect(g); g.connect(a.destination); s.start();
-  }
   var hapticLabel = document.getElementById('haptic');
   function tick(){ try{ hapticLabel.click(); }catch(e){} }
   function buzz(p){
@@ -827,105 +808,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var seq = [].concat(p), t = 0; seq.forEach(function(ms, i){ if(i % 2 === 0){ setTimeout(tick, t); if(ms > 120) for(var k = 90; k < ms; k += 90) setTimeout(tick, t + k); } t += ms; });
   }
   var HAPTIC = {commune:[15], rare:[25,40,25], holo:[30,40,30,40,50], signature:[40,40,40,40,60,60,120], legendaire:[90,50,90,50,90,60,300]};
-  // ---------- Sound design metal : batterie et guitare saturée, synthétisées ----------
-  var master = null, shaper = null;
-  function bus(){
-    var a = audio(); if(!a) return null;
-    if(!master){ master = a.createDynamicsCompressor(); master.threshold.value = -14; master.ratio.value = 4; master.connect(a.destination); }
-    return a;
-  }
-  function env(a, g, t, peak, dur){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + .004); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
-  function noiseSrc(a, dur){ var b = a.createBuffer(1, Math.max(1, a.sampleRate * dur), a.sampleRate), d = b.getChannelData(0); for(var i=0;i<d.length;i++) d[i] = Math.random()*2-1; var s = a.createBufferSource(); s.buffer = b; return s; }
-  var DR = {
-    kick: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), o = a.createOscillator(), g = a.createGain();
-      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + .12); env(a, g, t, (v||1) * .9, .32); o.connect(g); g.connect(master); o.start(t); o.stop(t + .35); },
-    snare: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), n = noiseSrc(a, .22), f = a.createBiquadFilter(), g = a.createGain(), o = a.createOscillator(), og = a.createGain();
-      f.type = 'highpass'; f.frequency.value = 1400; env(a, g, t, (v||1) * .55, .2); n.connect(f); f.connect(g); g.connect(master); n.start(t);
-      o.frequency.setValueAtTime(220, t); env(a, og, t, (v||1) * .35, .09); o.connect(og); og.connect(master); o.start(t); o.stop(t + .12); },
-    tom: function(at, hz, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), o = a.createOscillator(), g = a.createGain();
-      o.frequency.setValueAtTime(hz, t); o.frequency.exponentialRampToValueAtTime(hz * .55, t + .28); env(a, g, t, (v||1) * .6, .38); o.connect(g); g.connect(master); o.start(t); o.stop(t + .4); },
-    hat: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), n = noiseSrc(a, .06), f = a.createBiquadFilter(), g = a.createGain();
-      f.type = 'highpass'; f.frequency.value = 7000; env(a, g, t, (v||1) * .28, .05); n.connect(f); f.connect(g); g.connect(master); n.start(t); },
-    crash: function(at, v){ var a = bus(); if(!a) return; var t = a.currentTime + (at||0), n = noiseSrc(a, 2), f = a.createBiquadFilter(), g = a.createGain();
-      f.type = 'highpass'; f.frequency.value = 4500; env(a, g, t, (v||1) * .42, 1.8); n.connect(f); f.connect(g); g.connect(master); n.start(t); }
-  };
-  // accord de quinte (power chord) saturé : fondamentale, quinte, octave, distorsion puis « baffle »
-  function chord(at, root, dur, v, mute){
-    var a = bus(); if(!a) return; var t = a.currentTime + (at||0);
-    if(!shaper){ shaper = a.createWaveShaper(); var c = new Float32Array(1024); for(var i=0;i<1024;i++){ var x = i/512 - 1; c[i] = Math.tanh(x * 9); } shaper.curve = c; shaper.oversample = '4x';
-      var cab = a.createBiquadFilter(); cab.type = 'lowpass'; cab.frequency.value = 3200; cab.Q.value = .7; var cab2 = a.createBiquadFilter(); cab2.type = 'peaking'; cab2.frequency.value = 900; cab2.gain.value = -6;
-      shaper.connect(cab); cab.connect(cab2); cab2.connect(master); }
-    var pre = a.createGain(); pre.connect(shaper);
-    [1, 1.498, 2].forEach(function(r, k){ [0, 4].forEach(function(det){ var o = a.createOscillator(); o.type = 'sawtooth'; o.frequency.value = root * r; o.detune.value = det + k; o.connect(pre); o.start(t); o.stop(t + dur + .05); }); });
-    var g = a.createGain(); pre.disconnect(); pre.connect(g); g.connect(shaper);
-    pre.gain.value = .22; env(a, g, t, (v||1) * (mute ? .35 : .5), mute ? .12 : dur);
-  }
-  var E2 = 82.41, G2 = 98, A2 = 110, D2 = 73.42;
-  // Sons enregistrés : proto/sounds/<nom>.mp3 ; s'ils existent, ils remplacent la synthèse
-  var SOUND_FILES = ['tear','flip','commune','rare','holo','signature','legendaire','build','heartbeat','land','complete'];
-  var samples = {}, samplesAsked = false;
-  function loadSamples(){
-    if(samplesAsked) return; var a = bus(); if(!a) return; samplesAsked = true;
-    SOUND_FILES.forEach(function(n){
-      var file = (window.METALNINI_SOUNDS || {})[n]; if(!file) return;   // seuls les sons déposés (liste générée par le build)
-      fetch('sounds/' + file).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); })
-        .then(function(buf){ return new Promise(function(ok, ko){ a.decodeAudioData(buf, ok, ko); }); })
-        .then(function(b){ samples[n] = b; }).catch(function(){});
-    });
-  }
-  function sample(n, vol){
-    var b = samples[n], a = audio(); if(!b || !a) return false;
-    var s = a.createBufferSource(), g = a.createGain(); s.buffer = b; g.gain.value = vol || 1; s.connect(g); g.connect(master || a.destination); s.start(); return true;
-  }
-  var SYNTH = {
-    tear: function(){ var a = bus(); if(!a) return; var t = a.currentTime, n = noiseSrc(a, .4), f = a.createBiquadFilter(), g = a.createGain();
-      f.type = 'bandpass'; f.Q.value = 3; f.frequency.setValueAtTime(600, t); f.frequency.exponentialRampToValueAtTime(5000, t + .35); env(a, g, t, .35, .38); n.connect(f); f.connect(g); g.connect(master); n.start(t); buzz([20]); },
-    flip: function(){ DR.hat(0, .9); buzz([12]); },
-    commune: function(){ chord(0, E2, .12, .8, true); DR.kick(0, .7); buzz(HAPTIC.commune); },
-    rare: function(){ chord(0, E2, .12, .8, true); chord(.13, E2, .12, .8, true); DR.kick(0); DR.kick(.13); DR.crash(.26, .8); chord(.26, G2, .7, .9); buzz(HAPTIC.rare); },
-    holo: function(){ [0, .09, .18, .27].forEach(function(t, i){ DR.tom(t, [220, 180, 140, 110][i]); }); DR.crash(.36); DR.kick(.36); chord(.36, A2, 1.1, 1); buzz(HAPTIC.holo); },
-    signature: function(){ for(var i=0;i<8;i++){ if(i < 4) DR.snare(i*.07, .6 + i*.1); else DR.tom(i*.07, [240, 200, 160, 120][i-4]); }
-      DR.crash(.58, 1); DR.kick(.58); chord(.58, D2, 1.5, 1.1); chord(.58, D2*2, 1.5, .5); buzz(HAPTIC.signature); },
-    legendaire: function(){ DR.crash(0, 1.2); DR.kick(0, 1.2); DR.crash(.02, .8); chord(0, E2, 2.2, 1.2); chord(0, E2*.5, 2.2, .7); DR.tom(.5, 90, 1); DR.kick(.5); buzz(HAPTIC.legendaire); },
-    heartbeat: function(){ DR.kick(0, 1); DR.kick(.22, .8); buzz([40,180,30]); },
-    land: function(){ DR.tom(0, 170, .8); DR.hat(.05, .5); buzz([18]); },
-    // double pédale qui accélère pendant l'attente
-    rumble: function(ms){ var n = Math.floor(ms / 1000 * 14), t = 0; for(var i=0;i<n;i++){ DR.kick(t, .45 + .5 * i/n); t += Math.max(.045, .14 - .1 * i/n); if(t * 1000 > ms) break; } buzz([ms]); },
-    complete: function(){ SYNTH.signature(); }
-  };
-  // chaque son : le fichier s'il est là, sinon la version synthétisée (les vibrations restent dans tous les cas)
-  var FILE_OF = {rumble:'build'}, HAPT = {commune:HAPTIC.commune, rare:HAPTIC.rare, holo:HAPTIC.holo, signature:HAPTIC.signature, legendaire:HAPTIC.legendaire, flip:[12], land:[18], heartbeat:[40,180,30], tear:[20], complete:HAPTIC.signature};
+  // sons retirés (2026-09-24) : chaque moment garde seulement sa vibration
+  var HAPT = {commune:HAPTIC.commune, rare:HAPTIC.rare, holo:HAPTIC.holo, signature:HAPTIC.signature, legendaire:HAPTIC.legendaire, flip:[12], land:[18], heartbeat:[40,180,30], tear:[20], complete:HAPTIC.signature};
   var SFX = {};
-  Object.keys(SYNTH).forEach(function(k){ SFX[k] = function(arg){ loadSamples(); if(sample(FILE_OF[k] || k)){ if(k === 'rumble') buzz([arg]); else if(HAPT[k]) buzz(HAPT[k]); return; } SYNTH[k](arg); }; });
+  Object.keys(HAPT).forEach(function(k){ SFX[k] = function(){ buzz(HAPT[k]); }; });
+  SFX.rumble = function(ms){ buzz([ms]); };
 
-  var fx = document.getElementById('fx'), ctx = fx.getContext('2d'), parts = [], looping = false;
-  function sizeFx(){ var d = window.devicePixelRatio || 1; fx.width = innerWidth * d; fx.height = innerHeight * d; ctx.setTransform(d,0,0,d,0,0); }
-  addEventListener('resize', sizeFx); sizeFx();
-  function stageCenter(){ var r = document.getElementById('stage').getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2, w:r.width, h:r.height}; }
-  function burst(r, at){
-    if(reduce) return; var n = BURST[r], c = at || stageCenter(), col = COLORS[r];
-    for(var i=0;i<n;i++){ var a = Math.random()*Math.PI*2, v = 3 + Math.random()*(r==='legendaire'?11:8);
-      parts.push({x:c.x, y:c.y, vx:Math.cos(a)*v, vy:Math.sin(a)*v - 2, life:1, decay:.012+Math.random()*.02, size:1.5+Math.random()*(r==='legendaire'?4:3),
-                  col: r==='holo' ? ['#2dd4bf','#a78bfa','#f472b6','#fcd34d'][i%4] : col, g:.12}); }
-    loop();
-  }
-  function embers(r, ms){
-    if(reduce) return; var c = stageCenter(), end = Date.now() + ms;
-    (function spawn(){ if(Date.now() > end) return;
-      for(var i=0;i<(r==='legendaire'?4:2);i++) parts.push({x:c.x + (Math.random()-.5)*c.w*1.2, y:c.y + c.h/2, vx:(Math.random()-.5)*.8, vy:-1.5-Math.random()*2.5, life:1, decay:.01+Math.random()*.01, size:1+Math.random()*2.5, col:COLORS[r], g:-.01});
-      loop(); setTimeout(spawn, 40); })();
-  }
-  function loop(){
-    if(looping) return; looping = true;
-    (function step(){
-      ctx.clearRect(0,0,innerWidth,innerHeight);
-      parts = parts.filter(function(p){ return p.life > 0; });
-      parts.forEach(function(p){ p.x += p.vx; p.y += p.vy; p.vy += p.g; p.vx *= .985; p.life -= p.decay;
-        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.col; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
-      ctx.globalAlpha = 1;
-      if(parts.length) requestAnimationFrame(step); else { looping = false; ctx.clearRect(0,0,innerWidth,innerHeight); }
-    })();
-  }
   function rays(r){ var el = document.getElementById('rays'); el.className = ''; if(reduce || rank(r) < 2) return; el.style.setProperty('--rc', COLORS[r]); void el.offsetWidth; el.className = 'on' + (rank(r) >= 3 ? ' fast' : ''); }
   function quake(){ if(reduce) return; revealEl.classList.remove('quake'); void revealEl.offsetWidth; revealEl.classList.add('quake'); }
   function stamp(r){ if(reduce) return; var el = document.getElementById('stamp'); el.textContent = rarity(r).label; el.style.setProperty('--sc', COLORS[r]); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
@@ -938,7 +826,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
   packEl.addEventListener('pointerdown', function(e){
     if(opening) return; if(pTarget && pTarget.root.id === 'pack-root') clearTarget(); packEl.style.transform = '';
-    prepTease(); audio(); loadSamples(); askMotion(); tick();
+    prepTease(); askMotion(); tick();
     drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
     packEl.setPointerCapture(e.pointerId);
   });
@@ -978,8 +866,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       document.getElementById('vignette').classList.add('on'); document.getElementById('flames-pack').classList.add('on'); packEl.classList.add('legend'); document.getElementById('ptilt').classList.add('shake');
       SFX.heartbeat(); setTimeout(SFX.heartbeat, 800); setTimeout(SFX.heartbeat, 1500); setTimeout(function(){ SFX.rumble(700); }, 1650);
       var pr = packEl.getBoundingClientRect(), at = {x:pr.left + pr.width/2, y:pr.top + pr.height/2, w:pr.width, h:pr.height};
-      (function emb(n){ if(n <= 0) return; parts.push({x:at.x + (Math.random()-.5)*at.w, y:at.y + at.h/2, vx:(Math.random()-.5)*.8, vy:-1.5-Math.random()*2.5, life:1, decay:.012, size:1+Math.random()*2.5, col:'#ef4444', g:-.01}); loop(); setTimeout(function(){ emb(n-1); }, 30); })(70);
-      setTimeout(function(){ burst('legendaire', at); ring('legendaire', at); stamp('legendaire'); }, wait - 120);
+      setTimeout(function(){ ring('legendaire', at); stamp('legendaire'); }, wait - 120);
     } else if(wait){ packEl.classList.add('charging'); if(rank(tease) >= 3) SFX.rumble(wait); }
     setTimeout(function(){
       packEl.classList.remove('charging', 'legend'); document.getElementById('ptilt').classList.remove('shake'); packEl.classList.add('torn'); flash(tease);
@@ -1134,7 +1021,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Geste : glisser pour retourner, glisser pour passer ----------
   var g = null;
   stage.addEventListener('pointerdown', function(e){
-    if(busy || revealEl.hidden) return; audio();
+    if(busy || revealEl.hidden) return;
     g = {x0:e.clientX, y0:e.clientY, w:stage.getBoundingClientRect().width, moved:false, a:0, dx:0, t0:performance.now()};
     stage.setPointerCapture(e.pointerId);
     flip.style.transition = 'none'; stage.style.transition = 'none';
@@ -1240,10 +1127,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       setTimeout(function(){
         fl.remove(); finishPlace(k);
         var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]');
-        if(s2){ s2.classList.add('landed'); var rr = s2.getBoundingClientRect(); burst(r === 'commune' ? 'rare' : r, {x:rr.left + rr.width/2, y:rr.top + rr.height/2, w:rr.width, h:rr.height}); }
+        if(s2){ s2.classList.add('landed'); }
         SFX.land(); placing = false;
         var comps = newCompletions(), mast = newMasteries();
-        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); burst('signature'); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
+        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
         if(done) setTimeout(done, 180);
       }, reduce ? 0 : 560);
@@ -1268,7 +1155,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function toast(html){ var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
   function celebrate(list){
-    list.forEach(function(c, i){ setTimeout(function(){ SFX.signature(); burst('signature');
+    list.forEach(function(c, i){ setTimeout(function(){ SFX.signature();
       toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies : badge débloqué'); }, 500 + i*1200); });
   }
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
