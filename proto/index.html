@@ -64,30 +64,31 @@
   .hud-stats{display:flex; gap:6px}
   .hud-stats span{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
   .hud-stats i{display:flex; color:var(--gold)}
-  .home-title{font-size:1.9rem; line-height:1.05; margin:12px 0 0; text-align:center}
-  .pack-zone{display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px 0 6px}
+  .home-title{font-size:1.9rem; line-height:1.05; margin:24px 0 0; text-align:center}
+  .pack-zone{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:8px 0 16px}
   @media (orientation:landscape) and (max-height:540px){
     .home{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:28px; align-items:start}
     .home > *{grid-column:1} .home .pack-zone{grid-column:2; grid-row:1 / span 4; padding-top:calc(10px + env(safe-area-inset-top))}
     .home .pack.art{width:max(90px, calc((100svh - 200px) * var(--pa,.5783)))}
     .home .pack-zone{gap:8px} .home .swipe-hint{display:none}
   }
+  .home{display:flex; flex-direction:column; min-height:calc(100dvh - 90px - env(safe-area-inset-bottom))}
   #v-packs[data-step="choose"] .pack-zone{display:none}
   #v-packs[data-step="open"] .quests, #v-packs[data-step="open"] .home-title, #v-packs[data-step="open"] .choose{display:none}
   /* choix du paquet : carrousel, le paquet du centre en avant, sa description dessous */
-  .choose{display:flex; flex-direction:column; align-items:center; padding:6px 0 10px}
-  .pack-car{width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:18px calc(50% - var(--pw) / 2) 8px; --pw:min(46vw, 200px, calc((100dvh - 470px) * .58))}
+  .choose{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px 0 16px}
+  .pack-car{width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:16px calc(50% - var(--pw) / 2) 20px; --pw:min(52vw, 230px, calc((100dvh - 480px) * .58))}
   .pack-car::-webkit-scrollbar{display:none}
   .pack-car button{flex:0 0 var(--pw); scroll-snap-align:center; border:0; padding:0; background:none; cursor:pointer; transform:scale(.78); opacity:.45; transition:transform .25s ease, opacity .25s ease}
   .pack-car button.on{transform:none; opacity:1}
   .pack-car img{display:block; width:100%; aspect-ratio:.58; object-fit:contain; filter:drop-shadow(0 14px 22px rgba(0,0,0,.65))}
-  .pack-info{text-align:center; min-height:84px; padding:4px 8px 12px; max-width:360px}
+  .pack-info{text-align:center; min-height:84px; padding:16px 8px 0; max-width:360px}
   .pack-info h2{font-size:1.8rem}
-  .pack-info p{margin:6px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
+  .pack-info p{margin:8px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
-  .open-head .back-btn{display:block; margin:0 auto 4px}
+  .open-head .back-btn{display:block; margin:0 auto 8px}
   .open-head h1{font-size:2rem}
   .home .open-head .pack-desc{display:block; margin:6px auto 0}
   .goal.quest{padding:8px 12px}
@@ -194,15 +195,15 @@
   .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
   /* phrase « combo » façon arcade : claque au-dessus de la carte, tient un instant, puis s'envole */
-  .combo{position:absolute; left:0; right:0; top:36%; z-index:30; margin:0; padding:0 18px; text-align:center; pointer-events:none; opacity:0;
-    font:800 clamp(1.8rem, 9vw, 2.4rem)/1 var(--display); text-transform:uppercase; letter-spacing:.01em; color:var(--text); --cb:rgba(243,240,234,.4)}
-  .combo span{display:inline-block; max-width:100%; padding:12px 18px 10px; background:rgba(10,8,7,.9); border:2px solid var(--cb); transform:skewX(-8deg); box-shadow:0 10px 30px rgba(0,0,0,.6)}
+  .combo{position:absolute; left:0; right:0; top:30%; z-index:30; margin:0; padding:0 18px; text-align:center; pointer-events:none; opacity:0;
+    font:800 clamp(2.2rem, 11vw, 3rem)/.98 var(--display); text-transform:uppercase; letter-spacing:.01em; color:var(--text); --cb:rgba(243,240,234,.4)}
+  .combo span{display:inline-block; max-width:100%; padding:14px 18px 12px; background:rgba(10,8,7,.9); border:2px solid var(--cb); transform:skewX(-8deg); box-shadow:0 10px 30px rgba(0,0,0,.6)}
   .combo.go{animation:combo 2.8s cubic-bezier(.2,.9,.3,1) forwards}
-  .combo[data-r="commune"]{font-size:clamp(1.7rem, 8.5vw, 2.3rem)}
-  .combo[data-r="rare"]{font-size:clamp(1.9rem, 9.5vw, 2.6rem); color:#9cc2ff; --cb:#3b82f6}
-  .combo[data-r="holo"]{font-size:clamp(2.1rem, 10.5vw, 2.9rem); color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
-  .combo[data-r="signature"]{font-size:clamp(2.3rem, 11.5vw, 3.2rem); color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(237,164,43,.65)}
-  .combo[data-r="legendaire"]{font-size:clamp(2.5rem, 12.5vw, 3.5rem); font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
+  .combo[data-r="commune"]{font-size:clamp(2.2rem, 11vw, 3rem)}
+  .combo[data-r="rare"]{font-size:clamp(2.5rem, 12.5vw, 3.4rem); color:#9cc2ff; --cb:#3b82f6}
+  .combo[data-r="holo"]{font-size:clamp(2.8rem, 14vw, 3.8rem); color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
+  .combo[data-r="signature"]{font-size:clamp(3.1rem, 15.5vw, 4.2rem); color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(237,164,43,.65)}
+  .combo[data-r="legendaire"]{font-size:clamp(3.4rem, 17vw, 4.6rem); font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
   .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
   @keyframes comboshake{50%{translate:4px 0}}
@@ -211,28 +212,12 @@
   .tag.new{background:var(--gold); color:#111}
   .tag.dup{background:var(--surface-2); color:var(--muted); border:1px solid var(--border)}
   .reveal .hint{font:500 .7rem var(--mono); color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:14px}
-  .summary{position:absolute; inset:0; display:flex; flex-direction:column; padding:calc(14px + env(safe-area-inset-top)) 0 calc(14px + env(safe-area-inset-bottom))}
-  .summary[hidden]{display:none}
-  .sum-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
-  .summary h2{font-size:2.4rem; line-height:.95}
-  .sum-sub{margin:6px 0 0; font:500 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .icon-btn{flex:0 0 auto; width:46px; height:46px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(237,164,43,.55); background:rgba(237,164,43,.07); color:var(--gold-hi); cursor:pointer;
     backdrop-filter:blur(8px); transition:transform .12s ease, background .12s ease}
   .icon-btn:active{transform:scale(.92); background:rgba(255,255,255,.14)}
-  .carousel{flex:1; min-height:0; display:flex; align-items:center; gap:14px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none;
-    padding:0 calc(50% - var(--cw) / 2); --cw:min(72vw, calc((100dvh - 300px) * .6667), 400px)}
-  .carousel::-webkit-scrollbar{display:none}
-  .carousel figure{flex:0 0 var(--cw); margin:0; scroll-snap-align:center; text-align:center; transition:transform .25s ease, opacity .25s ease; transform:scale(.86); opacity:.55}
-  .carousel figure.on{transform:none; opacity:1}
-  .carousel img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:14px; display:block; box-shadow:0 0 0 2px var(--rc), 0 18px 40px rgba(0,0,0,.6)}
-  .carousel figure.on img{box-shadow:0 0 0 2px var(--rc), 0 0 34px 4px color-mix(in srgb, var(--rc) 45%, transparent), 0 18px 40px rgba(0,0,0,.6)}
-  .carousel figcaption{margin-top:10px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap}
-  .chip{font:600 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:999px; border:1px solid var(--rc, var(--border)); color:var(--rc, var(--muted)); background:rgba(0,0,0,.35)}
-  .chip.new{background:var(--accent); border-color:var(--accent); color:#fff}
   .dots{display:flex; justify-content:center; gap:7px; padding:4px 0 10px}
   .dots i{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.22); transition:all .2s ease}
   .dots i.on{width:20px; border-radius:4px; background:var(--gold)}
-  .sum-actions{display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
 
   /* ---------- Classeur ---------- */
   .binder-head{position:relative; padding:calc(24px + env(safe-area-inset-top)) 0 6px}
@@ -323,7 +308,7 @@
   /* ---------- Déchirure du paquet ---------- */
   .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
   .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#eda42b}
-  .pack.art{aspect-ratio:var(--pa,.5783); width:max(130px, min(56vw, 240px, calc((100svh - 450px) * var(--pa,.5783)))); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
+  .pack.art{aspect-ratio:var(--pa,.5783); width:max(130px, min(58vw, 250px, calc((100svh - 470px) * var(--pa,.5783)))); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
   .pack.art::before, .pack.art .p-moon, .pack.art .p-title, .pack.art .p-sub{display:none}
   .pack .flap{position:absolute; left:0; right:0; top:0; height:10%; z-index:2; border-bottom:1px dashed rgba(237,164,43,.45);
               background:transparent var(--pimg,url(cards/pack-serie.jpg)) center top/100% auto no-repeat; transform-origin:100% 100%;
@@ -384,6 +369,9 @@
   .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc,#8a8a92)}
   .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
   .deck i.next{animation:bob 2.4s ease-in-out infinite}
+  .deck i.done{cursor:pointer}
+  .rev-done{max-width:420px; margin-top:16px}
+  .rev-share{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:5}
   @keyframes bob{50%{transform:translateY(-3px)}}
   /* (3) paquet fermé en parallaxe */
   .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
@@ -519,7 +507,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -611,6 +599,7 @@
 <div class="reveal" id="reveal" hidden aria-live="polite">
   <div class="flames" id="flames-reveal" aria-hidden="true"><i></i><i></i><i></i></div>
   <button type="button" class="skip" id="skip">Tout révéler</button>
+  <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
   <div id="reveal-one">
     <div class="counter" id="counter"></div>
     <p class="combo" id="combo" aria-live="polite"></p>
@@ -631,17 +620,7 @@
     <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
     <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
-  </div>
-  <div class="summary" id="summary" hidden>
-    <header class="sum-head">
-      <div><h2>Ton butin</h2><p class="sum-sub" id="sum-sub"></p></div>
-      <button type="button" class="icon-btn" id="share" aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
-    </header>
-    <div class="carousel" id="sum-grid" aria-label="Cartes du paquet"></div>
-    <div class="dots" id="sum-dots" aria-hidden="true"></div>
-    <div class="sum-actions">
-      <button type="button" class="btn block" id="to-binder">Ranger dans le classeur</button>
-    </div>
+    <button type="button" class="btn block rev-done" id="to-binder" hidden>Ranger dans le classeur</button>
   </div>
 </div>
 
@@ -829,13 +808,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
-    {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot']},
-    {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier']},
-    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy']},
-    {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus']},
-    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante']},
+    {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot','sykes']},
+    {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier','white-gluz','corpsegrinder']},
+    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy','tankian']},
+    {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus','hayley','armstrong']},
+    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante','angus']},
+    {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy']},
+    {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian']},
+    {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','keenan']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison']},
-    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root']},
+    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus']},
+    {k:'bassistes', kind:'Instruments', label:'Les bassistes', ids:['hoppus','lemmy','araya']},
     {k:'g-kl',      kind:'Groupes', label:'Knocked Loose', ids:['knocked-loose','isaac-hale']},
     {k:'g-blink',   kind:'Groupes', label:'Blink-182', ids:['blink182','hoppus']},
     {k:'g-slipknot', kind:'Groupes', label:'Slipknot', ids:['root','jordison']}
@@ -863,7 +846,27 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['zack','Zack de la Rocha','Rage Against the Machine','Bulls on Parade','XVII','Chant','Rap metal'],
     ['frusciante','John Frusciante','Red Hot Chili Peppers','Under the Bridge','XIX','Guitare','Funk rock'],
     ['root','Jim Root','Slipknot','Duality','XX','Guitare','Nu metal'],
-    ['jordison','Joey Jordison','Slipknot','Wait and Bleed','XXI','Batterie','Nu metal']
+    ['jordison','Joey Jordison','Slipknot','Wait and Bleed','XXI','Batterie','Nu metal'],
+    ['dickinson','Bruce Dickinson','Iron Maiden','The Trooper','XXII','Chant','Heavy metal'],
+    ['halford','Rob Halford','Judas Priest','Breaking the Law','XXIII','Chant','Heavy metal'],
+    ['ozzy','Ozzy Osbourne','Black Sabbath','Paranoid','XXIV','Chant','Heavy metal'],
+    ['lemmy','Lemmy Kilmister','Motörhead','Ace of Spades','XXV','Basse, chant','Heavy metal'],
+    ['hetfield','James Hetfield','Metallica','Master of Puppets','XXVI','Chant, guitare','Thrash metal'],
+    ['mustaine','Dave Mustaine','Megadeth','Symphony of Destruction','XXVII','Guitare, chant','Thrash metal'],
+    ['araya','Tom Araya','Slayer','Raining Blood','XXVIII','Basse, chant','Thrash metal'],
+    ['scott-ian','Scott Ian','Anthrax','Madhouse','XXIX','Guitare','Thrash metal'],
+    ['cobain','Kurt Cobain','Nirvana','Smells Like Teen Spirit','XXX','Chant, guitare','Grunge'],
+    ['cornell','Chris Cornell','Soundgarden','Black Hole Sun','XXXI','Chant','Grunge'],
+    ['staley','Layne Staley','Alice in Chains','Man in the Box','XXXII','Chant','Grunge'],
+    ['grohl','Dave Grohl','Foo Fighters','Everlong','XXXIII','Chant, guitare','Rock alternatif'],
+    ['keenan','Maynard James Keenan','Tool','Schism','XXXIV','Chant','Metal progressif'],
+    ['white-gluz','Alissa White-Gluz','Arch Enemy','The Eagle Flies Alone','XXXV','Chant','Death metal mélodique'],
+    ['corpsegrinder','George Fisher','Cannibal Corpse','Hammer Smashed Face','XXXVI','Chant','Death metal'],
+    ['tankian','Serj Tankian','System of a Down','Toxicity','XXXVII','Chant','Metal alternatif'],
+    ['sykes','Oli Sykes','Bring Me the Horizon','Throne','XXXVIII','Chant','Metalcore'],
+    ['hayley','Hayley Williams','Paramore','Misery Business','XXXIX','Chant','Pop punk'],
+    ['armstrong','Billie Joe Armstrong','Green Day','Boulevard of Broken Dreams','XL','Chant, guitare','Punk rock'],
+    ['angus','Angus Young','AC/DC','Highway to Hell','XLI','Guitare','Hard rock']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -886,7 +889,27 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     zack:['Numéro un de Noël', 'En 2009, une campagne de fans propulse Killing in the Name numéro un des ventes de Noël au Royaume-Uni.'],
     frusciante:['Triple entrée', 'Entré chez les Red Hot à 18 ans, parti deux fois, revenu deux fois.'],
     root:['Double vie', 'Guitariste masqué de Slipknot, il a aussi joué à visage découvert dans Stone Sour.'],
-    jordison:['Batterie volante', 'Pendant ses solos, sa batterie montait et tournait sur elle-même au-dessus de la scène.']
+    jordison:['Batterie volante', 'Pendant ses solos, sa batterie montait et tournait sur elle-même au-dessus de la scène.'],
+    dickinson:['Pilote de ligne', 'Pilote professionnel, il a piloté lui-même l\'avion de tournée d\'Iron Maiden, Ed Force One.'],
+    halford:['Entrée en Harley', 'Il monte sur scène au guidon d\'une Harley-Davidson avant d\'attaquer le morceau.'],
+    ozzy:['Chauve-souris', 'En 1982, il croque la tête d\'une chauve-souris lancée sur scène, en la croyant en caoutchouc.'],
+    lemmy:['Roadie de Hendrix', 'Avant Motörhead, il a été roadie pour Jimi Hendrix.'],
+    hetfield:['Sept continents', 'En 2013, Metallica joue en Antarctique et devient le premier groupe à avoir joué sur les sept continents la même année.'],
+    mustaine:['Fondateur éjecté', 'Premier guitariste de Metallica, renvoyé en 1983, il fonde Megadeth dans la foulée.'],
+    araya:['Souffle médical', 'Avant Slayer, il travaillait comme thérapeute respiratoire.'],
+    'scott-ian':['Bring the Noise', 'En 1991, Anthrax et Public Enemy enregistrent ensemble Bring the Noise, pont entre metal et rap.'],
+    cobain:['Esprit d\'ado', 'Le titre Smells Like Teen Spirit vient d\'un graffiti sur un déodorant, « Kurt smells like Teen Spirit ».'],
+    cornell:['Agent 007', 'Il a écrit et chanté You Know My Name, la chanson de Casino Royale.'],
+    staley:['Débranché', 'En 1996, l\'Unplugged d\'Alice in Chains sur MTV devient une session culte.'],
+    grohl:['Homme orchestre', 'Batteur de Nirvana, il enregistre seul le premier album des Foo Fighters en jouant presque tous les instruments.'],
+    keenan:['Vigneron', 'Entre deux tournées de Tool, il fait son propre vin en Arizona.'],
+    'white-gluz':['Relève', 'En 2014, elle succède à Angela Gossow au chant d\'Arch Enemy.'],
+    corpsegrinder:['Hélicoptère', 'Célèbre pour son headbang en moulinet et son cou massif ; Cannibal Corpse apparaît dans le film Ace Ventura.'],
+    tankian:['Racines arméniennes', 'Né à Beyrouth dans une famille arménienne, comme les autres membres de System of a Down.'],
+    sykes:['Créateur de mode', 'Il a fondé la marque de vêtements Drop Dead.'],
+    hayley:['Couleur de scène', 'Elle a cofondé Good Dye Young, sa marque de coloration pour cheveux.'],
+    armstrong:['Idiot à Broadway', 'L\'album American Idiot de Green Day est devenu une comédie musicale jouée à Broadway.'],
+    angus:['Uniforme d\'écolier', 'L\'idée de l\'uniforme d\'écolier vient de sa sœur Margaret.']
   };
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
@@ -1340,11 +1363,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     } else if(wait){ packEl.classList.add('charging'); if(rank(tease) >= 3) SFX.rumble(wait); }
     setTimeout(function(){
       packEl.classList.remove('charging', 'legend'); document.getElementById('ptilt').classList.remove('shake'); packEl.classList.add('torn'); flash(tease);
-      current = commitPack(); idx = 0;
+      current = commitPack(); idx = 0; seenUpTo = -1;
       current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); });
       setTimeout(function(){
-        revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
-        document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
+        revealEl.hidden = false; document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
         packEl.classList.remove('torn'); setTear(0); opening = false; document.getElementById('vignette').classList.remove('on'); document.getElementById('flames-pack').classList.remove('on'); renderStats();
       }, 600);
     }, wait);
@@ -1352,15 +1374,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   // ---------- Reveal carte par carte ----------
   var revealEl = document.getElementById('reveal'), flip = document.getElementById('flip'), stage = document.getElementById('stage'), tilt = document.getElementById('tilt');
-  var current = [], idx = 0, flipped = false, busy = false, side = 1;
+  var current = [], idx = 0, flipped = false, busy = false, side = 1, seenUpTo = -1;   // seenUpTo : dernière carte déjà retournée
   function renderDeck(){
     document.getElementById('deck').innerHTML = current.map(function(x, i){
-      if(i < idx || (i === idx && flipped)) return '<i class="done' + (i === idx ? ' cur' : '') + '" style="background-image:url(' + img(x.c.id, x.r) + ');--rc:' + COLORS[x.r] + '" title="' + esc(x.c.who) + '"></i>';
+      if(i <= seenUpTo) return '<i class="done' + (i === idx ? ' cur' : '') + '" data-i="' + i + '" role="button" tabindex="0" aria-label="Revoir ' + esc(x.c.who) + '" style="background-image:url(' + img(x.c.id, x.r) + ');--rc:' + COLORS[x.r] + '"></i>';
       return '<i class="' + (i === idx ? 'cur' : 'next') + '" style="animation-delay:' + (i*120) + 'ms"></i>';
     }).join('');
   }
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
+    document.getElementById('to-binder').hidden = true; document.getElementById('share').hidden = true; document.getElementById('hint').hidden = false;
     flip.style.transition = 'none'; flip.classList.remove('on'); flip.style.transform = ''; void flip.offsetWidth; flip.style.transition = '';
     document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on');
     stage.className = 'stage';
@@ -1377,13 +1400,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = '';
   }
   var LINES = {
-    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Solide, comme un riff en mi.', 'La base. Et la base, c\'est sacré.'],
+    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Solide, comme un riff en mi.', 'La base. Et la base, c\'est sacré.', 'Commune. Même le roadie en a une.', 'Pas de quoi réveiller les voisins.'],
     rare:['Oh, ça commence à chauffer.', 'Rare. Tes voisins vont l\'entendre.', 'Joli tirage, le pit approuve.'],
     holo:['Ça brille ! Le pit s\'ouvre !', 'Holo ! Lève les cornes !', 'Là, on parle. Ça scintille.'],
     signature:['Signée ! Tu peux hurler.', 'Une Signature ! Le public en redemande !', 'Stage diving autorisé : c\'est signé !'],
     legendaire:['Légendaire. Arrête tout.', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.']
   };
-  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.'];
+  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.', 'Encore ? Il te suit ou quoi ?', 'Doublon. Le destin a de l\'humour.', 'T\'as déjà le t-shirt, là.'];
+  // paquet faible : une pique au moment de ranger
+  var WEAK_PACK = ['Que des Communes. Le pit te regarde avec pitié.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Demain, tu souffles sur le paquet.'];
+  var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf sous le soleil noir. Transforme tout ça.'];
   function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
   function fillInfo(x){
     var line = document.getElementById('combo');
@@ -1421,13 +1447,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       setTimeout(function(){
         fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r);
         if(rank(r) >= 3){ ring(r); quake(); stamp(r); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
-        document.getElementById('card-info').classList.add('on'); busy = false; renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
-        document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'voir ton butin') + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
+        document.getElementById('card-info').classList.add('on'); busy = false; seenUpTo = Math.max(seenUpTo, idx); renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
+        document.getElementById('hint').textContent = 'Glisse pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
+        if(idx === current.length - 1) showDone();
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
   }
   // la carte révélée est lancée hors de l'écran du côté du geste, sans fondu ni rétrécissement ; celle du dessous est déjà en place
   function next(dir, vx){
+    if(idx >= current.length - 1){ if(seenUpTo >= idx) showDone(); return; }   // dernière carte : on range
     busy = true; stage.classList.remove('impact'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
     var cur = stage.style.transform || '', dx = (/translateX\((-?[\d.]+)px\)/.exec(cur) || [0, 0])[1] * 1;
@@ -1436,15 +1464,43 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     stage.style.transform = 'translateX(' + (dir * dist + dx * .2) + 'px) translateY(-30px) rotate(' + (dir * 22) + 'deg)';
     SFX.flip();
     setTimeout(function(){
+      if(idx + 1 <= seenUpTo){ busy = false; viewCard(idx + 1); stage.style.transition = 'none'; stage.style.transform = ''; return; }
       if(idx < current.length-1){
         idx++;
         // la nouvelle carte du dessus part de sa place dans la pile, puis se replace
         stage.style.transition = 'none'; stage.style.transform = offset(1);
         showCard(); void stage.offsetWidth;
         stage.style.transition = 'transform ' + (reduce ? 0 : .22) + 's ease-out'; stage.style.transform = '';
-      } else { showSummary(); stage.style.transition = 'none'; stage.style.transform = ''; }
+      }
     }, ms);
   }
+  // toutes les cartes vues : on range directement, pas d'écran de résumé
+  function showDone(){
+    var wasDone = !document.getElementById('to-binder').hidden;
+    document.getElementById('hint').hidden = true; document.getElementById('skip').hidden = true;
+    if(!wasDone && current.length > 1){
+      if(current.every(function(x){ return !x.isNew; })) toast(pick(DUP_PACK));
+      else if(current.every(function(x){ return x.r === 'commune'; })) toast(pick(WEAK_PACK));
+    }
+    document.getElementById('to-binder').hidden = false; document.getElementById('share').hidden = false;
+  }
+  // réaffiche une carte déjà retournée, sans rejouer la révélation
+  function viewCard(i){
+    if(busy || i > seenUpTo || !current[i]) return;
+    idx = i; var x = current[i]; flipped = true; clearTarget();
+    stage.style.transition = 'none'; stage.style.transform = ''; stage.className = 'stage';
+    document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on'); revealEl.classList.remove('dim');
+    document.getElementById('flip-img').src = img(x.c.id, x.r); document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
+    document.getElementById('glow').setAttribute('data-r', x.r); document.getElementById('sheen').setAttribute('data-r', x.r);
+    flip.style.transition = 'none'; flip.classList.add('on'); flip.style.transform = 'rotateY(180deg)';
+    renderUnders(); document.getElementById('counter').textContent = 'Carte ' + (i + 1) + ' / ' + current.length;
+    var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
+    document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
+    document.getElementById('card-info').classList.add('on'); renderDeck(); setTarget(document.getElementById('pile'), tilt, x.r);
+    if(seenUpTo >= current.length - 1) showDone(); else document.getElementById('hint').textContent = 'Glisse pour la suivante';
+  }
+  document.getElementById('deck').addEventListener('click', function(e){ var t = e.target.closest('[data-i]'); if(t) viewCard(+t.getAttribute('data-i')); });
+  document.getElementById('deck').addEventListener('keydown', function(e){ var t = e.target.closest('[data-i]'); if(t && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); viewCard(+t.getAttribute('data-i')); } });
   function tapCard(){ if(busy) return; if(!flipped) reveal(1); else next(1); }
   var wheelAcc = 0, wheelLock = 0;
   stage.addEventListener('wheel', function(e){
@@ -1543,43 +1599,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   stage.addEventListener('pointerup', release);
   stage.addEventListener('pointercancel', release);
 
-  document.getElementById('skip').addEventListener('click', showSummary);
-  function showSummary(){
-    document.getElementById('flames-reveal').classList.remove('on');
-
-    document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
-    revealEl.classList.remove('dim');
-    var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); }
-    var news = current.filter(function(x){ return x.isNew; }).length;
-    document.getElementById('sum-sub').textContent = current.length + ' cartes · ' + (news ? news + ' inédite' + (news > 1 ? 's' : '') : 'que des doublons, dur');
-    // meilleure carte d'abord, au centre
-    var order = current.slice().sort(function(a, b){ return rank(b.r) - rank(a.r); });
-    var car = document.getElementById('sum-grid'), dots = document.getElementById('sum-dots');
-    car.innerHTML = order.map(function(x){
-      return '<figure style="--rc:' + rarity(x.r).color + '"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + ', ' + rarity(x.r).label + '"><figcaption>' +
-        '<span class="chip">' + rarity(x.r).label + '</span>' + (x.isNew ? '<span class="chip new">Inédite</span>' : '<span class="chip">Doublon</span>') + '</figcaption></figure>';
-    }).join('');
-    dots.innerHTML = order.map(function(){ return '<i></i>'; }).join('');
-    sizeCarousel(); car.scrollLeft = 0; carActive();
-  }
-  // la carte + sa légende tiennent dans la hauteur réellement disponible, halo compris
-  function sizeCarousel(){
-    var car = document.getElementById('sum-grid'); if(document.getElementById('summary').hidden) return;
-    car.style.removeProperty('--cw'); var h = car.clientHeight, w = car.clientWidth;
-    var cw = Math.floor(Math.min(w * .72, (h - 44 - 36) * 2 / 3, 400));
-    if(cw > 60) car.style.setProperty('--cw', cw + 'px');
-  }
-  addEventListener('resize', function(){ sizeCarousel(); carActive(); });
-  // carte au centre du carrousel mise en avant
-  var carRaf = 0;
-  function carActive(){
-    var car = document.getElementById('sum-grid'), mid = car.scrollLeft + car.clientWidth / 2, best = 0, bd = 1e9, figs = car.children;
-    for(var i = 0; i < figs.length; i++){ var f = figs[i], c = f.offsetLeft + f.offsetWidth / 2, d = Math.abs(c - mid); if(d < bd){ bd = d; best = i; } }
-    for(var j = 0; j < figs.length; j++){ figs[j].classList.toggle('on', j === best); }
-    [].forEach.call(document.getElementById('sum-dots').children, function(d, j){ d.classList.toggle('on', j === best); });
-  }
-  document.getElementById('sum-grid').addEventListener('scroll', function(){ if(!carRaf) carRaf = requestAnimationFrame(function(){ carRaf = 0; carActive(); }); }, {passive:true});
-  document.getElementById('sum-grid').addEventListener('click', function(e){ var f = e.target.closest('figure'); if(f && !f.classList.contains('on')) f.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'}); });
+  document.getElementById('skip').addEventListener('click', function(){
+    if(busy) return; var b = 0; current.forEach(function(x, i){ if(rank(x.r) > rank(current[b].r)) b = i; });
+    seenUpTo = current.length - 1; viewCard(b); SFX[current[b].r](); showDone();
+  });
   // Partager la meilleure carte du paquet : image générée à la volée
   document.getElementById('share').addEventListener('click', function(){
     var b = current.reduce(function(a, x){ return rank(x.r) > rank(a.r) ? x : a; }, current[0]); if(b) shareCard(b.c, b.r);
@@ -1724,7 +1747,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('binder-list').hidden = inPage; document.getElementById('binder-page').hidden = !inPage;
     if(!inPage){
       var list = document.getElementById('binder-list');
-      list.innerHTML = BINDERS.filter(function(b){ return b.kind === kind; }).map(function(b){
+      // un classeur dont aucune carte n'est encore prête n'apparaît pas
+      list.innerHTML = BINDERS.filter(function(b){ return b.kind === kind && b.ids.some(function(id){ return card(id); }); }).map(function(b){
         var ids = b.ids.filter(function(id){ return card(id); }), have = ids.filter(function(id){ return placed(id); });
         // la carte du classeur porte la meilleure carte rangée en illustration, sinon le dos Metalnini
         var cover = ids.map(function(id){ var r = placed(id); return r ? {id:id, r:r} : null; }).filter(Boolean).sort(function(x, y){ return rank(y.r) - rank(x.r); })[0];
@@ -1852,8 +1876,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function showFusion(id, from, next, isNew){
     sheet.hidden = true; SFX.tear();
-    current = [{c:card(id), r:next, isNew:isNew}]; idx = 0;
-    revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
+    current = [{c:card(id), r:next, isNew:isNew}]; idx = 0; seenUpTo = -1;
+    revealEl.hidden = false;
     document.getElementById('skip').hidden = true; showCard();
     setTimeout(function(){ document.getElementById('counter').textContent = 'Transformation · ' + rarity(from).label + ' → ' + rarity(next).label; }, 0);
   }

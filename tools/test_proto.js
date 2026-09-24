@@ -74,7 +74,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
     await sleep(500);
     if (i < 4) check('carte suivante ' + (i + 2) + ' : rien de dévoilé avant retournement', !d.getElementById('flip').classList.contains('on') && d.getElementById('ci-n').textContent === '' && d.getElementById('flip').style.transition !== '' ? true : (!d.getElementById('flip').classList.contains('on') && d.getElementById('ci-n').textContent === ''));
   }
-  check('résumé affiché à la fin', !d.getElementById('summary').hidden);
+  check('fin du paquet : « Ranger dans le classeur » affiché, sans écran de résumé', !d.getElementById('to-binder').hidden && !d.getElementById('share').hidden && !d.getElementById('summary'));
+  { const first = d.querySelector('#deck i[data-i="0"]'); first.click(); await sleep(50);
+    check('rangée du bas : une carte déjà vue se réaffiche', d.getElementById('counter').textContent === 'Carte 1 / 5' && d.getElementById('flip').classList.contains('on')); }
   check('aucune transparence sur la carte', !/opacity/.test(d.getElementById('stage').getAttribute('style') || ''));
 
   // 3. Ranger : les cartes nouvelles attendent dans le bac, puis rejoignent leur emplacement
@@ -181,9 +183,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('objectif affiché sur l\'écran paquets', !d4.getElementById('goal').hidden && /Prochain objectif/.test(d4.getElementById('goal').textContent), d4.getElementById('goal').textContent);
   key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
-  check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot'].includes(id)), got.join(','));
+  check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot','sykes'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
-  check('résumé : bouton partager', !!d4.getElementById('share'));
+  check('« Tout révéler » : partage et rangement proposés', !d4.getElementById('share').hidden && !d4.getElementById('to-binder').hidden);
 
   // 9. Doublons empilés, onglet Toutes les cartes, ouverture spéciale d'une Légendaire
   const s6 = { size:5, odds:{commune:0,rare:0,holo:0,signature:0,legendaire:100}, owned:{'korn|rare':3}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, completed:{}, packType:'serie', toPlace:[] };
