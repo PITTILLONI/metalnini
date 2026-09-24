@@ -59,6 +59,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
     if (i === 0) {
       const o1 = new w.Event('deviceorientation'); o1.gamma = 0; o1.beta = 40; w.dispatchEvent(o1);
       const o2 = new w.Event('deviceorientation'); o2.gamma = 15; o2.beta = 40; w.dispatchEvent(o2);
+      await sleep(60);
       const tf = d.getElementById('tilt').style.transform, ix = d.getElementById('pile').style.getPropertyValue('--ix');
       check('parallaxe : le téléphone penché incline la carte', /rotateY\(24deg/.test(tf) && ix.indexOf('-3.6') === 0, tf + ' / --ix ' + ix);
     }

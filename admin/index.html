@@ -356,9 +356,11 @@ async function account(el){
   const { data: { user } } = await sb.auth.getUser();
   const { data: f } = await sb.auth.mfa.listFactors();
   const { data: adm } = await sb.from('admins').select('created_at').eq('user_id', user.id).maybeSingle();
+  const { data: prof } = await sb.from('profiles').select('username').eq('id', user.id).maybeSingle();
   const factors = (f.totp || []);
   el.innerHTML = `
     <div class="card"><h3>Mes informations</h3><div class="table-wrap"><table>
+      <tr><th>Pseudo de joueur</th><td>${prof && prof.username ? esc(prof.username) : '<span class="muted">aucun</span>'}</td></tr>
       <tr><th>E-mail</th><td>${esc(user.email)}${user.new_email ? ` <span class="muted">(changement en attente vers ${esc(user.new_email)})</span>` : ''}</td></tr>
       <tr><th>Identifiant</th><td><code>${esc(user.id)}</code></td></tr>
       <tr><th>Compte créé</th><td>${fmt(user.created_at)}</td></tr>
@@ -367,6 +369,11 @@ async function account(el){
       <tr><th>Admin depuis</th><td>${adm ? fmt(adm.created_at) : '—'}</td></tr>
       <tr><th>Double authentification</th><td>${factors.map(x => `<span class="ok">active</span> · ${esc(x.friendly_name || 'application')} · depuis le ${fmt(x.created_at)}`).join('<br>') || '<span class="err">aucune</span>'}</td></tr>
     </table></div></div>
+
+    <div class="card" style="max-width:520px"><h3>Changer de pseudo</h3>
+      <label for="un">Pseudo visible par les autres joueurs</label><input id="un" maxlength="20" autocomplete="off" spellcheck="false" value="${prof && prof.username ? esc(prof.username) : ''}">
+      <p class="muted" style="font-size:.82rem">3 à 20 caractères : lettres, chiffres, point, tiret ou tiret bas. Doit être libre.</p>
+      <div class="row"><button id="un-go" class="fit">Enregistrer le pseudo</button></div><p id="un-msg" class="msg"></p></div>
 
     <div class="card" style="max-width:520px"><h3>Changer de mot de passe</h3>
       <label for="pw1">Nouveau mot de passe (12 caractères minimum)</label><input id="pw1" type="password" autocomplete="new-password">
@@ -382,6 +389,13 @@ async function account(el){
       <p class="muted" style="font-size:.85rem">Te déconnecte de l'admin sur tous tes appareils et navigateurs (utile en cas de doute sur un appareil perdu ou partagé).</p>
       <div class="row"><button id="all-out" class="ghost fit">Se déconnecter partout</button></div></div>`;
 
+  $('un-go').onclick = async () => {
+    const v = $('un').value.trim();
+    if(!/^[A-Za-z0-9_.-]{3,20}$/.test(v)) return say($('un-msg'), 'Pseudo invalide : 3 à 20 caractères, lettres, chiffres, point, tiret ou tiret bas.');
+    const { data, error } = await sb.rpc('set_username', { p_username: v });
+    if(error) return say($('un-msg'), error.message);
+    say($('un-msg'), 'Pseudo enregistré : ' + esc(data) + '.', true); setTimeout(() => account(el), 900);
+  };
   $('pw-go').onclick = async () => {
     const a = $('pw1').value, b = $('pw2').value;
     if(a.length < 12) return say($('pw-msg'), '12 caractères minimum.');

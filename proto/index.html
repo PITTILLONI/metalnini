@@ -324,6 +324,14 @@
   .uname input{width:100%; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:14px; font-size:1.1rem; margin:14px 0 8px}
   .uname .note{margin:0 0 14px}
   .uname .err{color:#f87171; font-size:.85rem; min-height:1.2em; margin:0 0 10px}
+  .uname .err.ok{color:#86efac}
+  .auth input{margin:6px 0 4px; font-size:1rem; padding:12px 14px}
+  .auth label{display:block; font:500 .72rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:10px}
+  .auth .links{display:flex; justify-content:space-between; gap:12px; margin-top:14px; font-size:.85rem}
+  .auth .links button{background:none; border:0; color:var(--gold, #d4a24c); padding:0; font:inherit; cursor:pointer; text-decoration:underline}
+  .auth [data-only]{display:none}
+  .auth[data-mode="signup"] [data-only~="signup"], .auth[data-mode="login"] [data-only~="login"], .auth[data-mode="forgot"] [data-only~="forgot"],
+  .auth[data-mode="sent"] [data-only~="sent"], .auth[data-mode="newpw"] [data-only~="newpw"]{display:block}
   .net{font:500 .64rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
   .net b{color:var(--ok, #4ade80)}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
@@ -393,15 +401,16 @@
     </div>
     <div class="field" id="acct-field">
       <p class="note" id="acct"></p>
+      <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="signout" hidden>Se déconnecter</button></p>
     </div>
     <div class="field">
       <label class="toggle">Sons et vibrations <input type="checkbox" id="s-sound"></label>
     </div>
     <div class="field">
-      <p class="note">Réinitialiser efface ta collection et ton compteur de paquets sur cet appareil.</p>
+      <p class="note">Réinitialiser efface ta collection (sur ton compte si tu es connecté).</p>
       <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="reset">Réinitialiser la collection</button></p>
     </div>
-    <p class="note" style="margin-top:16px">Prototype jetable pour tester les sensations : pas de compte, pas de serveur, la collection est gardée dans ce navigateur uniquement. Illustrations générées par IA à partir de photos sous licence libre ; usage privé, les artistes n'ont pas été consultés.</p>
+    <p class="note" style="margin-top:16px">Prototype pour tester les sensations. Illustrations générées par IA à partir de photos sous licence libre ; usage privé, les artistes n'ont pas été consultés.</p>
   </div>
 </main>
 
@@ -456,6 +465,24 @@
     <button type="button" class="btn" id="uname-go">C'est parti</button>
   </div>
 </div>
+<div class="uname" id="auth" hidden role="dialog" aria-modal="true" aria-labelledby="auth-t">
+  <form class="uname-in auth" id="auth-form" data-mode="signup" novalidate>
+    <p class="eyebrow">Bienvenue dans le pit</p>
+    <h2 id="auth-t"><span data-only="signup">Crée ton compte</span><span data-only="login">Connexion</span><span data-only="forgot">Mot de passe oublié</span><span data-only="sent">Vérifie tes e-mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
+    <p class="note" data-only="signup" style="color:var(--muted)">Ta collection est sauvegardée sur ton compte. Un lien de confirmation t'est envoyé par e-mail.</p>
+    <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
+    <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
+    <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
+    <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span data-only="signup newpw" style="display:inline">(12 caractères minimum)</span></label><input id="au-pw" type="password" autocomplete="current-password"></div>
+    <p class="err" id="auth-err"></p>
+    <button type="submit" class="btn" id="auth-go"><span data-only="signup">Créer mon compte</span><span data-only="login">Se connecter</span><span data-only="forgot">Envoyer le lien</span><span data-only="sent">Renvoyer l'e-mail</span><span data-only="newpw">Enregistrer</span></button>
+    <div class="links">
+      <button type="button" data-only="signup sent" data-go="login">J'ai déjà un compte</button>
+      <button type="button" data-only="login forgot" data-go="signup">Créer un compte</button>
+      <button type="button" data-only="login" data-go="forgot">Mot de passe oublié</button>
+    </div>
+  </form>
+</div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="stamp" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
@@ -482,10 +509,38 @@
 // Connexion au serveur : joueur anonyme + pseudo, tirage et collection côté serveur. Clé publique uniquement.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
-const must = r => { if(r.error) throw new Error(r.error.message); return r.data; };
+const must = r => { if(r.error) throw new Error(frMsg(r.error.message)); return r.data; };
+const here = location.origin + location.pathname;
+// messages d'authentification courants, en français
+function frMsg(m){
+  const t = { 'Invalid login credentials': 'e-mail ou mot de passe incorrect', 'Email not confirmed': 'adresse pas encore confirmée : clique sur le lien reçu par e-mail',
+    'User already registered': 'un compte existe déjà avec cet e-mail : connecte-toi', 'email rate limit exceeded': 'trop d\'e-mails envoyés, réessaie plus tard' };
+  for(const k in t) if(m.indexOf(k) === 0) return t[k];
+  if(/Password should be at least/.test(m)) return 'mot de passe trop court : 12 caractères minimum';
+  if(/Unable to validate email|invalid format/i.test(m)) return 'adresse e-mail invalide';
+  return m;
+}
 const api = {
-  async ensureSession(){ const { data: { session } } = await sb.auth.getSession(); if(session) return session.user.id; return must(await sb.auth.signInAnonymously()).user.id; },
-  async restart(){ await sb.auth.signOut(); return must(await sb.auth.signInAnonymously()).user.id; },
+  // compte e-mail confirmé obligatoire ; une ancienne session anonyme n'est plus acceptée
+  async user(){
+    const { data: { session } } = await sb.auth.getSession();
+    if(!session) return null;
+    if(session.user.is_anonymous){ await sb.auth.signOut(); return null; }
+    return session.user;
+  },
+  async signUp(email, password, username){
+    if(!must(await sb.rpc('username_available', { p_username: username }))) throw new Error('ce pseudo est déjà pris');
+    const d = must(await sb.auth.signUp({ email, password, options: { data: { username }, emailRedirectTo: here } }));
+    if(d.user && d.user.identities && d.user.identities.length === 0) throw new Error('un compte existe déjà avec cet e-mail : connecte-toi');
+    return !!d.session;
+  },
+  async signIn(email, password){ must(await sb.auth.signInWithPassword({ email, password })); },
+  async resend(email){ must(await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: here } })); },
+  async forgot(email){ must(await sb.auth.resetPasswordForEmail(email, { redirectTo: here })); },
+  async newPassword(password){ must(await sb.auth.updateUser({ password })); },
+  async signOut(){ await sb.auth.signOut(); },
+  onRecovery(cb){ sb.auth.onAuthStateChange(e => { if(e === 'PASSWORD_RECOVERY') cb(); }); },
+  async resetCollection(){ must(await sb.rpc('reset_my_collection')); },
   async username(){ const rows = must(await sb.from('profiles').select('username').limit(1)); return rows[0] ? rows[0].username : null; },
   async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
   async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed')); },
@@ -583,17 +638,53 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     save();
   }
   function setNet(){ var n = document.getElementById('net'); n.innerHTML = ONLINE ? '<b>●</b> En ligne · ' + esc(state.username || '…') : 'Hors ligne · collection sur cet appareil'; }
+  var AUTH = null;
   window.metalniniOnline = async function(api){
+    AUTH = api;
     try{
-      await api.ensureSession();
+      if(api.onRecovery && !api._rec){ api._rec = true; api.onRecovery(function(){ showAuth('newpw'); }); }
+      var user = await api.user();
+      if(!user){ ONLINE = null; setNet(); showAuth(/type=recovery/.test(location.hash) ? 'newpw' : 'signup'); return; }
+      document.getElementById('auth').hidden = true;
       applyInventory(await api.inventory());
       var fc = await api.setting('fusion_cost'); if(fc) state.fuse = +fc;
       state.username = await api.username();
+      // pseudo choisi à l'inscription, enregistré à la première connexion
+      var wanted = user.user_metadata && user.user_metadata.username;
+      if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats();
+      if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
       if(!state.username) askUsername();
     }catch(e){ ONLINE = null; setNet(); toast('Serveur injoignable : mode hors ligne'); }
   };
   if(window.metalniniApi) window.metalniniOnline(window.metalniniApi);
+  function showAuth(mode){
+    var box = document.getElementById('auth'), form = document.getElementById('auth-form'), err = document.getElementById('auth-err'), btn = document.getElementById('auth-go');
+    var mail = document.getElementById('au-mail'), pw = document.getElementById('au-pw'), name = document.getElementById('au-name');
+    function set(m){ form.dataset.mode = m; err.textContent = ''; err.className = 'err'; pw.autocomplete = m === 'login' ? 'current-password' : 'new-password'; }
+    set(mode); box.hidden = false;
+    form.querySelectorAll('[data-go]').forEach(function(b){ b.onclick = function(){ set(b.dataset.go); }; });
+    function fail(m){ err.className = 'err'; err.textContent = m; }
+    form.onsubmit = async function(e){
+      e.preventDefault(); var m = form.dataset.mode, em = mail.value.trim(), p = pw.value;
+      if((m === 'signup' || m === 'login' || m === 'forgot') && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return fail('Adresse e-mail invalide.');
+      if(m === 'signup' && !/^[A-Za-z0-9_.-]{3,20}$/.test(name.value.trim())) return fail('Pseudo invalide : 3 à 20 caractères, lettres, chiffres, point, tiret ou tiret bas.');
+      if((m === 'signup' || m === 'newpw') && p.length < 12) return fail('Mot de passe trop court : 12 caractères minimum.');
+      btn.disabled = true; err.textContent = '';
+      try{
+        if(m === 'signup'){
+          var direct = await AUTH.signUp(em, p, name.value.trim());
+          if(direct){ box.hidden = true; window.metalniniOnline(AUTH); }
+          else { document.getElementById('auth-sent').textContent = 'Un lien de confirmation a été envoyé à ' + em + '. Ouvre-le sur cet appareil pour activer ton compte, puis reviens ici.'; set('sent'); }
+        } else if(m === 'login'){ await AUTH.signIn(em, p); pw.value = ''; box.hidden = true; window.metalniniOnline(AUTH); }
+        else if(m === 'forgot'){ await AUTH.forgot(em); document.getElementById('auth-sent').textContent = 'Si un compte existe pour ' + em + ', un lien pour changer le mot de passe vient d\'être envoyé.'; set('sent'); }
+        else if(m === 'sent'){ await AUTH.resend(em); err.className = 'err ok'; err.textContent = 'E-mail renvoyé.'; }
+        else if(m === 'newpw'){ await AUTH.newPassword(p); pw.value = ''; box.hidden = true; toast('Mot de passe changé'); window.metalniniOnline(AUTH); }
+      }catch(ex){ fail(ex.message); }
+      btn.disabled = false;
+    };
+  }
+  function signOut(){ if(!AUTH) return; var api = AUTH; ONLINE = null; state.username = null; state.owned = {}; state.toPlace = []; state.pending = null; save(); setNet(); renderStats(); api.signOut().then(function(){ showAuth('login'); }); }
   function askUsername(){
     var box = document.getElementById('uname'), inp = document.getElementById('uname-in'), err = document.getElementById('uname-err'), btn = document.getElementById('uname-go');
     box.hidden = false; setTimeout(function(){ inp.focus(); }, 50);
@@ -1283,6 +1374,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function renderSettings(){
     document.getElementById('acct').innerHTML = ONLINE ? 'Connecté au serveur en tant que <b>' + esc(state.username || '…') + '</b>. Paquets tirés par le serveur ; probabilités, taille des paquets et coût de fusion réglés depuis l\'admin.'
                                                      : 'Hors ligne : collection gardée sur cet appareil, réglages ci-dessous modifiables.';
+    document.getElementById('signout').hidden = !ONLINE;
     document.getElementById('odds-field').hidden = !!ONLINE; document.getElementById('s-size').closest('.field').hidden = !!ONLINE;
     var snd = document.getElementById('s-sound'); snd.checked = state.sound !== false; snd.onchange = function(){ state.sound = snd.checked; save(); };
     var fz = document.getElementById('s-fuse'); fz.value = state.fuse; fz.onchange = function(){ var v = Math.max(2, Math.min(20, parseInt(fz.value,10) || 5)); state.fuse = v; fz.value = v; save(); };
@@ -1301,8 +1393,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function resetAll(){
     state.owned = {}; state.opened = 0; state.fresh = {}; state.pending = null; state.mastered = {}; state.completed = {}; state.toPlace = []; save(); renderStats();
-    // en ligne : un nouveau compte anonyme, donc une collection vierge et un nouveau pseudo
-    if(ONLINE){ var api = ONLINE; ONLINE = null; state.username = null; setNet(); api.restart().then(function(){ window.metalniniOnline(api); }).catch(function(e){ toast(esc(e.message)); }); }
+    // en ligne : même compte et même pseudo, collection vidée sur le serveur
+    if(ONLINE){ var api = ONLINE; api.resetCollection().then(function(){ return api.inventory(); }).then(function(rows){ applyInventory(rows); renderStats(); }).catch(function(e){ toast(esc(e.message)); }); }
   }
   var rq = document.getElementById('reset-quick'), rqTimer = null;
   rq.addEventListener('click', function(){
@@ -1311,6 +1403,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     clearTimeout(rqTimer); resetAll(); rq.classList.remove('armed'); rq.textContent = 'Collection remise à zéro';
     setTimeout(function(){ rq.textContent = 'Repartir de zéro'; }, 1800);
   });
+  document.getElementById('signout').addEventListener('click', signOut);
   document.getElementById('reset').addEventListener('click', function(){
     resetAll(); go('packs');
   });
