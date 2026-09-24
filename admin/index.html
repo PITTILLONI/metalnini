@@ -124,6 +124,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
 const RARITIES = ['commune','rare','holo','signature','legendaire'];
 const RLABEL = {commune:'Commune', rare:'Rare', holo:'Holo', signature:'Signature', legendaire:'Légendaire'};
+const FUSE_TIERS = RARITIES.slice(0, -1);   // paliers de transformation : chaque rareté sauf Légendaire
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const views = ['v-login','v-mfa-enroll','v-mfa-verify','v-noadmin','v-app'];
@@ -300,8 +301,9 @@ async function packs(el){
       <label>Motif (obligatoire)</label><input class="why" placeholder="ex. test d'un taux de Légendaire plus généreux">
       <div class="row" style="margin-top:10px"><button class="save fit">Enregistrer</button></div><p class="msg"></p></div>`;
   }).join('') + `<div class="card"><h3>Réglages de jeu</h3>
-    <div class="row"><div class="fit"><label>Doublons pour une fusion</label><input id="set-fusion" type="number" min="2" value="${esc(setting('fusion_cost'))}"></div>
-      <div class="fit"><label>Paquets max par jour et par joueur</label><input id="set-ppd" type="number" min="1" value="${esc(setting('packs_per_day'))}"></div></div>
+    <p class="muted" style="font-size:.85rem; margin:0 0 6px">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
+    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
+    <div class="row"><div class="fit"><label>Paquets max par jour et par joueur</label><input id="set-ppd" type="number" min="1" value="${esc(setting('packs_per_day'))}"></div></div>
     <label>Motif (obligatoire)</label><input id="set-why">
     <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
   el.querySelectorAll('[data-pack]').forEach(card => {
@@ -316,7 +318,11 @@ async function packs(el){
   });
   $('set-go').onclick = async () => {
     const why = $('set-why').value;
-    const a = await sb.rpc('admin_set_setting', { p_key: 'fusion_cost', p_value: parseInt($('set-fusion').value, 10), p_reason: why });
+    let a = { error: null };
+    for (const inp of el.querySelectorAll('[data-fuse]')) {
+      a = await sb.rpc('admin_set_setting', { p_key: 'fusion_cost_' + inp.dataset.fuse, p_value: parseInt(inp.value, 10), p_reason: why });
+      if (a.error) break;
+    }
     const b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'packs_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
     say($('set-msg'), (a.error || b.error) ? (a.error || b.error).message : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
   };

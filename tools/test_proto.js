@@ -114,7 +114,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   d.querySelector('.view-toggle [data-mode="pages"]').click(); await sleep(30);
 
   // 5. Fusion : 6 exemplaires d'une Commune -> 1 Rare, il en reste 1
-  const s0 = state(); s0.owned = { 'korn|commune': 6 }; s0.mastered = {}; w.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s0));
+  const s0 = state(); s0.owned = { 'korn|commune': 4 }; s0.mastered = {}; w.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s0));
   dom.window.location.reload && 0;
   const dom2 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w2){
     w2.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s0)); w2.matchMedia = () => ({ matches: false }); w2.scrollTo = () => {};
@@ -126,7 +126,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   d2.querySelector('#binder-tabs [data-b="numetal"]').click(); await sleep(30);
   d2.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(30);
   const fb = d2.querySelector('#detail .fuse button[data-from="commune"]');
-  check('bouton de fusion proposé avec 5 doublons', !!fb);
+  check('transformation proposée avec 3 doublons Commune (1er palier)', !!fb);
   if (fb) { fb.click(); await sleep(50); }
   const st2 = JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1')).owned;
   check('fusion : 1 Commune gardée + 1 Rare obtenue', st2['korn|commune'] === 1 && st2['korn|rare'] === 1, JSON.stringify(st2));
@@ -141,7 +141,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('remise à zéro : collection vide', Object.keys(st3.owned).length === 0 && st3.opened === 0);
 
   // 7. Complétion d'un classeur : Pop punk (2 musiciens) complété -> récompense annoncée
-  const s4 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'blink182|commune':1,'hoppus|commune':1}, opened:1, fresh:{}, binder:'poppunk', sound:false, pending:null, fuse:5, mastered:{}, completed:{} };
+  const s4 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'blink182|commune':1,'hoppus|commune':1}, opened:1, fresh:{}, binder:'poppunk', sound:false, pending:null, fuseBase:3, mastered:{}, completed:{} };
   const dom3 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w3){
     w3.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s4)); w3.matchMedia = () => ({ matches: false }); w3.scrollTo = () => {};
     w3.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w3.HTMLElement.prototype.setPointerCapture = () => {}; w3.HTMLElement.prototype.scrollIntoView = () => {};
@@ -159,7 +159,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('onglet du classeur complété marqué ✓', /Pop punk ✓/.test(d3.getElementById('binder-tabs').textContent));
 
   // 8. Paquet thématique : ne tire que dans son classeur ; prochain objectif affiché
-  const s5 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'spiritbox|commune':1}, opened:0, fresh:{}, binder:'metalcore', sound:false, pending:null, fuse:5, mastered:{}, completed:{}, packType:'metalcore' };
+  const s5 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'spiritbox|commune':1}, opened:0, fresh:{}, binder:'metalcore', sound:false, pending:null, fuseBase:3, mastered:{}, completed:{}, packType:'metalcore' };
   const dom4 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w4){
     w4.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s5)); w4.matchMedia = () => ({ matches: false }); w4.scrollTo = () => {};
     w4.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w4.HTMLElement.prototype.setPointerCapture = () => {}; w4.HTMLElement.prototype.scrollIntoView = () => {};
@@ -175,7 +175,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   check('résumé : bouton partager', !!d4.getElementById('share'));
 
   // 9. Doublons empilés, onglet Toutes les cartes, ouverture spéciale d'une Légendaire
-  const s6 = { size:5, odds:{commune:0,rare:0,holo:0,signature:0,legendaire:100}, owned:{'korn|rare':3}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuse:5, mastered:{}, completed:{}, packType:'serie', toPlace:[] };
+  const s6 = { size:5, odds:{commune:0,rare:0,holo:0,signature:0,legendaire:100}, owned:{'korn|rare':3}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, completed:{}, packType:'serie', toPlace:[] };
   const dom5 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w5){
     w5.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s6)); w5.matchMedia = () => ({ matches: false }); w5.scrollTo = () => {};
     w5.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w5.HTMLElement.prototype.setPointerCapture = () => {}; w5.HTMLElement.prototype.scrollIntoView = () => {};
