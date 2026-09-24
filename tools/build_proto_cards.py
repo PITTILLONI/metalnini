@@ -51,7 +51,7 @@ def crop_pack(src, dst):
     return round((x1 - x0) / (y1 - y0), 4)
 
 packs = {}
-for key, name in (("serie", "pack-a"), ("metalcore", "pack-metalcore"), ("hardcore", "pack-hardcore"), ("numetal", "pack-numetal"),
+for key, name in (("serie", "pack-mosh" if os.path.exists(f"{CREAS}/pack-mosh.jpg") else "pack-a"), ("metalcore", "pack-metalcore"), ("hardcore", "pack-hardcore"), ("numetal", "pack-numetal"),
                   ("poppunk", "pack-poppunk"), ("legendes", "pack-legendes")):
     if os.path.exists(f"{CREAS}/{name}.jpg"):
         packs[key] = crop_pack(f"{CREAS}/{name}.jpg", f"{OUT}/pack-{key}.jpg")

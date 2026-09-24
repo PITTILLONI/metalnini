@@ -307,6 +307,8 @@
   #flames-pack{z-index:31}
   #flames-reveal{position:absolute; z-index:0}
   #reveal-one{position:relative; z-index:1}
+  .pack-desc{margin:4px 0 0; max-width:320px; text-align:center; font-size:.84rem; color:var(--muted); line-height:1.4}
+  .pack-desc b{color:var(--text); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; font-weight:500}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
@@ -329,10 +331,11 @@
       <div class="ptilt" id="ptilt">
       <button type="button" class="pack art" id="pack" aria-label="Déchirer le paquet (glisser vers la droite, ou toucher pour l'ouvrir)">
         <span class="flap"><span class="tear"></span></span><span class="grip" aria-hidden="true">✂</span>
-        <span class="p-moon">☾</span><span class="p-title">Série I</span><span class="p-sub" id="pack-sub">5 cartes</span>
+        <span class="p-moon">☾</span><span class="p-title">Mosh Pack</span><span class="p-sub" id="pack-sub">5 cartes</span>
         <span class="glare"></span>
       </button>
       </div>
+      <p class="pack-desc" id="pack-desc"></p>
       <p class="swipe-hint" id="swipe-hint">Glisse le doigt sur le paquet pour le déchirer →</p>
     </div>
     <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
@@ -514,8 +517,8 @@
     return 'commune';
   }
   // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
-  // Paquets : la Série I tire dans tous les musiciens, un paquet de style seulement dans son classeur
-  var PACKS = [{k:'serie', label:'Série I'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label}; }))
+  // Paquets : le Mosh Pack tire dans tous les musiciens, un paquet de style seulement dans son classeur
+  var PACKS = [{k:'serie', label:'Mosh Pack', desc:'Tous les styles dans le même pit : 5 cartes tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
     .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
   function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
   function pendingPack(){
@@ -535,7 +538,9 @@
     el.hidden = PACKS.length < 2;
     el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-pressed="' + (p.k === state.packType) + '"><img src="cards/pack-' + p.k + '.jpg" alt=""><small>' + esc(p.label) + '</small></button>'; }).join('');
     [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
-    pk.setAttribute('aria-label', 'Déchirer le paquet ' + (PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0]).label);
+    var cur = PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0];
+    pk.setAttribute('aria-label', 'Déchirer le paquet ' + cur.label);
+    document.getElementById('pack-desc').innerHTML = '<b>' + esc(cur.label) + '</b> · ' + esc(cur.desc);
   }
 
   // Prochain objectif : le classeur le plus proche d'être complété, sinon la maîtrise la plus avancée
