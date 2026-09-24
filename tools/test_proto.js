@@ -86,6 +86,10 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   const extra = [...shown].filter(x => !ownedIds.has(x)), missing = [...ownedIds].filter(x => !shown.has(x));
   check('classeur = collection (aucun artiste en trop)', extra.length === 0 && missing.length === 0, 'en trop: ' + extra + ' / manquants: ' + missing);
   const emptyText = [...d.querySelectorAll('#grid .slot:not(.owned)')].map(s => s.textContent).join(' | ');
+  const nums = [...d.querySelectorAll('#grid .slot .cap')].map(c => (c.textContent.match(/^(?:N° )?([IVXLC]+)/) || [])[1]);
+  const rv = n => { const v = {I:1,V:5,X:10,L:50,C:100}; let t = 0; for (let i = 0; i < n.length; i++) { const a = v[n[i]], b = v[n[i+1]] || 0; t += a < b ? -a : a; } return t; };
+  check('emplacements rangés par numéro', nums.length > 0 && nums.every((n, i) => i === 0 || rv(nums[i-1]) <= rv(n)), nums.join(' '));
+  check('case vide : numéro et instrument', /N° [IVX]+/.test(d.querySelector('#grid .slot:not(.owned)').textContent));
   check('emplacements vides sans nom de groupe', !/Knocked|Slipknot|Korn|Gojira|Blink|Lorna|Heriot|Jinjer|Spiritbox|Landmvrks|Poppy|Hendrix|Rage|Guns|Chili/.test(emptyText), emptyText.slice(0, 160));
 
   // 4. Vue par rareté : 5 colonnes, une rangée par musicien du classeur

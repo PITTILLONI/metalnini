@@ -31,6 +31,16 @@ enum Theme {
         }
     }
 
+    static func label(_ instrument: Instrument) -> String {
+        switch instrument {
+        case .chant: "Chant"
+        case .guitare: "Guitare"
+        case .basse: "Basse"
+        case .batterie: "Batterie"
+        case .clavier: "Clavier"
+        }
+    }
+
     static func display(_ size: CGFloat) -> Font { .system(size: size, weight: .heavy, design: .default).width(.condensed) }
 }
 

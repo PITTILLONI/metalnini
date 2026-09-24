@@ -30,7 +30,8 @@ struct BinderView: View {
                     .tint(Theme.gold)
 
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 12) {
-                        ForEach(binder.musicianIDs, id: \.self) { id in slot(id) }
+                        // rangés par numéro d'arcane, comme les numéros d'un album
+                        ForEach(binder.musicianIDs.sorted { (Catalog.musician($0)?.arcanaValue ?? 0) < (Catalog.musician($1)?.arcanaValue ?? 0) }, id: \.self) { id in slot(id) }
                     }
                 }
                 .padding()
@@ -52,13 +53,20 @@ struct BinderView: View {
                         let n = store.collection.total(of: id)
                         if n > 1 { Text("×\(n)").font(Theme.display(16)).padding(5).background(.black.opacity(0.8), in: RoundedRectangle(cornerRadius: 6)).padding(5) }
                     }
-                Text(m?.name ?? id).font(.caption2.monospaced()).foregroundStyle(Theme.muted).lineLimit(1)
+                Text("\(m?.arcanaNumber ?? "") · \(m?.name ?? id)").font(.caption2.monospaced()).foregroundStyle(Theme.muted).lineLimit(1)
             }
         } else {
             VStack(alignment: .leading, spacing: 4) {
                 BundleImage(url: CardImages.back).opacity(0.18)
-                    .overlay(Text(m?.arcanaNumber ?? "?").font(Theme.display(22)).foregroundStyle(Theme.text.opacity(0.5)))
-                Text("???").font(.caption2.monospaced()).foregroundStyle(Theme.muted)
+                    .overlay {
+                        VStack(spacing: 4) {
+                            Text("N° \(m?.arcanaNumber ?? "?")").font(Theme.display(20))
+                            Text(m?.mainInstrument.map(Theme.label) ?? "").font(.caption2.monospaced()).textCase(.uppercase)
+                        }
+                        .foregroundStyle(Theme.text.opacity(0.55))
+                    }
+                    .accessibilityLabel("Carte numéro \(m?.arcanaNumber ?? ""), pas encore obtenue")
+                Text("N° \(m?.arcanaNumber ?? "") · ???").font(.caption2.monospaced()).foregroundStyle(Theme.muted)
             }
         }
     }

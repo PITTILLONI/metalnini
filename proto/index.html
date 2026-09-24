@@ -999,6 +999,8 @@
   });
 
   // ---------- Classeur ----------
+  function roman(n){ var v = {I:1,V:5,X:10,L:50,C:100}, t = 0; for(var i=0;i<n.length;i++){ var a = v[n[i]] || 0, b = v[n[i+1]] || 0; t += a < b ? -a : a; } return t; }
+  function firstInst(c){ return String(c.inst).split(',')[0].trim(); }
   function best(id){ var b = null; RARITIES.forEach(function(r){ if(state.owned[id+'|'+r.k]) b = r.k; }); return b; }
   // meilleure rareté déjà rangée dans le classeur (les cartes « à ranger » n'y apparaissent qu'une fois posées)
   function placed(id){ var tp = state.toPlace || [], b = null; RARITIES.forEach(function(r){ var k = id+'|'+r.k; if(state.owned[k] && tp.indexOf(k) === -1) b = r.k; }); return b; }
@@ -1069,7 +1071,8 @@
     }).join('');
     [].forEach.call(tabsEl.querySelectorAll('button'), function(btn){ btn.addEventListener('click', function(){ state.binder = btn.getAttribute('data-b'); save(); renderBinder(); }); });
     var b = binderOf(state.binder);
-    var list = b.ids.map(card).filter(Boolean);
+    // emplacements rangés par numéro d'arcane, comme les numéros d'un album
+    var list = b.ids.map(card).filter(Boolean).sort(function(x, y){ return roman(x.num) - roman(y.num); });
     var have = list.filter(function(c){ return placed(c.id); }).length;
     document.getElementById('binder-title').textContent = b.label;
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
@@ -1078,11 +1081,11 @@
     document.getElementById('prog-bar').style.width = pct + '%';
     document.getElementById('grid').innerHTML = list.map(function(c){
       var r = placed(c.id);
-      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Arcane ' + c.num + ', pas encore obtenue"><span class="img"><span class="empty"><span style="position:relative">' + c.num + '</span></span></span><span class="cap">???</span></button>';
+      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Carte numéro ' + c.num + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + c.num + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">N° ' + c.num + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') +
-        '</span></span><span class="cap">' + esc(c.who) + '</span></button>';
+        '</span></span><span class="cap">' + c.num + ' · ' + esc(c.who) + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
     var mode = state.view || 'pages';
@@ -1094,7 +1097,7 @@
       m.innerHTML = '<span></span>' + RARITIES.map(function(x){ return '<span class="mh" style="color:' + x.color + '">' + x.label + '</span>'; }).join('') +
         list.map(function(c){
           var known = best(c.id);
-          return '<span class="who">' + (known ? '<b>' + esc(c.who) + '</b>' + esc(c.band) : '<b>' + c.num + '</b>???') + '</span>' +
+          return '<span class="who">' + (known ? '<b>' + esc(c.who) + '</b>N° ' + c.num + ' · ' + esc(c.band) : '<b>N° ' + c.num + '</b>' + esc(firstInst(c))) + '</span>' +
             RARITIES.map(function(x){ var n = state.owned[c.id+'|'+x.k] || 0;
               return '<button type="button" class="cell" data-id="' + c.id + '" data-r="' + x.k + '" aria-label="' + (n ? esc(c.who) + ', ' + x.label : 'pas encore obtenue') + '">' +
                 (n ? '<img src="' + img(c.id, x.k) + '" alt="" loading="lazy">' + (n > 1 ? '<span class="n">×' + n + '</span>' : '') : '<span class="ph"></span>') + '</button>'; }).join('');

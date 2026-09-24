@@ -13,6 +13,14 @@ struct CatalogTests {
         #expect(Set(styles) == Set(Catalog.musicians.map(\.id)))
     }
 
+    @Test func arcanaNumbersParseAndAreUnique() {
+        #expect(Catalog.musician("knocked-loose")!.arcanaValue == 4)
+        #expect(Catalog.musician("ramos")!.arcanaValue == 14)
+        #expect(Catalog.musician("heriot")!.arcanaValue == 18)
+        #expect(Catalog.musician("jordison")!.arcanaValue == 21)
+        #expect(Set(Catalog.musicians.map(\.arcanaValue)).count == Catalog.musicians.count)
+    }
+
     @Test func stylePackPoolIsItsBinder() {
         let pack = Catalog.packTypes.first { $0.id == "metalcore" }!
         #expect(Set(Catalog.pool(for: pack)) == ["spiritbox", "jinjer", "landmvrks", "heriot"])

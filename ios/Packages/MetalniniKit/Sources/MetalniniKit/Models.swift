@@ -29,6 +29,15 @@ public struct Musician: Identifiable, Hashable, Codable, Sendable {
     public let instruments: [Instrument]
     public let subgenre: String
 
+    /// Valeur du numéro d'arcane (IV = 4) : sert à ranger les emplacements comme les numéros d'un album.
+    public var arcanaValue: Int {
+        let v: [Character: Int] = ["I": 1, "V": 5, "X": 10, "L": 50, "C": 100]
+        let digits = arcanaNumber.compactMap { v[$0] }
+        return digits.indices.reduce(0) { t, i in i + 1 < digits.count && digits[i] < digits[i + 1] ? t - digits[i] : t + digits[i] }
+    }
+
+    public var mainInstrument: Instrument? { instruments.first }
+
     public init(id: String, name: String, band: String, arcanaTitle: String, arcanaNumber: String,
                 instruments: [Instrument], subgenre: String) {
         self.id = id; self.name = name; self.band = band; self.arcanaTitle = arcanaTitle
