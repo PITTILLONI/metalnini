@@ -18,7 +18,7 @@
 <style>
   :root{
     --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94;
-    --border:rgba(255,255,255,.1); --accent:#b23a3a; --gold:#d4af37;
+    --border:rgba(255,255,255,.1); --accent:#b23a3a; --accent-text:#e0605a; --gold:#d4af37;
     --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#d4af37; --r-legendaire:#dc2626;
     --display:"Big Shoulders Display","Arial Narrow",sans-serif; --gold-hi:#f1d98a; --gold-lo:#9c7a2a; --ink:#0d0a08; --mono:"Inter",system-ui,sans-serif;
   }
@@ -31,7 +31,7 @@
   button{font:inherit; color:inherit}
   button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .wrap{max-width:960px; margin:0 auto; padding:0 16px}
-  .eyebrow{font:500 .7rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px}
+  .eyebrow{font:500 .7rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); margin:0 0 8px}
   h1,h2{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.01em; line-height:.95; margin:0}
 
   /* ---------- Tab bar ---------- */
@@ -47,6 +47,7 @@
   .tabbar button[aria-selected="true"] .ico{color:var(--gold); transform:translateY(-2px); filter:drop-shadow(0 0 8px rgba(212,175,55,.55))}
   .tabbar button[aria-selected="true"]::after{content:""; position:absolute; left:50%; bottom:-3px; width:5px; height:5px; background:var(--gold); transform:translateX(-50%) rotate(45deg)}
   .view[hidden], [hidden]{display:none !important}
+  button{-webkit-tap-highlight-color:transparent} button:not(.btn):not(.pack):active{opacity:.72}
   :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px; border-radius:6px}
   .num{font-variant-numeric:tabular-nums}
 
@@ -54,7 +55,7 @@
   /* accueil façon écran de jeu : HUD, quête, paquet, gros bouton */
   .hud{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:calc(12px + env(safe-area-inset-top)) 0 10px}
   .hud-me{display:flex; align-items:center; gap:10px; min-width:0}
-  .hud-me .av{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; font-size:1.3rem; color:var(--gold); padding:0; cursor:pointer; overflow:hidden;
+  .hud-me .av{flex:0 0 auto; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; font-size:1.3rem; color:var(--gold); padding:0; cursor:pointer; overflow:hidden;
     background:#16110e center/cover no-repeat; border:0; box-shadow:0 0 0 1px rgba(212,175,55,.7), 0 0 0 3px #0d0a08, 0 0 0 4px rgba(212,175,55,.3)}
   .hud-me .av.has svg{display:none}
   .hud-me b{display:block; font:700 1rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw}
@@ -67,6 +68,13 @@
   .home-title{font-size:1.9rem; line-height:1.05; margin:12px 0 0; text-align:center}
   .pack-zone{display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px 0 6px}
   .home .pack-desc{display:none}
+  @media (orientation:landscape) and (max-height:540px){
+    .home{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:28px; align-items:start}
+    .home > *{grid-column:1} .home .pack-zone{grid-column:2; grid-row:1 / span 4; padding-top:calc(10px + env(safe-area-inset-top))}
+    .home .pack.art{width:max(90px, calc((100svh - 200px) * var(--pa,.5783)))}
+    .home .pack-zone{gap:8px} .home .swipe-hint{display:none}
+    .home .pack-picker button{width:40px} .home .pack-picker small{display:none}
+  }
   .home .pack-picker button{width:56px}
   .home .pack-picker small{font-size:.7rem}
   .goal.quest{padding:8px 12px}
@@ -198,8 +206,8 @@
   .icon-btn.corner{position:absolute; right:0; top:calc(18px + env(safe-area-inset-top))}
   .back-btn{background:none; border:0; min-height:44px; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
   .binder-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 4px; scrollbar-width:none}
-  .binder-tabs button{flex:0 0 auto; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
-  .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); padding:0 2px 0 8px}
+  .binder-tabs button{flex:0 0 auto; min-height:44px; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:8px 13px; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .binder-tabs .tab-kind{flex:0 0 auto; align-self:center; font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); padding:0 2px 0 8px}
   .binder-tabs .tab-kind:first-child{padding-left:0}
   .binder-tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
@@ -208,7 +216,7 @@
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
   @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
   .view-toggle{display:flex; gap:6px; margin-top:10px}
-  .view-toggle button{min-height:40px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer}
+  .view-toggle button{min-height:44px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer}
   .view-toggle button[aria-pressed="true"]{color:var(--text); border-color:var(--gold)}
   .view-toggle .sort{margin-left:auto; color:var(--text)}
   .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
@@ -252,7 +260,7 @@
   .settings{padding:calc(24px + env(safe-area-inset-top)) 0 20px}
   .field{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:14px}
   .field label{display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:.9rem; margin:8px 0}
-  .field input[type=number]{width:74px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:7px 8px; font:inherit; text-align:right}
+  .field input[type=number]{width:74px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; min-height:44px; padding:7px 10px; font:inherit; text-align:right}
   .field .total{font:500 .74rem var(--mono); color:var(--muted); margin-top:8px}
   .field .total.bad{color:#f87171}
   .note{font:500 .72rem var(--mono); color:var(--muted); line-height:1.5}
@@ -460,7 +468,7 @@
   .auth[data-mode="loading"] #auth-go{display:none}
   .net{font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
   .net b{color:var(--ok, #4ade80)}
-  .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
+  .toggle{display:flex; justify-content:space-between; align-items:center; min-height:44px; font-size:.9rem; cursor:pointer}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
@@ -585,7 +593,7 @@
     <p class="eyebrow">Bienvenue dans le pit</p>
     <h2 id="uname-t">Ton nom de scène</h2>
     <p class="note" style="color:var(--muted)">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
-    <input id="uname-in" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo">
+    <input id="uname-in" aria-labelledby="uname-t" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo">
     <p class="note">3 à 20 caractères : lettres, chiffres, point, tiret ou tiret bas.</p>
     <p class="err" id="uname-err"></p>
     <button type="button" class="btn" id="uname-go">Sur scène !</button>
