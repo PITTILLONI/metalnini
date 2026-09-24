@@ -942,7 +942,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       flip.style.transition = 'transform .25s ease-out'; flip.style.transform = 'rotateY(' + (side * 14) + 'deg)';
       if(rank(r) >= 3){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); }
       if(r === 'legendaire') document.getElementById('flames-reveal').classList.add('on');
-      if(rank(r) >= 2){ embers(r, ms); rays(r); }
+      if(rank(r) >= 2){ rays(r); }
     }
     setTimeout(function(){
       stage.classList.remove('rumble'); SFX.flip();
@@ -950,8 +950,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       flip.style.transition = 'transform ' + dur + 's cubic-bezier(.2,.8,.2,1)'; flip.style.transform = 'rotateY(' + (side * 180) + 'deg)';
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
-        fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r); burst(r);
-        if(rank(r) >= 3){ ring(r); quake(); stamp(r); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); burst(r); flash(r); }, 260); }
+        fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r);
+        if(rank(r) >= 3){ ring(r); quake(); stamp(r); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'le résumé') + (rank(r) >= 2 ? ' · appuie et bouge pour faire briller' : '');
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
@@ -1064,7 +1064,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
     document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
     revealEl.classList.remove('dim');
-    var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); burst(b); }
+    var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); }
     renderGoal('goal-sum');
     document.getElementById('sum-grid').innerHTML = current.map(function(x, i){
       return '<figure style="animation-delay:' + (i*90) + 'ms"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + '" style="border-color:' + rarity(x.r).color + '"><figcaption>' +
