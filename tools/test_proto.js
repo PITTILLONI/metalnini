@@ -22,6 +22,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true }));
 function ptr(el, type, x) { const e = new w.Event(type, { bubbles: true }); e.clientX = x; e.clientY = 100; e.pointerId = 1; el.dispatchEvent(e); }
 const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
+async function placeAll(doc, st) {
+  doc.getElementById('tray-all').click();
+  for (let t = 0; t < 400 && ((st().toPlace || []).length || !doc.getElementById('dupfx').hidden); t++) {
+    await sleep(100); const fx = doc.getElementById('dupfx'); if (!fx.hidden && !fx.classList.contains('out')) fx.click();
+  }
+  await sleep(300);
+}
 async function openB(doc, k) {
   for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15);
     const c = doc.querySelector('#binder-list [data-b="' + k + '"]'); if (c) { c.click(); await sleep(20); return; } }
@@ -85,10 +92,11 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const nNew = (state().toPlace || []).length;
   check('bac « À ranger » affiché avec les nouvelles cartes', !d.getElementById('tray').hidden && d.querySelectorAll('#tray-cards button').length === nNew && nNew > 0, nNew + ' à ranger');
   check('classeur « Toutes les cartes » ouvert', /Toutes les cartes/.test(d.getElementById('binder-title').textContent));
-  d.getElementById('tray-all').click();
-  // un doublon passe par le bonus plein écran : on attend que le bac soit vide (30 s au plus)
-  for (let t = 0; t < 300 && ((state().toPlace || []).length || !d.getElementById('tray').hidden); t++) await sleep(100);
-  await sleep(300);
+  d.getElementById('tray-all').click(); await sleep(700);
+  check('rangement : la carte s\'affiche en grand et attend un toucher', !d.getElementById('dupfx').hidden && /Touche la carte/.test(d.getElementById('df-skip').textContent), d.getElementById('df-skip').textContent);
+  await sleep(1500);
+  check('rangement : rien ne part tout seul', !d.getElementById('dupfx').hidden);
+  await placeAll(d, state);
   check('tout est rangé', (state().toPlace || []).length === 0 && d.getElementById('tray').hidden);
   const owned = state().owned;
   const ownedIds = new Set(Object.keys(owned).filter(k => owned[k] > 0).map(k => k.split('|')[0]));
@@ -163,7 +171,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   key(d3.getElementById('pack'), 'Enter'); await sleep(3200);
   d3.getElementById('skip').click(); await sleep(300);
   d3.getElementById('to-binder').click(); await sleep(100);
-  d3.getElementById('tray-all').click(); await sleep(6500);
+  await placeAll(d3, () => JSON.parse(dom3.window.localStorage.getItem('metalnini-proto-v1'))); await sleep(2600);
   const toastTxt = seen.join(' | ');
   check('complétion du classeur Pop punk annoncée', /Classeur complété.*Pop punk/.test(toastTxt), toastTxt);
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);

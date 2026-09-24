@@ -360,9 +360,11 @@
   @keyframes tearr{15%{transform:translateX(10px) rotate(3deg)}100%{transform:translate(60px, 110vh) rotate(24deg); opacity:.4}}
   .slot .tf{position:absolute; left:50%; bottom:6px; transform:translateX(-50%); z-index:2; white-space:nowrap; background:var(--gold); color:var(--ink); border-radius:999px; font:700 .7rem/1 var(--mono); letter-spacing:.04em; padding:4px 8px; box-shadow:0 3px 10px rgba(0,0,0,.6)}
   .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .7rem var(--mono); padding:2px 5px}
-  .toast{position:fixed; left:50%; bottom:calc(92px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:60; background:#1b1508; border:1px solid var(--gold); color:var(--text); border-radius:12px; padding:12px 16px; font-size:.9rem; box-shadow:0 10px 40px rgba(0,0,0,.6); animation:toast 3.6s ease forwards; max-width:88vw; text-align:center}
+  /* notification système : bandeau pleine largeur, descend du haut et y repart, sans fondu */
+  .toast{position:fixed; left:0; right:0; top:0; z-index:85; padding:calc(12px + env(safe-area-inset-top)) 18px 12px; background:#1b1508; border-bottom:1px solid var(--gold); color:var(--text);
+    font-size:.92rem; line-height:1.35; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.6); transform:translateY(-110%); animation:toast 3.6s cubic-bezier(.2,.8,.2,1) forwards; pointer-events:none}
   .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
-  @keyframes toast{0%{opacity:0; transform:translate(-50%,16px)}10%,85%{opacity:1; transform:translate(-50%,0)}100%{opacity:0; transform:translate(-50%,8px)}}
+  @keyframes toast{0%{transform:translateY(-110%)}9%,88%{transform:none}100%{transform:translateY(-110%)}}
   .stage{touch-action:none; user-select:none; -webkit-user-select:none}
   .deck{display:flex; gap:6px; justify-content:center; margin-top:14px; min-height:62px; align-items:flex-end}
   .deck i{display:block; width:36px; aspect-ratio:2/3; border-radius:4px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 4px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(237,164,43,.35); transition:transform .3s ease, opacity .3s ease}
@@ -445,7 +447,9 @@
   @keyframes dfpop{0%{transform:scale(0) rotate(-12deg)}100%{transform:none}}
   .df-sub{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--text); animation:dfin .3s ease .7s both}
   .df-tf{display:flex; flex-direction:column; gap:10px; width:min(86vw, 340px); margin-top:8px; animation:dfin .3s ease .8s both}
-  .df-skip{position:absolute; bottom:calc(24px + env(safe-area-inset-bottom)); margin:0; font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .dupfx.fresh .df-card i{display:none}
+  .df-skip{position:absolute; bottom:calc(28px + env(safe-area-inset-bottom)); margin:0; font:600 .8rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-hi); animation:dfin .3s ease .9s both, hintpulse 1.6s ease-in-out 1.2s infinite}
+  @keyframes hintpulse{50%{opacity:.55}}
   .slot.stacked .img{animation:stackhit .55s cubic-bezier(.3,1.5,.5,1)}
   @keyframes stackhit{0%{transform:translateY(-10px) scale(1.06)}30%{transform:translateY(4px) scale(1.04,.9)}60%{transform:translateY(-3px) scale(.98,1.03)}100%{transform:none}}
   .slot.stacked .img::after, .slot.upgraded .img::after{content:""; position:absolute; inset:0; border-radius:8px; box-shadow:inset 0 0 0 3px var(--rc), 0 0 30px 8px var(--rc); animation:ping .9s ease-out forwards}
@@ -712,7 +716,7 @@
 </div>
 <div id="fxlayer" aria-hidden="true"><div id="stamp"></div></div>
 <div id="vignette" aria-hidden="true"></div>
-<div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""></div><div class="df-plus" id="df-plus"></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div><p class="df-skip" id="df-skip">Touche pour passer</p></div>
+<div class="dupfx" id="dupfx" hidden><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""></div><div class="df-plus" id="df-plus"></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div><p class="df-skip" id="df-skip"></p></div>
 <div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
 <label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
@@ -1658,7 +1662,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var before = placed(id);   // rareté déjà rangée pour ce musicien, avant ce rangement
     placing = true; slot.scrollIntoView({block:'center', behavior: reduce ? 'auto' : 'smooth'});
     // carte déjà possédée : d'abord le bonus en plein écran, puis la carte file vers son emplacement
-    if(before && !reduce){ dupFx(id, r, before, function(rect, then){ fly(rect, then); }, !done); return; }
+    if(!reduce){ placeFx(id, r, before, function(rect, then){ fly(rect, then); }); return; }
     setTimeout(function(){ fly(null); }, reduce ? 0 : 260);
     function fly(rect, then){
       var fr = rect || (fromEl || document.getElementById('tray')).getBoundingClientRect(), to = slot.querySelector('.img').getBoundingClientRect();
@@ -1682,31 +1686,33 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         var comps = newCompletions(), mast = newMasteries();
         comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Carte Collector et badge dans ta poche.'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
-        if(done) setTimeout(done, before ? 520 : 180);
-        if(then) setTimeout(then, 700);
+        if(then) setTimeout(then, 700); else if(done) setTimeout(done, 380);
       }, reduce ? 0 : 560);
     }
   }
-  function dupFx(id, r, before, done, offer){
-    var el = document.getElementById('dupfx'), up = rank(r) > rank(before), shown = up ? r : before, ended = false;
-    var tfFrom = offer ? fusable(id) : null, tfBox = document.getElementById('df-tf');
-    tfBox.hidden = !tfFrom; document.getElementById('df-skip').hidden = !!tfFrom;
+  // rangement pas à pas : chaque carte s'affiche en grand avec son bonus ; un toucher la range et passe à la suivante
+  function slotNum(id){ var list = CARDS.slice().sort(function(x, y){ return roman(x.num) - roman(y.num); }); for(var i = 0; i < list.length; i++) if(list[i].id === id) return i + 1; return 0; }
+  function placeFx(id, r, before, done){
+    var el = document.getElementById('dupfx'), fresh = !before, up = !fresh && rank(r) > rank(before), shown = fresh || up ? r : before, ended = false;
+    var tfFrom = fusable(id), tfBox = document.getElementById('df-tf'), left = Math.max(0, (state.toPlace || []).length - 1);
+    tfBox.hidden = !tfFrom;
     if(tfFrom) document.getElementById('df-go').textContent = 'Transformer ' + fuseCost(tfFrom) + ' ' + rarity(tfFrom).label + ' → 1 ' + RARITIES[rank(tfFrom) + 1].label;
-    el.style.setProperty('--rc', COLORS[up ? r : shown]);
-    document.getElementById('df-img').src = img(id, up ? r : shown);
-    document.getElementById('df-plus').textContent = up ? rarity(r).label : '+1';
-    document.getElementById('df-sub').textContent = up ? esc(card(id).who) + ' monte en grade' : esc(card(id).who) + ' · ' + rarity(r).label + ' · ×' + total(id);
+    el.classList.toggle('fresh', fresh);
+    el.style.setProperty('--rc', COLORS[shown]);
+    document.getElementById('df-img').src = img(id, shown);
+    document.getElementById('df-plus').textContent = fresh ? 'Nouvelle !' : up ? rarity(r).label : '+1';
+    document.getElementById('df-sub').textContent = card(id).who + ' · ' + rarity(r).label + (fresh ? ' · case ' + slotNum(id) : up ? ' · monte en grade' : ' · ×' + total(id));
+    document.getElementById('df-skip').textContent = 'Touche la carte pour la ranger' + (left ? ' · encore ' + left : '');
     el.classList.remove('out'); el.hidden = false; void el.offsetWidth;
-    setTimeout(function(){ if(up) SFX[r](); else buzz([20, 60, 30, 60, 50]); }, 420);
+    setTimeout(function(){ if(fresh || up) SFX[r](); else buzz([20, 60, 30, 60, 50]); }, 420);
     function end(then){
-      if(ended) return; ended = true; clearTimeout(t);
+      if(ended) return; ended = true;
       var rect = document.getElementById('df-card').getBoundingClientRect();
       el.classList.add('out'); setTimeout(function(){ el.hidden = true; }, 220);
       done(rect, then);
     }
-    // sans transformation possible, le bonus se referme seul ; sinon il attend la réponse
-    var t = tfFrom ? null : setTimeout(end, up ? 1600 : 1350);
-    el.onclick = function(e){ if(!tfFrom) end(); };
+    // rien ne se ferme tout seul : c'est le joueur qui donne le rythme
+    el.onclick = function(){ end(); };
     document.getElementById('df-go').onclick = function(e){ e.stopPropagation(); end(function(){ fuse(id, tfFrom); }); };
     document.getElementById('df-later').onclick = function(e){ e.stopPropagation(); end(); };
   }
@@ -1727,7 +1733,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(ids.length && ids.every(function(id){ return placed(id); }) && !state.completed[b.k]){ state.completed[b.k] = true; out.push(b); } });
     if(out.length) save(); return out;
   }
-  function toast(html){ var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
+  function toast(html){ [].forEach.call(document.querySelectorAll('.toast'), function(x){ x.remove(); });
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
   function celebrate(list){
     list.forEach(function(c, i){ setTimeout(function(){ SFX.signature();
       toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies. Respect. Badge débloqué.'); }, 500 + i*1200); });
