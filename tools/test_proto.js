@@ -161,6 +161,7 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
   d5.querySelector('.tabbar [data-v="packs"]').click(); await sleep(30);
   key(d5.getElementById('pack'), 'Enter'); await sleep(1400);
   check('paquet avec Légendaire : ouverture spéciale', d5.getElementById('pack').classList.contains('legend') && d5.getElementById('vignette').classList.contains('on'));
+  check('paquet avec Légendaire : flammes gravées affichées', d5.getElementById('flames-pack').classList.contains('on'));
   await sleep(2600);
   check('puis la pile de cartes s\'ouvre', !d5.getElementById('reveal').hidden);
 

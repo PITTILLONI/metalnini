@@ -244,7 +244,7 @@
   .goal .eyebrow{margin:0 0 3px; font-size:.58rem}
   .summary .goal{margin:16px auto 0}
   /* (3) paquet fermé en parallaxe */
-  .ptilt{perspective:900px; transform-style:preserve-3d}
+  .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
   .ptilt > .pack{transition:transform .12s linear}
   .pack .glare{border-radius:6px; z-index:4; mix-blend-mode:overlay}
   /* (6) montée en puissance selon la rareté */
@@ -263,7 +263,7 @@
   #vignette{position:fixed; inset:0; z-index:30; pointer-events:none; background:radial-gradient(ellipse at center, transparent 18%, #000 75%); visibility:hidden}
   #vignette.on{visibility:visible; animation:vig .5s ease forwards}
   @keyframes vig{from{transform:scale(1.6)}to{transform:scale(1)}}
-  .pack.legend{animation:legend 2.4s cubic-bezier(.5,0,.8,.4) forwards; z-index:31}
+  .pack.legend{animation:legend 2.4s cubic-bezier(.5,0,.8,.4) forwards; z-index:32}
   @keyframes legend{0%{transform:translateY(0)}20%{transform:translateY(-18px) scale(1.04)}100%{transform:translateY(-26px) scale(1.12)}}
   .pack.legend .flap, .pack.legend::after{box-shadow:0 0 30px 8px #ef4444}
   .pack.legend::after{content:""; position:absolute; inset:0; border-radius:6px; pointer-events:none; animation:crack 2.4s steps(12) forwards;
@@ -293,11 +293,25 @@
   .slot .layers i:nth-child(3){transform:translate(6px,8px) rotate(3.4deg)}
   .slot .sw .img{z-index:1}
   .binder-tabs .tab-kind[data-k="Collection"]{display:none}
+  /* flammes gravées animées (Légendaire) : le noir de l'image disparaît par fusion, la chaleur fait onduler */
+  .flames{position:fixed; left:0; right:0; bottom:0; height:52vh; pointer-events:none; overflow:hidden; transform:translateY(105%); transition:transform .9s cubic-bezier(.2,.8,.2,1);
+          -webkit-mask:linear-gradient(to top, #000 70%, transparent); mask:linear-gradient(to top, #000 70%, transparent)}
+  .flames.on{transform:translateY(0)}
+  .flames i{position:absolute; left:-10%; right:-10%; bottom:0; height:100%; background:url(cards/flames.jpg) 0 100%/auto 100% repeat-x; mix-blend-mode:screen; filter:url(#heat); transform-origin:50% 100%}
+  .flames i:nth-child(1){animation:fl-a 3.2s ease-in-out infinite, drift 22s linear infinite}
+  .flames i:nth-child(2){height:78%; opacity:.85; animation:fl-b 2.4s ease-in-out infinite, drift 15s linear infinite reverse; background-position:40% 100%}
+  .flames i:nth-child(3){height:58%; animation:fl-a 1.7s ease-in-out infinite reverse, drift 9s linear infinite; background-position:70% 100%}
+  @keyframes fl-a{0%,100%{transform:scaleY(1)}30%{transform:scaleY(1.08) skewX(1.5deg)}60%{transform:scaleY(.95) skewX(-1deg)}}
+  @keyframes fl-b{0%,100%{transform:scaleY(1) translateY(0)}50%{transform:scaleY(1.12) translateY(-2%)}}
+  @keyframes drift{to{background-position-x:-900px}}
+  #flames-pack{z-index:31}
+  #flames-reveal{position:absolute; z-index:0}
+  #reveal-one{position:relative; z-index:1}
   .toggle{display:flex; justify-content:space-between; align-items:center; font-size:.9rem}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette{display:none!important} .reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -368,6 +382,7 @@
 
 <!-- ============ REVEAL ============ -->
 <div class="reveal" id="reveal" hidden aria-live="polite">
+  <div class="flames" id="flames-reveal" aria-hidden="true"><i></i><i></i><i></i></div>
   <button type="button" class="skip" id="skip">Tout révéler</button>
   <div id="reveal-one">
     <div class="counter" id="counter"></div>
@@ -400,6 +415,10 @@
   </div>
 </div>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="heat" x="-10%" y="-10%" width="120%" height="120%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.008 0.02" numOctaves="1" seed="3" result="n"><animate attributeName="baseFrequency" dur="5s" values="0.008 0.02;0.01 0.03;0.008 0.02" repeatCount="indefinite"/></feTurbulence>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<div class="flames" id="flames-pack" aria-hidden="true"><i></i><i></i><i></i></div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="stamp" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
@@ -684,7 +703,7 @@
     if(reduce) wait = 0;
     if(wait && tease === 'legendaire'){
       // le sachet s'élève, se fissure de lumière rouge, l'écran s'assombrit, le cœur bat
-      document.getElementById('vignette').classList.add('on'); packEl.classList.add('legend'); document.getElementById('ptilt').classList.add('shake');
+      document.getElementById('vignette').classList.add('on'); document.getElementById('flames-pack').classList.add('on'); packEl.classList.add('legend'); document.getElementById('ptilt').classList.add('shake');
       SFX.heartbeat(); setTimeout(SFX.heartbeat, 800); setTimeout(SFX.heartbeat, 1500); setTimeout(function(){ SFX.rumble(700); }, 1650);
       var pr = packEl.getBoundingClientRect(), at = {x:pr.left + pr.width/2, y:pr.top + pr.height/2, w:pr.width, h:pr.height};
       (function emb(n){ if(n <= 0) return; parts.push({x:at.x + (Math.random()-.5)*at.w, y:at.y + at.h/2, vx:(Math.random()-.5)*.8, vy:-1.5-Math.random()*2.5, life:1, decay:.012, size:1+Math.random()*2.5, col:'#ef4444', g:-.01}); loop(); setTimeout(function(){ emb(n-1); }, 30); })(70);
@@ -697,7 +716,7 @@
       setTimeout(function(){
         revealEl.hidden = false; document.getElementById('summary').hidden = true; document.getElementById('reveal-one').hidden = false;
         document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
-        packEl.classList.remove('torn'); setTear(0); opening = false; document.getElementById('vignette').classList.remove('on'); renderStats();
+        packEl.classList.remove('torn'); setTear(0); opening = false; document.getElementById('vignette').classList.remove('on'); document.getElementById('flames-pack').classList.remove('on'); renderStats();
       }, 600);
     }, wait);
   }
@@ -714,7 +733,7 @@
   function showCard(){
     var x = current[idx]; flipped = false; busy = false;
     flip.style.transition = 'none'; flip.classList.remove('on'); flip.style.transform = ''; void flip.offsetWidth; flip.style.transition = '';
-    document.getElementById('rays').className = '';
+    document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on');
     stage.className = 'stage';
     renderUnders();
     revealEl.classList.remove('dim'); clearTarget();
@@ -750,6 +769,7 @@
       stage.classList.add('charge-' + r);
       flip.style.transition = 'transform .25s ease-out'; flip.style.transform = 'rotateY(' + (side * 14) + 'deg)';
       if(rank(r) >= 3){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); }
+      if(r === 'legendaire') document.getElementById('flames-reveal').classList.add('on');
       if(rank(r) >= 2){ embers(r, ms); rays(r); }
     }
     setTimeout(function(){
@@ -868,6 +888,7 @@
 
   document.getElementById('skip').addEventListener('click', showSummary);
   function showSummary(){
+    document.getElementById('flames-reveal').classList.remove('on');
 
     document.getElementById('reveal-one').hidden = true; document.getElementById('summary').hidden = false; document.getElementById('skip').hidden = true;
     revealEl.classList.remove('dim');

@@ -55,6 +55,9 @@ for key, name in (("serie", "pack-a"), ("metalcore", "pack-metalcore"), ("hardco
                   ("poppunk", "pack-poppunk"), ("legendes", "pack-legendes")):
     if os.path.exists(f"{CREAS}/{name}.jpg"):
         packs[key] = crop_pack(f"{CREAS}/{name}.jpg", f"{OUT}/pack-{key}.jpg")
+if os.path.exists(f"{CREAS}/flames.jpg"):
+    subprocess.run(["sips", "-Z", "1400", "-s", "format", "jpeg", "-s", "formatOptions", "76", f"{CREAS}/flames.jpg",
+                    "--out", f"{OUT}/flames.jpg"], check=True, stdout=subprocess.DEVNULL)
 if os.path.exists(f"{CREAS}/card-back.jpg"):
     subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
                     "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
