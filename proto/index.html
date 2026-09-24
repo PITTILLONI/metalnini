@@ -23,7 +23,7 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html{color-scheme:dark; overflow-x:hidden; overscroll-behavior:none}
   body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; line-height:1.45;
-       padding-bottom:calc(76px + env(safe-area-inset-bottom)); overscroll-behavior:none}
+       padding-bottom:calc(96px + env(safe-area-inset-bottom)); overscroll-behavior:none}
   button{font:inherit; color:inherit}
   button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .wrap{max-width:960px; margin:0 auto; padding:0 16px}
@@ -31,18 +31,37 @@
   h1,h2{font-family:var(--display); text-transform:uppercase; letter-spacing:.02em; margin:0}
 
   /* ---------- Tab bar ---------- */
-  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; background:#0c0b0a;
-          border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom)}
-  .tabbar button{flex:1; background:none; border:0; padding:12px 4px 10px; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
-  .tabbar button[aria-selected="true"]{color:var(--text)}
-  .tabbar .ico{display:block; font-size:1.25rem; margin-bottom:3px}
+  /* barre d'onglets flottante, boutons en relief */
+  .tabbar{position:fixed; left:12px; right:12px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:20; display:flex; gap:6px; padding:6px; max-width:520px; margin:0 auto;
+          background:linear-gradient(#1f1915,#120e0c); border:1px solid rgba(212,175,55,.28); border-radius:22px; box-shadow:0 10px 30px rgba(0,0,0,.65)}
+  .tabbar button{flex:1; background:none; border:0; border-radius:16px; padding:8px 4px 7px; font:600 .6rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:background .15s ease, color .15s ease}
+  .tabbar button[aria-selected="true"]{color:#0c0b0a; background:linear-gradient(#e7c65a,#b8912a); box-shadow:0 3px 0 #6e5416}
+  .tabbar .ico{display:block; font-size:1.3rem; line-height:1.1; margin-bottom:2px}
   .view[hidden], [hidden]{display:none !important}
 
   /* ---------- Packs ---------- */
-  .packs-head{padding:calc(28px + env(safe-area-inset-top)) 0 10px}
-  .packs-head h1{font-size:2.2rem}
-  .packs-head p{color:var(--muted); margin:6px 0 0; font-size:.92rem}
-  .pack-zone{display:flex; flex-direction:column; align-items:center; gap:18px; padding:26px 0 10px}
+  /* accueil façon écran de jeu : HUD, quête, paquet, gros bouton */
+  .hud{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:calc(12px + env(safe-area-inset-top)) 0 10px}
+  .hud-me{display:flex; align-items:center; gap:10px; min-width:0}
+  .hud-me .av{flex:0 0 auto; width:40px; height:40px; display:grid; place-items:center; border-radius:12px; font-size:1.3rem; color:var(--gold);
+    background:linear-gradient(#2a221c,#16110e); border:1px solid rgba(212,175,55,.5); box-shadow:0 3px 0 #0a0807}
+  .hud-me b{display:block; font:700 1rem/1.1 var(--display); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw}
+  .hud-me .net{display:block; font:500 .56rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:left; margin-top:2px}
+  .hud-me .net b{display:inline; color:#4ade80; font-size:.7rem}
+  .hud-stats{display:flex; gap:6px}
+  .hud-stats span{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
+  .hud-stats i{font-style:normal; color:var(--gold); font-size:.8rem}
+  .home-title{font-size:1.3rem; line-height:1.05; margin:12px 0 0; text-align:center}
+  .pack-zone{display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px 0 6px}
+  .home .pack-desc{display:none}
+  .home .pack-picker button{width:50px}
+  .home .pack-picker small{font-size:.46rem}
+  .goal.quest{padding:8px 12px}
+  .goal.quest > span > span{display:none}
+  .open-btn{max-width:420px}
+  .goal.quest{max-width:none; margin-top:2px}
+  .goal .qbar{display:block; height:6px; border-radius:3px; background:rgba(255,255,255,.1); margin-top:7px; overflow:hidden}
+  .goal .qbar i{display:block; height:100%; border-radius:3px; background:linear-gradient(90deg,#b8912a,#f5c542)}
   .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
         background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%), #111; box-shadow:0 18px 50px rgba(0,0,0,.6), inset 0 0 0 1px rgba(212,175,55,.35);
         transition:transform .2s ease}
@@ -59,7 +78,7 @@
   .stats-row span{border:1px solid var(--border); border-radius:4px; padding:5px 9px}
 
   /* ---------- Reveal ---------- */
-  .reveal{position:fixed; inset:0; z-index:40; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+  .reveal{position:fixed; inset:0; z-index:40; overflow:hidden; overscroll-behavior:none; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
   .reveal[hidden]{display:none}
   .reveal .counter{font:500 .72rem var(--mono); letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:14px}
   .pile{position:relative; width:min(74vw,330px, calc((100vh - 300px) * .6667)); aspect-ratio:2/3}
@@ -104,13 +123,31 @@
   .tag.new{background:var(--gold); color:#111}
   .tag.dup{background:var(--surface-2); color:var(--muted); border:1px solid var(--border)}
   .reveal .hint{font:500 .7rem var(--mono); color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:14px}
-  .summary{width:100%; max-width:560px}
-  .summary h2{font-size:1.6rem; text-align:center; margin-bottom:14px}
-  .sum-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px}
-  .sum-grid figure{margin:0; text-align:center}
-  .sum-grid img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:7px; display:block; border:2px solid transparent}
-  .sum-grid figcaption{font:500 .56rem var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:4px}
-  .sum-actions{display:flex; gap:10px; justify-content:center; margin-top:20px; flex-wrap:wrap}
+  .summary{position:absolute; inset:0; display:flex; flex-direction:column; padding:calc(14px + env(safe-area-inset-top)) 0 calc(14px + env(safe-area-inset-bottom))}
+  .summary[hidden]{display:none}
+  .sum-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
+  .summary h2{font-size:2rem; line-height:1}
+  .sum-sub{margin:6px 0 0; font:500 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .icon-btn{flex:0 0 auto; width:46px; height:46px; display:grid; place-items:center; border-radius:14px; border:1px solid rgba(212,175,55,.45); background:linear-gradient(#2a221c,#16110e); color:var(--gold); cursor:pointer;
+    box-shadow:0 4px 0 #0a0807, 0 8px 18px rgba(0,0,0,.5)}
+  .icon-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #0a0807}
+  .carousel{flex:1; min-height:0; display:flex; align-items:center; gap:14px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none;
+    padding:12px calc(50% - var(--cw) / 2); --cw:min(76vw, calc((100vh - 290px) * .6667), 420px)}
+  .carousel::-webkit-scrollbar{display:none}
+  .carousel figure{flex:0 0 var(--cw); margin:0; scroll-snap-align:center; text-align:center; transition:transform .25s ease, opacity .25s ease; transform:scale(.86); opacity:.55}
+  .carousel figure.on{transform:none; opacity:1}
+  .carousel img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:14px; display:block; box-shadow:0 0 0 2px var(--rc), 0 18px 40px rgba(0,0,0,.6)}
+  .carousel figure.on img{box-shadow:0 0 0 2px var(--rc), 0 0 34px 4px color-mix(in srgb, var(--rc) 45%, transparent), 0 18px 40px rgba(0,0,0,.6)}
+  .carousel figcaption{margin-top:12px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap}
+  .chip{font:600 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:999px; border:1px solid var(--rc, var(--border)); color:var(--rc, var(--muted)); background:rgba(0,0,0,.35)}
+  .chip.new{background:var(--accent); border-color:var(--accent); color:#fff}
+  .dots{display:flex; justify-content:center; gap:7px; padding:4px 0 10px}
+  .dots i{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.22); transition:all .2s ease}
+  .dots i.on{width:20px; border-radius:4px; background:var(--gold)}
+  .sum-actions{display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:0 16px; max-width:640px; width:100%; margin:0 auto}
+  .btn.big{width:100%; padding:17px 20px; font-size:1.2rem; border-radius:16px; background:linear-gradient(#c94444,#962d2d); box-shadow:0 5px 0 #5a1a1a, 0 10px 24px rgba(0,0,0,.5); color:#fff}
+  .btn.big:active{transform:translateY(4px); box-shadow:0 1px 0 #5a1a1a}
+  .link-btn{background:none; border:0; color:var(--muted); font:600 .78rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:12px; cursor:pointer}
 
   /* ---------- Classeur ---------- */
   .binder-head{padding:calc(24px + env(safe-area-inset-top)) 0 6px}
@@ -178,7 +215,7 @@
   /* ---------- Déchirure du paquet ---------- */
   .pack-wrap{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
   .pack{touch-action:none; user-select:none; -webkit-user-select:none; --tear:0; --tease:#d4af37}
-  .pack.art{aspect-ratio:var(--pa,.5783); width:min(52vw,220px); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
+  .pack.art{aspect-ratio:var(--pa,.5783); width:max(130px, min(56vw, 240px, calc((100svh - 530px) * var(--pa,.5783)))); border-radius:4px; background:transparent var(--pimg,url(cards/pack-serie.jpg)) center/100% 100% no-repeat; box-shadow:none; overflow:visible; transform-style:preserve-3d}
   .pack.art::before, .pack.art .p-moon, .pack.art .p-title, .pack.art .p-sub{display:none}
   .pack .flap{position:absolute; left:0; right:0; top:0; height:10%; z-index:2; border-bottom:1px dashed rgba(212,175,55,.45);
               background:transparent var(--pimg,url(cards/pack-serie.jpg)) center top/100% auto no-repeat; transform-origin:100% 100%;
@@ -214,7 +251,7 @@
   .ring{position:fixed; left:50%; top:45%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--ring,#dc2626); pointer-events:none; z-index:46; animation:ring .9s ease-out forwards}
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
   .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
-  .sum-grid figure{opacity:0; transform:translateY(14px) scale(.95); animation:rise .45s cubic-bezier(.2,.8,.2,1) forwards}
+
   @keyframes rise{to{opacity:1; transform:none}}
   .reset-link{background:none; border:0; font:500 .68rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:8px}
   .reset-link.armed{color:#f87171}
@@ -248,7 +285,7 @@
   .goal b{display:block; font-family:var(--display); text-transform:uppercase; letter-spacing:.03em; font-size:.95rem}
   .goal span{font-size:.8rem; color:var(--muted)}
   .goal .eyebrow{margin:0 0 3px; font-size:.58rem}
-  .summary .goal{margin:16px auto 0}
+  .summary .goal{margin:0 auto 12px; width:calc(100% - 32px); max-width:608px}
   /* (3) paquet fermé en parallaxe */
   .ptilt{perspective:900px; transform-style:preserve-3d; position:relative; z-index:32}
   .ptilt > .pack{transition:transform .12s linear}
@@ -280,7 +317,7 @@
   @keyframes crack{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
   .ptilt.shake{animation:rumble .07s linear infinite}
   /* (2) ranger ses cartes */
-  .tray{position:fixed; left:0; right:0; bottom:calc(64px + env(safe-area-inset-bottom)); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(212,175,55,.35); padding:10px 16px}
+  .tray{position:fixed; left:0; right:0; bottom:calc(76px + env(safe-area-inset-bottom)); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(212,175,55,.35); padding:10px 16px}
   .tray-in{max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:8px}
   .tray p{margin:0; font:500 .62rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
   .tray .cards{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:6px 3px 8px; margin:0 -3px}
@@ -358,18 +395,20 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.sum-grid figure{animation:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
 <body>
 
 <!-- ============ PAQUETS ============ -->
-<main id="v-packs" class="view wrap">
-  <div class="packs-head">
-    <h1>Metalnini</h1>
-    <p>Ouvre un paquet, découvre tes cartes une par une, puis complète tes classeurs.</p>
-  </div>
+<main id="v-packs" class="view wrap home">
+  <header class="hud">
+    <div class="hud-me"><span class="av" aria-hidden="true">☠</span><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
+    <div class="hud-stats" id="stats-row"></div>
+  </header>
+  <button type="button" class="goal quest" id="goal" hidden></button>
+  <h1 class="home-title">Choisis et ouvre ton paquet du jour</h1>
   <div class="pack-zone">
     <div class="pack-picker" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
     <div class="pack-wrap" id="pack-root">
@@ -382,11 +421,9 @@
       </button>
       </div>
       <p class="pack-desc" id="pack-desc"></p>
-      <p class="swipe-hint" id="swipe-hint">Glisse le doigt sur le paquet pour le déchirer →</p>
+      <p class="swipe-hint" id="swipe-hint">Glisse pour l'éventrer →</p>
     </div>
-    <button type="button" class="goal" id="goal" hidden></button>
-    <div class="stats-row" id="stats-row"></div>
-    <p class="net" id="net">Hors ligne</p>
+    <button type="button" class="btn big open-btn" id="open-btn">Ouvrir le paquet</button>
     <button type="button" class="reset-link" id="reset-quick">Repartir de zéro</button>
   </div>
 </main>
@@ -458,13 +495,16 @@
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
   </div>
   <div class="summary" id="summary" hidden>
-    <h2>Ton paquet</h2>
-    <div class="sum-grid" id="sum-grid"></div>
+    <header class="sum-head">
+      <div><h2>Ton paquet</h2><p class="sum-sub" id="sum-sub"></p></div>
+      <button type="button" class="icon-btn" id="share" aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
+    </header>
+    <div class="carousel" id="sum-grid" aria-label="Cartes du paquet"></div>
+    <div class="dots" id="sum-dots" aria-hidden="true"></div>
     <button type="button" class="goal" id="goal-sum" hidden></button>
     <div class="sum-actions">
-      <button type="button" class="btn ghost" id="share">Partager ma meilleure carte</button>
-      <button type="button" class="btn" id="again">Un autre</button>
-      <button type="button" class="btn ghost" id="to-binder">Ranger mes cartes</button>
+      <button type="button" class="btn big" id="to-binder">Ranger mes cartes</button>
+      <button type="button" class="link-btn" id="again">Ouvrir un autre paquet</button>
     </div>
   </div>
 </div>
@@ -661,7 +701,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     rows.forEach(function(r){ if(r.copies > 0 && card(r.musician_id)){ var k = r.musician_id + '|' + r.rarity; state.owned[k] = r.copies; if(!r.placed) state.toPlace.push(k); } });
     save();
   }
-  function setNet(){ var n = document.getElementById('net'); n.innerHTML = ONLINE ? '<b>●</b> En ligne · ' + esc(state.username || '…') : 'Hors ligne · collection sur cet appareil'; }
+  function setNet(){
+    document.getElementById('net').innerHTML = ONLINE ? '<b>●</b> En ligne' : 'Hors ligne';
+    document.getElementById('hud-name').textContent = state.username || (ONLINE ? '…' : 'Invité');
+  }
   var AUTH = null;
   window.metalniniOnline = async function(api){
     AUTH = api;
@@ -758,16 +801,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var bestB = null;
     BINDERS.forEach(function(b){ var ids = b.ids.filter(function(id){ return card(id); }), miss = ids.filter(function(id){ return !best(id); });
       if(ids.length && miss.length && (!bestB || miss.length < bestB.miss.length || (miss.length === bestB.miss.length && b.kind === 'Styles' && bestB.b.kind !== 'Styles'))) bestB = {b:b, ids:ids, miss:miss}; });
-    if(bestB) return {title:'Plus que ' + bestB.miss.length + ' carte' + (bestB.miss.length > 1 ? 's' : '') + ' pour ' + bestB.b.label,
+    if(bestB) return {pct:Math.round((bestB.ids.length - bestB.miss.length) / bestB.ids.length * 100), title:'Plus que ' + bestB.miss.length + ' carte' + (bestB.miss.length > 1 ? 's' : '') + ' pour ' + bestB.b.label,
       sub:bestB.b.kind === 'Styles' ? 'Récompense garantie à la complétion' : 'Classeur ' + bestB.b.kind.toLowerCase().replace(/s$/,''), binder:bestB.b.k,
       icons:bestB.ids.map(function(id){ var r = best(id); return r ? '<i class="have" style="background-image:url(' + img(id, r) + ')"></i>' : '<i></i>'; }).join('')};
     var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
-    if(m) return {title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', sub:'Réunis les 5 raretés pour le badge', binder:styleOf(m.c.id), icons:''};
+    if(m) return {pct:m.n * 20, title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', sub:'Réunis les 5 raretés pour le badge', binder:styleOf(m.c.id), icons:''};
     return null;
   }
   function renderGoal(id){
     var el = document.getElementById(id), goal = nextGoal(); el.hidden = !goal; if(!goal) return;
-    el.innerHTML = (goal.icons ? '<span class="gi">' + goal.icons + '</span>' : '') + '<span><p class="eyebrow">Prochain objectif</p><b>' + esc(goal.title) + '</b><span>' + esc(goal.sub) + '</span></span>';
+    el.innerHTML = (goal.icons ? '<span class="gi">' + goal.icons + '</span>' : '') + '<span style="flex:1; min-width:0"><p class="eyebrow">Prochain objectif</p><b>' + esc(goal.title) + '</b><span>' + esc(goal.sub) + '</span><i class="qbar"><i style="width:' + (goal.pct || 0) + '%"></i></i></span>';
     el.onclick = function(){ revealEl.hidden = true; state.binder = goal.binder; save(); go('binder'); };
   }
   function commitPack(){
@@ -808,11 +851,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function renderStats(){
     renderPacks(); renderGoal('goal');
     var variants = Object.keys(state.owned).length;
+    var nm = CARDS.filter(function(c){ return mastered(c.id); }).length;
     document.getElementById('stats-row').innerHTML =
-      '<span>' + state.opened + ' paquet' + (state.opened>1?'s':'') + ' ouvert' + (state.opened>1?'s':'') + '</span>' +
-      '<span>' + ownedCount() + '/' + CARDS.length + ' musiciens</span>' +
-      '<span>' + variants + '/' + (CARDS.length*RARITIES.length) + ' variantes</span>' +
-      '<span>★ ' + CARDS.filter(function(c){ return mastered(c.id); }).length + ' maîtrise' + (CARDS.filter(function(c){ return mastered(c.id); }).length>1?'s':'') + '</span>';
+      '<span title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i>▦</i>' + ownedCount() + '/' + CARDS.length + '</span>' +
+      '<span title="Variantes (raretés) trouvées" aria-label="' + variants + ' variantes"><i>◆</i>' + variants + '</span>' +
+      '<span title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i>★</i>' + nm + '</span>';
   }
 
   // ---------- Effets : vibration, lumière ----------
@@ -1099,11 +1142,28 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     revealEl.classList.remove('dim');
     var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); }
     renderGoal('goal-sum');
-    document.getElementById('sum-grid').innerHTML = current.map(function(x, i){
-      return '<figure style="animation-delay:' + (i*90) + 'ms"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + '" style="border-color:' + rarity(x.r).color + '"><figcaption>' +
-        rarity(x.r).label + (x.isNew ? ' · Nouveau' : ' · Doublon') + '</figcaption></figure>';
+    var news = current.filter(function(x){ return x.isNew; }).length;
+    document.getElementById('sum-sub').textContent = current.length + ' cartes · ' + (news ? news + ' nouvelle' + (news > 1 ? 's' : '') : 'aucune nouvelle');
+    // meilleure carte d'abord, au centre
+    var order = current.slice().sort(function(a, b){ return rank(b.r) - rank(a.r); });
+    var car = document.getElementById('sum-grid'), dots = document.getElementById('sum-dots');
+    car.innerHTML = order.map(function(x){
+      return '<figure style="--rc:' + rarity(x.r).color + '"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + ', ' + rarity(x.r).label + '"><figcaption>' +
+        '<span class="chip">' + rarity(x.r).label + '</span>' + (x.isNew ? '<span class="chip new">Nouvelle</span>' : '<span class="chip">Doublon</span>') + '</figcaption></figure>';
     }).join('');
+    dots.innerHTML = order.map(function(){ return '<i></i>'; }).join('');
+    car.scrollLeft = 0; carActive();
   }
+  // carte au centre du carrousel mise en avant
+  var carRaf = 0;
+  function carActive(){
+    var car = document.getElementById('sum-grid'), mid = car.scrollLeft + car.clientWidth / 2, best = 0, bd = 1e9, figs = car.children;
+    for(var i = 0; i < figs.length; i++){ var f = figs[i], c = f.offsetLeft + f.offsetWidth / 2, d = Math.abs(c - mid); if(d < bd){ bd = d; best = i; } }
+    for(var j = 0; j < figs.length; j++){ figs[j].classList.toggle('on', j === best); }
+    [].forEach.call(document.getElementById('sum-dots').children, function(d, j){ d.classList.toggle('on', j === best); });
+  }
+  document.getElementById('sum-grid').addEventListener('scroll', function(){ if(!carRaf) carRaf = requestAnimationFrame(function(){ carRaf = 0; carActive(); }); }, {passive:true});
+  document.getElementById('sum-grid').addEventListener('click', function(e){ var f = e.target.closest('figure'); if(f && !f.classList.contains('on')) f.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'}); });
   // Partager la meilleure carte du paquet : image générée à la volée
   document.getElementById('share').addEventListener('click', function(){
     var b = current.reduce(function(a, x){ return rank(x.r) > rank(a.r) ? x : a; }, current[0]); if(!b) return;
@@ -1346,6 +1406,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     setTimeout(function(){ rq.textContent = 'Repartir de zéro'; }, 1800);
   });
   document.getElementById('signout').addEventListener('click', signOut);
+  document.getElementById('open-btn').addEventListener('click', function(){ if(opening) return; prepTease(); autoTear(); });
   document.getElementById('reset').addEventListener('click', function(){
     resetAll(); go('packs');
   });
