@@ -69,7 +69,16 @@
   .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:14px; overflow:hidden}
   .face.back{background:#140b0b url(cards/back.jpg) center/cover no-repeat; box-shadow:inset 0 0 0 1px rgba(212,175,55,.4)}
   .face.front{transform:rotateY(180deg); background:#000}
-  .face.front img{width:100%; height:100%; object-fit:cover; display:block}
+  .face.front img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.045) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
+  .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px; mix-blend-mode:soft-light;
+         background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,var(--ga,.35)), transparent 58%)}
+  .tilt.live{transition:transform .12s linear}
+  .pile{--shx:0px; --shy:18px}
+  .stage::after{content:""; position:absolute; left:6%; right:6%; bottom:-6%; height:10%; border-radius:50%; background:rgba(0,0,0,.55); filter:blur(14px); z-index:-1; transform:translate(var(--shx),calc(var(--shy) - 18px)); transition:transform .12s linear}
+  .pcard{perspective:1000px; margin:6px auto 12px; width:min(100%,360px)}
+  .pcard .pin{position:relative; border-radius:12px; overflow:hidden; transform-style:preserve-3d; transition:transform .12s linear; box-shadow:0 18px 40px rgba(0,0,0,.6)}
+  .pcard .pin img{display:block; width:100%; transform:scale(1.045) translate(var(--ix,0%),var(--iy,0%)); transition:transform .12s linear}
+  .pcard .detail-img{margin:0; width:100%; border-radius:0}
   .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:opacity .6s ease .35s}
   .flip.on + .glow{opacity:1}
   .glow[data-r="rare"]{box-shadow:0 0 38px 6px rgba(59,130,246,.55)}
@@ -298,7 +307,7 @@
       <div class="tilt" id="tilt">
         <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
           <div class="face back"></div>
-          <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div></div>
+          <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div><div class="glare" id="glare"></div></div>
         </div>
         <div class="glow" id="glow"></div>
       </div>
@@ -522,7 +531,7 @@
   function setTear(v){ packEl.style.setProperty('--tear', v.toFixed(3)); }
   function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
   packEl.addEventListener('pointerdown', function(e){
-    if(opening) return; prepTease(); audio();
+    if(opening) return; prepTease(); audio(); askMotion();
     drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
     packEl.setPointerCapture(e.pointerId);
   });
@@ -574,7 +583,7 @@
     flip.classList.remove('on'); flip.style.transition = ''; flip.style.transform = '';
     stage.className = 'stage';
     renderUnders();
-    revealEl.classList.remove('dim'); tilt.style.transform = '';
+    revealEl.classList.remove('dim'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
     document.getElementById('hint').textContent = 'Glisse la carte pour la retourner';
@@ -612,14 +621,14 @@
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
         stage.classList.add('impact'); SFX[r](); flash(r); burst(r); if(r === 'legendaire' || r === 'signature') ring(r);
-        document.getElementById('card-info').classList.add('on'); busy = false; renderDeck();
+        document.getElementById('card-info').classList.add('on'); busy = false; renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'le résumé') + (rank(r) >= 2 ? ' · appuie et bouge pour faire briller' : '');
       }, reduce ? 0 : 320);
     }, ms);
   }
   // la carte révélée rejoint sa miniature dans la rangée du bas ; celle du dessous est déjà en place
   function next(dir){
-    busy = true; stage.classList.remove('impact');
+    busy = true; stage.classList.remove('impact'); clearTarget();
     var mini = document.querySelectorAll('#deck i')[idx], sr = document.getElementById('pile').getBoundingClientRect(), mr = mini ? mini.getBoundingClientRect() : null;
     var t = mr && sr.width ? 'translate(' + (mr.left + mr.width/2 - (sr.left + sr.width/2)) + 'px,' + (mr.top + mr.height/2 - (sr.top + sr.height/2)) + 'px) scale(' + (mr.width / sr.width) + ') rotate(' + (dir * 6) + 'deg)'
                            : 'translateX(' + (dir * 115) + 'vw) rotate(' + (dir * 16) + 'deg)';
@@ -641,6 +650,41 @@
     if(e.key==='ArrowLeft'){ e.preventDefault(); if(busy) return; if(!flipped) reveal(-1); else next(-1); }
   });
 
+  // ---------- Parallaxe : gyroscope, souris ou doigt ----------
+  var GLARE = {commune:.22, rare:.32, holo:.5, signature:.5, legendaire:.45};
+  var pTarget = null, lastInput = 0, idleT0 = 0, orient0 = null, motionAsked = false;
+  function clamp(v){ return Math.max(-1, Math.min(1, v)); }
+  // nx, ny entre -1 et 1 : la carte pivote, l'illustration glisse en sens inverse, le reflet et l'ombre suivent
+  function parallax(nx, ny){
+    if(reduce || !pTarget) return;
+    var t = pTarget;
+    t.tilt.style.transform = 'rotateY(' + (nx * 16) + 'deg) rotateX(' + (-ny * 12) + 'deg)';
+    t.root.style.setProperty('--ix', (-nx * 2.2).toFixed(2) + '%'); t.root.style.setProperty('--iy', (-ny * 2.2).toFixed(2) + '%');
+    t.root.style.setProperty('--gx', (50 + nx * 42).toFixed(1) + '%'); t.root.style.setProperty('--gy', (38 + ny * 38).toFixed(1) + '%');
+    t.root.style.setProperty('--sx', (50 - nx * 150).toFixed(1) + '%');
+    t.root.style.setProperty('--shx', (-nx * 14).toFixed(1) + 'px'); t.root.style.setProperty('--shy', (18 - ny * 8).toFixed(1) + 'px');
+  }
+  function setTarget(root, tiltEl, r){
+    pTarget = root ? {root:root, tilt:tiltEl} : null; orient0 = null; idleT0 = performance.now();
+    if(root){ root.style.setProperty('--ga', GLARE[r] || .3); tiltEl.classList.add('live'); }
+  }
+  function clearTarget(){ if(pTarget){ pTarget.tilt.style.transform = ''; pTarget.tilt.classList.remove('live'); } pTarget = null; }
+  function askMotion(){
+    if(motionAsked) return; motionAsked = true;
+    try{ if(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') DeviceOrientationEvent.requestPermission().catch(function(){}); }catch(e){}
+  }
+  addEventListener('deviceorientation', function(e){
+    if(!pTarget || g || e.gamma == null) return;
+    if(!orient0) orient0 = {g:e.gamma, b:e.beta};
+    lastInput = performance.now();
+    parallax(clamp((e.gamma - orient0.g) / 22), clamp((e.beta - orient0.b) / 22));
+  });
+  // léger balancement quand rien ne bouge, pour que la carte reste vivante
+  (function idle(t){
+    if(pTarget && !g && t - lastInput > 1600){ var k = (t - idleT0) / 1000; parallax(Math.sin(k * .9) * .35, Math.cos(k * .7) * .22); }
+    requestAnimationFrame(idle);
+  })(0);
+
   // ---------- Geste : glisser pour retourner, glisser pour passer ----------
   var g = null;
   stage.addEventListener('pointerdown', function(e){
@@ -650,7 +694,7 @@
     flip.style.transition = 'none'; stage.style.transition = 'none';
   });
   stage.addEventListener('pointermove', function(e){
-    if(!g) return; var dx = e.clientX - g.x0, dy = e.clientY - g.y0; g.dx = dx;
+    if(!g){ if(flipped && pTarget && e.pointerType === 'mouse'){ var rr = stage.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); } return; } var dx = e.clientX - g.x0, dy = e.clientY - g.y0; g.dx = dx;
     if(Math.abs(dx) > 6 || Math.abs(dy) > 6) g.moved = true;
     if(!flipped){
       // la carte suit le doigt, mais ne montre pas sa face avant d'être lâchée
@@ -660,11 +704,11 @@
     } else {
       var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
       stage.style.transform = 'translateX(' + (dx * .75) + 'px) rotate(' + (dx / g.w * 10) + 'deg)';
-      if(!reduce){ tilt.style.transform = 'rotateY(' + (px * 22) + 'deg) rotateX(' + (-py * 18) + 'deg)'; document.getElementById('sheen').style.setProperty('--sx', (50 - px * 160) + '%'); }
+      lastInput = performance.now(); parallax(clamp(px * 2), clamp(py * 2));
     }
   });
   function release(){
-    if(!g) return; var d = g; g = null; tilt.style.transform = '';
+    if(!g) return; var d = g; g = null; lastInput = 0;
     if(!flipped){
       if(!d.moved){ reveal(1); return; }
       if(Math.abs(d.a) >= 42){ reveal(d.a > 0 ? 1 : -1); return; }
@@ -766,7 +810,7 @@
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var head = r ? '<img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '">' :
+    var head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = head +
       '<p class="eyebrow">Arcane ' + c.num + (r ? ' · <span style="color:' + rarity(r).color + '">' + rarity(r).label + '</span>' : ' · pas encore obtenue') + '</p>' +
@@ -782,6 +826,10 @@
     [].forEach.call(document.querySelectorAll('#detail .fuse button[data-from]'), function(b){ b.addEventListener('click', function(){ fuse(id, b.getAttribute('data-from')); }); });
     [].forEach.call(document.querySelectorAll('#detail .variants button'), function(b){ b.addEventListener('click', function(){ openDetail(id, b.getAttribute('data-r')); }); });
     sheet.hidden = false;
+    var pc = document.getElementById('pcard');
+    if(pc){ setTarget(pc, document.getElementById('pin'), r);
+      pc.addEventListener('pointermove', function(e){ var rr = pc.getBoundingClientRect(); lastInput = performance.now(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
+      pc.addEventListener('pointerdown', askMotion); } else clearTarget();
   }
   function fuseBlock(id){
     var rows = RARITIES.slice(0, -1).map(function(x, i){
@@ -803,7 +851,7 @@
     document.getElementById('skip').hidden = true; showCard();
     setTimeout(function(){ document.getElementById('counter').textContent = 'Fusion · ' + rarity(from).label + ' → ' + rarity(next).label; }, 0);
   }
-  function closeDetail(){ sheet.hidden = true; if(!document.getElementById('v-binder').hidden) renderBinder(); }
+  function closeDetail(){ sheet.hidden = true; clearTarget(); if(!document.getElementById('v-binder').hidden) renderBinder(); }
   document.getElementById('sheet-close').addEventListener('click', closeDetail);
   sheet.addEventListener('click', function(e){ if(e.target === sheet) closeDetail(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeDetail(); });

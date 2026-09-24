@@ -320,7 +320,7 @@
       <h2 class="panel-title">Concept</h2>
       <p class="tagline">Le concept validé pour le MVP : boucle de jeu, cartes et raretés, évolution, social, avatar, missions, monétisation, risques.</p>
     </div>
-    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#concept-positionnement">Positionnement</a></li><li><a href="#concept-ce-que-metalnini-n-est-pas">Ce que Metalnini n&#x27;est pas</a></li><li><a href="#concept-boucle-de-jeu-centrale-mvp">Boucle de jeu centrale (MVP)</a></li><li><a href="#concept-systeme-de-cartes">Système de cartes</a></li><li><a href="#concept-classeurs-recompenses">Classeurs &amp; récompenses</a></li><li><a href="#concept-mecanique-d-evolution-des-cartes">Mécanique d&#x27;évolution des cartes</a></li><li><a href="#concept-volet-social-troc-pas-de-marche">Volet social (troc, pas de marché)</a></li><li><a href="#concept-echanges-rencontres-en-presentiel-concert-et-proximite">Échanges &amp; rencontres en présentiel (concert et proximité)</a></li><li><a href="#concept-missions">Missions</a></li><li><a href="#concept-avatar-de-fan-carnet-de-concerts">Avatar de fan &amp; carnet de concerts</a></li><li><a href="#concept-monetisation-mvp">Monétisation (MVP)</a></li><li><a href="#concept-risques-points-a-faire-trancher-par-des-tiers-competents">Risques / points à faire trancher par des tiers compétents</a></li><li><a href="#concept-statut">Statut</a></li></ol></nav>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#concept-positionnement">Positionnement</a></li><li><a href="#concept-ce-que-metalnini-n-est-pas">Ce que Metalnini n&#x27;est pas</a></li><li><a href="#concept-boucle-de-jeu-centrale-mvp">Boucle de jeu centrale (MVP)</a></li><li><a href="#concept-systeme-de-cartes">Système de cartes</a></li><li><a href="#concept-classeurs-recompenses">Classeurs &amp; récompenses</a></li><li><a href="#concept-mecanique-d-evolution-des-cartes">Mécanique d&#x27;évolution des cartes</a></li><li><a href="#concept-volet-social-troc-pas-de-marche">Volet social (troc, pas de marché)</a></li><li><a href="#concept-echanges-rencontres-en-presentiel-concert-et-proximite">Échanges &amp; rencontres en présentiel (concert et proximité)</a></li><li><a href="#concept-missions">Missions</a></li><li><a href="#concept-avatar-de-fan-carnet-de-concerts">Avatar de fan &amp; carnet de concerts</a></li><li><a href="#concept-monetisation-mvp">Monétisation (MVP)</a></li><li><a href="#concept-risques-points-a-faire-trancher-par-des-tiers-competents">Risques / points à faire trancher par des tiers compétents</a></li><li><a href="#concept-octalysis">Gamification : grille Octalysis</a></li><li><a href="#concept-statut">Statut</a></li></ol></nav>
     <div class="doc">
 <section id="concept-positionnement" class="doc-sec"><h2>Positionnement</h2>
 <p>Le "Panini du metal/rock" : une collection de cartes numériques d'artistes, à ouvrir en packs, collectionner et échanger — avec une couche vivante connectée à l'actualité réelle des artistes et à l'expérience vécue en concert. Cible : la communauté metal/rock, soudée, nerd, très attachée à l'authenticité et au vécu live.</p>
@@ -444,6 +444,48 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 <li><strong>Données du billet importé</strong> : le scan ou la photo d'un billet peut contenir des données personnelles (nom de l'acheteur, parfois un moyen de contact). À traiter comme une donnée personnelle standard (minimisation, pas de conservation au-delà du besoin de preuve de concert) plutôt que comme une simple métadonnée technique.</li>
 <li><strong>Preuve d'achat déclarative (missions "achat réel")</strong> : en l'absence de partenariat marchand vérifiable, une preuve par photo de reçu reste falsifiable — à ne jamais associer à une récompense dont la valeur perçue inciterait à la triche, et à documenter comme un socle "best effort", pas une vérification forte.</li>
 </ul>
+</section>
+<section id="concept-octalysis" class="doc-sec">
+<h2>Gamification : grille Octalysis</h2>
+<p>Les mécaniques sont passées au crible du framework <b>Octalysis</b> (Yu-kai Chou), qui classe la motivation en 8 leviers. Deux lectures comptent : les leviers « chapeau blanc » (1, 2, 3) donnent du sens et une satisfaction durable, les leviers « chapeau noir » (6, 7, 8) créent de l'urgence mais s'usent et peuvent frustrer ; les leviers « cerveau gauche » (2, 4, 6) sont plutôt extrinsèques, les leviers « cerveau droit » (3, 5, 7) plutôt intrinsèques. Une rétention solide vient d'un équilibre, pas de l'empilement de leviers noirs. <span class="note">[Évaluation interne au 2026-09-24, à affiner avec les retours de test]</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Levier</th><th>Ce qui l'active dans Metalnini</th><th>Force</th><th>À renforcer</th></tr></thead>
+<tbody>
+<tr><td>1 · Sens épique et vocation</td><td>Vrais artistes, vraie scène ; carnet de concerts comme mémoire de sa vie de fan ; guildes par sous-genre</td><td>Moyenne</td><td>Objectifs collectifs de la communauté (une carte débloquée pour tous quand une guilde atteint un cap) ; raconter « tu construis la mémoire de la scène »</td></tr>
+<tr><td>2 · Développement et accomplissement</td><td>Classeurs courts, complétion à récompense garantie, maîtrise des 5 raretés, paliers d'avatar, barres de progression</td><td>Forte</td><td>Toujours afficher « le prochain objectif » ; garantir une première complétion dès les premiers paquets</td></tr>
+<tr><td>3 · Créativité et retour</td><td>Classeurs personnalisés, vitrine de profil, cri signature</td><td>Faible</td><td>Composer sa vitrine et choisir sa carte mise en avant ; « line-up de rêve » (son festival idéal avec ses cartes) à partager</td></tr>
+<tr><td>4 · Propriété et possession</td><td>Collection, raretés, numérotation des Signature, fusion des doublons, carte Live exclusive</td><td>Forte</td><td>Historique de chaque carte (d'où elle vient, quand, avec qui elle a été échangée)</td></tr>
+<tr><td>5 · Influence sociale et lien</td><td>Échange en présentiel, présence en concert, « on s'est croisés », guildes, classements</td><td>Forte à terme, faible en feature 1</td><td>Dès la feature 1 : partager son meilleur tirage ; liste de souhaits visible par les amis</td></tr>
+<tr><td>6 · Rareté et impatience</td><td>Probabilités (1 % de Légendaire), paquet gratuit périodique, éditions liées à l'actu réelle</td><td>Moyenne</td><td>Garder la rareté ancrée dans le réel (tournée, sortie d'album, concert) ; jamais de compte à rebours artificiel (anti-pattern déjà acté)</td></tr>
+<tr><td>7 · Imprévisibilité et curiosité</td><td>Tirage des paquets, lueur qui annonce la meilleure carte, révélation carte par carte, évolution selon l'actu</td><td>Forte</td><td>Levier le plus sensible : afficher publiquement les probabilités, et pas de paquet payant avant l'avis juridique sur les loot boxes</td></tr>
+<tr><td>8 · Perte et évitement</td><td>Volontairement faible : pas de série qui punit une absence</td><td>Faible (voulu)</td><td>Rester côté « chapeau blanc » : une carte de tournée disponible pendant la tournée réelle, sans pénalité si on la rate</td></tr>
+</tbody>
+</table></div>
+<h3>Lecture</h3>
+<ul>
+<li><b>Le profil actuel repose sur 2, 4 et 7</b> : accomplir, posséder, être surpris. C'est efficace au début mais plutôt extrinsèque, et le levier 7 est le plus fragile (lassitude, cadre légal).</li>
+<li><b>Les leviers 1, 3 et 5 sont ceux qui font revenir sur la durée</b>, et ce sont justement les points forts du concept (vrai vécu, présentiel, identité de fan). Ils arrivent tard dans la roadmap : il faut en glisser une part dès les phases 1 et 2.</li>
+<li><b>Le levier 8 reste volontairement faible</b>, en cohérence avec la ligne éditoriale et les anti-patterns déjà posés.</li>
+</ul>
+<h3>Le parcours du joueur</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Phase</th><th>Ce qui doit se passer</th><th>Mécaniques</th></tr></thead>
+<tbody>
+<tr><td>Découverte</td><td>Donner envie avant l'installation</td><td>Page de pitch, galerie des cartes, partage des tirages d'amis</td></tr>
+<tr><td>Premiers pas</td><td>Une victoire rapide dans la première session</td><td>Paquet de bienvenue, première complétion d'un petit classeur (2 ou 3 musiciens), premier « Nouveau »</td></tr>
+<tr><td>Routine</td><td>Une raison claire de revenir, sans pression</td><td>Paquet gratuit périodique, prochain objectif affiché, fusion des doublons, missions</td></tr>
+<tr><td>Long terme</td><td>Un statut et une identité à entretenir</td><td>Maîtrises, Légendaires, vitrine, guildes, échanges en concert, cartes qui évoluent avec l'actu</td></tr>
+</tbody>
+</table></div>
+<h3>Recommandations</h3>
+<ol>
+<li><b>Premiers pas</b> : le paquet de bienvenue garantit la complétion d'un petit classeur (levier 2). À prototyper en phase 2.</li>
+<li><b>Prochain objectif</b> : un encart permanent « Plus que 1 carte pour compléter Pop punk » (levier 2).</li>
+<li><b>Partager son tirage</b> : une image de la meilleure carte du paquet à envoyer à un ami, dès la feature 1 (leviers 5 et 1).</li>
+<li><b>Vitrine et carte favorite</b> : choisir la carte qui représente son profil (leviers 3 et 4).</li>
+<li><b>Transparence du tirage</b> : probabilités affichées dans l'app, cohérent avec le refus des mécaniques trompeuses (maîtrise du levier 7).</li>
+</ol>
+<p class="note">Ces recommandations sont des propositions de conception, à valider par les tests auprès des proches ; elles ne remplacent pas l'avis juridique prévu sur les paquets payants.</p>
 </section>
 <section id="concept-statut" class="doc-sec"><h2>Statut</h2>
 <p>Concept validé comme base de travail pour la suite (direction visuelle, puis maquettage), enrichi d'une décision structurante (échange en présentiel uniquement), d'un mécanisme de détection/preuve de concert simplifié (billet plutôt que suivi d'artiste + agenda), d'une couche Missions, et d'une stratégie droits à l'image qui remplace "obtenir l'accord de tous les groupes" par un catalogue de lancement restreint et une réduction de la ressemblance des portraits par défaut (voir <a class="xref" href="#roadmap">Roadmap</a>). Les idées écartées du MVP ou à explorer plus tard sont conservées dans <a class="xref" href="#roadmap">Roadmap</a> pour ne rien perdre.</p></section>

@@ -44,6 +44,12 @@ const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
     check('pile avant la carte ' + (i + 1) + ' : ' + (4 - i) + ' dessous', d.querySelectorAll('#unders .under').length === 4 - i);
     await sleep(2400);
     check('carte ' + (i + 1) + ' retournée par glissé', d.getElementById('flip').classList.contains('on'));
+    if (i === 0) {
+      const o1 = new w.Event('deviceorientation'); o1.gamma = 0; o1.beta = 40; w.dispatchEvent(o1);
+      const o2 = new w.Event('deviceorientation'); o2.gamma = 15; o2.beta = 40; w.dispatchEvent(o2);
+      const tf = d.getElementById('tilt').style.transform, ix = d.getElementById('pile').style.getPropertyValue('--ix');
+      check('parallaxe : le téléphone penché incline la carte', /rotateY\(10\.9/.test(tf) && ix.indexOf('-1.5') === 0, tf + ' / --ix ' + ix);
+    }
     ptr(stage, 'pointerdown', 150); ptr(stage, 'pointermove', 280); ptr(stage, 'pointerup', 280);
     await sleep(500);
   }
