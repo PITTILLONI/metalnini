@@ -423,7 +423,7 @@
       <p class="pack-desc" id="pack-desc"></p>
       <p class="swipe-hint" id="swipe-hint">Glisse pour l'éventrer →</p>
     </div>
-    <button type="button" class="btn big open-btn" id="open-btn">Ouvrir le paquet</button>
+    <button type="button" class="btn big open-btn" id="open-btn">Déchire-moi ça</button>
     <button type="button" class="reset-link" id="reset-quick">Repartir de zéro</button>
   </div>
 </main>
@@ -457,7 +457,7 @@
     </div>
     <div class="field" id="acct-field">
       <p class="note" id="acct"></p>
-      <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="signout" hidden>Se déconnecter</button></p>
+      <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="signout" hidden>Quitter la scène</button></p>
     </div>
     <div class="field">
       <label class="toggle">Vibrations <input type="checkbox" id="s-sound"></label>
@@ -491,20 +491,20 @@
     </div>
     </div>
     <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
-    <div class="hint" id="hint">Glisse la carte pour la retourner</div>
+    <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
   </div>
   <div class="summary" id="summary" hidden>
     <header class="sum-head">
-      <div><h2>Ton paquet</h2><p class="sum-sub" id="sum-sub"></p></div>
+      <div><h2>Ton butin</h2><p class="sum-sub" id="sum-sub"></p></div>
       <button type="button" class="icon-btn" id="share" aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
     </header>
     <div class="carousel" id="sum-grid" aria-label="Cartes du paquet"></div>
     <div class="dots" id="sum-dots" aria-hidden="true"></div>
     <button type="button" class="goal" id="goal-sum" hidden></button>
     <div class="sum-actions">
-      <button type="button" class="btn big" id="to-binder">Ranger mes cartes</button>
-      <button type="button" class="link-btn" id="again">Ouvrir un autre paquet</button>
+      <button type="button" class="btn big" id="to-binder">Ranger dans le classeur</button>
+      <button type="button" class="link-btn" id="again">Rappel ! Un autre paquet</button>
     </div>
   </div>
 </div>
@@ -516,27 +516,27 @@
 <div class="uname" id="uname" hidden role="dialog" aria-modal="true" aria-labelledby="uname-t">
   <div class="uname-in">
     <p class="eyebrow">Bienvenue dans le pit</p>
-    <h2 id="uname-t">Choisis ton pseudo</h2>
+    <h2 id="uname-t">Ton nom de scène</h2>
     <p class="note" style="color:var(--muted)">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
     <input id="uname-in" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo">
     <p class="note">3 à 20 caractères : lettres, chiffres, point, tiret ou tiret bas.</p>
     <p class="err" id="uname-err"></p>
-    <button type="button" class="btn" id="uname-go">C'est parti</button>
+    <button type="button" class="btn" id="uname-go">Sur scène !</button>
   </div>
 </div>
 <div class="uname" id="auth" role="dialog" aria-modal="true" aria-labelledby="auth-t">
   <form class="uname-in auth" id="auth-form" data-mode="loading" novalidate>
     <p class="eyebrow">Bienvenue dans le pit</p>
-    <h2 id="auth-t"><span data-only="loading">Connexion au pit…</span><span data-only="signup">Crée ton compte</span><span data-only="login">Connexion</span><span data-only="forgot">Mot de passe oublié</span><span data-only="sent">Vérifie tes e-mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
-    <p class="note" data-only="signup" style="color:var(--muted)">Ta collection est sauvegardée sur ton compte. Un lien de confirmation t'est envoyé par e-mail.</p>
+    <h2 id="auth-t"><span data-only="loading">Balances en cours…</span><span data-only="signup">Rejoins le pit</span><span data-only="login">Re-bienvenue</span><span data-only="forgot">Trou de mémoire ?</span><span data-only="sent">Check tes mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
+    <p class="note" data-only="signup" style="color:var(--muted)">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
     <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
     <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
     <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span data-only="signup newpw" style="display:inline">(12 caractères minimum)</span></label><input id="au-pw" type="password" autocomplete="current-password"></div>
     <p class="err" id="auth-err"></p>
-    <button type="submit" class="btn" id="auth-go"><span data-only="signup">Créer mon compte</span><span data-only="login">Se connecter</span><span data-only="forgot">Envoyer le lien</span><span data-only="sent">Renvoyer l'e-mail</span><span data-only="newpw">Enregistrer</span></button>
+    <button type="submit" class="btn" id="auth-go"><span data-only="signup">Je rentre dans le pit</span><span data-only="login">Je remonte sur scène</span><span data-only="forgot">Envoie-moi le lien</span><span data-only="sent">Renvoyer l'e-mail</span><span data-only="newpw">Enregistrer</span></button>
     <div class="links">
-      <button type="button" data-only="signup sent" data-go="login">J'ai déjà un compte</button>
+      <button type="button" data-only="signup sent" data-go="login">Déjà dans le pit ? Connexion</button>
       <button type="button" data-only="login forgot" data-go="signup">Créer un compte</button>
       <button type="button" data-only="login" data-go="forgot">Mot de passe oublié</button>
     </div>
@@ -550,7 +550,7 @@
 </script>
 <div id="stamp" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
-<div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="all" id="tray-all">Tout ranger</button></div></div>
+<div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="all" id="tray-all">Tout ranger d'un coup</button></div></div>
 <label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
 
@@ -722,10 +722,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       ONLINE = api; save(); setNet(); renderStats();
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
       if(!state.username) askUsername();
-    }catch(e){ ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Serveur injoignable : mode hors ligne'); }
+    }catch(e){ ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Le serveur a raté son stage diving : mode hors ligne'); }
   };
   if(window.metalniniApi) window.metalniniOnline(window.metalniniApi);
-  setTimeout(function(){ if(!AUTH){ document.getElementById('auth').hidden = true; setNet(); toast('Serveur injoignable : mode hors ligne'); } }, 10000);
+  setTimeout(function(){ if(!AUTH){ document.getElementById('auth').hidden = true; setNet(); toast('Le serveur a raté son stage diving : mode hors ligne'); } }, 10000);
   function showAuth(mode){
     var box = document.getElementById('auth'), form = document.getElementById('auth-form'), err = document.getElementById('auth-err'), btn = document.getElementById('auth-go');
     var mail = document.getElementById('au-mail'), pw = document.getElementById('au-pw'), name = document.getElementById('au-name');
@@ -743,11 +743,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         if(m === 'signup'){
           var direct = await AUTH.signUp(em, p, name.value.trim());
           if(direct){ box.hidden = true; window.metalniniOnline(AUTH); }
-          else { document.getElementById('auth-sent').textContent = 'Un lien de confirmation a été envoyé à ' + em + '. Ouvre-le sur cet appareil pour activer ton compte, puis reviens ici.'; set('sent'); }
+          else { document.getElementById('auth-sent').textContent = 'Lien envoyé à ' + em + '. Ouvre-le sur cet appareil, et on t\'ouvre les portes. Rien reçu ? Fouille les spams.'; set('sent'); }
         } else if(m === 'login'){ await AUTH.signIn(em, p); pw.value = ''; box.hidden = true; window.metalniniOnline(AUTH); }
         else if(m === 'forgot'){ await AUTH.forgot(em); document.getElementById('auth-sent').textContent = 'Si un compte existe pour ' + em + ', un lien pour changer le mot de passe vient d\'être envoyé.'; set('sent'); }
         else if(m === 'sent'){ await AUTH.resend(em); err.className = 'err ok'; err.textContent = 'E-mail renvoyé.'; }
-        else if(m === 'newpw'){ await AUTH.newPassword(p); pw.value = ''; box.hidden = true; toast('Mot de passe changé'); window.metalniniOnline(AUTH); }
+        else if(m === 'newpw'){ await AUTH.newPassword(p); pw.value = ''; box.hidden = true; toast('Mot de passe changé. Note-le quelque part, cette fois.'); window.metalniniOnline(AUTH); }
       }catch(ex){ fail(ex.message); }
       btn.disabled = false;
     };
@@ -790,7 +790,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var el = document.getElementById('pack-picker');
     el.hidden = PACKS.length < 2;
     el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-pressed="' + (p.k === state.packType) + '"><img src="cards/pack-' + p.k + '.jpg" alt=""><small>' + esc(p.label) + '</small></button>'; }).join('');
-    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; if(ONLINE && state.pending && state.pending.length){ toast('Ouvre d\'abord le paquet entamé'); return; } state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
+    [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if(opening) return; if(ONLINE && state.pending && state.pending.length){ toast('Finis d\'abord le paquet entamé. On gâche pas.'); return; } state.packType = b.getAttribute('data-p'); save(); renderPacks(); }); });
     var cur = PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0];
     pk.setAttribute('aria-label', 'Déchirer le paquet ' + cur.label);
     document.getElementById('pack-desc').innerHTML = '<b>' + esc(cur.label) + '</b> · ' + esc(cur.desc);
@@ -801,11 +801,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var bestB = null;
     BINDERS.forEach(function(b){ var ids = b.ids.filter(function(id){ return card(id); }), miss = ids.filter(function(id){ return !best(id); });
       if(ids.length && miss.length && (!bestB || miss.length < bestB.miss.length || (miss.length === bestB.miss.length && b.kind === 'Styles' && bestB.b.kind !== 'Styles'))) bestB = {b:b, ids:ids, miss:miss}; });
-    if(bestB) return {pct:Math.round((bestB.ids.length - bestB.miss.length) / bestB.ids.length * 100), title:'Plus que ' + bestB.miss.length + ' carte' + (bestB.miss.length > 1 ? 's' : '') + ' pour ' + bestB.b.label,
-      sub:bestB.b.kind === 'Styles' ? 'Récompense garantie à la complétion' : 'Classeur ' + bestB.b.kind.toLowerCase().replace(/s$/,''), binder:bestB.b.k,
+    if(bestB) return {pct:Math.round((bestB.ids.length - bestB.miss.length) / bestB.ids.length * 100), title:'Plus que ' + bestB.miss.length + ' carte' + (bestB.miss.length > 1 ? 's' : '') + ' et ' + bestB.b.label + ' est plié',
+      sub:bestB.b.kind === 'Styles' ? 'Au bout : récompense garantie, pas de blabla' : 'Classeur ' + bestB.b.kind.toLowerCase().replace(/s$/,''), binder:bestB.b.k,
       icons:bestB.ids.map(function(id){ var r = best(id); return r ? '<i class="have" style="background-image:url(' + img(id, r) + ')"></i>' : '<i></i>'; }).join('')};
     var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
-    if(m) return {pct:m.n * 20, title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', sub:'Réunis les 5 raretés pour le badge', binder:styleOf(m.c.id), icons:''};
+    if(m) return {pct:m.n * 20, title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5', sub:'Les 5 raretés, et le badge est à toi', binder:styleOf(m.c.id), icons:''};
     return null;
   }
   function renderGoal(id){
@@ -969,7 +969,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     revealEl.classList.remove('dim'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
-    document.getElementById('hint').textContent = 'Glisse la carte pour la retourner';
+    document.getElementById('hint').textContent = 'Glisse pour la retourner. Ça mord pas.';
     renderDeck();
     document.getElementById('flip-img').src = img(x.c.id, x.r);
     document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
@@ -1011,7 +1011,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r);
         if(rank(r) >= 3){ ring(r); quake(); stamp(r); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
-        document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'le résumé') + (rank(r) >= 2 ? ' · appuie et bouge pour faire briller' : '');
+        document.getElementById('hint').textContent = 'Glisse pour ' + (idx < current.length-1 ? 'la suivante' : 'voir ton butin') + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
   }
@@ -1143,13 +1143,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var b = bestOf(current); if(!flipped || idx < current.length - 1){ SFX[b](); }
     renderGoal('goal-sum');
     var news = current.filter(function(x){ return x.isNew; }).length;
-    document.getElementById('sum-sub').textContent = current.length + ' cartes · ' + (news ? news + ' nouvelle' + (news > 1 ? 's' : '') : 'aucune nouvelle');
+    document.getElementById('sum-sub').textContent = current.length + ' cartes · ' + (news ? news + ' inédite' + (news > 1 ? 's' : '') : 'que des doublons, dur');
     // meilleure carte d'abord, au centre
     var order = current.slice().sort(function(a, b){ return rank(b.r) - rank(a.r); });
     var car = document.getElementById('sum-grid'), dots = document.getElementById('sum-dots');
     car.innerHTML = order.map(function(x){
       return '<figure style="--rc:' + rarity(x.r).color + '"><img src="' + img(x.c.id, x.r) + '" alt="' + esc(x.c.who) + ', ' + rarity(x.r).label + '"><figcaption>' +
-        '<span class="chip">' + rarity(x.r).label + '</span>' + (x.isNew ? '<span class="chip new">Nouvelle</span>' : '<span class="chip">Doublon</span>') + '</figcaption></figure>';
+        '<span class="chip">' + rarity(x.r).label + '</span>' + (x.isNew ? '<span class="chip new">Inédite</span>' : '<span class="chip">Doublon</span>') + '</figcaption></figure>';
     }).join('');
     dots.innerHTML = order.map(function(){ return '<i></i>'; }).join('');
     car.scrollLeft = 0; carActive();
@@ -1229,12 +1229,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           var up = rank(r) > rank(before), shown = up ? r : before;
           s2.style.setProperty('--rc', COLORS[shown]); s2.classList.add(up ? 'upgraded' : 'stacked');
           var plus = document.createElement('span'); plus.className = 'plus';
-          plus.innerHTML = up ? rarity(r).label + '<small>nouvelle rareté</small>' : '+1<small>' + esc(rarity(r).label) + ' · ×' + total(id) + '</small>';
+          plus.innerHTML = up ? rarity(r).label + '<small>monte en grade</small>' : '+1<small>' + esc(rarity(r).label) + ' · ×' + total(id) + '</small>';
           s2.appendChild(plus); if(up) SFX[r](); else buzz([14, 45, 26]);
         }
         placing = false;
         var comps = newCompletions(), mast = newMasteries();
-        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Récompense garantie : carte Collector et badge'); }, 300 + i*1300); });
+        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Carte Collector et badge dans ta poche.'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
         if(done) setTimeout(done, before ? 520 : 180);
       }, reduce ? 0 : 560);
@@ -1260,7 +1260,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function toast(html){ var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
   function celebrate(list){
     list.forEach(function(c, i){ setTimeout(function(){ SFX.signature();
-      toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies : badge débloqué'); }, 500 + i*1200); });
+      toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies. Respect. Badge débloqué.'); }, 500 + i*1200); });
   }
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
   function renderBinder(){
