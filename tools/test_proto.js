@@ -23,11 +23,10 @@ const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k,
 function ptr(el, type, x) { const e = new w.Event(type, { bubbles: true }); e.clientX = x; e.clientY = 100; e.pointerId = 1; el.dispatchEvent(e); }
 const state = () => JSON.parse(w.localStorage.getItem('metalnini-proto-v1'));
 async function openB(doc, k) {
-  if (k === 'all') { doc.querySelector('#binder-kinds [data-kind="Collection"]').click(); await sleep(20); return; }
   for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15);
     const c = doc.querySelector('#binder-list [data-b="' + k + '"]'); if (c) { c.click(); await sleep(20); return; } }
 }
-async function binderKeys(doc) { const keys = ['all']; for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15);
+async function binderKeys(doc) { const keys = []; for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15);
   doc.querySelectorAll('#binder-list [data-b]').forEach(c => keys.push(c.getAttribute('data-b'))); } return keys; }
 async function binderCards(doc) { let t = ''; for (const chip of doc.querySelectorAll('#binder-kinds button')) { chip.click(); await sleep(15); t += ' | ' + doc.getElementById('binder-list').textContent; } return t; }
 
@@ -193,7 +192,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await sleep(150);
   const d5 = dom5.window.document;
   d5.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  check('catégorie « Collection » en premier, qui ouvre toutes les cartes', d5.querySelector('#binder-kinds button').getAttribute('data-kind') === 'Collection' && /Toutes les cartes/.test(d5.getElementById('binder-title').textContent));
+  check('catégorie « Collection » en premier', d5.querySelector('#binder-kinds button').getAttribute('data-kind') === 'Collection');
+  await openB(d5, 'all');
   const kslot = d5.querySelector('#grid .slot[data-id="korn"]');
   check('doublons : 3 exemplaires = 2 cartes empilées derrière', kslot && kslot.querySelectorAll('.layers i').length === 2);
   d5.querySelector('.tabbar [data-v="packs"]').click(); await sleep(30);

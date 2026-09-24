@@ -35,8 +35,8 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Icônes** : SVG au trait 1,4-2 px, `currentColor`. Pas d'emoji ni de glyphes Unicode comme icônes.
 
 ## Parcours Classeurs
-1. **Catégories** en puces : Collection, Styles, Instruments, Groupes. « Collection » ouvre directement toutes les cartes.
-2. **Cartes de classeur** dans la catégorie : éventail des cartes trouvées, nom, « x/N cartes », filet de progression, « Complet ✓ ».
+1. **Catégories** en puces : Collection, Styles, Instruments, Groupes.
+2. **Cartes de classeur** dans la catégorie (« Collection » : la carte « Toutes les cartes ») : vraie carte au format 2:3, illustrée par la meilleure carte rangée ou le dos Metalnini, nom gravé en bas, « x/N cartes », filet de progression, « Complet ✓ ».
 3. **Page du classeur** : « ← catégorie », titre, progression, cases numérotées de 1 à N ; tri et affichage dans une feuille du bas (icône réglages).
 
 ## Parcours Paquets (deux temps)
