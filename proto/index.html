@@ -192,12 +192,19 @@
   .card-info{margin-top:16px; text-align:center; min-height:64px; visibility:hidden; transform:translateY(8px); transition:transform .3s ease .35s}
   .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
-  .card-info .line{margin:0 0 8px; font:500 .95rem/1.25 var(--mono); color:var(--muted)}
-  .card-info .line[data-r="rare"]{color:var(--text); font-weight:600}
-  .card-info .line[data-r="holo"]{color:#c4b5fd; font:800 1.25rem/1.05 var(--display); text-transform:uppercase; letter-spacing:.02em}
-  .card-info .line[data-r="signature"]{color:var(--gold-hi); font:800 1.55rem/1 var(--display); text-transform:uppercase; text-shadow:0 0 18px rgba(238,177,52,.45)}
-  .card-info .line[data-r="legendaire"]{color:#ff6b5e; font:900 1.9rem/.95 var(--display); text-transform:uppercase; text-shadow:0 0 24px rgba(239,68,68,.6); animation:lineshake .5s cubic-bezier(.36,.07,.19,.97) .2s}
-  @keyframes lineshake{20%,60%{transform:translateX(-4px) rotate(-1deg)}40%,80%{transform:translateX(4px) rotate(1deg)}}
+  /* phrase « combo » façon arcade : claque au-dessus de la carte, tient un instant, puis s'envole */
+  .combo{position:absolute; left:0; right:0; top:40%; z-index:30; margin:0; padding:0 18px; text-align:center; pointer-events:none; opacity:0;
+    font:800 1.5rem/1.05 var(--display); text-transform:uppercase; letter-spacing:.02em; color:var(--text); --cb:rgba(243,240,234,.4)}
+  .combo span{display:inline-block; max-width:100%; padding:10px 16px 8px; background:rgba(10,8,7,.9); border:2px solid var(--cb); transform:skewX(-8deg); box-shadow:0 10px 30px rgba(0,0,0,.6)}
+  .combo.go{animation:combo 1.9s cubic-bezier(.2,.9,.3,1) forwards}
+  .combo[data-r="commune"]{font-size:1.25rem}
+  .combo[data-r="rare"]{font-size:1.55rem; color:#9cc2ff; --cb:#3b82f6}
+  .combo[data-r="holo"]{font-size:1.9rem; color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
+  .combo[data-r="signature"]{font-size:2.3rem; color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(238,177,52,.65)}
+  .combo[data-r="legendaire"]{font-size:2.7rem; font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
+  .combo[data-r="legendaire"].go{animation:combo 2.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .2s 5}
+  @keyframes combo{0%{opacity:0; transform:scale(2.6) rotate(-6deg)}14%{opacity:1; transform:scale(.94) rotate(2deg)}22%{transform:scale(1.04) rotate(-1deg)}30%{transform:none}72%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-60px) scale(1.1)}}
+  @keyframes comboshake{50%{translate:4px 0}}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
   .tag.new{background:var(--gold); color:#111}
@@ -511,7 +518,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .card-info .line,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#stamp,#vignette,.flames{display:none!important} .combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,.carousel figure{transition:none!important} .sum-grid figure{opacity:1;transform:none} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -605,6 +612,7 @@
   <button type="button" class="skip" id="skip">Tout révéler</button>
   <div id="reveal-one">
     <div class="counter" id="counter"></div>
+    <p class="combo" id="combo" aria-live="polite"></p>
     <div class="pile" id="pile">
     <div id="rays" aria-hidden="true"></div>
     <div id="unders" aria-hidden="true"></div>
@@ -619,7 +627,7 @@
       </div>
     </div>
     </div>
-    <div class="card-info" id="card-info"><p class="line" id="ci-line"></p><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
+    <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
     <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
   </div>
@@ -1377,8 +1385,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Déjà vu. Mais un de plus, ça se garde.'];
   function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
   function fillInfo(x){
-    var line = document.getElementById('ci-line');
-    line.textContent = !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]); line.setAttribute('data-r', x.r);
+    var line = document.getElementById('combo');
+    line.innerHTML = '<span>' + esc(!x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r])) + '</span>'; line.setAttribute('data-r', x.r);
+    line.classList.remove('go'); void line.offsetWidth; if(!reduce) line.classList.add('go'); else line.style.opacity = 1;
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
   }
