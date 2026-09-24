@@ -5,19 +5,19 @@ import MetalniniKit
 @MainActor
 @Suite("GameStore")
 struct GameStoreTests {
-    @Test func openingAPackAddsFiveCardsToPlace() {
+    @Test func openingAPackAddsFiveCardsToPlace() async {
         let store = GameStore()
-        store.openPack()
+        await store.openPack()
         #expect(store.lastPack.count == 5)
         #expect(store.collection.toPlace.count >= 1)
-        store.placeAll()
+        await store.placeAll()
         #expect(store.collection.toPlace.isEmpty)
     }
 
-    @Test func stylePackOnlyDrawsItsBinder() {
+    @Test func stylePackOnlyDrawsItsBinder() async {
         let store = GameStore()
         store.packType = Catalog.packTypes.first { $0.id == "poppunk" }!
-        for _ in 0..<10 { store.openPack() }
+        for _ in 0..<10 { await store.openPack() }
         #expect(store.lastPack.allSatisfy { ["blink182", "hoppus"].contains($0.musicianID) })
     }
 

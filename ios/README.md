@@ -29,4 +29,15 @@ cd Packages/MetalniniKit && swift test
 cd ../.. && xcodebuild -project Metalnini.xcodeproj -scheme Metalnini -destination 'platform=iOS Simulator,name=iPhone 18 Pro' test
 ```
 
-En phase 0 le tirage est local ; en phase 1 il passera par la fonction serveur `open_pack` (voir `../backend`).
+## Serveur
+
+L'app est branchée sur Supabase (`Metalnini/App/Backend.swift`, SDK `supabase-swift`) :
+
+- au lancement, connexion **anonyme** (un compte invisible par appareil ; Sign in with Apple viendra s'y rattacher) ;
+- l'ouverture d'un paquet appelle `open_pack` : **le serveur tire les cartes**, l'app affiche ;
+- la collection et le rangement sont lus et écrits côté serveur ;
+- sans réseau, l'app bascule en mode hors ligne (tirage local, rien n'est sauvegardé).
+
+La clé embarquée (`SupabaseConfig.swift`) est la clé **publique** « publishable » ; la clé secrète ne doit jamais être dans l'app ni dans ce dépôt.
+
+Vérification de bout en bout en debug : lancer l'app avec l'argument `-autoOpenPack`.

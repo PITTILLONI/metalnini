@@ -15,6 +15,9 @@ settings:
 packages:
   MetalniniKit:
     path: Packages/MetalniniKit
+  Supabase:
+    url: https://github.com/supabase/supabase-swift
+    from: 2.5.0
 targets:
   Metalnini:
     type: application
@@ -27,6 +30,8 @@ targets:
         buildPhase: resources
     dependencies:
       - package: MetalniniKit
+      - package: Supabase
+        product: Supabase
     info:
       path: Metalnini/Info.plist
       properties:

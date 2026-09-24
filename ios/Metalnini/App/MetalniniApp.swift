@@ -2,13 +2,20 @@ import SwiftUI
 
 @main
 struct MetalniniApp: App {
-    @State private var store = GameStore()
+    @State private var store = GameStore(backend: .shared)
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(store)
                 .preferredColorScheme(.dark)
+                .task {
+                    await store.connect()
+                    #if DEBUG
+                    // Vérification de bout en bout : `-autoOpenPack` ouvre un paquet dès la connexion.
+                    if ProcessInfo.processInfo.arguments.contains("-autoOpenPack") { await store.openPack() }
+                    #endif
+                }
         }
     }
 }

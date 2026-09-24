@@ -22,14 +22,16 @@ struct PacksView: View {
                     .pickerStyle(.menu)
 
                     Button {
-                        store.openPack()
-                        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                        Task { await store.openPack(); UIImpactFeedbackGenerator(style: .heavy).impactOccurred() }
                     } label: {
-                        Text("Ouvrir un paquet").font(Theme.display(20)).textCase(.uppercase)
+                        Text(store.busy ? "Ouverture…" : "Ouvrir un paquet").font(Theme.display(20)).textCase(.uppercase)
                             .padding(.horizontal, 28).padding(.vertical, 14)
                             .background(Theme.accent, in: Capsule())
                     }
                     .foregroundStyle(Theme.text)
+                    .disabled(store.busy || store.mode == .connecting)
+
+                    if let err = store.errorMessage { Text(err).font(.footnote).foregroundStyle(.red).multilineTextAlignment(.center).padding(.horizontal) }
 
                     if !store.lastPack.isEmpty {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 5), spacing: 8) {

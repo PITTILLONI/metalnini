@@ -9,7 +9,14 @@ struct SettingsView: View {
         @Bindable var store = store
         NavigationStack {
             Form {
-                Section("Probabilités (tirées carte par carte)") {
+                Section("Compte") {
+                    switch store.mode {
+                    case .connecting: Label("Connexion au serveur…", systemImage: "hourglass")
+                    case .online(let id): Label("Connecté · joueur \(id.uuidString.prefix(8))", systemImage: "checkmark.icloud")
+                    case .offline(let reason): Label("Hors ligne (\(reason)) · rien n'est sauvegardé", systemImage: "icloud.slash")
+                    }
+                }
+                Section(store.isOnline ? "Probabilités (réglées côté serveur, ici pour le mode hors ligne)" : "Probabilités (tirées carte par carte)") {
                     ForEach(Rarity.allCases, id: \.self) { r in
                         Stepper(value: Binding(get: { store.odds.weights[r] ?? 0 }, set: { store.odds.weights[r] = max(0, $0) }), in: 0...100, step: 1) {
                             HStack { Text(Theme.label(r)).foregroundStyle(Theme.color(r)); Spacer(); Text("\(Int(store.odds.weights[r] ?? 0)) %").monospacedDigit() }
@@ -18,7 +25,7 @@ struct SettingsView: View {
                     Text("Total : \(Int(store.odds.total)) %").foregroundStyle(store.odds.total == 100 ? Theme.muted : .red)
                 }
                 Section {
-                    Button("Repartir de zéro", role: .destructive) { store.reset() }
+                    Button(store.isOnline ? "Repartir de zéro (nouveau compte)" : "Repartir de zéro", role: .destructive) { Task { await store.reset() } }
                 }
             }
             .navigationTitle("Réglages")

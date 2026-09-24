@@ -68,7 +68,7 @@ struct BinderView: View {
             HStack {
                 Text("À ranger · \(store.collection.toPlace.count)").font(.caption.monospaced()).foregroundStyle(Theme.gold)
                 Spacer()
-                Button("Tout ranger") { withAnimation(.spring) { store.placeAll() } }
+                Button("Tout ranger") { Task { await store.placeAll() } }
                     .font(Theme.display(15)).padding(.horizontal, 14).padding(.vertical, 8)
                     .background(Theme.accent, in: Capsule()).foregroundStyle(Theme.text)
             }
