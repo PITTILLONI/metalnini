@@ -914,7 +914,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
     {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot','sykes']},
     {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier','white-gluz','corpsegrinder']},
-    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy','tankian']},
+    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy','tankian','bennington']},
     {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus','hayley','armstrong','gerard-way']},
     {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante','angus','mercury']},
     {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro']},
@@ -975,7 +975,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['doro','Doro Pesch','Warlock','All We Are','XLIII','Chant','Heavy metal'],
     ['hammett','Kirk Hammett','Metallica','Enter Sandman','XLIV','Guitare','Thrash metal'],
     ['mercury','Freddie Mercury','Queen','Bohemian Rhapsody','XLV','Chant','Rock'],
-    ['gerard-way','Gerard Way','My Chemical Romance','Welcome to the Black Parade','XLVI','Chant','Emo']
+    ['gerard-way','Gerard Way','My Chemical Romance','Welcome to the Black Parade','XLVI','Chant','Emo'],
+    ['bennington','Chester Bennington','Linkin Park','Numb','XLVII','Chant','Nu metal']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -1023,7 +1024,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     doro:['Metal Queen', 'Surnommée la reine du metal, elle tient la scène depuis les années 1980.'],
     hammett:['Musée de l\'horreur', 'Sa collection d\'objets de films d\'horreur a été exposée dans un vrai musée.'],
     mercury:['Live Aid', 'Son concert de Live Aid en 1985 reste l\'un des plus célèbres de l\'histoire du rock.'],
-    'gerard-way':['Umbrella Academy', 'Il a écrit la BD The Umbrella Academy, adaptée en série.']
+    'gerard-way':['Umbrella Academy', 'Il a écrit la BD The Umbrella Academy, adaptée en série.'],
+    bennington:['Pilote de relève', 'De 2013 à 2015, il remplace Scott Weiland au chant de Stone Temple Pilots.']
   };
   // présentation courte de l'artiste ou du groupe (faits établis), affichée à la révélation
   var BIOS = {
@@ -1069,10 +1071,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     doro:'Chanteuse allemande révélée dans les années 1980 avec Warlock.',
     hammett:'Guitariste soliste de Metallica depuis 1983.',
     mercury:'Chanteur de Queen, groupe britannique formé en 1970 ; disparu en 1991.',
-    'gerard-way':'Chanteur de My Chemical Romance, groupe du New Jersey, figure de l\'emo des années 2000.'
+    'gerard-way':'Chanteur de My Chemical Romance, groupe du New Jersey, figure de l\'emo des années 2000.',
+    bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus.'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
-  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1632526090, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'zack':171209471, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':272252873, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1160082180, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692};
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1632526090, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'zack':171209471, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':272252873, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1160082180, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552};
   var tracks = {}, audio = null, listenEl = null;
   function track(id){
     if(!TRACKS[id] || !window.fetch) return Promise.resolve(null);

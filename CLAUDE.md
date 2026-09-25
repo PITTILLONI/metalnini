@@ -32,7 +32,7 @@ Projet perso (hors United Heroes) : collection de cartes de musiciens metal et r
 
 ## Où en est le projet
 - En ligne : prototype https://pittilloni.github.io/metalnini/proto/, admin https://pittilloni.github.io/metalnini/admin/, concept https://pittilloni.github.io/metalnini/concept.html.
-- Back-end Supabase `mdnevzmczljycmgbsrsu` : migrations 0001 à 0017 appliquées ; 43 musiciens, 215 cartes.
+- Back-end Supabase `mdnevzmczljycmgbsrsu` : migrations 0001 à 0017 appliquées ; 44 musiciens, 220 cartes.
 - Cartes : recette Krea (Nano Banana Pro, photo de référence + style « The Priest ») ; raretés avec `tools/krea_rarities.sh` ; images allégées avec `tools/build_proto_cards.py`, galerie avec `tools/build_gallery.py`, seed avec `tools/gen_seed.py`.
 - En attente : TestFlight (inscription Apple Developer), inscription par e-mail dans l'app iOS, domaine d'e-mail dédié, paquets dédiés aux nouveaux styles, musique de fond (piste libre de droits à choisir), sons de révélation (cris enregistrés ou banques CC0, jamais d'extraits de morceaux découpés).
 - Extraits audio : aperçus officiels de 30 s via l'API iTunes (`TRACKS` dans `proto/index.html`, identifiant de morceau par carte), lancés à la main uniquement (fin de révélation et fiche du classeur), toujours avec le lien Apple Music. Jamais de lecture automatique ni de fichier audio hébergé.

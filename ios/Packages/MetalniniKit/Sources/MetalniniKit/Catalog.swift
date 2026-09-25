@@ -48,13 +48,14 @@ public enum Catalog {
         .init(id: "hammett", name: "Kirk Hammett", band: "Metallica", arcanaTitle: "Enter Sandman", arcanaNumber: "XLIV", instruments: [.guitare], subgenre: "Thrash metal"),
         .init(id: "mercury", name: "Freddie Mercury", band: "Queen", arcanaTitle: "Bohemian Rhapsody", arcanaNumber: "XLV", instruments: [.chant], subgenre: "Rock"),
         .init(id: "gerard-way", name: "Gerard Way", band: "My Chemical Romance", arcanaTitle: "Welcome to the Black Parade", arcanaNumber: "XLVI", instruments: [.chant], subgenre: "Emo"),
+        .init(id: "bennington", name: "Chester Bennington", band: "Linkin Park", arcanaTitle: "Numb", arcanaNumber: "XLVII", instruments: [.chant], subgenre: "Nu metal"),
     ]
 
     public static let binders: [Binder] = [
         .init(id: "all", kind: .collection, label: "Toutes les cartes", musicianIDs: musicians.map(\.id)),
         .init(id: "metalcore", kind: .style, label: "Metalcore", musicianIDs: ["spiritbox", "jinjer", "landmvrks", "heriot", "sykes"]),
         .init(id: "hardcore", kind: .style, label: "Hardcore & extrême", musicianIDs: ["knocked-loose", "isaac-hale", "ramos", "duplantier", "white-gluz", "corpsegrinder"]),
-        .init(id: "numetal", kind: .style, label: "Nu metal & alternatif", musicianIDs: ["korn", "root", "jordison", "zack", "poppy", "tankian"]),
+        .init(id: "numetal", kind: .style, label: "Nu metal & alternatif", musicianIDs: ["korn", "root", "jordison", "zack", "poppy", "tankian", "bennington"]),
         .init(id: "poppunk", kind: .style, label: "Pop punk", musicianIDs: ["blink182", "hoppus", "hayley", "armstrong", "gerard-way"]),
         .init(id: "legendes", kind: .style, label: "Légendes du rock", musicianIDs: ["hendrix", "slash", "frusciante", "angus", "mercury"]),
         .init(id: "heavy", kind: .style, label: "Heavy metal", musicianIDs: ["dickinson", "halford", "ozzy", "lemmy", "dio", "doro"]),

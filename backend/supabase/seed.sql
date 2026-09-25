@@ -44,7 +44,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('doro', 'Doro Pesch', 'Warlock', 'All We Are', 'XLIII', array['chant']::text[], 'Heavy metal'),
   ('hammett', 'Kirk Hammett', 'Metallica', 'Enter Sandman', 'XLIV', array['guitare']::text[], 'Thrash metal'),
   ('mercury', 'Freddie Mercury', 'Queen', 'Bohemian Rhapsody', 'XLV', array['chant']::text[], 'Rock'),
-  ('gerard-way', 'Gerard Way', 'My Chemical Romance', 'Welcome to the Black Parade', 'XLVI', array['chant']::text[], 'Emo')
+  ('gerard-way', 'Gerard Way', 'My Chemical Romance', 'Welcome to the Black Parade', 'XLVI', array['chant']::text[], 'Emo'),
+  ('bennington', 'Chester Bennington', 'Linkin Park', 'Numb', 'XLVII', array['chant']::text[], 'Nu metal')
 on conflict (id) do nothing;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -262,7 +263,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('gerard-way', 'rare', 'cards/gerard-way-rare.jpg'),
   ('gerard-way', 'holo', 'cards/gerard-way-holo.jpg'),
   ('gerard-way', 'signature', 'cards/gerard-way-signature.jpg'),
-  ('gerard-way', 'legendaire', 'cards/gerard-way-legendaire.jpg')
+  ('gerard-way', 'legendaire', 'cards/gerard-way-legendaire.jpg'),
+  ('bennington', 'commune', 'cards/bennington-commune.jpg'),
+  ('bennington', 'rare', 'cards/bennington-rare.jpg'),
+  ('bennington', 'holo', 'cards/bennington-holo.jpg'),
+  ('bennington', 'signature', 'cards/bennington-signature.jpg'),
+  ('bennington', 'legendaire', 'cards/bennington-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -327,6 +333,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'hammett'),
   ('all', 'mercury'),
   ('all', 'gerard-way'),
+  ('all', 'bennington'),
   ('metalcore', 'spiritbox'),
   ('metalcore', 'jinjer'),
   ('metalcore', 'landmvrks'),
@@ -344,6 +351,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('numetal', 'zack'),
   ('numetal', 'poppy'),
   ('numetal', 'tankian'),
+  ('numetal', 'bennington'),
   ('poppunk', 'blink182'),
   ('poppunk', 'hoppus'),
   ('poppunk', 'hayley'),
