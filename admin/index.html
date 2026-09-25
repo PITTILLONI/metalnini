@@ -51,6 +51,17 @@
   .bar b{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--text)}
   .msg{margin-top:10px; font-size:.88rem}
   .qr{background:#fff; padding:10px; border-radius:10px; display:inline-block}
+  .vw-stage{display:flex; align-items:center; justify-content:center; gap:12px}
+  .vw-card{margin:0; text-align:center; flex:0 1 360px}
+  .vw-card img{display:block; width:100%; max-width:360px; aspect-ratio:2/3; object-fit:cover; margin:0 auto; border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.6); background:#111}
+  .vw-card figcaption{margin-top:10px; font-size:.9rem; line-height:1.5}
+  .vw-arrow{flex:0 0 auto; width:48px; height:48px; border-radius:50%; font-size:1.6rem; line-height:1; padding:0}
+  .vw-arrow:disabled{opacity:.3}
+  .vw-rars{display:flex; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap}
+  .vw-rar{display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:1px solid transparent; border-radius:10px; padding:4px; width:auto}
+  .vw-rar img{width:60px; aspect-ratio:2/3; object-fit:cover; border-radius:6px} .vw-rar span{font:500 .66rem var(--mono)}
+  .vw-rar.on{border-color:var(--gold)}
+  .thumb{background:none; border:0; padding:0; width:auto; cursor:zoom-in}
   .warn-pill{background:rgba(245,197,66,.15); color:#f5c542; border-color:rgba(245,197,66,.4)}
   .warn{font-size:.85rem; color:#f5c542; border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:8px 10px}
   .steps{padding-left:18px; font-size:.88rem; line-height:1.5} .steps li{margin:6px 0}
@@ -382,15 +393,47 @@ async function packs(el){
 }
 
 // ---------------------------------------------------------------- catalogue
+// numéro d'arcane (chiffres romains) → nombre, pour trier les visuels comme l'album
+const romanValue = n => { const v = {I:1,V:5,X:10,L:50,C:100}; let t = 0; for(let i = 0; i < n.length; i++){ const a = v[n[i]] || 0, b = v[n[i + 1]] || 0; t += a < b ? -a : a; } return t; };
 async function catalogTab(el){
   await loadCatalog();
-  el.innerHTML = `<div class="card"><h3>Musiciens (${catalog.musicians.length})</h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
+  const list = catalog.musicians.slice().sort((a, b) => romanValue(a.arcana_number) - romanValue(b.arcana_number));
+  let at = 0, rar = 'commune';
+  el.innerHTML = `<div class="card viewer"><h3>Visuels des cartes</h3>
+      <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
+        <figure class="vw-card"><img id="vw-img" alt=""><figcaption id="vw-cap"></figcaption></figure>
+        <button class="vw-arrow" id="vw-next" aria-label="Musicien suivant">›</button></div>
+      <div class="vw-rars" id="vw-rars"></div>
+      <p class="muted" style="font-size:.8rem; text-align:center; margin:8px 0 0">Flèches du clavier ← → pour changer de musicien, ↑ ↓ pour changer de rareté.</p></div>
+    <div class="card"><h3>Musiciens (${catalog.musicians.length})</h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
     <div class="table-wrap"><table><tr><th></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
-    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><img src="../proto/cards/${esc(m.id)}-commune.jpg" alt="" style="width:40px;border-radius:4px"></td>
+    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}"><img src="../proto/cards/${esc(m.id)}-commune.jpg" alt="" style="width:40px;border-radius:4px"></button></td>
       <td><input data-f="name" value="${esc(m.name)}"></td><td><input data-f="band" value="${esc(m.band)}"></td><td><input data-f="arcana_title" value="${esc(m.arcana_title)}"></td>
       <td style="width:80px"><input data-f="arcana_number" value="${esc(m.arcana_number)}"></td><td><input data-f="subgenre" value="${esc(m.subgenre)}"></td>
       <td><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} style="width:auto"></td><td><button class="ghost save">OK</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
     </table></div></div>`;
+  // visionneuse : un musicien à la fois, ses 5 raretés en dessous
+  const show = () => {
+    const m = list[at]; if(!m) return;
+    $('vw-img').src = `../proto/cards/${m.id}-${rar}.jpg`; $('vw-img').alt = `${m.name}, ${RLABEL[rar]}`;
+    $('vw-cap').innerHTML = `<b>N° ${esc(m.arcana_number)} · ${esc(m.name)}</b> · ${esc(m.band)} · <span class="r-${rar}">${RLABEL[rar]}</span>${m.active ? '' : ' · <span class="err">inactif</span>'}<br><span class="muted">${at + 1} / ${list.length}</span>`;
+    $('vw-rars').innerHTML = RARITIES.map(r => `<button class="vw-rar${r === rar ? ' on' : ''}" data-r="${r}" aria-label="${RLABEL[r]}"><img src="../proto/cards/${m.id}-${r}.jpg" alt="" loading="lazy"><span class="r-${r}">${RLABEL[r]}</span></button>`).join('');
+    $('vw-rars').querySelectorAll('[data-r]').forEach(b => b.onclick = () => { rar = b.dataset.r; show(); });
+    $('vw-prev').disabled = at === 0; $('vw-next').disabled = at === list.length - 1;
+  };
+  const go = d => { at = Math.max(0, Math.min(list.length - 1, at + d)); show(); };
+  $('vw-prev').onclick = () => go(-1); $('vw-next').onclick = () => go(1);
+  document.onkeydown = e => {
+    if(!$('vw-img') || ['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if(e.key === 'ArrowLeft') go(-1); else if(e.key === 'ArrowRight') go(1);
+    else if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){ e.preventDefault(); const i = RARITIES.indexOf(rar) + (e.key === 'ArrowDown' ? 1 : -1); rar = RARITIES[Math.max(0, Math.min(RARITIES.length - 1, i))]; show(); }
+  };
+  // glissé au doigt sur la carte
+  let x0 = null; const st = el.querySelector('.vw-card');
+  st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
+  el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = list.findIndex(m => m.id === b.dataset.view); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
+  show();
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
