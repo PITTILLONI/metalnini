@@ -288,7 +288,7 @@ async function player(p){
       <p style="margin:0 0 6px; font-weight:600; color:#f5c542">Adresse pas encore confirmée</p>
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Le mail de confirmation a été envoyé. S'il n'est pas arrivé (spam, messagerie d'entreprise), renvoie-le, ou confirme l'adresse toi-même si tu es sûr que c'est bien elle ou lui.</p>
       <div class="row"><button id="cf-resend" class="ghost fit">Renvoyer le mail de confirmation</button><button id="cf-go" class="fit">Confirmer à la main</button></div></div>` : ''}
-    <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit" data-pts="2">Offrir un paquet standard (2 points)</button><button id="bonus-mini" class="ghost fit" data-pts="1">Offrir un mini (1 point)</button></div>
+    <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit" data-pts="2">Offrir un paquet standard (2 points)</button><button id="bonus-mini" class="ghost fit" data-pts="1">Offrir un mini (1 point)</button><button id="push-test" class="ghost fit">Notification de test</button></div>
     <div class="row"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button>
       <button id="clr-go" class="ghost fit">Vider la collection</button></div>
     <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
@@ -327,6 +327,11 @@ async function player(p){
     p.email_confirmed = true; await player(p); say($('adj-msg'), 'Adresse confirmée et inscrite au journal : le compte peut se connecter.', true);
   };
   // le joueur voit le cadeau à sa prochaine visite (« Le Grand Architecte t'offre… »)
+  // notification de test : arrive sur chaque appareil où le joueur a activé les notifications
+  $('push-test').onclick = async () => {
+    const res = await sb.rpc('admin_test_push', { p_user: p.id });
+    say($('adj-msg'), res.error ? res.error.message : res.data ? `Notification envoyée à ${res.data} appareil${res.data > 1 ? 's' : ''}.` : 'Aucun appareil abonné : le joueur doit activer les notifications dans les réglages de l\'app.', !res.error && !!res.data);
+  };
   ['bonus-go', 'bonus-mini'].forEach(id => { $(id).onclick = async () => {
     if(needWhy()) return;
     const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: +$(id).dataset.pts, p_reason: why() });

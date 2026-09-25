@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#0c0b0a">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-32.png">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
-<link rel="manifest" href="../icons/site.webmanifest">
+<link rel="manifest" href="app.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Metal+Mania&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Metalnini — Prototype</title>
@@ -576,6 +576,10 @@
   .net b{color:var(--ok, #4ade80)}
   .toggle{display:flex; justify-content:space-between; align-items:center; min-height:44px; font-size:.9rem; cursor:pointer}
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
+  .dev-t{margin:0 0 6px; font:600 .72rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .dev-row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0 10px; border-bottom:1px solid var(--border); margin-bottom:4px}
+  .dev-row b{display:block; font-size:.9rem; font-weight:500} .dev-row small{display:block; margin-top:3px; font:500 .76rem/1.4 var(--mono); color:var(--muted)}
+  .dev-go{flex:none; min-height:44px; padding:0 16px}
 
   @media (prefers-reduced-motion:reduce){
     .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
@@ -722,6 +726,12 @@
     <div class="field">
       <p class="note" id="acct"></p>
       <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="signout" hidden>Quitter la scène</button></p>
+    </div>
+    <div class="field">
+      <p class="dev-t">Sur ton téléphone</p>
+      <div class="dev-row"><div><b>App sur l'écran d'accueil</b><small id="inst-note"></small></div><button type="button" class="btn ghost dev-go" id="inst-go" hidden>Installer</button></div>
+      <label class="toggle">Notifications <input type="checkbox" id="s-push"></label>
+      <p class="note" id="push-note"></p>
     </div>
     <div class="field">
       <label class="toggle">Vibrations <input type="checkbox" id="s-sound"></label>
@@ -908,6 +918,8 @@ const api = {
   async tear(m, r){ return must(await sb.rpc('tear_card', { p_musician: m, p_rarity: r })); },
   async setPower(v){ return must(await sb.rpc('set_metal_power', { p_power: v })); },
   async requestArtist(a, n){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n })); },
+  async savePush(e, k, a){ must(await sb.rpc('save_push_subscription', { p_endpoint: e, p_p256dh: k, p_auth: a })); },
+  async deletePush(e){ must(await sb.rpc('delete_push_subscription', { p_endpoint: e })); },
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
   async claimCryGift(){ return must(await sb.rpc('claim_cry_gift')); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
@@ -1230,7 +1242,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       // pseudo choisi à l'inscription, enregistré à la première connexion
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
-      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts();
+      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -2426,11 +2438,52 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeDetail(); });
 
   // ---------- Réglages ----------
+  // ---------- Installation et notifications ----------
+  var VAPID = 'BFwwKTN8wXhWSicqw57pygCIoAgPGq8yUNVFf7ct8vPJbSWwZmciOGCFguIH5Bv_HqzIylv25ULgm3dlh8g4EEo';
+  var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var installEvt = null, swReg = null;
+  function standalone(){ return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
+  function pushOk(){ return !!swReg && 'PushManager' in window && 'Notification' in window; }
+  addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; paintDevice(); });
+  addEventListener('appinstalled', function(){ installEvt = null; paintDevice(); toast('Metalnini est sur ton écran d\'accueil.'); });
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(function(r){ swReg = r; paintDevice(); syncPush(); }).catch(function(){});
+  function paintDevice(){
+    var inst = standalone();
+    document.getElementById('inst-note').textContent = inst ? 'Installée. Bien joué.' : installEvt ? 'En plein écran, sans la barre du navigateur.'
+      : IOS ? 'Dans Safari : touche Partager, puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
+    document.getElementById('inst-go').hidden = inst || !installEvt;
+    var perm = 'Notification' in window ? Notification.permission : 'default', box = document.getElementById('s-push');
+    var why = !ONLINE ? 'Connecte-toi pour recevoir les notifications.' : IOS && !inst ? 'Sur iPhone, installe d\'abord l\'app sur l\'écran d\'accueil.'
+      : !pushOk() ? 'Ton navigateur ne gère pas les notifications.' : perm === 'denied' ? 'Notifications bloquées dans les réglages du navigateur ou du téléphone.' : '';
+    box.disabled = !!why; box.checked = !why && !!state.push && perm === 'granted';
+    document.getElementById('push-note').textContent = why || 'Pour l\'instant : les cadeaux du Grand Architecte. Pas de spam, promis.';
+  }
+  document.getElementById('inst-go').addEventListener('click', function(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.then(function(){ installEvt = null; paintDevice(); }); });
+  function vapidKey(){ var s = VAPID.replace(/-/g, '+').replace(/_/g, '/'), raw = atob(s + '='.repeat((4 - s.length % 4) % 4)), out = new Uint8Array(raw.length); for(var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i); return out; }
+  async function enablePush(){
+    try{
+      if(await Notification.requestPermission() !== 'granted') throw new Error('Notifications refusées. Tu pourras changer d\'avis dans les réglages du téléphone.');
+      var sub = await swReg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:vapidKey()}), j = sub.toJSON();
+      await ONLINE.savePush(j.endpoint, j.keys.p256dh, j.keys.auth); state.push = true; save(); toast('Notifications activées. Le pit peut t\'appeler.');
+    }catch(e){ state.push = false; save(); toast(esc(e.message)); }
+    paintDevice();
+  }
+  async function disablePush(){
+    try{ var sub = swReg && await swReg.pushManager.getSubscription(); if(sub){ if(ONLINE) await ONLINE.deletePush(sub.endpoint).catch(function(){}); await sub.unsubscribe(); } }catch(e){}
+    state.push = false; save(); paintDevice();
+  }
+  // à la connexion : l'abonnement de cet appareil est rattaché au compte connecté
+  function syncPush(){
+    if(!ONLINE || !state.push || !pushOk() || Notification.permission !== 'granted') return;
+    swReg.pushManager.getSubscription().then(function(sub){ if(sub){ var j = sub.toJSON(); return ONLINE.savePush(j.endpoint, j.keys.p256dh, j.keys.auth); } }).catch(function(){});
+  }
+  document.getElementById('s-push').addEventListener('change', function(){ if(this.checked) enablePush(); else disablePush(); });
   function renderSettings(){
     document.getElementById('acct').innerHTML = ONLINE ? 'Connecté au serveur en tant que <b>' + esc(state.username || '…') + '</b>. Paquets tirés par le serveur ; probabilités, taille des paquets et coût de fusion réglés depuis l\'admin.'
                                                      : 'Hors ligne : collection gardée sur cet appareil, réglages ci-dessous modifiables.';
     document.getElementById('signout').hidden = !ONLINE;
     document.getElementById('odds-field').hidden = !!ONLINE; document.getElementById('s-size').closest('.field').hidden = !!ONLINE;
+    paintDevice();
     var snd = document.getElementById('s-sound'); snd.checked = state.sound !== false; snd.onchange = function(){ state.sound = snd.checked; save(); };
     var ap = document.getElementById('s-autoplay'); ap.checked = state.autoplay !== false; ap.onchange = function(){ state.autoplay = ap.checked; save(); if(!ap.checked) stopListen(); };
     var fz = document.getElementById('s-fuse'); fz.value = state.fuseBase || 3; fz.onchange = function(){ var v = Math.max(2, Math.min(10, parseInt(fz.value,10) || 3)); state.fuseBase = v; fz.value = v; save(); };
