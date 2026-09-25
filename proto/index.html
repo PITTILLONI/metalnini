@@ -77,7 +77,7 @@
   #v-packs[data-step="open"] .quests, #v-packs[data-step="open"] .home-title, #v-packs[data-step="open"] .choose{display:none}
   /* choix du paquet : carrousel, le paquet du centre en avant, sa description dessous */
   .choose{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px 0 16px}
-  .pack-car{position:relative; width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:16px 0 20px; --pw:max(112px, min(52vw, 230px, calc((100dvh - 540px) * .58)))}
+  .pack-car{position:relative; width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:16px 0 20px; --pw:max(100px, min(50vw, 220px, calc((100dvh - 590px) * .58)))}
   .pack-car::before, .pack-car::after{content:""; flex:0 0 calc(50% - var(--pw) / 2)}
   .pack-car::-webkit-scrollbar{display:none}
   .car-wrap{position:relative; width:100%}
@@ -91,21 +91,27 @@
   .pack-car button{flex:0 0 var(--pw); scroll-snap-align:center; border:0; padding:0; background:none; cursor:pointer; transform:scale(.78); opacity:.45; transition:transform .25s ease, opacity .25s ease}
   .pack-car button.on{transform:none; opacity:1}
   .pack-car img{display:block; width:100%; aspect-ratio:.58; object-fit:contain; filter:drop-shadow(0 14px 22px rgba(0,0,0,.65))}
-  .pack-info{text-align:center; min-height:84px; padding:16px 8px 0; max-width:360px}
-  .pack-info h2{font-size:1.8rem}
+  .pack-info{text-align:center; padding:10px 8px 0; max-width:360px}
+  .pack-info h2{font-size:1.6rem}
   .pack-info p{margin:8px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
   .formats{display:flex; gap:10px; margin:12px auto 0; width:100%; max-width:420px}
-  .formats button{flex:1; min-height:56px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; text-align:center}
+  .formats button{flex:1; min-height:48px; padding:6px 8px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; text-align:center}
   .formats button b{display:block; font:700 .9rem var(--mono)} .formats button small{display:block; margin-top:2px; font:500 .72rem var(--mono); color:var(--muted)}
   .formats button[aria-checked="true"]{border-color:var(--gold); background:rgba(237,164,43,.1)} .formats button[aria-checked="true"] b{color:var(--gold-hi)}
   .formats button:disabled{opacity:.4; cursor:default}
-  .small-go{max-width:420px; margin-top:12px}
+  .small-go{max-width:420px; margin-top:10px}
+  .picks{width:100%; max-width:420px; margin:10px auto 0}
+  .picks-t{margin:0 0 6px; font:600 .72rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-align:left}
+  .picks-row{display:flex; gap:10px}
+  .pick-slot{position:relative; flex:1; min-width:0; min-height:46px; display:flex; flex-direction:column; justify-content:center; padding:6px 10px; border:1px dashed rgba(243,240,234,.22); border-radius:12px; text-align:left}
+  .pick-slot i{font:600 .8rem var(--mono); font-style:normal; color:var(--muted)} .pick-slot small{font:500 .7rem var(--mono); color:rgba(164,158,148,.7)}
+  .pick-slot.full{flex-direction:row; align-items:center; gap:10px; border:1px solid rgba(237,164,43,.55); background:rgba(237,164,43,.07); padding-right:44px}
+  .pick-slot.full img{width:26px; aspect-ratio:.58; object-fit:contain} .pick-slot.full b{font:700 .82rem/1.2 var(--mono); color:var(--text); overflow:hidden; text-overflow:ellipsis}
+  .pick-x{position:absolute; right:2px; top:50%; margin-top:-22px; width:44px; height:44px; border:0; border-radius:50%; background:transparent; color:var(--muted); font-size:.95rem; cursor:pointer}
   /* mode petits paquets : la description cède la place au bouton d'ouverture */
-  .choose.small #pc-desc{display:none}
-  .choose.small .pack-car{--pw:max(104px, min(48vw, 210px, calc((100dvh - 560px) * .58)))}
   /* écrans bas (iPhone compact, barres de Safari) : on resserre pour que tout tienne sans défiler */
   @media (max-height:720px){
     .home .hud{padding-bottom:6px} .quest-dots{display:none} .goal.quest{min-height:46px; padding:7px 12px}
@@ -113,7 +119,8 @@
     .choose{padding:0 0 8px} .pack-car{padding:10px 0 12px} .pack-info{min-height:0; padding-top:8px} .pack-info h2{font-size:1.45rem} .pack-info p{font-size:.84rem}
     .formats{margin-top:8px} .formats button{min-height:48px; padding:6px 8px} .small-go{margin-top:8px}
     #pc-dots{display:none}
-    .pack-car{--pw:130px} .choose.small .pack-car{--pw:122px}
+    .pack-car{--pw:max(96px, calc((100dvh - 470px) * .58))}
+    #v-packs[data-step="choose"] .quests{display:none}
   }
   .small-hint{margin:6px 0 0; font:600 .78rem var(--mono); color:var(--gold-hi); text-align:center}
   .pack-car button{position:relative}
@@ -571,12 +578,12 @@
       <button type="button" class="car-arrow next" id="car-next" aria-label="Paquet suivant">›</button>
     </div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
-    <div class="pack-info"><h2 id="pc-name"></h2><p id="pc-desc"></p><p class="pc-wait" id="pc-wait" hidden></p></div>
-    <p class="small-hint" id="small-hint" hidden>Touche un ou deux paquets pour les choisir.</p>
+    <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-wait" id="pc-wait" hidden></p></div>
     <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
       <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
-      <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes chacun, plus de chances</small></button>
+      <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes, + de chances</small></button>
     </div>
+    <div class="picks" id="picks"></div>
     <p class="small-hint" id="fmt-lock" hidden></p>
     <button type="button" class="btn block small-go" id="small-go" hidden></button>
 
@@ -1240,7 +1247,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(document.getElementById('pc-dots').children, function(d, j){ d.classList.toggle('on', j === best); });
     document.getElementById('car-prev').disabled = best === 0; document.getElementById('car-next').disabled = best === bs.length - 1;
     var p = PACKS[best]; if(!p) return;
-    document.getElementById('pc-name').textContent = p.label; document.getElementById('pc-desc').textContent = p.desc;
+    document.getElementById('pc-name').textContent = p.label;
     if(state.packType !== p.k && !(ONLINE && state.pending && state.pending.length)){ state.packType = p.k; save(); }
   }
   var carRafP = 0;
@@ -1251,7 +1258,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   document.getElementById('car-prev').addEventListener('click', function(){ carStep(-1); });
   document.getElementById('car-next').addEventListener('click', function(){ carStep(1); });
-  document.getElementById('pack-picker').addEventListener('scroll', function(){ if(!carRafP) carRafP = requestAnimationFrame(function(){ carRafP = 0; carPack(true); }); }, {passive:true});
+  // seul un défilement du joueur change le paquet choisi ; le recentrage fait par l'app est ignoré
+  var carSilentUntil = 0;
+  function centerCarousel(){
+    var el = document.getElementById('pack-picker'), start = el.querySelector('[data-p="' + state.packType + '"]');
+    carSilentUntil = performance.now() + 250;
+    if(start) el.scrollLeft = start.offsetLeft - (el.clientWidth - start.offsetWidth) / 2;
+    carPack();
+  }
+  document.getElementById('pack-picker').addEventListener('scroll', function(){
+    if(performance.now() < carSilentUntil) return;
+    if(!carRafP) carRafP = requestAnimationFrame(function(){ carRafP = 0; carPack(true); }); }, {passive:true});
+  addEventListener('resize', function(){ if(!document.getElementById('v-packs').hidden) centerCarousel(); });
   function openChosen(){
     if(opening || state.packsLeft === 0) return;
     if(ONLINE && state.pending && state.pending.length && state.pendingType !== state.packType){ toast('Finis d\'abord le paquet entamé. On gâche pas.'); state.packType = state.pendingType; }
@@ -1262,30 +1280,40 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var t = new Date().toLocaleTimeString('fr-FR', {timeZone:'Europe/Paris', hour12:false}).split(':'), left = 24 * 60 - (+t[0] * 60 + +t[1]);
     return (left >= 60 ? Math.floor(left / 60) + ' h ' : '') + (left % 60) + ' min';
   }
-  function smallMax(){ return state.packsLeft === 1 ? 1 : 2; }
-  function smallPicks(){ return (state.smallPicks || []).filter(function(k){ return PACKS.some(function(p){ return p.k === k; }); }).slice(0, smallMax()); }
-  // toucher un paquet : 0 → 1 → 2 exemplaires (s'il reste de la place) → 0
+  // sélection : 1 case pour un gros paquet, 2 pour des petits (1 s'il ne reste qu'un point) ; modifiable jusqu'à l'ouverture
+  function pickMax(){ return packFormat() === 'small' ? (state.packsLeft === 1 ? 1 : 2) : 1; }
+  function picks(){ return (state.picks || []).filter(function(k){ return PACKS.some(function(p){ return p.k === k; }); }).slice(0, pickMax()); }
+  // gros paquet : toucher remplace le choix ; petits : 0 → 1 → 2 exemplaires (s'il reste de la place) → 0
   function togglePick(k){
-    var picks = smallPicks(), mine = picks.filter(function(x){ return x === k; }).length, room = picks.length < smallMax();
-    if(room && mine < 2) picks.push(k);
-    else if(mine) picks = picks.filter(function(x){ return x !== k; });
-    else { toast(smallMax() === 1 ? 'Il ne te reste qu\'un petit paquet aujourd\'hui.' : 'Deux petits paquets max, fraté. Retire-en un pour changer.'); return; }
-    state.smallPicks = picks; save(); paintCarousel(); buzz([12]);
+    var list = picks(), mine = list.filter(function(x){ return x === k; }).length;
+    if(pickMax() === 1) list = mine ? [] : [k];
+    else if(list.length < pickMax() && mine < 2) list.push(k);
+    else if(mine) list = list.filter(function(x){ return x !== k; });
+    else { toast('Deux petits paquets max, fraté. Retire-en un pour changer.'); return; }
+    state.picks = list; save(); paintCarousel(); buzz([12]);
   }
-  // carrousel : visuels MINI en mode petit, badge 1 / 2 sur les paquets sélectionnés, bouton pour ouvrir la sélection
+  function removePick(i){ var list = picks(); list.splice(i, 1); state.picks = list; save(); paintCarousel(); }
+  // carrousel : visuels MINI en mode petit, badges sur les paquets choisis ; « Ta sélection » avec une case par paquet
   function paintCarousel(){
-    var small = packFormat() === 'small', picks = smallPicks();
+    var small = packFormat() === 'small', list = picks(), max = pickMax();
     document.querySelector('.choose').classList.toggle('small', small);
     [].forEach.call(document.querySelectorAll('#pack-picker button'), function(x){
-      var k = x.getAttribute('data-p'), nums = picks.map(function(y, i){ return y === k ? i + 1 : 0; }).filter(Boolean), n = nums.length;
-      x.querySelector('img').src = packSrc(k); x.classList.toggle('picked', small && n > 0);
+      var k = x.getAttribute('data-p'), nums = list.map(function(y, i){ return y === k ? i + 1 : 0; }).filter(Boolean), n = nums.length;
+      x.querySelector('img').src = packSrc(k); x.classList.toggle('picked', n > 0);
       var badge = x.querySelector('.pick-n'); if(badge) badge.remove();
-      if(small && n > 0) x.insertAdjacentHTML('beforeend', '<span class="pick-n">' + (n > 1 ? '×2' : nums[0]) + '</span>');
-      x.setAttribute('aria-pressed', small ? String(n > 0) : 'false');
+      if(n > 0) x.insertAdjacentHTML('beforeend', '<span class="pick-n">' + (n > 1 ? '×2' : small ? nums[0] : '✓') + '</span>');
+      x.setAttribute('aria-pressed', String(n > 0));
     });
-    var go = document.getElementById('small-go'); go.hidden = !small || !picks.length || state.packsLeft === 0;
-    go.textContent = picks.length > 1 ? 'Ouvrir mes 2 petits paquets' : 'Ouvrir mon petit paquet';
-    document.getElementById('small-hint').hidden = !small || picks.length > 0 || state.packsLeft === 0;
+    var closed = state.packsLeft === 0, tray = document.getElementById('picks');
+    tray.hidden = closed;
+    tray.innerHTML = '<p class="picks-t">Ta sélection</p><div class="picks-row">' + Array.apply(null, Array(max)).map(function(_, i){
+      var k = list[i], pk = PACKS.filter(function(p){ return p.k === k; })[0];
+      return pk ? '<span class="pick-slot full"><img src="' + packSrc(k) + '" alt=""><b>' + esc(pk.label) + '</b><button type="button" class="pick-x" data-i="' + i + '" aria-label="Retirer ' + esc(pk.label) + '">✕</button></span>'
+                : '<span class="pick-slot"><i>' + (small ? 'Petit paquet ' + (i + 1) : 'Gros paquet') + '</i><small>Touche un paquet</small></span>';
+    }).join('') + '</div>';
+    [].forEach.call(tray.querySelectorAll('.pick-x'), function(x){ x.onclick = function(){ removePick(+x.getAttribute('data-i')); }; });
+    var go = document.getElementById('small-go'); go.hidden = closed || !list.length;
+    go.textContent = !small ? 'Ouvrir le gros paquet' : list.length > 1 ? 'Ouvrir mes 2 petits paquets' : 'Ouvrir mon petit paquet';
   }
   function packSrc(k){ return 'cards/pack-' + k + (packFormat() === 'small' && (window.METALNINI_MINIS || {})[k] ? '-mini' : '') + '.jpg'; }
   function packFormat(){ return state.packsLeft === 1 ? 'small' : (state.packFormat || 'big'); }
@@ -1300,7 +1328,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var k = b.getAttribute('data-f');
       b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
       b.disabled = locked || (k === 'big' && state.packsLeft === 1);
-      b.onclick = function(){ if(b.disabled) return; state.packFormat = k; if(k === 'big') state.smallQueue = []; save(); renderFormats(); paintCarousel(); };
+      b.onclick = function(){ if(b.disabled) return; state.packFormat = k; if(k === 'big') state.smallQueue = []; save(); renderFormats(); paintCarousel(); centerCarousel(); };
     });
     // visuel du sachet : version « MINI » pour les petits paquets quand elle existe
     var pk = document.getElementById('pack'), mini = f === 'small' && (window.METALNINI_MINIS || {})[state.packType];
@@ -1329,13 +1357,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // deux temps : choisir un paquet, puis l'ouvrir
   function packStep(st){
     document.getElementById('v-packs').dataset.step = st; window.scrollTo(0, 0);
+    if(st === 'choose') centerCarousel();
     if(st === 'open'){ setTimeout(packParallax, 0); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
   }
   document.getElementById('pack-back').addEventListener('click', function(){ if(!opening) packStep('choose'); });
   // ouvrir la sélection de petits paquets : le premier maintenant, le second à la fin de la révélation
   document.getElementById('small-go').addEventListener('click', function(){
-    var picks = smallPicks(); if(!picks.length) return;
-    state.smallQueue = picks.slice(); state.packType = picks[0]; save(); openChosen();
+    var list = picks(); if(!list.length) return;
+    state.smallQueue = packFormat() === 'small' ? list.slice() : []; state.packType = list[0]; save(); openChosen();
   });
   function renderPacks(){
     if(!PACKS.some(function(p){ return p.k === state.packType; })) state.packType = 'serie';
@@ -1346,13 +1375,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-label="' + esc(p.label) + '"><img src="' + packSrc(p.k) + '" alt=""></button>'; }).join('');
     document.getElementById('pc-dots').innerHTML = PACKS.map(function(){ return '<i></i>'; }).join('');
     // toucher le paquet du centre l'ouvre ; toucher un voisin le centre
-    // gros paquet : toucher le paquet du centre l'ouvre ; petits paquets : il se sélectionne. Toucher un voisin le centre.
+    // toucher le paquet du centre le sélectionne (ou le retire) ; toucher un voisin le centre
     [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){
       if(!b.classList.contains('on')){ b.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'}); return; }
-      if(packFormat() === 'small') togglePick(b.getAttribute('data-p')); else openChosen(); }); });
-    var start = el.querySelector('[data-p="' + state.packType + '"]');
-    if(start) el.scrollLeft = start.offsetLeft - (el.clientWidth - start.offsetWidth) / 2;
-    carPack(); paintCarousel();
+      togglePick(b.getAttribute('data-p')); }); });
+    paintCarousel(); centerCarousel();
     var cur = PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0];
     pk.setAttribute('aria-label', 'Déchirer le paquet ' + cur.label);
     document.getElementById('open-title').textContent = cur.label; renderFormats();
@@ -1525,7 +1552,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     setTimeout(function(){
       packEl.classList.remove('charging', 'legend'); document.getElementById('ptilt').classList.remove('shake'); packEl.classList.add('torn'); flash(tease);
       current = commitPack(); idx = 0; seenUpTo = -1;
-      if(packFormat() === 'small' && state.smallQueue && state.smallQueue.length){ state.smallQueue.shift(); state.smallPicks = state.smallQueue.slice(); save(); }
+      if(packFormat() === 'small' && state.smallQueue && state.smallQueue.length){ state.smallQueue.shift(); state.picks = state.smallQueue.slice(); save(); }
       current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); });
       setTimeout(function(){
         revealEl.hidden = false; document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
