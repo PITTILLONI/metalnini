@@ -68,9 +68,11 @@
   <!-- ============ CONNEXION ============ -->
   <section id="v-login" class="card" hidden style="max-width:440px">
     <h2>Connexion</h2>
-    <label for="email">E-mail</label><input id="email" type="email" autocomplete="username">
-    <label for="password">Mot de passe (12 caractères minimum)</label><input id="password" type="password" autocomplete="current-password">
-    <div class="row" style="margin-top:14px"><button id="btn-login" class="fit">Se connecter</button><button id="btn-signup" class="ghost fit">Créer le compte</button></div>
+    <form id="login-form" method="post" action="#" novalidate>
+    <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="username">
+    <label for="password">Mot de passe (12 caractères minimum)</label><input id="password" name="password" type="password" autocomplete="current-password">
+    <div class="row" style="margin-top:14px"><button id="btn-login" type="submit" class="fit">Se connecter</button><button id="btn-signup" type="button" class="ghost fit">Créer le compte</button></div>
+    </form>
     <p id="login-msg" class="msg"></p>
   </section>
 
@@ -93,8 +95,10 @@
   </section>
   <section id="v-mfa-verify" class="card" hidden style="max-width:440px">
     <h2>Double authentification</h2>
-    <label for="code-verify">Code de ton application d'authentification</label><input id="code-verify" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
-    <div class="row" style="margin-top:12px"><button id="btn-verify" class="fit">Valider</button></div>
+    <form id="verify-form" method="post" action="#" novalidate>
+    <label for="code-verify">Code à 6 chiffres</label><input id="code-verify" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+    <div class="row" style="margin-top:12px"><button id="btn-verify" type="submit" class="fit">Valider</button></div>
+    </form>
     <p id="verify-msg" class="msg"></p>
   </section>
 
@@ -178,6 +182,9 @@ async function startEnroll(){
   $('qr').src = data.totp.qr_code; $('secret').textContent = data.totp.secret; $('otp-link').href = data.totp.uri; $('btn-enroll').dataset.f = data.id;
   show('v-mfa-enroll'); $('code-enroll').focus();
 }
+// l'envoi d'un formulaire passe par les mêmes actions que les boutons (Safari mémorise alors les identifiants)
+$('login-form').addEventListener('submit', e => { e.preventDefault(); $('btn-login').click(); });
+$('verify-form').addEventListener('submit', e => { e.preventDefault(); $('btn-verify').click(); });
 $('copy-secret').onclick = async () => {
   try { await navigator.clipboard.writeText($('secret').textContent); say($('enroll-msg'), 'Clé copiée. Colle-la dans « Saisir la clé de configuration ».', true); }
   catch (e) { say($('enroll-msg'), 'Copie impossible : sélectionne la clé à la main.'); }
@@ -195,7 +202,7 @@ $('btn-verify').onclick = async () => {
   route();
 };
 $('btn-recheck').onclick = route;
-['code-enroll','code-verify','password'].forEach(id => $(id).addEventListener('keydown', e => { if(e.key === 'Enter') ({'code-enroll':$('btn-enroll'),'code-verify':$('btn-verify'),'password':$('btn-login')})[id].click(); }));
+$('code-enroll').addEventListener('keydown', e => { if(e.key === 'Enter') $('btn-enroll').click(); });
 
 // ---------------------------------------------------------------- onglets
 const tabs = [...document.querySelectorAll('.tabs button')];
