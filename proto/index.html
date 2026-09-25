@@ -2144,9 +2144,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }).catch(function(){});
   }
   function giftCards(list){
-    var ids = list.map(function(g){ return g.id; }); ids.forEach(function(id){ giftSeen[id] = true; }); ONLINE.markGiftsSeen(ids).catch(function(){});
+    var ids = list.map(function(g){ return g.id; });
     ONLINE.inventory().then(function(rows){
       if(busyScreen()) return; applyInventory(rows);
+      // acquitté seulement une fois la révélation lancée : un écran déjà ouvert ne fait pas perdre le cadeau
+      ids.forEach(function(id){ giftSeen[id] = true; }); ONLINE.markGiftsSeen(ids).catch(function(){});
       current = list.map(function(g){ var k = g.musician_id + '|' + g.rarity, isNew = (state.toPlace || []).indexOf(k) !== -1;
         if(isNew) state.fresh[g.musician_id] = true; return {c:card(g.musician_id), r:g.rarity, isNew:isNew}; });
       save(); renderStats(); idx = 0; seenUpTo = -1;
