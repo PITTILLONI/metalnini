@@ -550,7 +550,8 @@
   #reveal-one{position:relative; z-index:1}
   .pack-desc{margin:4px 0 0; max-width:320px; text-align:center; font-size:.84rem; color:var(--muted); line-height:1.4}
   .pack-desc b{color:var(--text); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; font-weight:500}
-  .uname{position:fixed; inset:0; z-index:70; background:rgba(8,7,6,.97); display:flex; align-items:center; justify-content:center; padding:24px}
+  .uname{position:fixed; inset:0; z-index:70; background:rgba(8,7,6,.97); display:flex; align-items:flex-start; justify-content:center; padding:24px; overflow-y:auto; overscroll-behavior:contain}
+  .uname > *{margin:auto 0}   /* centré s'il y a la place, sinon ça défile depuis le haut */
   .uname-in{width:100%; max-width:380px}
   .splash{position:fixed; inset:0; z-index:90; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:24px;
     background:radial-gradient(ellipse at 50% 45%, #22150f 0%, #0d0a08 62%); transition:opacity .45s ease, visibility .45s}
@@ -567,6 +568,9 @@
   .auth input{margin:6px 0 4px; font-size:1rem; padding:12px 14px}
   .auth label{display:block; font:500 .72rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:10px}
   .auth .links{display:flex; justify-content:space-between; gap:12px; margin-top:14px; font-size:.85rem}
+  .auth-inst{margin-top:18px; padding-top:14px; border-top:1px solid var(--border); text-align:center}
+  .auth-inst button{min-height:44px; padding:0 16px; border:1px solid rgba(235,154,38,.45); border-radius:999px; background:transparent; color:var(--gold-hi); font:600 .84rem var(--mono); cursor:pointer}
+  .auth-inst button[hidden]{display:none} .auth-inst p{margin:6px 0 0; font:500 .78rem/1.4 var(--mono); color:var(--muted)}
   .auth .links button{background:none; border:0; color:var(--gold, #d4a24c); padding:0; font:inherit; cursor:pointer; text-decoration:underline}
   .auth [data-only]{display:none}
   .auth[data-mode="signup"] [data-only~="signup"], .auth[data-mode="login"] [data-only~="login"], .auth[data-mode="forgot"] [data-only~="forgot"],
@@ -809,6 +813,7 @@
       <button type="button" data-only="login forgot" data-go="signup">Créer un compte</button>
       <button type="button" data-only="login" data-go="forgot">Mot de passe oublié</button>
     </div>
+    <div class="auth-inst" id="auth-inst" hidden><button type="button" id="auth-inst-go"></button><p id="auth-inst-tip"></p></div>
   </form>
 </div>
 <script>
@@ -2446,8 +2451,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Installation et notifications ----------
   var VAPID = 'BFwwKTN8wXhWSicqw57pygCIoAgPGq8yUNVFf7ct8vPJbSWwZmciOGCFguIH5Bv_HqzIylv25ULgm3dlh8g4EEo';
   var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  // sur iPhone, seul Safari installe l'app (et donc les notifications) : Chrome, Firefox ou le navigateur d'Instagram renvoient vers Safari
-  var IOS_OTHER = IOS && (/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|FBAN|FBAV|Instagram|Line\/|Snapchat|LinkedInApp|Twitter/.test(navigator.userAgent) || !/Safari\//.test(navigator.userAgent));
+  // sur iPhone, seul Safari installe l'app (et donc les notifications). Certains navigateurs (Arc…) s'annoncent comme Safari :
+  // le bouton « Ouvrir dans Safari » est donc proposé sur tout iPhone ; dans Safari, il rouvre simplement la page
   var installEvt = null, swReg = null;
   function standalone(){ return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
   function pushOk(){ return !!swReg && 'PushManager' in window && 'Notification' in window; }
@@ -2457,10 +2462,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function paintDevice(){
     var inst = standalone();
     document.getElementById('inst-note').textContent = inst ? 'Installée. Bien joué.' : installEvt ? 'En plein écran, sans la barre du navigateur.'
-      : IOS_OTHER ? 'Sur iPhone, l\'installation se fait dans Safari (Partager, puis « Sur l\'écran d\'accueil »).'
-      : IOS ? 'Touche Partager, puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
+      : IOS ? 'Sur iPhone, ça se fait dans Safari : Partager, puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
     document.getElementById('inst-go').hidden = inst || !installEvt;
-    var sf = document.getElementById('inst-safari'); sf.hidden = inst || !IOS_OTHER; sf.href = 'x-safari-' + location.href.split('#')[0];
+    // écran de connexion : le même raccourci, avant même d'avoir un compte (rien sur ordinateur sans installation possible)
+    var ai = document.getElementById('auth-inst'), aiGo = document.getElementById('auth-inst-go'), aiTip = document.getElementById('auth-inst-tip');
+    ai.hidden = inst || !(installEvt || IOS);
+    aiGo.textContent = IOS ? 'Ouvrir dans Safari pour installer l\'app' : 'Installer l\'app sur ton téléphone';
+    aiTip.textContent = IOS ? 'Déjà dans Safari ? Partager, puis « Sur l\'écran d\'accueil ».' : 'En plein écran, avec les notifications.';
+    var sf = document.getElementById('inst-safari'); sf.hidden = inst || !IOS; sf.href = 'x-safari-' + location.href.split('#')[0];
     var perm = 'Notification' in window ? Notification.permission : 'default', box = document.getElementById('s-push');
     var why = !ONLINE ? 'Connecte-toi pour recevoir les notifications.' : IOS && !inst ? 'Sur iPhone, installe d\'abord l\'app sur l\'écran d\'accueil.'
       : !pushOk() ? 'Ton navigateur ne gère pas les notifications.' : perm === 'denied' ? 'Notifications bloquées dans les réglages du navigateur ou du téléphone.' : '';
@@ -2472,6 +2481,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var url = location.href.split('#')[0];
     setTimeout(function(){ if(document.hidden) return;
       (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Colle-le dans Safari.'); }, function(){ toast('Ouvre Safari et va sur ' + esc(url)); }); }, 1200);
+  });
+  document.getElementById('auth-inst-go').addEventListener('click', function(){
+    if(IOS){ document.getElementById('inst-safari').click(); return; }   // le lien x-safari et son secours « lien copié »
+    document.getElementById('inst-go').click();
   });
   document.getElementById('inst-go').addEventListener('click', function(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.then(function(){ installEvt = null; paintDevice(); }); });
   function vapidKey(){ var s = VAPID.replace(/-/g, '+').replace(/_/g, '/'), raw = atob(s + '='.repeat((4 - s.length % 4) % 4)), out = new Uint8Array(raw.length); for(var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i); return out; }
@@ -2493,6 +2506,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     swReg.pushManager.getSubscription().then(function(sub){ if(sub){ var j = sub.toJSON(); return ONLINE.savePush(j.endpoint, j.keys.p256dh, j.keys.auth); } }).catch(function(){});
   }
   document.getElementById('s-push').addEventListener('change', function(){ if(this.checked) enablePush(); else disablePush(); });
+  paintDevice();
   function renderSettings(){
     document.getElementById('acct').innerHTML = ONLINE ? 'Connecté au serveur en tant que <b>' + esc(state.username || '…') + '</b>. Paquets tirés par le serveur ; probabilités, taille des paquets et coût de fusion réglés depuis l\'admin.'
                                                      : 'Hors ligne : collection gardée sur cet appareil, réglages ci-dessous modifiables.';
