@@ -75,7 +75,7 @@
   }
   .home{display:flex; flex-direction:column; min-height:calc(100dvh - 90px - env(safe-area-inset-bottom))}
   #v-packs[data-step="choose"] .pack-zone{display:none}
-  #v-packs[data-step="open"] .quests, #v-packs[data-step="open"] .home-title, #v-packs[data-step="open"] .choose{display:none}
+  #v-packs[data-step="open"] .quests, #v-packs[data-step="open"] .home-title, #v-packs[data-step="open"] .choose, #v-packs[data-step="open"] .formats, #v-packs[data-step="open"] #fmt-lock, #v-packs[data-step="open"] .bonus-line{display:none}
   /* choix du paquet : carrousel, le paquet du centre en avant, sa description dessous */
   .choose{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px 0 16px}
   .pack-car{position:relative; width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:16px 0 20px; --pw:max(100px, min(50vw, 220px, calc((100dvh - 590px) * .58)))}
@@ -98,7 +98,7 @@
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
-  .formats{display:flex; gap:10px; margin:12px auto 0; width:100%; max-width:420px}
+  .formats{display:flex; gap:10px; margin:14px auto 0; width:100%; max-width:420px}
   .formats button{flex:1; min-height:48px; padding:6px 8px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; text-align:center}
   .formats button b{display:block; font:700 .9rem var(--mono)} .formats button small{display:block; margin-top:2px; font:500 .72rem var(--mono); color:var(--muted)}
   .formats button[aria-checked="true"]{border-color:var(--gold); background:rgba(237,164,43,.1)} .formats button[aria-checked="true"] b{color:var(--gold-hi)}
@@ -110,7 +110,7 @@
     .home .hud{padding-bottom:6px} .quest-dots{display:none} .goal.quest{min-height:46px; padding:7px 12px}
     .home-title{font-size:1.45rem; margin-top:12px}
     .choose{padding:0 0 8px} .pack-car{padding:10px 0 12px} .pack-info{min-height:0; padding-top:8px} .pack-info h2{font-size:1.45rem} .pack-info p{font-size:.84rem}
-    .formats{margin-top:8px} .formats button{min-height:48px; padding:6px 8px} .small-go{margin-top:8px}
+    .formats button{min-height:48px; padding:6px 8px} .small-go{margin-top:8px}
     #pc-dots{display:none}
     .pack-car{--pw:max(96px, calc((100dvh - 470px) * .58))}
     #v-packs[data-step="choose"] .quests{display:none}
@@ -579,8 +579,13 @@
     <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
   <div class="quests" id="goal" hidden></div>
-  <h1 class="home-title" id="home-title">Choisis ton paquet du jour</h1>
+  <h1 class="home-title" id="home-title">Cartes du jour</h1>
   <p class="bonus-line" id="bonus-line" hidden></p>
+  <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
+    <button type="button" role="radio" data-f="big"><b>1 standard</b><small>5 cartes</small></button>
+    <button type="button" role="radio" data-f="small"><b>2 mini</b><small>2 cartes, + de chances</small></button>
+  </div>
+  <p class="small-hint" id="fmt-lock" hidden></p>
   <div class="choose">
     <div class="car-wrap">
       <button type="button" class="car-arrow prev" id="car-prev" aria-label="Paquet précédent">‹</button>
@@ -589,11 +594,6 @@
     </div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
     <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-wait" id="pc-wait" hidden></p></div>
-    <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
-      <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
-      <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes, + de chances</small></button>
-    </div>
-    <p class="small-hint" id="fmt-lock" hidden></p>
     <button type="button" class="btn block small-go" id="small-go" hidden></button>
 
   </div>
@@ -794,7 +794,7 @@
   <div class="modal-in">
     <p class="eyebrow">Cadeau de bienvenue</p>
     <img class="wl-pack" src="cards/pack-serie.jpg" alt="">
-    <h2 id="wl-t">Un gros paquet offert !</h2>
+    <h2 id="wl-t">Un paquet standard offert !</h2>
     <p>Tu viens de ranger tes premières cartes. Pour fêter ton arrivée dans le pit, on remet ça tout de suite.</p>
     <div class="modal-actions"><button type="button" class="btn" id="wl-go">Ouvrir mon cadeau</button><button type="button" class="btn ghost" id="wl-later">Plus tard</button></div>
   </div>
@@ -1407,7 +1407,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(pickMax() === 1) list = mine ? [] : [k];
     else if(list.length < pickMax() && mine < 2) list.push(k);
     else if(mine) list = list.filter(function(x){ return x !== k; });
-    else { toast('Deux petits paquets max, fraté. Retire-en un pour changer.'); return; }
+    else { toast('Deux minis max, fraté. Retire-en un pour changer.'); return; }
     state.picks = list; save(); paintCarousel(); buzz([12]);
   }
   // carrousel : visuels MINI en mode petit, badges sur les paquets choisis (la sélection se fait et se défait dans le carrousel)
@@ -1421,8 +1421,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(n > 0) x.insertAdjacentHTML('beforeend', '<span class="pick-n">' + (n > 1 ? '×2' : small ? nums[0] : '✓') + '</span>');
       x.setAttribute('aria-pressed', String(n > 0));
     });
-    var closed = state.packsLeft === 0, go = document.getElementById('small-go'); go.hidden = closed; go.disabled = !list.length;
-    go.textContent = !list.length ? 'Choisis un paquet' : !small ? 'Ouvrir le gros paquet' : list.length > 1 ? 'Ouvrir mes 2 petits paquets' : 'Ouvrir mon petit paquet';
+    var closed = state.packsLeft === 0, go = document.getElementById('small-go'); go.hidden = closed; go.style.visibility = list.length ? '' : 'hidden';   // place gardée : le carrousel ne bouge pas quand le bouton apparaît
+    go.textContent = !small ? 'Ouvrir le paquet standard' : list.length > 1 ? 'Ouvrir mes 2 minis' : 'Ouvrir mon mini';
   }
   function packSrc(k){ return 'cards/pack-' + k + (packFormat() === 'small' && (window.METALNINI_MINIS || {})[k] ? '-mini' : '') + '.jpg'; }
   function packFormat(){ return state.packsLeft === 1 ? 'small' : (state.packFormat || 'big'); }
@@ -1431,7 +1431,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // un paquet déjà tiré sur le serveur ne s'annule pas : on le dit, et on propose de l'ouvrir
     var lock = document.getElementById('fmt-lock'); lock.hidden = !locked;
     if(locked){ var lp = PACKS.filter(function(p){ return p.k === state.pendingType; })[0];
-      lock.innerHTML = 'Ton ' + (state.pendingFormat === 'small' ? 'petit paquet' : 'paquet') + (lp ? ' ' + esc(lp.label) : '') + ' est déjà tiré : ses cartes sont à toi. <button type="button" class="link" id="fmt-open">L\'ouvrir</button> <button type="button" class="link" id="fmt-skip">Le mettre de côté</button>';
+      lock.innerHTML = 'Ton ' + (state.pendingFormat === 'small' ? 'mini' : 'paquet') + (lp ? ' ' + esc(lp.label) : '') + ' est déjà tiré : ses cartes sont à toi. <button type="button" class="link" id="fmt-open">L\'ouvrir</button> <button type="button" class="link" id="fmt-skip">Le mettre de côté</button>';
       document.getElementById('fmt-open').onclick = function(){ state.packType = state.pendingType; state.packFormat = state.pendingFormat || 'big'; save(); openChosen(); };
       // mettre de côté : pas de révélation, les cartes (déjà dans la collection côté serveur) attendent dans « À ranger »
       document.getElementById('fmt-skip').onclick = function(){
@@ -1449,23 +1449,23 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     pk.classList.toggle('mini', f === 'small');
     pk.style.setProperty('--pimg', 'url(' + packSrc(state.packType) + ')');
     pk.style.setProperty('--pa', mini || (window.METALNINI_PACKS || {})[state.packType] || .5783);
-    document.getElementById('pack').setAttribute('aria-label', 'Déchirer ' + (f === 'small' ? 'le petit paquet' : 'le paquet'));
+    document.getElementById('pack').setAttribute('aria-label', 'Déchirer ' + (f === 'small' ? 'le mini' : 'le paquet'));
   }
   // fin de révélation : ce qu'il reste pour aujourd'hui
   function paintNext(){
     var nx = document.getElementById('rev-next'); nx.hidden = state.packsLeft !== 0 && state.packsLeft !== 1;
-    nx.textContent = state.packsLeft === 1 ? 'Il te reste un petit paquet aujourd\'hui.' : 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.';
+    nx.textContent = state.packsLeft === 1 ? 'Il te reste un mini aujourd\'hui.' : 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.';
   }
   function renderDaily(){
     var closed = state.packsLeft === 0, box = document.querySelector('.choose');
     box.classList.toggle('closed', closed);
-    document.getElementById('home-title').textContent = closed ? 'Le merch est fermé' : state.packsLeft === 1 ? 'Il te reste un petit paquet' : 'Choisis ton paquet du jour';
+    document.getElementById('home-title').textContent = closed ? 'Le merch est fermé' : state.packsLeft === 1 ? 'Il te reste un mini' : 'Cartes du jour';
     // le compteur du jour peut arriver après la dernière carte : on met aussi à jour la fin de révélation
     if(!document.getElementById('to-binder').hidden) paintNext();
     renderFormats();
     // points bonus (paquet de bienvenue ou cadeau) : ils servent une fois le paquet du jour ouvert
     var bl = document.getElementById('bonus-line'), bn = state.packsLeft === null ? 0 : (state.bonus || 0);
-    bl.hidden = !bn; bl.textContent = bn >= 2 ? 'Cadeau : un gros paquet en plus t\'attend, en bonus.' : 'Cadeau : un petit paquet en plus t\'attend, en bonus.';
+    bl.hidden = !bn; bl.textContent = bn >= 2 ? 'Cadeau : un paquet standard en plus t\'attend, en bonus.' : 'Cadeau : un mini en plus t\'attend, en bonus.';
     var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
     wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.' : '';
   }
@@ -1806,7 +1806,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // deuxième petit paquet en attente : on l'enchaîne, le rangement passe en second
     var nextK = (state.smallQueue || [])[0], ns = document.getElementById('next-small'), nextP = PACKS.filter(function(p){ return p.k === nextK; })[0];
     ns.hidden = !nextP; document.getElementById('to-binder').classList.toggle('ghost', !!nextP);
-    if(nextP) ns.textContent = 'Ouvrir le 2e petit paquet maintenant · ' + nextP.label;
+    if(nextP) ns.textContent = 'Ouvrir le 2e mini maintenant · ' + nextP.label;
     document.getElementById('to-binder').textContent = nextP ? 'Plus tard, je range mes cartes' : 'Ranger dans le classeur';
     // quand revenir : le paquet du jour vient d'être ouvert (en ligne, hors compte illimité)
     paintNext();
