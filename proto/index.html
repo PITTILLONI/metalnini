@@ -1489,6 +1489,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var COLORS = {commune:'#c9c3b8', rare:'#3b82f6', holo:'#a78bfa', signature:'#f5c542', legendaire:'#ef4444'};
   var CHARGE = {commune:0, rare:350, holo:850, signature:1400, legendaire:2300};
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FINE = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;   // souris : clic au lieu du glissé
+  if(FINE) document.querySelector('.swipe-hint').textContent = 'Clique sur le paquet pour l\'ouvrir';
   var hapticLabel = document.getElementById('haptic');
   function tick(){ try{ hapticLabel.click(); }catch(e){} }
   function buzz(p){
@@ -1513,7 +1515,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function setTear(v){ packEl.style.setProperty('--tear', v.toFixed(3)); }
   function prepTease(){ packEl.style.setProperty('--tease', COLORS[bestOf(pendingPack())]); }
   packEl.addEventListener('pointerdown', function(e){
-    if(opening) return; if(pTarget && pTarget.root.id === 'pack-root') clearTarget(); packEl.style.transform = '';
+    if(opening) return;
+    if(e.pointerType === 'mouse'){ packEl.style.transform = ''; prepTease(); autoTear(); return; } if(pTarget && pTarget.root.id === 'pack-root') clearTarget(); packEl.style.transform = '';
     prepTease(); askMotion(); tick();
     drag = {x0:e.clientX, w:packEl.getBoundingClientRect().width, moved:false};
     packEl.setPointerCapture(e.pointerId);
@@ -1597,7 +1600,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     revealEl.classList.remove('dim'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
-    document.getElementById('hint').textContent = 'Glisse pour la retourner. Ça mord pas.';
+    document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la retourner. Ça mord pas.';
     renderDeck();
     document.getElementById('flip-img').src = img(x.c.id, x.r);
     document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
@@ -1659,7 +1662,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r);
         if(rank(r) >= 3){ ring(r); quake(); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; seenUpTo = Math.max(seenUpTo, idx); renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
-        document.getElementById('hint').textContent = 'Glisse pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
+        document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
         if(idx === current.length - 1) showDone();
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
@@ -1715,7 +1718,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
     document.getElementById('card-info').classList.add('on'); renderDeck(); setTarget(document.getElementById('pile'), tilt, x.r);
-    if(seenUpTo >= current.length - 1) showDone(); else document.getElementById('hint').textContent = 'Glisse pour la suivante';
+    if(seenUpTo >= current.length - 1) showDone(); else document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante';
   }
   document.getElementById('deck').addEventListener('click', function(e){ var t = e.target.closest('[data-i]'); if(t) viewCard(+t.getAttribute('data-i')); });
   document.getElementById('deck').addEventListener('keydown', function(e){ var t = e.target.closest('[data-i]'); if(t && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); viewCard(+t.getAttribute('data-i')); } });
@@ -1784,6 +1787,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var g = null;
   stage.addEventListener('pointerdown', function(e){
     if(busy || revealEl.hidden) return;
+    if(e.pointerType === 'mouse'){ tapCard(); return; }
     g = {x0:e.clientX, y0:e.clientY, w:stage.getBoundingClientRect().width, moved:false, a:0, dx:0, t0:performance.now()};
     stage.setPointerCapture(e.pointerId);
     flip.style.transition = 'none'; stage.style.transition = 'none';
