@@ -164,6 +164,8 @@
     border:1px solid rgba(237,164,43,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
+  .welcome .wl-pack{display:block; width:120px; margin:6px auto 14px; filter:drop-shadow(0 0 22px rgba(237,164,43,.55)) drop-shadow(0 14px 22px rgba(0,0,0,.6)); animation:wlpop .7s cubic-bezier(.2,1.5,.4,1) both}
+  @keyframes wlpop{0%{transform:scale(.4) rotate(-12deg); opacity:0}100%{transform:none; opacity:1}}
   .profile-page{padding:calc(16px + env(safe-area-inset-top)) 0 24px}
   .profile-page h1{font-size:2.4rem; margin:0 0 18px}
   .pf-id{display:flex; align-items:center; gap:16px; margin-bottom:16px}
@@ -558,7 +560,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -781,6 +783,15 @@
     <p class="eyebrow">Ordre des cases</p>
     <div class="opts" role="radiogroup" aria-label="Ordre"><button type="button" role="radio" data-dir="asc">N° croissant</button><button type="button" role="radio" data-dir="desc">N° décroissant</button></div>
     <button type="button" class="btn block" id="sort-done">OK</button>
+  </div>
+</div>
+<div class="modal welcome" id="welcome" hidden role="dialog" aria-modal="true" aria-labelledby="wl-t">
+  <div class="modal-in">
+    <p class="eyebrow">Cadeau de bienvenue</p>
+    <img class="wl-pack" src="cards/pack-serie.jpg" alt="">
+    <h2 id="wl-t">Un gros paquet offert !</h2>
+    <p>Tu viens de ranger tes premières cartes. Pour fêter ton arrivée dans le pit, on remet ça tout de suite.</p>
+    <div class="modal-actions"><button type="button" class="btn" id="wl-go">Ouvrir mon cadeau</button><button type="button" class="btn ghost" id="wl-later">Plus tard</button></div>
   </div>
 </div>
 <div class="modal" id="confirm" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirm-t" aria-describedby="confirm-d">
@@ -1869,6 +1880,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function placed(id){ var tp = state.toPlace || [], b = null; RARITIES.forEach(function(r){ var k = id+'|'+r.k; if(state.owned[k] && tp.indexOf(k) === -1) b = r.k; }); return b; }
   function renderTray(){
     var tp = (state.toPlace || []).filter(function(k){ return state.owned[k]; }); state.toPlace = tp;
+    if(!tp.length && placedSome && !state.welcomeDone && ONLINE && (state.bonus || 0) >= 2){ placedSome = false; setTimeout(showWelcome, 900); }
     var tray = document.getElementById('tray'); tray.hidden = !tp.length || document.getElementById('v-binder').hidden;
     document.body.classList.toggle('placing', !tray.hidden);
     document.getElementById('tray-n').textContent = 'À ranger · ' + tp.length;
@@ -1938,7 +1950,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('df-go').onclick = function(e){ e.stopPropagation(); end(function(){ fuse(id, tfFrom); }); };
     document.getElementById('df-later').onclick = function(e){ e.stopPropagation(); end(); };
   }
-  function finishPlace(k){ state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
+  // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
+  var placedSome = false;
+  function showWelcome(){ if(!revealEl.hidden || !document.getElementById('dupfx').hidden) return; document.getElementById('welcome').hidden = false; buzz(HAPTIC.holo); }
+  document.getElementById('wl-go').addEventListener('click', function(){
+    document.getElementById('welcome').hidden = true; state.welcomeDone = true; state.packFormat = 'big'; state.picks = ['serie']; state.packType = 'serie'; save();
+    go('packs'); openChosen();
+  });
+  document.getElementById('wl-later').addEventListener('click', function(){ document.getElementById('welcome').hidden = true; state.welcomeDone = true; save(); });
+  function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
   document.getElementById('tray-all').addEventListener('click', function(){
     (function one(){ var tp = state.toPlace || []; if(!tp.length) return; var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
@@ -2194,7 +2214,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'power-sheet', 'confirm', 'dupfx', 'reveal'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;
