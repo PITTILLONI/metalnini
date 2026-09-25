@@ -577,6 +577,7 @@
       <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
       <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes chacun, plus de chances</small></button>
     </div>
+    <p class="small-hint" id="fmt-lock" hidden></p>
     <button type="button" class="btn block small-go" id="small-go" hidden></button>
 
   </div>
@@ -1289,7 +1290,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function packSrc(k){ return 'cards/pack-' + k + (packFormat() === 'small' && (window.METALNINI_MINIS || {})[k] ? '-mini' : '') + '.jpg'; }
   function packFormat(){ return state.packsLeft === 1 ? 'small' : (state.packFormat || 'big'); }
   function renderFormats(){
-    var f = packFormat(), locked = ONLINE && state.pending && state.pending.length;
+    var f = packFormat(), locked = !!(ONLINE && state.pending && state.pending.length);
+    // un paquet déjà tiré sur le serveur ne s'annule pas : on le dit, et on propose de l'ouvrir
+    var lock = document.getElementById('fmt-lock'); lock.hidden = !locked;
+    if(locked){ var lp = PACKS.filter(function(p){ return p.k === state.pendingType; })[0];
+      lock.innerHTML = 'Ton ' + (state.pendingFormat === 'small' ? 'petit paquet' : 'paquet') + (lp ? ' ' + esc(lp.label) : '') + ' est déjà tiré. Ouvre-le pour pouvoir changer de format. <button type="button" class="link" id="fmt-open">L\'ouvrir</button>';
+      document.getElementById('fmt-open').onclick = function(){ state.packType = state.pendingType; state.packFormat = state.pendingFormat || 'big'; save(); openChosen(); }; }
     [].forEach.call(document.querySelectorAll('#formats [data-f]'), function(b){
       var k = b.getAttribute('data-f');
       b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
