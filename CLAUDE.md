@@ -35,4 +35,4 @@ Projet perso (hors United Heroes) : collection de cartes de musiciens metal et r
 - Back-end Supabase `mdnevzmczljycmgbsrsu` : migrations 0001 à 0015 appliquées ; 38 musiciens, 190 cartes.
 - Cartes : recette Krea (Nano Banana Pro, photo de référence + style « The Priest ») ; raretés avec `tools/krea_rarities.sh` ; images allégées avec `tools/build_proto_cards.py`, galerie avec `tools/build_gallery.py`, seed avec `tools/gen_seed.py`.
 - En attente : TestFlight (inscription Apple Developer), inscription par e-mail dans l'app iOS, domaine d'e-mail dédié, paquets dédiés aux nouveaux styles, musique de fond (piste libre de droits à choisir), sons de révélation (cris enregistrés ou banques CC0, jamais d'extraits de morceaux).
-- Backlog : « Blind test des growls » (retrouver des growls célèbres), sous réserve de licences ou de réinterprétations ; détail dans le README.
+- Backlog : « Blind test des growls » (retrouver des growls célèbres), sous réserve de licences ou de réinterprétations ; carte en fond d'écran de téléphone ; détail dans le README.
