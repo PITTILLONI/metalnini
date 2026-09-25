@@ -96,11 +96,19 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const nNew = (state().toPlace || []).length;
   check('bac « À ranger » affiché avec les nouvelles cartes', !d.getElementById('tray').hidden && d.querySelectorAll('#tray-cards button').length === nNew && nNew > 0, nNew + ' à ranger');
   check('classeur « Toutes les cartes » ouvert', /Toutes les cartes/.test(d.getElementById('binder-title').textContent));
-  d.getElementById('tray-all').click(); await sleep(700);
-  check('rangement : la carte s\'affiche en grand et attend un toucher', !d.getElementById('dupfx').hidden && /Touche la carte/.test(d.getElementById('df-skip').textContent), d.getElementById('df-skip').textContent);
+  // une carte touchée dans le bac : rangement pas à pas, la carte en grand attend un toucher
+  d.querySelector('#tray-cards button').click(); await sleep(700);
+  check('rangement à l\'unité : la carte s\'affiche en grand et attend un toucher', !d.getElementById('dupfx').hidden && /Touche la carte/.test(d.getElementById('df-skip').textContent), d.getElementById('df-skip').textContent);
   await sleep(1500);
-  check('rangement : rien ne part tout seul', !d.getElementById('dupfx').hidden);
-  await placeAll(d, state);
+  check('rangement à l\'unité : rien ne part tout seul', !d.getElementById('dupfx').hidden);
+  d.getElementById('dupfx').click(); await sleep(1400);
+  // « Tout ranger d'un coup » : distribution automatique, sans écran par carte
+  const left0 = (state().toPlace || []).length;
+  d.getElementById('tray-all').click(); await sleep(400);
+  check('tout ranger : distribution sans écran par carte', d.getElementById('dupfx').hidden);
+  for (let t = 0; t < 100 && (state().toPlace || []).length; t++) await sleep(100);
+  await sleep(300);
+  check('tout ranger : ' + left0 + ' cartes distribuées en quelques secondes', (state().toPlace || []).length === 0);
   check('tout est rangé', (state().toPlace || []).length === 0 && d.getElementById('tray').hidden);
   const owned = state().owned;
   const ownedIds = new Set(Object.keys(owned).filter(k => owned[k] > 0).map(k => k.split('|')[0]));

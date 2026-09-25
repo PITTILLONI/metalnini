@@ -256,6 +256,7 @@
   .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
   @keyframes comboshake{50%{translate:4px 0}}
+  .card-info .bio{margin:6px auto 0; max-width:320px; font:500 .84rem/1.4 var(--mono); color:var(--muted)}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
   .tag.new{background:var(--gold); color:#111}
@@ -725,7 +726,7 @@
       </div>
     </div>
     </div>
-    <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div></div>
+    <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div><p class="bio" id="ci-bio"></p></div>
     <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
     <button type="button" class="btn block rev-done" id="next-small" hidden></button>
@@ -1014,6 +1015,52 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     hammett:['Musée de l\'horreur', 'Sa collection d\'objets de films d\'horreur a été exposée dans un vrai musée.'],
     mercury:['Live Aid', 'Son concert de Live Aid en 1985 reste l\'un des plus célèbres de l\'histoire du rock.'],
     'gerard-way':['Umbrella Academy', 'Il a écrit la BD The Umbrella Academy, adaptée en série.']
+  };
+  // présentation courte de l'artiste ou du groupe (faits établis), affichée à la révélation
+  var BIOS = {
+    'knocked-loose':'Chanteur de Knocked Loose, groupe de hardcore du Kentucky formé en 2013, connu pour ses breakdowns écrasants.',
+    'isaac-hale':'Guitariste et choriste de Knocked Loose, groupe de hardcore du Kentucky formé en 2013.',
+    jinjer:'Chanteuse de Jinjer, groupe de metal progressif ukrainien formé en 2008.',
+    spiritbox:'Cofondatrice de Spiritbox en 2017, groupe de metalcore canadien de Victoria.',
+    landmvrks:'Chanteur de Landmvrks, groupe de metalcore de Marseille.',
+    ramos:'Chanteur de Lorna Shore depuis 2021, groupe de deathcore du New Jersey.',
+    heriot:'Chanteuse et guitariste de Heriot, groupe de metalcore britannique.',
+    duplantier:'Batteur de Gojira, groupe de metal des Landes fondé avec son frère Joe.',
+    blink182:'Batteur de Blink-182, groupe de pop punk californien formé en 1992.',
+    hoppus:'Bassiste et chanteur, cofondateur de Blink-182 en 1992 en Californie.',
+    hendrix:'Guitariste américain, figure majeure du rock des années 1960, disparu en 1970.',
+    korn:'Chanteur de Korn, groupe de Bakersfield pionnier du nu metal dans les années 1990.',
+    poppy:'Chanteuse américaine révélée par d\'étranges vidéos YouTube, passée de la pop au metal.',
+    slash:'Guitariste de Guns N\' Roses, groupe de hard rock de Los Angeles formé en 1985.',
+    zack:'Chanteur de Rage Against the Machine, groupe de Los Angeles mêlant rap, metal et textes engagés.',
+    frusciante:'Guitariste des Red Hot Chili Peppers, groupe de funk rock de Los Angeles.',
+    root:'Guitariste de Slipknot, le groupe masqué de l\'Iowa.',
+    jordison:'Batteur fondateur de Slipknot, le groupe masqué de l\'Iowa ; disparu en 2021.',
+    dickinson:'Chanteur d\'Iron Maiden, figure de la nouvelle vague du heavy metal britannique.',
+    halford:'Chanteur de Judas Priest, groupe de Birmingham ; surnommé le Metal God.',
+    ozzy:'Chanteur de Black Sabbath, groupe de Birmingham souvent considéré comme l\'inventeur du heavy metal.',
+    lemmy:'Bassiste et chanteur, fondateur de Motörhead en 1975 ; disparu en 2015.',
+    hetfield:'Chanteur et guitariste, cofondateur de Metallica en 1981 à Los Angeles.',
+    mustaine:'Fondateur de Megadeth en 1983, l\'un des quatre grands du thrash.',
+    araya:'Bassiste et chanteur de Slayer, pilier du thrash californien formé en 1981.',
+    'scott-ian':'Guitariste fondateur d\'Anthrax, groupe de thrash new-yorkais formé en 1981.',
+    cobain:'Chanteur et guitariste de Nirvana, qui a porté le grunge au sommet ; disparu en 1994.',
+    cornell:'Chanteur de Soundgarden, pionnier du grunge de Seattle ; disparu en 2017.',
+    staley:'Chanteur d\'Alice in Chains, groupe grunge de Seattle ; disparu en 2002.',
+    grohl:'Ancien batteur de Nirvana, fondateur des Foo Fighters en 1994.',
+    keenan:'Chanteur de Tool, groupe de metal progressif de Los Angeles formé en 1990.',
+    'white-gluz':'Chanteuse canadienne d\'Arch Enemy depuis 2014, groupe suédois de death metal mélodique.',
+    corpsegrinder:'Chanteur de Cannibal Corpse depuis 1995, groupe de death metal américain formé en 1988.',
+    tankian:'Chanteur de System of a Down, groupe de metal alternatif de Los Angeles.',
+    sykes:'Chanteur de Bring Me the Horizon, groupe de Sheffield passé du deathcore au rock alternatif.',
+    hayley:'Chanteuse de Paramore, groupe du Tennessee formé en 2004.',
+    armstrong:'Chanteur et guitariste de Green Day, groupe punk californien formé en 1987.',
+    angus:'Guitariste d\'AC/DC, groupe australien fondé en 1973 avec son frère Malcolm.',
+    dio:'Voix de Rainbow, de Black Sabbath puis de Dio ; légende du heavy metal disparue en 2010.',
+    doro:'Chanteuse allemande révélée dans les années 1980 avec Warlock.',
+    hammett:'Guitariste soliste de Metallica depuis 1983.',
+    mercury:'Chanteur de Queen, groupe britannique formé en 1970 ; disparu en 1991.',
+    'gerard-way':'Chanteur de My Chemical Romance, groupe du New Jersey, figure de l\'emo des années 2000.'
   };
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
@@ -1627,7 +1674,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
     document.getElementById('glow').setAttribute('data-r', x.r);
     document.getElementById('sheen').setAttribute('data-r', x.r);
-    document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = '';
+    document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = ''; document.getElementById('ci-bio').textContent = '';
   }
   var LINES = {
     commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Commune. Même le roadie en a une.', 'Commune. Tiède comme une bière de festival.', 'Wallah, c\'est une Commune.', 'C\'est carré. Mais c\'est gris.', 'Le public applaudit. Poliment.', 'Askip ça vaut rien. Askip.', 'Ma gueule, c\'est la base. On respecte.', 'Première partie, au mieux.'],
@@ -1652,6 +1699,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     line.classList.remove('go'); void line.offsetWidth; if(!reduce) line.classList.add('go'); else line.style.opacity = 1;
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
+    document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
   }
   // la pile : les cartes pas encore retournées, légèrement décalées sous celle du dessus
   function offset(i){ return 'translate(' + (i*3) + 'px,' + (i*4) + 'px) rotate(' + ((i%2 ? 1 : -1) * i * .8) + 'deg)'; }
@@ -1738,6 +1786,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     renderUnders(); document.getElementById('counter').textContent = 'Carte ' + (i + 1) + ' / ' + current.length;
     var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
+    document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
     document.getElementById('card-info').classList.add('on'); renderDeck(); setTarget(document.getElementById('pile'), tilt, x.r);
     if(seenUpTo >= current.length - 1) showDone(); else document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante';
   }
@@ -1904,17 +1953,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var b = binderOf(state.binder); if(!state.binderOpen || b.ids.indexOf(id) === -1){ openBinder(b.ids.indexOf(id) === -1 ? 'all' : b.k); renderBinder(); }
     var slot = document.querySelector('#grid .slot[data-id="' + id + '"]'); if(!slot){ finishPlace(k); if(done) done(); return; }
     var before = placed(id);   // rareté déjà rangée pour ce musicien, avant ce rangement
-    placing = true; slot.scrollIntoView({block:'center', behavior: reduce ? 'auto' : 'smooth'});
-    // carte déjà possédée : d'abord le bonus en plein écran, puis la carte file vers son emplacement
-    if(!reduce){ placeFx(id, r, before, function(rect, then){ fly(rect, then); }); return; }
-    setTimeout(function(){ fly(null); }, reduce ? 0 : 260);
+    placing = true; slot.scrollIntoView({block:'center', behavior: reduce || dealing ? 'auto' : 'smooth'});
+    // rangement à l'unité : la carte en grand avec son bonus, puis elle file vers son emplacement
+    if(!reduce && !dealing){ placeFx(id, r, before, function(rect, then){ fly(rect, then); }); return; }
+    setTimeout(function(){ fly(null); }, reduce ? 0 : dealing ? 60 : 260);
     function fly(rect, then){
       var fr = rect || (fromEl || document.getElementById('tray')).getBoundingClientRect(), to = slot.querySelector('.img').getBoundingClientRect();
       var fl = document.createElement('div'); fl.className = 'flyer'; fl.innerHTML = '<img src="' + img(id, r) + '" alt="">';
       fl.style.left = to.left + 'px'; fl.style.top = to.top + 'px'; fl.style.width = to.width + 'px'; fl.style.height = to.height + 'px';
       fl.style.transform = 'translate(' + (fr.left + fr.width/2 - to.left - to.width/2) + 'px,' + (fr.top + fr.height/2 - to.top - to.height/2) + 'px) scale(' + Math.max(.3, fr.width / to.width) + ') rotate(-8deg)';
       fl.style.transition = 'none'; document.body.appendChild(fl); void fl.offsetWidth;
-      fl.style.transition = ''; fl.style.transform = 'none';
+      fl.style.transition = dealing ? 'transform .32s cubic-bezier(.3,.7,.2,1)' : ''; fl.style.transform = 'none';
       setTimeout(function(){
         fl.remove(); finishPlace(k);
         var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]');
@@ -1930,8 +1979,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         var comps = newCompletions(), mast = newMasteries();
         comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Carte Collector et badge dans ta poche.'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
-        if(then) setTimeout(then, 700); else if(done) setTimeout(done, 380);
-      }, reduce ? 0 : 560);
+        if(then) setTimeout(then, 700); else if(done) setTimeout(done, dealing ? 120 : 380);
+      }, reduce ? 0 : dealing ? 330 : 560);
     }
   }
   // rangement pas à pas : chaque carte s'affiche en grand avec son bonus ; un toucher la range et passe à la suivante
@@ -1970,8 +2019,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('wl-later').addEventListener('click', function(){ document.getElementById('welcome').hidden = true; state.welcomeDone = true; save(); });
   function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
+  var dealing = false;
   document.getElementById('tray-all').addEventListener('click', function(){
-    (function one(){ var tp = state.toPlace || []; if(!tp.length) return; var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
+    if(dealing || placing) return; dealing = true; buzz([10]);
+    (function one(){ var tp = state.toPlace || []; if(!tp.length){ dealing = false; return; } var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
   });
   function mastered(id){ var tp = state.toPlace || []; return RARITIES.every(function(r){ var k = id+'|'+r.k; return state.owned[k] && tp.indexOf(k) === -1; }); }
   function newMasteries(){
