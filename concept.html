@@ -130,6 +130,18 @@
   td:first-child{color:var(--text);}
 
   /* ---------- DA : édito ---------- */
+  .doc .timeline{list-style:none; margin:20px 0 10px; padding:0; position:relative}
+  .timeline::before{content:""; position:absolute; left:9px; top:8px; bottom:8px; width:2px; background:var(--border)}
+  .tl-item{position:relative; padding:0 0 26px 38px}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-dot{position:absolute; left:2px; top:5px; width:16px; height:16px; border-radius:50%; border:2px solid var(--text-muted); background:var(--bg)}
+  .tl-item.done .tl-dot{background:var(--t-decision); border-color:var(--t-decision)}
+  .tl-item.now .tl-dot{border-color:var(--t-decision); box-shadow:0 0 0 5px rgba(205,164,78,0.18)}
+  .tl-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; margin-bottom:6px}
+  .tl-head h3{margin:0}
+  .tl-status{font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:2px 9px; border-radius:999px; border:1px solid var(--border); color:var(--text-muted)}
+  .tl-item.done .tl-status, .tl-item.now .tl-status{color:var(--t-decision); border-color:rgba(205,164,78,0.45)}
+  .tl-item p{margin:0 0 6px} .tl-item ul{margin:4px 0 0}
   .decision{margin:0 0 18px; padding:14px 18px; border-left:3px solid var(--t-decision); background:var(--surface);}
   .decision p:last-child{margin:0; font-size:0.92rem;}
   .promise{margin:26px 0 8px; padding:20px 22px; border-left:3px solid var(--accent); background:var(--surface);}
@@ -572,11 +584,12 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
   <div class="table-wrap"><table>
     <thead><tr><th>Moment</th><th>Texte</th></tr></thead>
     <tbody>
-      <tr><td>Accueil</td><td>« Choisis ton paquet du jour » · « Le merch est fermé » quand le paquet du jour est ouvert · « Glisse pour l'éventrer → »</td></tr>
+      <tr><td>Accueil</td><td>« Cartes du jour » · formats « 1 standard » et « 2 mini » · une accroche par paquet (« Pour ceux qui trouvent le metalcore trop poli. ») · « Le merch est fermé » quand le paquet du jour est ouvert · « Glisse pour l'éventrer → »</td></tr>
       <tr><td>Révélation</td><td>Phrase « combo » sur la carte, plus intense selon la rareté : « Commune. Même le roadie en a une. », « C'est un banger, frérot ! », « Wallah… LÉGENDAIRE ! » · doublon « T'as déjà le t-shirt, papy. » · triplé « Triplé ! Cheh. »</td></tr>
       <tr><td>Fin de paquet</td><td>« Ranger dans le classeur » dès la dernière carte · paquet faible : « Que des Communes. Cheh. »</td></tr>
-      <tr><td>Objectifs</td><td>« Plus que 2 cartes et Pop punk est plié » · « Partage ta plus belle carte » · « Enregistre ton plus beau cri » · « Transformation possible »</td></tr>
-      <tr><td>Rangement</td><td>« Touche la carte pour la ranger » · « Nouvelle ! », « +1 », « Holo ! » en bandeau sur la carte</td></tr>
+      <tr><td>Objectifs</td><td>Feuille « Tes objectifs », ouverte depuis l'icône drapeau de l'en-tête · « Plus que 2 cartes et Pop punk est plié » · « Partage ta plus belle carte » · « Enregistre ton plus beau cri » · « Transformation possible »</td></tr>
+      <tr><td>Rangement</td><td>« Touche la carte pour la ranger » · « Nouvelle ! », « +1 », « Holo ! » en bandeau sur la carte · « Tout ranger d'un coup » : montées en grade et complétions en grand, puis bilan « Tout est rangé » · « Nickel »</td></tr>
+      <tr><td>Cadeau de l'admin</td><td>« Le Grand Architecte t'offre un paquet standard » · « Il s'ajoute à tes cartes du jour. Ne le fais pas attendre. »</td></tr>
       <tr><td>Classeur complété</td><td>« Plié. Carte Collector et badge dans ta poche. »</td></tr>
       <tr><td>Maîtrise</td><td>« Les 5 raretés réunies. Respect. Badge débloqué. »</td></tr>
       <tr><td>Compte</td><td>« Rejoins le pit » · « Je rentre dans le pit » · « Re-bienvenue » · « Trou de mémoire ? » · « Check tes mails » · « Balances en cours… »</td></tr>
@@ -1285,6 +1298,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 <li><strong>Communauté</strong> — découverte des échanges possibles (qui a quoi, qui recherche quoi), guildes par sous-genre/artiste, classements, profils publics d'autres fans. <strong>L'échange lui-même ne s'y conclut pas</strong> : il s'ouvre depuis Live (présence en concert) ou depuis le radar de proximité — voir <code>Échanges &amp; rencontres en présentiel</code> dans <a class="xref" href="#concept">Concept</a>.</li>
 </ol>
 <p>Le profil personnel et les réglages sont accessibles depuis l'avatar en header (pas un onglet dédié), pour ne pas saturer la barre.</p>
+<div class="decision"><p class="eyebrow">Direction — 2026-09-25</p><p><b>Dans le prototype, la barre basse compte aujourd'hui deux onglets (Paquets, Classeur) ; les objectifs passent derrière une icône de l'en-tête qui ouvre une feuille, dont chaque ligne mène où elle se joue.</b> La place libérée prépare un onglet social qui réunit Live et Communauté : échanges, nouveautés, concerts, et des interactions gamifiées entre fans. Nom à trouver avec la DA (pistes : « Le Pit », « La Fosse », « Backstage »).</p></div>
 </section>
 <section id="architecture-2-inventaire-d-ecrans-par-section" class="doc-sec"><h2>2. Inventaire d'écrans (par section)</h2>
 <p><strong>Onboarding</strong>
@@ -1460,6 +1474,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 <p>La <strong>boucle d'échange</strong> a une propriété propre aux mécaniques sociales, renforcée par le passage au présentiel : un échange ne se conclut que si deux comptes sont physiquement réunis au même moment, donc chaque échange retient nécessairement deux comptes à la fois, pas un seul — et la session en direct (composition à deux, confirmation simultanée) donne une conclusion immédiate plutôt qu'une attente de réponse asynchrone.</p>
 <p>La <strong>boucle missions</strong> n'a pas de cadence propre : elle recycle la progression des quatre autres boucles en lui donnant une direction visible, plutôt que d'ajouter un cycle indépendant à gérer.</p>
 <h3>4.2 Budget de notifications (gouvernance transverse)</h3>
+<p class="note">Canaux (2026-09-25) : le budget s'applique côté serveur, pour toutes les plateformes. En web, les notifications push ne fonctionnent sur iPhone que si l'app est ajoutée à l'écran d'accueil (iOS 16.4 et plus) ; l'app native les a sans condition. Un avis dans l'app (comme le cadeau « Le Grand Architecte t'offre… ») reste le filet quand le push n'est pas autorisé.</p>
 <p>Empiler des boucles authentiques ne dispense pas d'arbitrer : plusieurs boucles peuvent vouloir notifier le même jour, et c'est le cumul, pas une boucle isolée, qui produirait le spam que la communauté cible sanctionnerait.</p>
 <ul>
 <li><strong>Budget cible : 1 à 2 notifications non sollicitées par jour, toutes boucles confondues</strong> — au-delà, une notification supplémentaire attend le lendemain plutôt que de s'ajouter.</li>
@@ -1510,8 +1525,64 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
       <h2 class="panel-title">Roadmap</h2>
       <p class="tagline">L'ordre de développement des features, puis tout ce qui est volontairement écarté du MVP et la stratégie droits à l'image pour l'ouverture publique.</p>
     </div>
-    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#roadmap-architecture">Architecture et phases</a></li><li><a href="#roadmap-plan-dev">Feature 1 — détail</a></li><li><a href="#roadmap-phase-2-ouverture-publique-strategie-droits-a-l-image">Phase 2 — Ouverture publique : stratégie droits à l&#x27;image</a></li><li><a href="#roadmap-phase-2-hybride-physique-digital">Phase 2 — Hybride physique/digital</a></li><li><a href="#roadmap-idees-sociales-a-explorer-plus-tard">Idées sociales à explorer plus tard</a></li><li><a href="#roadmap-avatar-detection-d-ambiance-pistes-techniques">Avatar &amp; détection d&#x27;ambiance — pistes techniques</a></li><li><a href="#roadmap-production-de-cartes-pistes-de-scalabilite-technique">Production de cartes — pistes de scalabilité technique</a></li><li><a href="#roadmap-monetisation-pistes-futures">Monétisation — pistes futures</a></li><li><a href="#roadmap-rappel-de-cadrage">Rappel de cadrage</a></li></ol></nav>
+    <nav class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol><li><a href="#roadmap-timeline">Timeline</a></li><li><a href="#roadmap-architecture">Architecture et phases</a></li><li><a href="#roadmap-plan-dev">Feature 1 — détail</a></li><li><a href="#roadmap-phase-2-ouverture-publique-strategie-droits-a-l-image">Phase 2 — Ouverture publique : stratégie droits à l&#x27;image</a></li><li><a href="#roadmap-phase-2-hybride-physique-digital">Phase 2 — Hybride physique/digital</a></li><li><a href="#roadmap-idees-sociales-a-explorer-plus-tard">Idées sociales à explorer plus tard</a></li><li><a href="#roadmap-avatar-detection-d-ambiance-pistes-techniques">Avatar &amp; détection d&#x27;ambiance — pistes techniques</a></li><li><a href="#roadmap-production-de-cartes-pistes-de-scalabilite-technique">Production de cartes — pistes de scalabilité technique</a></li><li><a href="#roadmap-monetisation-pistes-futures">Monétisation — pistes futures</a></li><li><a href="#roadmap-rappel-de-cadrage">Rappel de cadrage</a></li></ol></nav>
     <div class="doc">
+<section id="roadmap-timeline" class="doc-sec">
+  <p class="eyebrow">État au 2026-09-25</p>
+  <h2>Timeline</h2>
+  <p>Les phases dans leur ordre de développement, avec ce qui est déjà fait. Aucune date n'est fixée : l'ordre compte plus que le calendrier, et Android peut remonter si un développeur rejoint le projet. Le prototype web sert de banc d'essai : une mécanique y est validée avant d'être portée dans l'app native.</p>
+  <ol class="timeline">
+    <li class="tl-item now"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>0 · Fondations</h3><span class="tl-status">En cours</span></div>
+      <ul>
+        <li><b>Fait</b> : back-end Supabase (schéma, droits d'accès, tirage côté serveur, migrations 0001 à 0017), espace admin web avec double authentification et journal des actions, comptes par e-mail sur le web, app iOS SwiftUI (logique de jeu testée dans <code>MetalniniKit</code>, ouverture de paquet et reveal natifs avec vibrations).</li>
+        <li><b>Reste</b> : inscription par e-mail ou Sign in with Apple dans l'app iOS (hors ligne en attendant), TestFlight (inscription Apple Developer), suppression de compte depuis l'app, environnements dev et prod séparés, suivi des erreurs, domaine d'e-mail dédié.</li>
+      </ul>
+    </li>
+    <li class="tl-item done"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>1 · Paquet + classeur</h3><span class="tl-status">Validé sur le web · à porter en natif</span></div>
+      <ul>
+        <li><b>Fait (prototype web)</b> : paquet du jour tiré par le serveur, au choix 1 standard (5 cartes) ou 2 mini (2 cartes, meilleures chances), 6 paquets ; révélation carte par carte mise en scène selon la rareté, présentation de l'artiste et extrait audio officiel ; classeur avec bac « À ranger », rangement à l'unité ou d'un coup ; fiche carte ; admin : catalogue, paquets et probabilités, comptes. Catalogue : 44 musiciens, 220 cartes.</li>
+        <li><b>Reste</b> : reveal en state machine Rive, portage SwiftUI.</li>
+      </ul>
+    </li>
+    <li class="tl-item done"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>2 · Progression</h3><span class="tl-status">Prototypée sur le web</span></div>
+      <ul>
+        <li><b>Fait (prototype web)</b> : fusion des doublons et maîtrise d'un musicien, récompense de complétion de classeur, paquet de bienvenue, objectifs regroupés dans une feuille, cadeaux de l'admin annoncés dans l'app (migration 0018 à appliquer), carte cadeau pour le premier cri enregistré.</li>
+        <li><b>Reste</b> : classeurs officiels gérés depuis l'admin, seuil de fusion définitif, portage natif.</li>
+      </ul>
+    </li>
+    <li class="tl-item"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>3 · Live</h3><span class="tl-status">À venir</span></div>
+      <p>Scan de billet, carnet de concerts, avatar de fan. Rubrique « concerts » du futur onglet social.</p>
+    </li>
+    <li class="tl-item"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>4 · Social en présentiel</h3><span class="tl-status">À venir</span></div>
+      <p>Échange en direct à deux, radar Bluetooth, présence en concert. L'onglet social prend forme ici : échanges, nouveautés et concerts réunis, avec des interactions entre fans qui n'ouvrent jamais d'échange à distance.</p>
+    </li>
+    <li class="tl-item"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>5 · Contenu vivant</h3><span class="tl-status">À venir</span></div>
+      <p>Évolution des cartes selon l'actu, missions, notifications push avec budget quotidien (le budget vit sur le serveur, pour toutes les plateformes).</p>
+    </li>
+    <li class="tl-item"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>6 · Android</h3><span class="tl-status">À venir</span></div>
+      <p>Portage des phases livrées sur la même API.</p>
+    </li>
+    <li class="tl-item"><span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-head"><h3>7 · Monétisation</h3><span class="tl-status">Après avis juridique</span></div>
+      <p>Paquets payants et boutique, seulement une fois le cadre loot-box validé.</p>
+    </li>
+  </ol>
+  <h3>Avant toute ouverture publique, même limitée</h3>
+  <ul>
+    <li>Avis d'avocat sur les droits à l'image et le cadre loot-box (voir « Phase 2 — Ouverture publique » plus bas).</li>
+    <li>Catalogue de lancement ancré sur quelques têtes d'affiche, approchées par les canaux professionnels.</li>
+    <li>Domaine d'e-mail dédié à la place de l'adresse Gmail perso.</li>
+    <li>Publication sur l'App Store en natif : un site web simplement emballé dans une app risque le refus pour fonctionnalité minimale.</li>
+  </ul>
+</section>
+
 <section id="roadmap-architecture" class="doc-sec">
   <p class="eyebrow">Décisions — 2026-09-24</p>
   <h2>Architecture et phases</h2>
@@ -1638,12 +1709,12 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
   <div class="table-wrap"><table>
     <thead><tr><th>Question</th><th>État</th></tr></thead>
     <tbody>
-      <tr><td>Nombre de cartes par paquet</td><td>[À PRÉCISER]</td></tr>
+      <tr><td>Nombre de cartes par paquet</td><td>Tranché dans le prototype (2026-09-24) : 1 paquet standard de 5 cartes ou 2 minis de 2 cartes (meilleures chances) ; tailles réglables dans l'admin</td></tr>
       <tr><td>Probabilités par rareté (Commune → Légendaire), avec un plancher garanti par paquet</td><td>[À PRÉCISER]</td></tr>
       <tr><td>La carte « de base » est-elle une rareté à part ou la Commune ?</td><td>[À PRÉCISER] — aujourd'hui, chaque artiste a une base et 5 raretés, soit 6 visuels</td></tr>
       <tr><td>Classeur unique filtrable ou un classeur par sous-genre</td><td>Point ouvert (onglet <a class="xref" href="#architecture">Architecture</a>)</td></tr>
       <tr><td>Composition des classeurs de test</td><td>Tranché (2026-09-24) : 10 classeurs, voir ci-dessous</td></tr>
-      <tr><td>Rythme du paquet gratuit (quotidien ou autre) pour le test</td><td>[À PRÉCISER]</td></tr>
+      <tr><td>Rythme du paquet gratuit (quotidien ou autre) pour le test</td><td>Tranché dans le prototype : quotidien, 2 points par jour (1 standard = 2 points, 1 mini = 1 point), remis à zéro à minuit (heure de Paris) ; points bonus en plus (bienvenue, cadeaux)</td></tr>
       <tr><td>Plateforme et stack du prototype</td><td>Tranché : iOS natif, back-end managé, admin web (voir « Architecture et phases »)</td></tr>
       <tr><td>Spécification de la state machine Rive du reveal (variables : rareté, type de carte)</td><td>À faire, dépend du gabarit de carte stabilisé</td></tr>
     </tbody>
