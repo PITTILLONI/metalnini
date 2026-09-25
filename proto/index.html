@@ -1322,8 +1322,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // un paquet déjà tiré sur le serveur ne s'annule pas : on le dit, et on propose de l'ouvrir
     var lock = document.getElementById('fmt-lock'); lock.hidden = !locked;
     if(locked){ var lp = PACKS.filter(function(p){ return p.k === state.pendingType; })[0];
-      lock.innerHTML = 'Ton ' + (state.pendingFormat === 'small' ? 'petit paquet' : 'paquet') + (lp ? ' ' + esc(lp.label) : '') + ' est déjà tiré. Ouvre-le pour pouvoir changer de format. <button type="button" class="link" id="fmt-open">L\'ouvrir</button>';
-      document.getElementById('fmt-open').onclick = function(){ state.packType = state.pendingType; state.packFormat = state.pendingFormat || 'big'; save(); openChosen(); }; }
+      lock.innerHTML = 'Ton ' + (state.pendingFormat === 'small' ? 'petit paquet' : 'paquet') + (lp ? ' ' + esc(lp.label) : '') + ' est déjà tiré : ses cartes sont à toi. <button type="button" class="link" id="fmt-open">L\'ouvrir</button> <button type="button" class="link" id="fmt-skip">Le mettre de côté</button>';
+      document.getElementById('fmt-open').onclick = function(){ state.packType = state.pendingType; state.packFormat = state.pendingFormat || 'big'; save(); openChosen(); };
+      // mettre de côté : pas de révélation, les cartes (déjà dans la collection côté serveur) attendent dans « À ranger »
+      document.getElementById('fmt-skip').onclick = function(){
+        state.pending = null; state.pendingType = null; state.pendingFormat = null; state.smallQueue = []; save();
+        renderFormats(); paintCarousel(); renderStats(); toast('Paquet mis de côté. Ses cartes t\'attendent dans le classeur, à ranger.');
+      }; }
     [].forEach.call(document.querySelectorAll('#formats [data-f]'), function(b){
       var k = b.getAttribute('data-f');
       b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
