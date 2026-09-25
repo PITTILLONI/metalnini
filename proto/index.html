@@ -257,6 +257,15 @@
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
   @keyframes comboshake{50%{translate:4px 0}}
   .card-info .bio{margin:6px auto 0; max-width:320px; font:500 .84rem/1.4 var(--mono); color:var(--muted)}
+  /* extrait audio : jamais en lecture auto, lancé à la main */
+  .listen{display:flex; align-items:center; justify-content:center; gap:12px; margin:10px auto 0; flex-wrap:wrap}
+  .listen[hidden]{display:none}
+  .listen .lp{position:relative; display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 16px 0 12px; border:1px solid rgba(237,164,43,.45); border-radius:999px; background:rgba(237,164,43,.08); color:var(--gold-hi); font:600 .84rem var(--mono); cursor:pointer; overflow:hidden; max-width:260px}
+  .listen .lp span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .listen .lp svg{flex:none}
+  .listen .lp::after{content:""; position:absolute; left:0; bottom:0; height:2px; width:calc(var(--pg, 0) * 100%); background:var(--gold)}
+  .listen a{font:500 .74rem var(--mono); color:var(--muted); text-decoration:underline; text-underline-offset:3px}
+  .detail .listen{justify-content:flex-start; margin:0 0 18px}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
   .tag.new{background:var(--gold); color:#111}
@@ -726,7 +735,7 @@
       </div>
     </div>
     </div>
-    <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div><p class="bio" id="ci-bio"></p></div>
+    <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div><p class="bio" id="ci-bio"></p><div class="listen" id="ci-listen" hidden></div></div>
     <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
     <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
     <button type="button" class="btn block rev-done" id="next-small" hidden></button>
@@ -1062,6 +1071,40 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     mercury:'Chanteur de Queen, groupe britannique formé en 1970 ; disparu en 1991.',
     'gerard-way':'Chanteur de My Chemical Romance, groupe du New Jersey, figure de l\'emo des années 2000.'
   };
+  // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1632526090, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'zack':171209471, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':272252873, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1160082180, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692};
+  var tracks = {}, audio = null, listenEl = null;
+  function track(id){
+    if(!TRACKS[id] || !window.fetch) return Promise.resolve(null);
+    if(!tracks[id]) tracks[id] = fetch('https://itunes.apple.com/lookup?country=fr&id=' + TRACKS[id]).then(function(r){ return r.json(); })
+      .then(function(d){ var t = d.results && d.results[0]; return t && t.previewUrl ? {url:t.previewUrl, link:t.trackViewUrl, name:t.trackName} : null; })
+      .catch(function(){ delete tracks[id]; return null; });
+    return tracks[id];
+  }
+  var PLAY = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>';
+  var PAUSE = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z" fill="currentColor"/></svg>';
+  function stopListen(){
+    if(audio){ audio.pause(); audio = null; }
+    if(listenEl){ var b = listenEl.querySelector('.lp'); if(b){ b.style.setProperty('--pg', 0); b.setAttribute('aria-pressed', 'false'); b.firstChild.outerHTML = PLAY; } listenEl = null; }
+  }
+  // remplit un conteneur .listen pour une carte ; il reste masqué si aucun extrait n'est trouvé
+  function showListen(el, id){
+    stopListen(); el.hidden = true; el.innerHTML = ''; el.setAttribute('data-id', id);
+    track(id).then(function(t){
+      if(!t || el.getAttribute('data-id') !== id) return;
+      el.innerHTML = '<button type="button" class="lp" aria-pressed="false">' + PLAY + '<span>Écouter · ' + esc(t.name) + '</span></button><a href="' + esc(t.link) + '" target="_blank" rel="noopener">Écouter sur Apple Music</a>';
+      el.hidden = false;
+      var b = el.querySelector('.lp');
+      b.onclick = function(){
+        if(audio && listenEl === el){ var on = audio.paused; on ? audio.play() : audio.pause(); b.firstChild.outerHTML = on ? PAUSE : PLAY; b.setAttribute('aria-pressed', on); return; }
+        stopListen(); listenEl = el; audio = new Audio(t.url); audio.volume = .8;
+        audio.ontimeupdate = function(){ if(audio && audio.duration) b.style.setProperty('--pg', audio.currentTime / audio.duration); };
+        audio.onended = stopListen;
+        audio.play().catch(stopListen); b.firstChild.outerHTML = PAUSE; b.setAttribute('aria-pressed', 'true');
+      };
+    });
+  }
+  function hideListen(el){ stopListen(); el.hidden = true; el.innerHTML = ''; el.removeAttribute('data-id'); }
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
   function rank(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return i; return -1; }
@@ -1674,7 +1717,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
     document.getElementById('glow').setAttribute('data-r', x.r);
     document.getElementById('sheen').setAttribute('data-r', x.r);
-    document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = ''; document.getElementById('ci-bio').textContent = '';
+    document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = ''; document.getElementById('ci-bio').textContent = ''; hideListen(document.getElementById('ci-listen'));
   }
   var LINES = {
     commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Commune. Même le roadie en a une.', 'Commune. Tiède comme une bière de festival.', 'Wallah, c\'est une Commune.', 'C\'est carré. Mais c\'est gris.', 'Le public applaudit. Poliment.', 'Askip ça vaut rien. Askip.', 'Ma gueule, c\'est la base. On respecte.', 'Première partie, au mieux.'],
@@ -1732,7 +1775,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         if(rank(r) >= 3){ ring(r); quake(); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; seenUpTo = Math.max(seenUpTo, idx); renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
-        if(idx === current.length - 1) showDone();
+        if(idx === current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id); }
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
   }
@@ -1788,7 +1831,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
     document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
     document.getElementById('card-info').classList.add('on'); renderDeck(); setTarget(document.getElementById('pile'), tilt, x.r);
-    if(seenUpTo >= current.length - 1) showDone(); else document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante';
+    if(seenUpTo >= current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id); }
+    else document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante';
   }
   document.getElementById('deck').addEventListener('click', function(e){ var t = e.target.closest('[data-i]'); if(t) viewCard(+t.getAttribute('data-i')); });
   document.getElementById('deck').addEventListener('keydown', function(e){ var t = e.target.closest('[data-i]'); if(t && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); viewCard(+t.getAttribute('data-i')); } });
@@ -2130,7 +2174,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       '<p class="eyebrow">Arcane ' + c.num + (r ? ' · <span style="color:' + rarity(r).color + '">' + rarity(r).label + '</span>' : ' · pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
       (r ? '<h2>' + esc(c.title) + '</h2><p class="sub">' + esc(c.who) + ' · ' + esc(c.band) + '</p>' +
-           '<div class="chips"><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>'
+           '<div class="chips"><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>' +
+           '<div class="listen" id="d-listen" hidden></div>'
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
       '<p class="note" style="margin:0 0 8px">Raretés obtenues</p><div class="variants">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0;
@@ -2142,6 +2187,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (r && MOVES[id] ? '<div class="move"><p class="eyebrow">Coup spécial</p><b>' + esc(MOVES[id][0]) + '</b><p>' + esc(MOVES[id][1]) + '</p></div>' : '') +
       (r ? '<div class="detail-actions"><button type="button" class="btn ghost" id="d-share">Partager</button><button type="button" class="btn danger" id="d-tear">Déchirer</button></div>' : '');
     if(r){
+      showListen(document.getElementById('d-listen'), id);
       document.getElementById('d-share').onclick = function(){ shareCard(c, r); };
       document.getElementById('d-tear').onclick = function(){
         var n = state.owned[id+'|'+r] || 0;
@@ -2223,7 +2269,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(state.owned[k] <= 0){ delete state.owned[k]; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); if(!best(id)) delete state.fresh[id]; }
     save(); after();
   }
-  function closeDetail(){ sheet.hidden = true; clearTarget(); if(!document.getElementById('v-binder').hidden) renderBinder(); }
+  function closeDetail(){ stopListen(); sheet.hidden = true; clearTarget(); if(!document.getElementById('v-binder').hidden) renderBinder(); }
   document.getElementById('sheet-close').addEventListener('click', closeDetail);
   sheet.addEventListener('click', function(e){ if(e.target === sheet) closeDetail(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeDetail(); });
@@ -2282,7 +2328,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(any){ y = window.scrollY; b.style.position = 'fixed'; b.style.top = -y + 'px'; b.style.left = '0'; b.style.right = '0'; }
       else { b.style.position = b.style.top = b.style.left = b.style.right = ''; window.scrollTo(0, y); }
     }
-    var mo = new MutationObserver(update);
+    var mo = new MutationObserver(function(){ update(); if(revealEl.hidden && sheet.hidden) stopListen(); });
     ids.forEach(function(id){ var el = document.getElementById(id); if(el) mo.observe(el, { attributes: true, attributeFilter: ['hidden'] }); });
   })();
 
