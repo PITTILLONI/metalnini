@@ -2461,7 +2461,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var why = !ONLINE ? 'Connecte-toi pour recevoir les notifications.' : IOS && !inst ? 'Sur iPhone, installe d\'abord l\'app sur l\'écran d\'accueil.'
       : !pushOk() ? 'Ton navigateur ne gère pas les notifications.' : perm === 'denied' ? 'Notifications bloquées dans les réglages du navigateur ou du téléphone.' : '';
     box.disabled = !!why; box.checked = !why && !!state.push && perm === 'granted';
-    document.getElementById('push-note').textContent = why || 'Pour l\'instant : les cadeaux du Grand Architecte. Pas de spam, promis.';
+    document.getElementById('push-note').textContent = why || 'Paquet du jour, cadeaux du Grand Architecte et nouveautés. Deux par jour au plus.';
   }
   // iOS antérieur à 17 : le lien x-safari ne fait rien ; si on est toujours là après un instant, on copie l'adresse
   document.getElementById('inst-safari').addEventListener('click', function(){

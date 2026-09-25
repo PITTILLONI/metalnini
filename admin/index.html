@@ -236,7 +236,7 @@ const musicianName = id => (catalog.musicians.find(m => m.id === id) || {}).name
 
 // ---------------------------------------------------------------- tableau de bord
 async function dash(el){
-  const [stats, players] = await Promise.all([sb.rpc('admin_stats', { p_days: 30 }).then(must), sb.rpc('admin_list_players').then(must)]);
+  const [stats, players, audience] = await Promise.all([sb.rpc('admin_stats', { p_days: 30 }).then(must), sb.rpc('admin_list_players').then(must), sb.rpc('admin_push_audience').then(r => r.data ?? 0)]);
   const byPack = {}; stats.forEach(s => (byPack[s.pack_type_id] ||= []).push(s));
   const totalOpen = Object.values(byPack).reduce((a, rows) => a + Number(rows[0].openings), 0);
   el.innerHTML = `
@@ -245,6 +245,12 @@ async function dash(el){
       <div class="card" style="margin:0"><p class="eyebrow">Paquets ouverts (30 j)</p><h2 style="margin:0">${totalOpen}</h2></div>
       <div class="card" style="margin:0"><p class="eyebrow">Cartes distribuées</p><h2 style="margin:0">${players.reduce((a, p) => a + Number(p.cards), 0)}</h2></div>
     </div>
+    <div class="card"><h3>Prévenir les joueurs</h3>
+      <p class="muted" style="font-size:.85rem; margin:0 0 10px">Notification à tous les joueurs qui les ont activées (${audience} aujourd'hui), dans la limite du budget quotidien de chacun. Inscrite au journal.</p>
+      <div class="row" style="margin-bottom:8px"><button class="ghost fit" data-preset="cards">Nouvelles cartes</button><button class="ghost fit" data-preset="update">Mise à jour</button></div>
+      <div class="row"><div><label for="bc-title">Titre (60 max)</label><input id="bc-title" maxlength="60"></div><div style="flex:2 1 260px"><label for="bc-body">Message (160 max)</label><input id="bc-body" maxlength="160"></div></div>
+      <div class="row"><div><label for="bc-why">Motif (obligatoire)</label><input id="bc-why" placeholder="ex. arrivée de Prince"></div><div class="fit"><button id="bc-go">Envoyer</button></div></div>
+      <p class="msg" id="bc-msg"></p></div>
     <div class="card"><h3>Raretés tirées ou réglées (30 j)</h3><p class="muted" style="font-size:.85rem">La barre dorée montre le taux observé, le trait blanc le taux réglé. Un écart important sur beaucoup de tirages signale un problème.</p>
     ${Object.entries(byPack).map(([pk, rows]) => `<h3 style="margin-top:16px; font-size:.95rem">${esc((catalog.packs.find(p => p.id === pk) || {}).label || pk)} <span class="muted" style="font:500 .7rem var(--mono)">· ${rows[0].openings} paquet(s)</span></h3>
       <div class="table-wrap"><table><tr><th>Rareté</th><th>Tirées</th><th>Observé</th><th>Réglé</th><th></th></tr>
@@ -375,6 +381,8 @@ async function packs(el){
     <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
     <div class="row"><div class="fit"><label>Points de paquet par jour (gros = 2, petit = 1)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
       <div class="fit"><label>Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
+    <div class="row"><div class="fit"><label>Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
+      <div class="fit"><label>Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
     <label>Motif (obligatoire)</label><input id="set-why">
     <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
   el.querySelectorAll('[data-pack]').forEach(card => {
@@ -396,9 +404,26 @@ async function packs(el){
     }
     let b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'pack_points_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'welcome_bonus_points', p_value: parseInt($('set-welcome').value, 10), p_reason: why });
+    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'daily_push_hour', p_value: Math.max(-1, Math.min(23, parseInt($('set-dph').value, 10))), p_reason: why });
+    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'push_daily_budget', p_value: Math.max(0, parseInt($('set-budget').value, 10) || 0), p_reason: why });
     say($('set-msg'), (a.error || b.error) ? (a.error || b.error).message : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
   };
 }
+
+// annonce aux joueurs : textes préremplis modifiables avant envoi
+const BC_PRESETS = { cards: ['Nouvelles cartes dans le pit', 'De nouveaux musiciens viennent de débarquer. Tes classeurs ont faim.'],
+  update: ['Metalnini s\'est mis à jour', 'Du neuf dans l\'app. Viens voir ce qui a changé.'] };
+document.addEventListener('click', async e => {
+  const pr = e.target.closest('[data-preset]'); if(pr){ [$('bc-title').value, $('bc-body').value] = BC_PRESETS[pr.dataset.preset]; return; }
+  if(e.target.id !== 'bc-go') return;
+  const t = $('bc-title').value.trim(), b = $('bc-body').value.trim(), why = $('bc-why').value.trim();
+  if(!why) return say($('bc-msg'), 'Indique d\'abord un motif.');
+  if(!confirm(`Envoyer « ${t} » à tous les joueurs abonnés ?`)) return;
+  e.target.disabled = true;
+  const r = await sb.rpc('admin_broadcast_push', { p_title: t, p_body: b, p_reason: why });
+  e.target.disabled = false;
+  say($('bc-msg'), r.error ? r.error.message : `Envoyée à ${r.data} joueur${r.data > 1 ? 's' : ''} (les autres ont atteint leur budget du jour ou n'ont pas activé les notifications).`, !r.error);
+});
 
 // ---------------------------------------------------------------- catalogue
 // numéro d'arcane (chiffres romains) → nombre, pour trier les visuels comme l'album
