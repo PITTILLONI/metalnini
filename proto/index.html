@@ -64,6 +64,7 @@
   .hud-stats{display:flex; gap:6px}
   .hud-stats span{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
   .hud-stats i{display:flex; color:var(--gold)}
+  .bonus-line{margin:6px 0 0; text-align:center; font:600 .84rem var(--mono); color:var(--gold-hi)}
   .home-title{font-size:1.9rem; line-height:1.05; margin:24px 0 0; text-align:center}
   .pack-zone{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:8px 0 16px}
   @media (orientation:landscape) and (max-height:540px){
@@ -571,6 +572,7 @@
   </header>
   <div class="quests" id="goal" hidden></div>
   <h1 class="home-title" id="home-title">Choisis ton paquet du jour</h1>
+  <p class="bonus-line" id="bonus-line" hidden></p>
   <div class="choose">
     <div class="car-wrap">
       <button type="button" class="car-arrow prev" id="car-prev" aria-label="Paquet précédent">‹</button>
@@ -848,6 +850,7 @@ const api = {
   async tear(m, r){ return must(await sb.rpc('tear_card', { p_musician: m, p_rarity: r })); },
   async setPower(v){ return must(await sb.rpc('set_metal_power', { p_power: v })); },
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
+  async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
   async packsLeft(){ return must(await sb.rpc('packs_left_today')); },
   async resetCollection(){ must(await sb.rpc('reset_my_collection')); },
   // photo et cri : fichiers privés dans le dossier du joueur, lus par lien signé
@@ -1354,10 +1357,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // le compteur du jour peut arriver après la dernière carte : on met aussi à jour la fin de révélation
     if(!document.getElementById('to-binder').hidden) paintNext();
     renderFormats();
+    // points bonus (paquet de bienvenue ou cadeau) : ils servent une fois le paquet du jour ouvert
+    var bl = document.getElementById('bonus-line'), bn = state.packsLeft === null ? 0 : (state.bonus || 0);
+    bl.hidden = !bn; bl.textContent = bn >= 2 ? 'Cadeau : un gros paquet en plus t\'attend, en bonus.' : 'Cadeau : un petit paquet en plus t\'attend, en bonus.';
     var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
     wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.' : '';
   }
-  function refreshDaily(){ if(!ONLINE){ state.packsLeft = null; renderDaily(); return; } ONLINE.packsLeft().then(function(n){ state.packsLeft = n; renderDaily(); }).catch(function(){}); }
+  function refreshDaily(){
+    if(!ONLINE){ state.packsLeft = null; state.bonus = 0; renderDaily(); return; }
+    Promise.all([ONLINE.packsLeft(), ONLINE.bonusPoints()]).then(function(v){ state.packsLeft = v[0]; state.bonus = v[1]; renderDaily(); }).catch(function(){});
+  }
   setInterval(function(){ if(state.packsLeft === 0) renderDaily(); }, 60000);
   // deux temps : choisir un paquet, puis l'ouvrir
   function packStep(st){
@@ -1686,7 +1695,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // deuxième petit paquet en attente : on l'enchaîne, le rangement passe en second
     var nextK = (state.smallQueue || [])[0], ns = document.getElementById('next-small'), nextP = PACKS.filter(function(p){ return p.k === nextK; })[0];
     ns.hidden = !nextP; document.getElementById('to-binder').classList.toggle('ghost', !!nextP);
-    if(nextP) ns.textContent = 'Ouvrir le petit paquet suivant · ' + nextP.label;
+    if(nextP) ns.textContent = 'Ouvrir le 2e petit paquet maintenant · ' + nextP.label;
+    document.getElementById('to-binder').textContent = nextP ? 'Plus tard, je range mes cartes' : 'Ranger dans le classeur';
     // quand revenir : le paquet du jour vient d'être ouvert (en ligne, hors compte illimité)
     paintNext();
   }

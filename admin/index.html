@@ -274,6 +274,7 @@ async function player(p){
       <p style="margin:0 0 6px; font-weight:600; color:#f5c542">Adresse pas encore confirmée</p>
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Le mail de confirmation a été envoyé. S'il n'est pas arrivé (spam, messagerie d'entreprise), renvoie-le, ou confirme l'adresse toi-même si tu es sûr que c'est bien elle ou lui.</p>
       <div class="row"><button id="cf-resend" class="ghost fit">Renvoyer le mail de confirmation</button><button id="cf-go" class="fit">Confirmer à la main</button></div></div>` : ''}
+    <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit">Offrir un gros paquet (2 points bonus)</button></div>
     <div class="row"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button>
       <button id="clr-go" class="ghost fit">Vider la collection</button></div>
     <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
@@ -301,6 +302,11 @@ async function player(p){
     const res = await sb.rpc('admin_confirm_email', { p_user: p.id, p_reason: why() });
     if(res.error) return say($('adj-msg'), res.error.message);
     p.email_confirmed = true; await player(p); say($('adj-msg'), 'Adresse confirmée et inscrite au journal : le compte peut se connecter.', true);
+  };
+  $('bonus-go').onclick = async () => {
+    if(needWhy()) return;
+    const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: 2, p_reason: why() });
+    say($('adj-msg'), res.error ? res.error.message : 'Paquet offert : ' + res.data + ' point(s) bonus en réserve pour ce joueur.', !res.error);
   };
   $('blk-go').onclick = async () => {
     if(needWhy()) return;
@@ -338,7 +344,8 @@ async function packs(el){
   }).join('') + `<div class="card"><h3>Réglages de jeu</h3>
     <p class="muted" style="font-size:.85rem; margin:0 0 6px">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
     <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
-    <div class="row"><div class="fit"><label>Paquets max par jour et par joueur</label><input id="set-ppd" type="number" min="1" value="${esc(setting('packs_per_day'))}"></div></div>
+    <div class="row"><div class="fit"><label>Points de paquet par jour (gros = 2, petit = 1)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
+      <div class="fit"><label>Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
     <label>Motif (obligatoire)</label><input id="set-why">
     <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
   el.querySelectorAll('[data-pack]').forEach(card => {
@@ -358,7 +365,8 @@ async function packs(el){
       a = await sb.rpc('admin_set_setting', { p_key: 'fusion_cost_' + inp.dataset.fuse, p_value: parseInt(inp.value, 10), p_reason: why });
       if (a.error) break;
     }
-    const b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'packs_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
+    let b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'pack_points_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
+    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'welcome_bonus_points', p_value: parseInt($('set-welcome').value, 10), p_reason: why });
     say($('set-msg'), (a.error || b.error) ? (a.error || b.error).message : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
   };
 }
