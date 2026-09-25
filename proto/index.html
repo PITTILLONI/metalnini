@@ -2124,8 +2124,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
   var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
   function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden; }
-  function showWl(e, t, p, src){
+  function showWl(e, t, p, src, go){
     document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
+    document.getElementById('wl-go').textContent = go || 'Ouvrir mon cadeau';
     document.getElementById('wl-img').src = src; document.getElementById('welcome').hidden = false; buzz(HAPTIC.holo);
   }
   function showWelcome(){ if(busyScreen()){ if(dealing || !document.getElementById('deal-recap').hidden) wantWelcome = true; return; } wlGift = null;
@@ -2148,18 +2149,20 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         'cards/pack-serie' + (pts === 1 && (window.METALNINI_MINIS || {}).serie ? '-mini' : '') + '.jpg');
     }).catch(function(){});
   }
+  // cartes offertes : une annonce d'abord (on sait ce qui arrive), puis la révélation sur « Découvrir » ; « Plus tard » : elles attendent dans « À ranger »
   function giftCards(list){
-    var ids = list.map(function(g){ return g.id; });
     ONLINE.inventory().then(function(rows){
-      if(busyScreen()) return; applyInventory(rows);
-      // acquitté seulement une fois la révélation lancée : un écran déjà ouvert ne fait pas perdre le cadeau
-      ids.forEach(function(id){ giftSeen[id] = true; }); ONLINE.markGiftsSeen(ids).catch(function(){});
-      current = list.map(function(g){ var k = g.musician_id + '|' + g.rarity, isNew = (state.toPlace || []).indexOf(k) !== -1;
-        if(isNew) state.fresh[g.musician_id] = true; return {c:card(g.musician_id), r:g.rarity, isNew:isNew}; });
-      save(); renderStats(); idx = 0; seenUpTo = -1;
-      revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
-      setTimeout(function(){ document.getElementById('counter').textContent = 'Cadeau du Grand Architecte'; }, 0);
+      if(busyScreen()) return; applyInventory(rows); renderStats();
+      wlGift = {ids:list.map(function(g){ return g.id; }), cards:list};
+      showWl('Cadeau', 'Le Grand Architecte t\'offre ' + (list.length > 1 ? list.length + ' cartes' : 'une carte'), 'Retourne-la pour voir qui c\'est. Aucune garantie que ce soit un bassiste.', 'cards/back.jpg', 'Découvrir');
     }).catch(function(){});
+  }
+  function revealGift(list){
+    current = list.map(function(g){ var k = g.musician_id + '|' + g.rarity, isNew = (state.toPlace || []).indexOf(k) !== -1;
+      if(isNew) state.fresh[g.musician_id] = true; return {c:card(g.musician_id), r:g.rarity, isNew:isNew}; });
+    save(); idx = 0; seenUpTo = -1;
+    revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
+    setTimeout(function(){ document.getElementById('counter').textContent = 'Cadeau du Grand Architecte'; }, 0);
   }
   function closeWl(){
     document.getElementById('welcome').hidden = true;
@@ -2167,10 +2170,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var g = wlGift; wlGift = null; save(); return g;
   }
   document.getElementById('wl-go').addEventListener('click', function(){
-    var g = closeWl(); state.packFormat = g && g.pts < 2 ? 'small' : 'big'; state.picks = ['serie']; state.packType = 'serie'; save();
+    var g = closeWl(); if(g && g.cards){ revealGift(g.cards); return; }
+    state.packFormat = g && g.pts < 2 ? 'small' : 'big'; state.picks = ['serie']; state.packType = 'serie'; save();
     go('packs'); openChosen();
   });
-  document.getElementById('wl-later').addEventListener('click', closeWl);
+  document.getElementById('wl-later').addEventListener('click', function(){ var g = closeWl(); if(g && g.cards) toast('Ton cadeau t\'attend dans le classeur, à ranger.'); });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkGifts(); });
   function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
