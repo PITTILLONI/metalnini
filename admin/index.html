@@ -382,6 +382,7 @@ async function packs(el){
     <div class="row"><div class="fit"><label>Points de paquet par jour (gros = 2, petit = 1)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
       <div class="fit"><label>Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
     <div class="row"><div class="fit"><label>Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
+      <div class="fit"><label>Jours de paquets gardés en réserve pendant une absence (1 = pas de report)</label><input id="set-catchup" type="number" min="1" max="30" value="${esc(setting('pack_catchup_days'))}"></div>
       <div class="fit"><label>Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
     <label>Motif (obligatoire)</label><input id="set-why">
     <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
@@ -405,6 +406,7 @@ async function packs(el){
     let b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'pack_points_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'welcome_bonus_points', p_value: parseInt($('set-welcome').value, 10), p_reason: why });
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'daily_push_hour', p_value: Math.max(-1, Math.min(23, parseInt($('set-dph').value, 10))), p_reason: why });
+    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'pack_catchup_days', p_value: Math.max(1, Math.min(30, parseInt($('set-catchup').value, 10) || 1)), p_reason: why });
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'push_daily_budget', p_value: Math.max(0, parseInt($('set-budget').value, 10) || 0), p_reason: why });
     say($('set-msg'), (a.error || b.error) ? (a.error || b.error).message : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
   };

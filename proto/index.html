@@ -596,6 +596,7 @@
     <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm quest-btn" id="quest-open" aria-label="Objectifs" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="quest-n" id="quest-n"></span></button><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
   <h1 class="home-title" id="home-title">Cartes du jour</h1>
+  <p class="bonus-line" id="reserve-line" hidden></p>
   <p class="bonus-line" id="bonus-line" hidden></p>
   <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
     <button type="button" role="radio" data-f="big"><b>1 standard</b><small>5 cartes</small></button>
@@ -1536,6 +1537,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!document.getElementById('to-binder').hidden) paintNext();
     renderFormats();
     // points bonus (paquet de bienvenue ou cadeau) : ils servent une fois le paquet du jour ouvert
+    // paquets en réserve : les jours d'absence se cumulent côté serveur (plafond réglé dans l'admin)
+    var daily = state.packsLeft === null ? 0 : state.packsLeft - (state.bonus || 0), rl = document.getElementById('reserve-line');
+    rl.hidden = daily <= 2; if(daily > 2) rl.textContent = 'Tes paquets t\'ont attendu : ' + giftLabel(daily) + ' en réserve.';
     var bl = document.getElementById('bonus-line'), bn = state.packsLeft === null ? 0 : (state.bonus || 0);
     bl.hidden = !bn; bl.textContent = bn >= 2 ? 'Cadeau : un paquet standard en plus t\'attend, en bonus.' : 'Cadeau : un mini en plus t\'attend, en bonus.';
     var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
