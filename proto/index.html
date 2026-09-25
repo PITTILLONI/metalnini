@@ -95,6 +95,7 @@
   .pack-info{text-align:center; padding:10px 8px 0; max-width:360px}
   .pack-info h2{font-size:1.6rem}
   .pack-info p{margin:8px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
+  .pack-info .pc-tag{margin-top:4px; font-size:.84rem; min-height:2.8em}   /* deux lignes réservées : le bouton ne bouge pas d'un paquet à l'autre */
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
@@ -593,7 +594,7 @@
       <button type="button" class="car-arrow next" id="car-next" aria-label="Paquet suivant">›</button>
     </div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
-    <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-wait" id="pc-wait" hidden></p></div>
+    <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-tag" id="pc-tag"></p><p class="pc-wait" id="pc-wait" hidden></p></div>
     <button type="button" class="btn block small-go" id="small-go" hidden></button>
 
   </div>
@@ -792,10 +793,10 @@
 </div>
 <div class="modal welcome" id="welcome" hidden role="dialog" aria-modal="true" aria-labelledby="wl-t">
   <div class="modal-in">
-    <p class="eyebrow">Cadeau de bienvenue</p>
-    <img class="wl-pack" src="cards/pack-serie.jpg" alt="">
-    <h2 id="wl-t">Un paquet standard offert !</h2>
-    <p>Tu viens de ranger tes premières cartes. Pour fêter ton arrivée dans le pit, on remet ça tout de suite.</p>
+    <p class="eyebrow" id="wl-e"></p>
+    <img class="wl-pack" id="wl-img" src="cards/pack-serie.jpg" alt="">
+    <h2 id="wl-t"></h2>
+    <p id="wl-p"></p>
     <div class="modal-actions"><button type="button" class="btn" id="wl-go">Ouvrir mon cadeau</button><button type="button" class="btn ghost" id="wl-later">Plus tard</button></div>
   </div>
 </div>
@@ -868,6 +869,8 @@ const api = {
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
   async claimCryGift(){ return must(await sb.rpc('claim_cry_gift')); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
+  async giftNotices(){ return must(await sb.rpc('my_gift_notices')) || []; },
+  async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
   async packsLeft(){ return must(await sb.rpc('packs_left_today')); },
   async resetCollection(){ must(await sb.rpc('reset_my_collection')); },
   // photo et cri : fichiers privés dans le dossier du joueur, lus par lien signé
@@ -1134,6 +1137,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
   // Paquets : le Mosh Pack tire dans tous les musiciens, un paquet de style seulement dans son classeur
+  // accroche de chaque paquet, affichée sous son nom dans le carrousel
+  var PACK_TAGS = {serie:'Tous les styles dans le même pit. Personne ne choisit son voisin.', metalcore:'Breakdowns qui cognent, refrains qui restent en tête.',
+    hardcore:'Pour ceux qui trouvent le metalcore trop poli.', numetal:'Baggys, dreadlocks et platines : les années 2000 n\'ont jamais fini.',
+    poppunk:'Trois accords, un skate et des refrains à hurler en voiture.', legendes:'Ceux sans qui personne ici n\'aurait touché une guitare.',
+    heavy:'Cuir, clous et voix qui montent jusqu\'au plafond.', thrash:'Plus vite, plus fort, et on reprend du début.', grunge:'Chemises à carreaux et larsen de Seattle.'};
   var PACKS = [{k:'serie', label:'Mosh Pack', short:'Tous les styles', desc:'Tous les styles dans le même pit : les cartes sont tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, short:b.ids.length + ' musiciens', desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
     .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
   function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
@@ -1172,7 +1180,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       // pseudo choisi à l'inscription, enregistré à la première connexion
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
-      ONLINE = api; save(); setNet(); renderStats(); refreshDaily();
+      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts();
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -1366,6 +1374,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('car-prev').disabled = best === 0; document.getElementById('car-next').disabled = best === bs.length - 1;
     var p = PACKS[best]; if(!p) return;
     document.getElementById('pc-name').textContent = p.label;
+    document.getElementById('pc-tag').textContent = (PACK_TAGS[p.k] ? PACK_TAGS[p.k] + ' ' : '') + packPool(p.k).length + ' musiciens.';
     if(state.packType !== p.k && !(ONLINE && state.pending && state.pending.length)){ state.packType = p.k; save(); }
   }
   var carRafP = 0;
@@ -1569,7 +1578,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['packs','binder','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder();
-    if(v === 'packs'){ renderStats(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
+    if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
     if(v === 'settings') renderSettings();
     window.scrollTo(0,0);
@@ -2048,13 +2057,40 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('df-later').onclick = function(e){ e.stopPropagation(); end(); };
   }
   // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
-  var placedSome = false;
-  function showWelcome(){ if(!revealEl.hidden || !document.getElementById('dupfx').hidden) return; document.getElementById('welcome').hidden = false; buzz(HAPTIC.holo); }
+  // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
+  var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
+  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden; }
+  function showWl(e, t, p, src){
+    document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
+    document.getElementById('wl-img').src = src; document.getElementById('welcome').hidden = false; buzz(HAPTIC.holo);
+  }
+  function showWelcome(){ if(busyScreen()) return; wlGift = null;
+    showWl('Cadeau de bienvenue', 'Un paquet standard offert !', 'Tu viens de ranger tes premières cartes. Pour fêter ton arrivée dans le pit, on remet ça tout de suite.', 'cards/pack-serie.jpg'); }
+  // 1 point = un mini, 2 = un paquet standard
+  function giftLabel(n){ var std = Math.floor(n / 2), mini = n % 2, parts = [];
+    if(std) parts.push(std === 1 ? 'un paquet standard' : std + ' paquets standard'); if(mini) parts.push('un mini'); return parts.join(' et '); }
+  function checkGifts(){
+    if(!ONLINE || busyScreen()) return;
+    ONLINE.giftNotices().then(function(list){
+      list = list.filter(function(g){ return !giftSeen[g.id]; });
+      if(!list.length || busyScreen()) return;
+      var pts = list.reduce(function(a, g){ return a + g.points; }, 0);
+      wlGift = {ids:list.map(function(g){ return g.id; }), pts:pts};
+      showWl('Cadeau', 'Le Grand Architecte t\'offre ' + giftLabel(pts), 'Il s\'ajoute à tes cartes du jour. Ne le fais pas attendre.',
+        'cards/pack-serie' + (pts === 1 && (window.METALNINI_MINIS || {}).serie ? '-mini' : '') + '.jpg');
+    }).catch(function(){});
+  }
+  function closeWl(){
+    document.getElementById('welcome').hidden = true;
+    if(wlGift){ wlGift.ids.forEach(function(id){ giftSeen[id] = true; }); ONLINE.markGiftsSeen(wlGift.ids).catch(function(){}); refreshDaily(); } else state.welcomeDone = true;
+    var g = wlGift; wlGift = null; save(); return g;
+  }
   document.getElementById('wl-go').addEventListener('click', function(){
-    document.getElementById('welcome').hidden = true; state.welcomeDone = true; state.packFormat = 'big'; state.picks = ['serie']; state.packType = 'serie'; save();
+    var g = closeWl(); state.packFormat = g && g.pts < 2 ? 'small' : 'big'; state.picks = ['serie']; state.packType = 'serie'; save();
     go('packs'); openChosen();
   });
-  document.getElementById('wl-later').addEventListener('click', function(){ document.getElementById('welcome').hidden = true; state.welcomeDone = true; save(); });
+  document.getElementById('wl-later').addEventListener('click', closeWl);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkGifts(); });
   function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
   var dealing = false;

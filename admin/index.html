@@ -286,7 +286,7 @@ async function player(p){
       <p style="margin:0 0 6px; font-weight:600; color:#f5c542">Adresse pas encore confirmée</p>
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Le mail de confirmation a été envoyé. S'il n'est pas arrivé (spam, messagerie d'entreprise), renvoie-le, ou confirme l'adresse toi-même si tu es sûr que c'est bien elle ou lui.</p>
       <div class="row"><button id="cf-resend" class="ghost fit">Renvoyer le mail de confirmation</button><button id="cf-go" class="fit">Confirmer à la main</button></div></div>` : ''}
-    <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit">Offrir un gros paquet (2 points bonus)</button></div>
+    <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit" data-pts="2">Offrir un paquet standard (2 points)</button><button id="bonus-mini" class="ghost fit" data-pts="1">Offrir un mini (1 point)</button></div>
     <div class="row"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button>
       <button id="clr-go" class="ghost fit">Vider la collection</button></div>
     <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
@@ -324,11 +324,12 @@ async function player(p){
     if(res.error) return say($('adj-msg'), res.error.message);
     p.email_confirmed = true; await player(p); say($('adj-msg'), 'Adresse confirmée et inscrite au journal : le compte peut se connecter.', true);
   };
-  $('bonus-go').onclick = async () => {
+  // le joueur voit le cadeau à sa prochaine visite (« Le Grand Architecte t'offre… »)
+  ['bonus-go', 'bonus-mini'].forEach(id => { $(id).onclick = async () => {
     if(needWhy()) return;
-    const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: 2, p_reason: why() });
-    say($('adj-msg'), res.error ? res.error.message : 'Paquet offert : ' + res.data + ' point(s) bonus en réserve pour ce joueur.', !res.error);
-  };
+    const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: +$(id).dataset.pts, p_reason: why() });
+    say($('adj-msg'), res.error ? res.error.message : 'Cadeau envoyé : ' + res.data + ' point(s) bonus en réserve, le joueur sera prévenu à sa prochaine visite.', !res.error);
+  }; });
   $('blk-go').onclick = async () => {
     if(needWhy()) return;
     const r = await sb.rpc('admin_set_blocked', { p_user: p.id, p_blocked: !p.blocked, p_reason: why() });
