@@ -280,7 +280,9 @@ async function player(p){
     <div class="row"><div><label>Musicien</label><select id="adj-m">${catalog.musicians.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</select></div>
       <div><label>Rareté</label><select id="adj-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div>
       <div class="fit"><label>Exemplaires (+/−)</label><input id="adj-d" type="number" value="1"></div>
+      <div class="fit"><label style="display:flex; gap:6px; align-items:center; margin:0 0 10px"><input id="adj-n" type="checkbox" checked style="width:auto"> Prévenir le joueur</label></div>
       <div class="fit"><button id="adj-go">Appliquer</button></div></div>
+    <p class="muted" style="font-size:.8rem; margin:6px 0 0">« Prévenir le joueur » : la carte lui est révélée comme un cadeau du Grand Architecte et attend d'être rangée. Décoché (et avec les boutons − / +), c'est une correction silencieuse.</p>
     <h3 style="margin-top:22px">Compte</h3>
     ${p.email && !p.email_confirmed ? `<div style="margin:0 0 12px; border:1px solid rgba(245,197,66,.4); border-radius:10px; padding:12px">
       <p style="margin:0 0 6px; font-weight:600; color:#f5c542">Adresse pas encore confirmée</p>
@@ -306,14 +308,14 @@ async function player(p){
   }
   const why = () => $('why').value.trim();
   const needWhy = () => { if(!why()){ say($('adj-msg'), 'Indique d\'abord un motif.'); $('why').focus(); return true; } return false; };
-  const adjust = async (m, r, delta) => {
+  const adjust = async (m, r, delta, notify = false) => {
     if(needWhy()) return;
-    const res = await sb.rpc('admin_adjust_card', { p_user: p.id, p_musician: m, p_rarity: r, p_delta: delta, p_reason: why() });
+    const res = await sb.rpc('admin_adjust_card', { p_user: p.id, p_musician: m, p_rarity: r, p_delta: delta, p_reason: why(), p_notify: notify });
     if(res.error) return say($('adj-msg'), res.error.message);
     const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), 'Fait, et inscrit au journal.', true);
   };
   d.querySelectorAll('button.q').forEach(b => b.onclick = () => adjust(b.dataset.m, b.dataset.r, parseInt(b.dataset.d, 10)));
-  $('adj-go').onclick = () => adjust($('adj-m').value, $('adj-r').value, parseInt($('adj-d').value, 10) || 0);
+  $('adj-go').onclick = () => adjust($('adj-m').value, $('adj-r').value, parseInt($('adj-d').value, 10) || 0, $('adj-n').checked);
   if($('cf-resend')) $('cf-resend').onclick = async () => {
     const { error } = await sb.auth.resend({ type: 'signup', email: p.email, options: { emailRedirectTo: location.origin + location.pathname.replace(/admin\/.*$/, 'proto/') } });
     say($('adj-msg'), error ? error.message : 'Mail de confirmation renvoyé à ' + p.email + '. Dis-lui de regarder aussi dans les spams.', !error);

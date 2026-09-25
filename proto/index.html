@@ -2133,10 +2133,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.giftNotices().then(function(list){
       list = list.filter(function(g){ return !giftSeen[g.id]; });
       if(!list.length || busyScreen()) return;
+      // une carte offerte passe avant les paquets : c'est un moment fort, elle se révèle comme au sortir d'un paquet
+      var cards = list.filter(function(g){ return g.musician_id && card(g.musician_id); });
+      if(cards.length){ giftCards(cards); return; }
+      list = list.filter(function(g){ return g.points; }); if(!list.length) return;
       var pts = list.reduce(function(a, g){ return a + g.points; }, 0);
       wlGift = {ids:list.map(function(g){ return g.id; }), pts:pts};
       showWl('Cadeau', 'Le Grand Architecte t\'offre ' + giftLabel(pts), 'Il s\'ajoute à tes cartes du jour. Ne le fais pas attendre.',
         'cards/pack-serie' + (pts === 1 && (window.METALNINI_MINIS || {}).serie ? '-mini' : '') + '.jpg');
+    }).catch(function(){});
+  }
+  function giftCards(list){
+    var ids = list.map(function(g){ return g.id; }); ids.forEach(function(id){ giftSeen[id] = true; }); ONLINE.markGiftsSeen(ids).catch(function(){});
+    ONLINE.inventory().then(function(rows){
+      if(busyScreen()) return; applyInventory(rows);
+      current = list.map(function(g){ var k = g.musician_id + '|' + g.rarity, isNew = (state.toPlace || []).indexOf(k) !== -1;
+        if(isNew) state.fresh[g.musician_id] = true; return {c:card(g.musician_id), r:g.rarity, isNew:isNew}; });
+      save(); renderStats(); idx = 0; seenUpTo = -1;
+      revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
+      setTimeout(function(){ document.getElementById('counter').textContent = 'Cadeau du Grand Architecte'; }, 0);
     }).catch(function(){});
   }
   function closeWl(){
