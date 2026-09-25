@@ -1129,6 +1129,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   var PLAY = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>';
   var PAUSE = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z" fill="currentColor"/></svg>';
+  // fondu d'entrée : 0 → 0,8 en 0,7 s (l'iPhone ignore le volume réglé par le code : l'extrait y démarre plein pot)
+  function fadeIn(){
+    var a = audio, t0 = performance.now();
+    (function f(t){ if(audio !== a) return; var k = Math.min(1, (t - t0) / 700); a.volume = .8 * k * k; if(k < 1) requestAnimationFrame(f); })(t0);
+  }
   function stopListen(){
     if(audio){ audio.pause(); audio = null; }
     if(listenEl){ var b = listenEl.querySelector('.lp'); if(b){ b.style.setProperty('--pg', 0); b.setAttribute('aria-pressed', 'false'); b.firstChild.outerHTML = PLAY; } listenEl = null; }
@@ -1142,10 +1147,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       el.hidden = false;
       var b = el.querySelector('.lp');
       function start(){
-        stopListen(); listenEl = el; audio = new Audio(t.url); audio.volume = .8;
+        stopListen(); listenEl = el; audio = new Audio(t.url); audio.volume = 0;
         audio.ontimeupdate = function(){ if(audio && audio.duration) b.style.setProperty('--pg', audio.currentTime / audio.duration); };
         audio.onended = stopListen;
-        audio.play().catch(stopListen); b.firstChild.outerHTML = PAUSE; b.setAttribute('aria-pressed', 'true');
+        audio.play().then(fadeIn).catch(stopListen); b.firstChild.outerHTML = PAUSE; b.setAttribute('aria-pressed', 'true');
       }
       b.onclick = function(){
         if(audio && listenEl === el){ var on = audio.paused; on ? audio.play() : audio.pause(); b.firstChild.outerHTML = on ? PAUSE : PLAY; b.setAttribute('aria-pressed', on); return; }
@@ -1885,7 +1890,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
     document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
     document.getElementById('card-info').classList.add('on'); renderDeck(); setTarget(document.getElementById('pile'), tilt, x.r);
-    if(seenUpTo >= current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id); }
+    if(seenUpTo >= current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id, true); }
     else document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante';
   }
   document.getElementById('deck').addEventListener('click', function(e){ var t = e.target.closest('[data-i]'); if(t) viewCard(+t.getAttribute('data-i')); });
