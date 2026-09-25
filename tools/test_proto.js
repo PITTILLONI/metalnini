@@ -205,6 +205,10 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('objectifs : icône avec leur nombre, feuille qui les liste', !d4.getElementById('quest-open').hidden && +d4.getElementById('quest-n').textContent > 0 && !d4.getElementById('quest-sheet').hidden && d4.querySelectorAll('#quest-list .goal').length === +d4.getElementById('quest-n').textContent, d4.getElementById('quest-list').textContent);
   d4.querySelector('#quest-list .goal').click(); await sleep(20);
   check('objectif touché : la feuille se ferme', d4.getElementById('quest-sheet').hidden);
+  d4.getElementById('ask-artist').click(); await sleep(20);
+  check('demande d\'artiste : feuille ouverte, hors ligne il faut un compte', !d4.getElementById('artist-sheet').hidden && d4.getElementById('as-send').disabled && /Connecte-toi/.test(d4.getElementById('as-err').textContent));
+  d4.getElementById('as-cancel').click(); await sleep(20);
+  check('demande d\'artiste : Annuler ferme la feuille', d4.getElementById('artist-sheet').hidden);
   key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
   check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot','sykes'].includes(id)), got.join(','));

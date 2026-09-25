@@ -415,6 +415,7 @@ async function catalogTab(el){
       <div class="fit"><button class="ghost" id="cat-reset">Effacer</button></div>
     </div>
     </div>
+    <div class="card" id="req-card"><h3>Demandes d'artistes</h3><div id="req-list" class="muted">Chargement…</div></div>
     <div class="card viewer"><h3>Visuels des cartes</h3>
       <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
         <figure class="vw-card"><img id="vw-img" alt=""><figcaption id="vw-cap"></figcaption></figure>
@@ -465,13 +466,33 @@ async function catalogTab(el){
   st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
   el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
-  filter();
+  filter(); requests();
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
     const r = await sb.from('musicians').update(patch).eq('id', tr.dataset.id).select();
     const m = tr.querySelector('.msg');
     if(r.error) say(m, r.error.message); else if(!r.data.length) say(m, 'Refusé (droits).'); else say(m, 'Enregistré', true);
+  });
+}
+
+// demandes d'artistes des joueurs, regroupées par nom (sans accents ni majuscules), les plus demandés d'abord
+async function requests(){
+  const box = $('req-list'); if(!box) return;
+  const r = await sb.from('artist_requests').select('*').eq('done', false).order('created_at', { ascending: false });
+  if(r.error){ box.textContent = 'Indisponible (migration 0019 à appliquer ?) : ' + r.error.message; return; }
+  const key = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const groups = Object.values(r.data.reduce((g, x) => { const k = key(x.artist); (g[k] = g[k] || { name: x.artist, rows: [] }).rows.push(x); return g; }, {}))
+    .sort((a, b) => b.rows.length - a.rows.length);
+  if(!groups.length){ box.textContent = 'Aucune demande en attente.'; return; }
+  box.className = '';
+  box.innerHTML = `<div class="table-wrap"><table><tr><th>Artiste</th><th>Demandes</th><th>Dernière</th><th>Messages</th><th></th></tr>
+    ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td><td>${fmt(g.rows[0].created_at)}</td>
+      <td class="muted" style="font-size:.85rem">${g.rows.filter(x => x.note).slice(0, 3).map(x => '« ' + esc(x.note) + ' »').join('<br>') || '—'}</td>
+      <td><button class="ghost" data-req="${i}">Traitée</button></td></tr>`).join('')}</table></div>`;
+  box.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
+    const res = await sb.from('artist_requests').update({ done: true }).in('id', groups[+b.dataset.req].rows.map(x => x.id)).select('id');
+    if(res.error) say(b, res.error.message); else requests();
   });
 }
 

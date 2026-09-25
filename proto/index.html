@@ -187,6 +187,11 @@
   .chips-pick{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
   .chips-pick button{min-height:40px; padding:0 14px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--muted); font:600 .8rem var(--mono); cursor:pointer}
   .pf-note{font-size:.86rem; margin:0 0 10px}
+  .ask-artist{display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; margin:18px 0 8px; padding:14px 16px; min-height:44px; border:1px dashed rgba(235,154,38,.45); border-radius:12px; background:transparent; color:var(--text); cursor:pointer}
+  .ask-artist b{font:700 .95rem var(--mono)} .ask-artist span{font:500 .8rem var(--mono); color:var(--gold-hi)}
+  .as-in{width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font:inherit; font-size:1rem; resize:vertical}
+  #artist-sheet .pf-row{margin-top:10px}
+  #as-err{min-height:1.2em; margin:10px 0 0; font:600 .84rem var(--mono); color:var(--accent-text)}
   .pf-meter{height:8px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; margin:0 0 12px; box-shadow:inset 0 0 0 1px rgba(235,154,38,.2)}
   .pf-meter i{display:block; height:100%; width:0; background:linear-gradient(90deg,#b8801f,#f5c542 60%,#e0413f); transition:width .06s linear}
   .pf-count{height:0; overflow:visible; position:relative; z-index:2; pointer-events:none}
@@ -631,6 +636,7 @@
     <div class="kind-chips" id="binder-kinds" role="tablist" aria-label="Catégories de classeurs"></div>
   </div>
   <div class="binder-list" id="binder-list"></div>
+  <button type="button" class="ask-artist" id="ask-artist"><b>Il manque un artiste ?</b><span>Propose-le au Grand Architecte</span></button>
   <div class="binder-page" id="binder-page">
     <div class="bp-head">
       <button type="button" class="back-btn" id="binder-back"></button>
@@ -681,6 +687,20 @@
     <textarea id="pf-power-in" maxlength="120" rows="3" placeholder="ex. J'ai perdu une chaussure dans le pit du Hellfest et je l'ai retrouvée."></textarea>
     <p class="pf-note num" id="pf-power-count"></p>
     <div class="pf-row"><button type="button" class="btn ghost" id="pf-power-clear">Effacer</button><button type="button" class="btn" id="pf-power-save">Enregistrer</button></div>
+  </div>
+</div>
+
+<div class="bsheet" id="artist-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="as-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="as-t">Propose un artiste</h2>
+    <p class="pf-note">Un musicien ou un groupe que tu veux dans ta collection. Le Grand Architecte lit tout.</p>
+    <label class="pf-label" for="as-name">Artiste ou groupe</label>
+    <input id="as-name" class="as-in" maxlength="80" autocomplete="off" placeholder="ex. Gojira">
+    <label class="pf-label" for="as-note">Pourquoi lui ? (facultatif)</label>
+    <textarea id="as-note" class="as-in" maxlength="200" rows="3" placeholder="ex. Leur live au Hellfest m'a retourné le cerveau."></textarea>
+    <p class="err" id="as-err"></p>
+    <div class="pf-row"><button type="button" class="btn ghost" id="as-cancel">Annuler</button><button type="button" class="btn" id="as-send">Envoyer</button></div>
   </div>
 </div>
 
@@ -887,6 +907,7 @@ const api = {
   onRecovery(cb){ sb.auth.onAuthStateChange(e => { if(e === 'PASSWORD_RECOVERY') cb(); }); },
   async tear(m, r){ return must(await sb.rpc('tear_card', { p_musician: m, p_rarity: r })); },
   async setPower(v){ return must(await sb.rpc('set_metal_power', { p_power: v })); },
+  async requestArtist(a, n){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n })); },
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
   async claimCryGift(){ return must(await sb.rpc('claim_cry_gift')); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
@@ -2184,7 +2205,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     kindsEl.innerHTML = KINDS.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + k + '</button>'; }).join('');
     [].forEach.call(kindsEl.children, function(btn){ btn.onclick = function(){ state.binderKind = btn.getAttribute('data-kind'); state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); }; });
     var inPage = state.binderOpen && binderOf(state.binder).kind === kind;
-    document.getElementById('binder-list').hidden = inPage; document.getElementById('binder-page').hidden = !inPage;
+    document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage; document.getElementById('binder-page').hidden = !inPage;
     if(!inPage){
       var list = document.getElementById('binder-list');
       // un classeur dont aucune carte n'est encore prête n'apparaît pas
@@ -2241,6 +2262,24 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }
   }
 
+  // demande d'artiste : envoyée au serveur (5 par jour), lue dans l'admin ; il faut un compte
+  var artistSheet = document.getElementById('artist-sheet'), asErr = document.getElementById('as-err');
+  document.getElementById('ask-artist').addEventListener('click', function(){
+    asErr.textContent = ONLINE ? '' : 'Connecte-toi pour proposer un artiste.'; document.getElementById('as-send').disabled = !ONLINE;
+    artistSheet.hidden = false; if(ONLINE) document.getElementById('as-name').focus();
+  });
+  function closeArtist(){ artistSheet.hidden = true; }
+  document.getElementById('as-cancel').addEventListener('click', closeArtist);
+  artistSheet.addEventListener('click', function(e){ if(e.target === artistSheet) closeArtist(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !artistSheet.hidden) closeArtist(); });
+  document.getElementById('as-send').addEventListener('click', async function(){
+    var name = document.getElementById('as-name'), note = document.getElementById('as-note'), btn = this, a = name.value.trim();
+    if(a.length < 2){ asErr.textContent = 'Deux caractères minimum pour le nom.'; return; }
+    btn.disabled = true; asErr.textContent = '';
+    try{ await ONLINE.requestArtist(a, note.value.trim() || null); name.value = ''; note.value = ''; closeArtist(); toast('Demande envoyée. Le Grand Architecte a noté ' + esc(a) + '.'); }
+    catch(e){ asErr.textContent = e.message; }
+    btn.disabled = false;
+  });
   // feuille de tri et d'affichage
   var sortSheet = document.getElementById('sort-sheet');
   document.getElementById('sort-open').addEventListener('click', function(){ sortSheet.hidden = false; });
@@ -2408,7 +2447,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'artist-sheet', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;
