@@ -329,7 +329,7 @@
   /* ---------- Détail ---------- */
   .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center}
   .sheet[hidden]{display:none}
-  .sheet-in{position:relative; width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+  .sheet-in{position:relative; overscroll-behavior:contain; width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
   /* bouton fermer : en surimpression, il ne prend pas de place */
   .sheet-close{position:absolute; top:12px; right:12px; z-index:6; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(255,255,255,.18); background:rgba(10,8,7,.72); color:var(--text); font-size:1rem; cursor:pointer}
   .detail-img{width:min(72%, 280px); margin:44px auto 14px; display:block; border-radius:12px}
@@ -2168,6 +2168,20 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     askConfirm({eyebrow:'Réglages', title:'Tout brûler ?', text:'Ta collection, tes doublons et tes maîtrises partent en fumée. Impossible de revenir en arrière.', yes:'Oui, repartir de zéro', no:'Non, je garde tout'},
       function(){ resetAll(); go('packs'); toast('Collection brûlée. Le pit t\'attend.'); });
   });
+
+  // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
+  // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
+  (function(){
+    var ids = ['sheet', 'sort-sheet', 'power-sheet', 'confirm', 'dupfx', 'reveal'], locked = false, y = 0, b = document.body;
+    function update(){
+      var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
+      if(any === locked) return; locked = any;
+      if(any){ y = window.scrollY; b.style.position = 'fixed'; b.style.top = -y + 'px'; b.style.left = '0'; b.style.right = '0'; }
+      else { b.style.position = b.style.top = b.style.left = b.style.right = ''; window.scrollTo(0, y); }
+    }
+    var mo = new MutationObserver(update);
+    ids.forEach(function(id){ var el = document.getElementById(id); if(el) mo.observe(el, { attributes: true, attributeFilter: ['hidden'] }); });
+  })();
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   renderStats(); setNet(); paintAvatar();
