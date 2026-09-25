@@ -51,6 +51,7 @@
   .bar b{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--text)}
   .msg{margin-top:10px; font-size:.88rem}
   .qr{background:#fff; padding:10px; border-radius:10px; display:inline-block}
+  .warn-pill{background:rgba(245,197,66,.15); color:#f5c542; border-color:rgba(245,197,66,.4)}
   .warn{font-size:.85rem; color:#f5c542; border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:8px 10px}
   .steps{padding-left:18px; font-size:.88rem; line-height:1.5} .steps li{margin:6px 0}
   .qr img{display:block; width:190px; height:190px}
@@ -246,7 +247,7 @@ async function players(el){
   const list = await sb.rpc('admin_list_players').then(must);
   el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
     <tr><th>Pseudo</th><th>Compte</th><th>Créé</th><th>Dernière connexion</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
-    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b></td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
+    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b></td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
       <td>${fmt(p.created_at)}</td><td>${fmt(p.last_sign_in_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
       <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
     </table></div></div><div id="player-detail"></div>`;
@@ -269,6 +270,10 @@ async function player(p){
       <div class="fit"><label>Exemplaires (+/−)</label><input id="adj-d" type="number" value="1"></div>
       <div class="fit"><button id="adj-go">Appliquer</button></div></div>
     <h3 style="margin-top:22px">Compte</h3>
+    ${p.email && !p.email_confirmed ? `<div style="margin:0 0 12px; border:1px solid rgba(245,197,66,.4); border-radius:10px; padding:12px">
+      <p style="margin:0 0 6px; font-weight:600; color:#f5c542">Adresse pas encore confirmée</p>
+      <p class="muted" style="margin:0 0 8px; font-size:.85rem">Le mail de confirmation a été envoyé. S'il n'est pas arrivé (spam, messagerie d'entreprise), renvoie-le, ou confirme l'adresse toi-même si tu es sûr que c'est bien elle ou lui.</p>
+      <div class="row"><button id="cf-resend" class="ghost fit">Renvoyer le mail de confirmation</button><button id="cf-go" class="fit">Confirmer à la main</button></div></div>` : ''}
     <div class="row"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button>
       <button id="clr-go" class="ghost fit">Vider la collection</button></div>
     <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
@@ -287,6 +292,16 @@ async function player(p){
   };
   d.querySelectorAll('button.q').forEach(b => b.onclick = () => adjust(b.dataset.m, b.dataset.r, parseInt(b.dataset.d, 10)));
   $('adj-go').onclick = () => adjust($('adj-m').value, $('adj-r').value, parseInt($('adj-d').value, 10) || 0);
+  if($('cf-resend')) $('cf-resend').onclick = async () => {
+    const { error } = await sb.auth.resend({ type: 'signup', email: p.email, options: { emailRedirectTo: location.origin + location.pathname.replace(/admin\/.*$/, 'proto/') } });
+    say($('adj-msg'), error ? error.message : 'Mail de confirmation renvoyé à ' + p.email + '. Dis-lui de regarder aussi dans les spams.', !error);
+  };
+  if($('cf-go')) $('cf-go').onclick = async () => {
+    if(needWhy()) return;
+    const res = await sb.rpc('admin_confirm_email', { p_user: p.id, p_reason: why() });
+    if(res.error) return say($('adj-msg'), res.error.message);
+    p.email_confirmed = true; await player(p); say($('adj-msg'), 'Adresse confirmée et inscrite au journal : le compte peut se connecter.', true);
+  };
   $('blk-go').onclick = async () => {
     if(needWhy()) return;
     const r = await sb.rpc('admin_set_blocked', { p_user: p.id, p_blocked: !p.blocked, p_reason: why() });
