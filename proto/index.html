@@ -89,7 +89,7 @@
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
-  .formats{display:flex; gap:10px; margin:16px auto 0; max-width:420px}
+  .formats{display:flex; gap:10px; margin:12px auto 0; width:100%; max-width:420px}
   .formats button{flex:1; min-height:56px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; text-align:center}
   .formats button b{display:block; font:700 .9rem var(--mono)} .formats button small{display:block; margin-top:2px; font:500 .72rem var(--mono); color:var(--muted)}
   .formats button[aria-checked="true"]{border-color:var(--gold); background:rgba(237,164,43,.1)} .formats button[aria-checked="true"] b{color:var(--gold-hi)}
@@ -543,16 +543,17 @@
     <div class="pack-car" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
     <div class="pack-info"><h2 id="pc-name"></h2><p id="pc-desc"></p><p class="pc-wait" id="pc-wait" hidden></p></div>
+    <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
+      <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
+      <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes chacun, plus de chances</small></button>
+    </div>
+
   </div>
   <div class="pack-zone">
     <div class="open-head">
       <button type="button" class="back-btn" id="pack-back">← Changer de paquet</button>
       <h1 id="open-title"></h1>
       <p class="pack-desc" id="pack-desc"></p>
-      <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
-        <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
-        <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes chacun, plus de chances</small></button>
-      </div>
     </div>
     <div class="pack-wrap" id="pack-root">
       <div class="ptilt" id="ptilt">
@@ -976,7 +977,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
   // Paquets : le Mosh Pack tire dans tous les musiciens, un paquet de style seulement dans son classeur
-  var PACKS = [{k:'serie', label:'Mosh Pack', short:'Tous les styles', desc:'Tous les styles dans le même pit : 5 cartes tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, short:b.ids.length + ' musiciens', desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
+  var PACKS = [{k:'serie', label:'Mosh Pack', short:'Tous les styles', desc:'Tous les styles dans le même pit : les cartes sont tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, short:b.ids.length + ' musiciens', desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
     .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
   function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
   // ---------- En ligne : le serveur tire les paquets et tient la collection ----------
@@ -1220,6 +1221,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var t = new Date().toLocaleTimeString('fr-FR', {timeZone:'Europe/Paris', hour12:false}).split(':'), left = 24 * 60 - (+t[0] * 60 + +t[1]);
     return (left >= 60 ? Math.floor(left / 60) + ' h ' : '') + (left % 60) + ' min';
   }
+  function packSrc(k){ return 'cards/pack-' + k + (packFormat() === 'small' && (window.METALNINI_MINIS || {})[k] ? '-mini' : '') + '.jpg'; }
   function packFormat(){ return state.packsLeft === 1 ? 'small' : (state.packFormat || 'big'); }
   function renderFormats(){
     var f = packFormat(), locked = ONLINE && state.pending && state.pending.length;
@@ -1227,12 +1229,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var k = b.getAttribute('data-f');
       b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
       b.disabled = locked || (k === 'big' && state.packsLeft === 1);
-      b.onclick = function(){ if(b.disabled) return; state.packFormat = k; save(); renderFormats(); prepTease(); };
+      b.onclick = function(){ if(b.disabled) return; state.packFormat = k; save(); renderFormats(); prepTease();
+        [].forEach.call(document.querySelectorAll('#pack-picker button'), function(x){ x.querySelector('img').src = packSrc(x.getAttribute('data-p')); }); };
     });
     // visuel du sachet : version « MINI » pour les petits paquets quand elle existe
     var pk = document.getElementById('pack'), mini = f === 'small' && (window.METALNINI_MINIS || {})[state.packType];
     pk.classList.toggle('mini', f === 'small');
-    pk.style.setProperty('--pimg', 'url(cards/pack-' + state.packType + (mini ? '-mini' : '') + '.jpg)');
+    pk.style.setProperty('--pimg', 'url(' + packSrc(state.packType) + ')');
     pk.style.setProperty('--pa', mini || (window.METALNINI_PACKS || {})[state.packType] || .5783);
     document.getElementById('pack').setAttribute('aria-label', 'Déchirer ' + (f === 'small' ? 'le petit paquet' : 'le paquet'));
   }
@@ -1265,7 +1268,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     pk.style.setProperty('--pimg', 'url(cards/pack-' + state.packType + '.jpg)'); pk.style.setProperty('--pa', ratio);
     var el = document.getElementById('pack-picker');
     el.hidden = PACKS.length < 2;
-    el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-label="' + esc(p.label) + '"><img src="cards/pack-' + p.k + '.jpg" alt=""></button>'; }).join('');
+    el.innerHTML = PACKS.map(function(p){ return '<button type="button" data-p="' + p.k + '" aria-label="' + esc(p.label) + '"><img src="' + packSrc(p.k) + '" alt=""></button>'; }).join('');
     document.getElementById('pc-dots').innerHTML = PACKS.map(function(){ return '<i></i>'; }).join('');
     // toucher le paquet du centre l'ouvre ; toucher un voisin le centre
     [].forEach.call(el.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){
