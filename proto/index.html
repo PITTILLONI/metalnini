@@ -156,6 +156,15 @@
     border:1px solid rgba(235,154,38,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
+  .recap{margin:4px 0 18px}
+  .recap p{display:flex; align-items:baseline; justify-content:center; gap:10px; margin:0 0 6px !important; font:600 1.05rem var(--mono); color:var(--text) !important}
+  .recap b{font:800 2.2rem/1 var(--display); color:var(--gold-hi); min-width:1.2em; text-align:right}
+  .dealfx{position:fixed; inset:0; z-index:60; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.6); cursor:pointer}
+  .dealfx[hidden]{display:none}
+  .dealfx .box{max-width:340px; padding:18px 22px 16px; text-align:center; background:rgba(10,8,7,.95); border:2px solid var(--dc); transform:skewX(-6deg); box-shadow:0 0 36px -6px var(--dc), 0 12px 30px rgba(0,0,0,.6); animation:dealpop .42s cubic-bezier(.2,1.5,.4,1) both}
+  .dealfx b{display:block; font:800 clamp(2.2rem, 11vw, 3rem)/1 var(--display); text-transform:uppercase; color:var(--dc)}
+  .dealfx small{display:block; margin-top:10px; font:600 1rem/1.4 var(--mono); color:var(--text)}
+  @keyframes dealpop{0%{opacity:0; transform:skewX(-6deg) scale(1.8)}60%{opacity:1; transform:skewX(-6deg) scale(.96)}100%{transform:skewX(-6deg)}}
   .welcome .wl-pack{display:block; width:120px; margin:6px auto 14px; filter:drop-shadow(0 0 22px rgba(235,154,38,.55)) drop-shadow(0 14px 22px rgba(0,0,0,.6)); animation:wlpop .7s cubic-bezier(.2,1.5,.4,1) both}
   @keyframes wlpop{0%{transform:scale(.4) rotate(-12deg); opacity:0}100%{transform:none; opacity:1}}
   .profile-page{padding:calc(16px + env(safe-area-inset-top)) 0 24px}
@@ -564,7 +573,7 @@
   .toggle input{width:22px; height:22px; accent-color:var(--accent)}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -801,6 +810,15 @@
     <h2 id="wl-t"></h2>
     <p id="wl-p"></p>
     <div class="modal-actions"><button type="button" class="btn" id="wl-go">Ouvrir mon cadeau</button><button type="button" class="btn ghost" id="wl-later">Plus tard</button></div>
+  </div>
+</div>
+<div class="dealfx" id="dealfx" hidden role="status" aria-live="assertive"></div>
+<div class="modal" id="deal-recap" hidden role="dialog" aria-modal="true" aria-labelledby="recap-t">
+  <div class="modal-in">
+    <p class="eyebrow">Rangement terminé</p>
+    <h2 id="recap-t">Tout est rangé</h2>
+    <div class="recap" id="recap-rows"></div>
+    <div class="modal-actions"><button type="button" class="btn" id="recap-ok">Nickel</button></div>
   </div>
 </div>
 <div class="modal" id="confirm" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirm-t" aria-describedby="confirm-d">
@@ -2022,10 +2040,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       fl.style.transition = dealing ? 'transform .32s cubic-bezier(.3,.7,.2,1)' : ''; fl.style.transform = 'none';
       setTimeout(function(){
         fl.remove(); finishPlace(k);
-        var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]');
+        var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]'), up = !!before && rank(r) > rank(before);
+        if(dealing){ if(!before) dealLog.fresh++; else if(up) dealLog.up++; else dealLog.dup++; }
         if(s2 && !before){ s2.classList.add('landed'); SFX.land(); }
         else if(s2){
-          var up = rank(r) > rank(before), shown = up ? r : before;
+          var shown = up ? r : before;
           s2.style.setProperty('--rc', COLORS[shown]); s2.classList.add(up ? 'upgraded' : 'stacked');
           var plus = document.createElement('span'); plus.className = 'plus';
           plus.innerHTML = up ? rarity(r).label + '<small>monte en grade</small>' : '+1<small>' + esc(rarity(r).label) + ' · ×' + total(id) + '</small>';
@@ -2033,9 +2052,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         }
         placing = false;
         var comps = newCompletions(), mast = newMasteries();
+        if(dealing){
+          var ev = up ? [{t:rarity(r).label + ' !', s:card(id).who + ' monte en grade', c:COLORS[r]}] : [];
+          comps.forEach(function(bb){ ev.push({t:'Classeur complété', s:bb.label + ' · Carte Collector et badge dans ta poche', c:COLORS.signature, sfx:'complete'}); });
+          mast.forEach(function(c){ ev.push({t:'Maîtrise', s:c.who + ' · les 5 raretés réunies. Respect.', c:COLORS.signature, sfx:'signature'}); });
+          dealLog.comps += comps.length; dealLog.mast += mast.length;
+          dealFx(ev, function(){ setTimeout(done, 120); }); return;
+        }
         comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Carte Collector et badge dans ta poche.'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
-        if(then) setTimeout(then, 700); else if(done) setTimeout(done, dealing ? 120 : 380);
+        if(then) setTimeout(then, 700); else if(done) setTimeout(done, 380);
       }, reduce ? 0 : dealing ? 330 : 560);
     }
   }
@@ -2068,12 +2094,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
   // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
   var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
-  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden; }
+  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden; }
   function showWl(e, t, p, src){
     document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
     document.getElementById('wl-img').src = src; document.getElementById('welcome').hidden = false; buzz(HAPTIC.holo);
   }
-  function showWelcome(){ if(busyScreen()) return; wlGift = null;
+  function showWelcome(){ if(busyScreen()){ if(dealing || !document.getElementById('deal-recap').hidden) wantWelcome = true; return; } wlGift = null;
     showWl('Cadeau de bienvenue', 'Un paquet standard offert !', 'Tu viens de ranger tes premières cartes. Pour fêter ton arrivée dans le pit, on remet ça tout de suite.', 'cards/pack-serie.jpg'); }
   // 1 point = un mini, 2 = un paquet standard
   function giftLabel(n){ var std = Math.floor(n / 2), mini = n % 2, parts = [];
@@ -2102,10 +2128,28 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkGifts(); });
   function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
-  var dealing = false;
+  var dealing = false, dealLog = null, wantWelcome = false;
+  // « Tout ranger » : les moments forts s'affichent en grand, un par un (toucher pour passer), la distribution attend
+  function dealFx(list, then){
+    if(!list.length){ then(); return; }
+    var el = document.getElementById('dealfx'), e = list[0], t = null;
+    el.style.setProperty('--dc', e.c); el.innerHTML = '<div class="box"><b>' + esc(e.t) + '</b><small>' + esc(e.s) + '</small></div>';
+    el.hidden = false; if(e.sfx) SFX[e.sfx](); buzz(HAPTIC.holo);
+    function next(){ clearTimeout(t); el.onclick = null; el.hidden = true; dealFx(list.slice(1), then); }
+    el.onclick = next; t = setTimeout(next, reduce ? 2200 : 1600);
+  }
+  // fin de « Tout ranger » : le bilan en grand
+  function showRecap(){
+    var L = dealLog, rows = [[L.fresh, 'nouvelle carte', 'nouvelles cartes'], [L.up, 'montée en grade', 'montées en grade'], [L.dup, 'doublon', 'doublons'],
+      [L.comps, 'classeur complété', 'classeurs complétés'], [L.mast, 'maîtrise', 'maîtrises']].filter(function(x){ return x[0] > 0; });
+    if(!rows.length) return;
+    document.getElementById('recap-rows').innerHTML = rows.map(function(x){ return '<p><b>' + x[0] + '</b>' + (x[0] > 1 ? x[2] : x[1]) + '</p>'; }).join('');
+    document.getElementById('deal-recap').hidden = false;
+  }
+  document.getElementById('recap-ok').addEventListener('click', function(){ document.getElementById('deal-recap').hidden = true; if(wantWelcome){ wantWelcome = false; showWelcome(); } });
   document.getElementById('tray-all').addEventListener('click', function(){
-    if(dealing || placing) return; dealing = true; buzz([10]);
-    (function one(){ var tp = state.toPlace || []; if(!tp.length){ dealing = false; return; } var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
+    if(dealing || placing) return; dealing = true; buzz([10]); dealLog = {fresh:0, up:0, dup:0, comps:0, mast:0};
+    (function one(){ var tp = state.toPlace || []; if(!tp.length){ dealing = false; showRecap(); return; } var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
   });
   function mastered(id){ var tp = state.toPlace || []; return RARITIES.every(function(r){ var k = id+'|'+r.k; return state.owned[k] && tp.indexOf(k) === -1; }); }
   function newMasteries(){
@@ -2361,7 +2405,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

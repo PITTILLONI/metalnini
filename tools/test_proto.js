@@ -179,13 +179,14 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
     w3.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
   const d3 = dom3.window.document;
-  const seen = []; new dom3.window.MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.classList && n.classList.contains('toast')) seen.push(n.textContent); }))).observe(d3.body, { childList: true });
+  const seen = []; new dom3.window.MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.classList && (n.classList.contains('toast') || n.classList.contains('box'))) seen.push(n.textContent); }))).observe(d3.body, { childList: true, subtree: true });
   key(d3.getElementById('pack'), 'Enter'); await sleep(3200);
   d3.getElementById('skip').click(); await sleep(300);
   d3.getElementById('to-binder').click(); await sleep(100);
   await placeAll(d3, () => JSON.parse(dom3.window.localStorage.getItem('metalnini-proto-v1'))); await sleep(2600);
   const toastTxt = seen.join(' | ');
   check('complétion du classeur Blink-182 annoncée', /Classeur complété.*Blink-182/.test(toastTxt), toastTxt);
+  check('tout ranger : bilan en grand à la fin', !d3.getElementById('deal-recap').hidden && /nouvelle/.test(d3.getElementById('recap-rows').textContent), d3.getElementById('recap-rows').textContent);
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
   { d3.querySelector('#binder-kinds [data-kind="Groupes"]').click(); await sleep(20);
     const pc = d3.querySelector('#binder-list [data-b="g-blink"]');
