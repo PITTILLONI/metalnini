@@ -646,7 +646,7 @@
     </section>
     <section class="pf-card pf-cry">
       <p class="eyebrow">Ton cri</p>
-      <p class="pf-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque.</p>
+      <p class="pf-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque. Ton premier cri te rapporte une carte cadeau, Rare minimum.</p>
       <div class="pf-count" id="pf-count" aria-live="assertive"></div>
       <div class="pf-meter" aria-hidden="true"><i id="pf-level"></i></div>
       <div class="pf-row">
@@ -850,6 +850,7 @@ const api = {
   async tear(m, r){ return must(await sb.rpc('tear_card', { p_musician: m, p_rarity: r })); },
   async setPower(v){ return must(await sb.rpc('set_metal_power', { p_power: v })); },
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
+  async claimCryGift(){ return must(await sb.rpc('claim_cry_gift')); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
   async packsLeft(){ return must(await sb.rpc('packs_left_today')); },
   async resetCollection(){ must(await sb.rpc('reset_my_collection')); },
@@ -1205,6 +1206,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(ONLINE){ MEDIA.cry = await ONLINE.uploadMedia('cry', recBlob, ext); }
       else { state.cry = await new Promise(function(ok){ var fr = new FileReader(); fr.onload = function(){ ok(fr.result); }; fr.readAsDataURL(recBlob); }); save(); }
       recBlob = null; resetCry(); renderGoal('goal'); toast('Cri enregistré. Les voisins s\'en souviendront.');
+      cryGift();
     }catch(e){ pfErr.textContent = e.message; }
     saveBtn.disabled = false;
   });
@@ -1417,7 +1419,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var side = [];
     var top = CARDS.map(function(c){ return {c:c, r:best(c.id)}; }).filter(function(x){ return x.r; }).sort(function(a, b){ return rank(b.r) - rank(a.r); })[0];
     if(top && !state.shared) side.push({pct:0, detail:top.c.id, binder:'all', title:'Partage ta plus belle carte'});
-    if(!crySrc()) side.push({pct:0, act:'profile', title:'Enregistre ton plus beau cri'});
+    if(!crySrc()) side.push({pct:0, act:'profile', title:'Enregistre ton cri : une carte cadeau à la clé'});
     if(!avatarSrc()) side.push({pct:0, act:'profile', title:'Mets ta tête sur ton profil'});
     var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n >= 1 && n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
     var mastery = m ? [{pct:m.n * 20, binder:styleOf(m.c.id), title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5'}] : [];
@@ -2096,6 +2098,22 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     state.owned[kFrom] -= fuseCost(from);
     var isNew = !state.owned[kNext]; state.owned[kNext] = (state.owned[kNext] || 0) + 1; if(isNew){ state.fresh[id] = true; state.toPlace = (state.toPlace || []).concat([kNext]); } save();
     showFusion(id, from, next, isNew);
+  }
+  // carte cadeau du premier cri : au moins une Rare, une seule fois (le serveur tranche en ligne)
+  var CRY_GIFT_ODDS = {commune:0, rare:70, holo:22, signature:7, legendaire:1};
+  async function cryGift(){
+    var got = null;
+    if(ONLINE){ try{ var rows = await ONLINE.claimCryGift(); if(rows && rows[0]) got = {id:rows[0].musician_id, r:rows[0].rarity, isNew:rows[0].is_new}; applyInventory(await ONLINE.inventory()); }catch(e){ return; } }
+    else if(!state.cryGift){
+      var c = CARDS[Math.floor(Math.random() * CARDS.length)], r = drawRarity(CRY_GIFT_ODDS), k = c.id + '|' + r, isNew = !state.owned[k];
+      state.owned[k] = (state.owned[k] || 0) + 1; if(isNew) state.toPlace = (state.toPlace || []).concat([k]);
+      state.cryGift = true; save(); got = {id:c.id, r:r, isNew:isNew};
+    }
+    if(!got || !card(got.id)) return;
+    if(got.isNew) state.fresh[got.id] = true; save(); renderStats();
+    current = [{c:card(got.id), r:got.r, isNew:got.isNew}]; idx = 0; seenUpTo = -1;
+    revealEl.hidden = false; document.getElementById('skip').hidden = true; showCard();
+    setTimeout(function(){ document.getElementById('counter').textContent = 'Cadeau pour ton cri'; }, 0);
   }
   function showFusion(id, from, next, isNew){
     sheet.hidden = true; SFX.tear();
