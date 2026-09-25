@@ -36,3 +36,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | mercury | [Freddie_Mercury_performing_in_New_Haven,_CT,_November_1977.jpg](https://commons.wikimedia.org/wiki/File:Freddie_Mercury_performing_in_New_Haven,_CT,_November_1977.jpg) | Carl Lender | CC BY-SA 3.0 |
 | gerard-way | [Gerard_Way_at_Metlife_Stadium_(August_9,_2025)_by_Jonathan_Weber_for_Common_Revolt.jpg](https://commons.wikimedia.org/wiki/File:Gerard_Way_at_Metlife_Stadium_(August_9,_2025)_by_Jonathan_Weber_for_Common_Revolt.jpg) | Thatcommonkid | CC0 |
 | bennington | [Linkin_Park-Rock_im_Park_2014-_by_2eight_3SC0327.jpg](https://commons.wikimedia.org/wiki/File:Linkin_Park-Rock_im_Park_2014-_by_2eight_3SC0327.jpg) | Stefan Brending (2eight) | CC BY-SA 3.0 |
+| prince | [Prince_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Prince_(cropped).jpg) | Levi Seacer | CC BY-SA 4.0 |

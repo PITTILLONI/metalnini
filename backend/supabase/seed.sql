@@ -45,7 +45,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('hammett', 'Kirk Hammett', 'Metallica', 'Enter Sandman', 'XLIV', array['guitare']::text[], 'Thrash metal'),
   ('mercury', 'Freddie Mercury', 'Queen', 'Bohemian Rhapsody', 'XLV', array['chant']::text[], 'Rock'),
   ('gerard-way', 'Gerard Way', 'My Chemical Romance', 'Welcome to the Black Parade', 'XLVI', array['chant']::text[], 'Emo'),
-  ('bennington', 'Chester Bennington', 'Linkin Park', 'Numb', 'XLVII', array['chant']::text[], 'Nu metal')
+  ('bennington', 'Chester Bennington', 'Linkin Park', 'Numb', 'XLVII', array['chant']::text[], 'Nu metal'),
+  ('prince', 'Prince', 'Prince', 'Purple Rain', 'XLVIII', array['chant', 'guitare']::text[], 'Funk rock')
 on conflict (id) do nothing;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -268,7 +269,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('bennington', 'rare', 'cards/bennington-rare.jpg'),
   ('bennington', 'holo', 'cards/bennington-holo.jpg'),
   ('bennington', 'signature', 'cards/bennington-signature.jpg'),
-  ('bennington', 'legendaire', 'cards/bennington-legendaire.jpg')
+  ('bennington', 'legendaire', 'cards/bennington-legendaire.jpg'),
+  ('prince', 'commune', 'cards/prince-commune.jpg'),
+  ('prince', 'rare', 'cards/prince-rare.jpg'),
+  ('prince', 'holo', 'cards/prince-holo.jpg'),
+  ('prince', 'signature', 'cards/prince-signature.jpg'),
+  ('prince', 'legendaire', 'cards/prince-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -334,6 +340,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'mercury'),
   ('all', 'gerard-way'),
   ('all', 'bennington'),
+  ('all', 'prince'),
   ('metalcore', 'spiritbox'),
   ('metalcore', 'jinjer'),
   ('metalcore', 'landmvrks'),
@@ -362,6 +369,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('legendes', 'frusciante'),
   ('legendes', 'angus'),
   ('legendes', 'mercury'),
+  ('legendes', 'prince'),
   ('heavy', 'dickinson'),
   ('heavy', 'halford'),
   ('heavy', 'ozzy'),
@@ -390,6 +398,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('guitaristes', 'scott-ian'),
   ('guitaristes', 'angus'),
   ('guitaristes', 'hammett'),
+  ('guitaristes', 'prince'),
   ('bassistes', 'hoppus'),
   ('bassistes', 'lemmy'),
   ('bassistes', 'araya'),
