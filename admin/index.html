@@ -247,7 +247,7 @@ async function players(el){
   const list = await sb.rpc('admin_list_players').then(must);
   el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
     <tr><th>Pseudo</th><th>Compte</th><th>Créé</th><th>Dernière connexion</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
-    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b></td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
+    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b>${p.cry_path ? ' <span class="pill" title="A enregistré un cri">cri</span>' : ''}</td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
       <td>${fmt(p.created_at)}</td><td>${fmt(p.last_sign_in_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
       <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
     </table></div></div><div id="player-detail"></div>`;
@@ -257,6 +257,7 @@ async function player(p){
   const inv = await sb.rpc('admin_player_inventory', { p_user: p.id }).then(must);
   const d = $('player-detail');
   d.innerHTML = `<div class="card"><p class="eyebrow">Joueur</p><h3>${esc(p.username || p.email || 'sans pseudo')}${p.username && p.email ? ' · ' + esc(p.email) : ''} <span class="muted" style="font:500 .7rem var(--mono)">${p.id}</span></h3>
+    <div class="pl-media" id="pl-media">${p.avatar_path || p.cry_path || p.metal_power ? '<p class="muted">Chargement du profil…</p>' : '<p class="muted" style="font-size:.85rem">Pas encore de photo, de cri ni de capacité.</p>'}</div>
     <label for="why">Motif de l'action (obligatoire, inscrit au journal)</label><input id="why" placeholder="ex. geste commercial, correction d'un bug, compte de test">
     <p id="adj-msg" class="msg"></p>
     <h3 style="margin-top:16px">Collection · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s)</h3>
@@ -283,6 +284,15 @@ async function player(p){
       <div class="row"><div><label for="del-confirm">Tape SUPPRIMER pour confirmer</label><input id="del-confirm" autocomplete="off"></div>
         <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>`;
   d.scrollIntoView({ behavior: 'smooth' });
+  // photo et cri : fichiers privés, lus par lien signé (1 h)
+  if(p.avatar_path || p.cry_path || p.metal_power){
+    const url = async (bucket, path) => path ? ((await sb.storage.from(bucket).createSignedUrl(path, 3600)).data || {}).signedUrl : null;
+    const [av, cry] = await Promise.all([url('avatars', p.avatar_path), url('cries', p.cry_path)]);
+    $('pl-media').innerHTML = `<div class="row" style="align-items:center; gap:14px">
+        ${av ? `<img src="${esc(av)}" alt="Photo de ${esc(p.username || 'ce joueur')}" style="width:72px; height:72px; border-radius:50%; object-fit:cover; border:1px solid var(--gold)">` : ''}
+        <div style="flex:1; min-width:200px">${p.metal_power ? `<p style="margin:0 0 8px"><span class="muted" style="font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Capacité de metaleux</span><br>${esc(p.metal_power)}</p>` : ''}
+          ${cry ? `<p class="muted" style="margin:0 0 4px; font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Son cri</p><audio controls preload="none" src="${esc(cry)}" style="width:100%"></audio>` : ''}</div></div>`;
+  }
   const why = () => $('why').value.trim();
   const needWhy = () => { if(!why()){ say($('adj-msg'), 'Indique d\'abord un motif.'); $('why').focus(); return true; } return false; };
   const adjust = async (m, r, delta) => {
