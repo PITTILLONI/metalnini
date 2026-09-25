@@ -905,13 +905,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot','sykes']},
     {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier','white-gluz','corpsegrinder']},
     {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy','tankian']},
-    {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus','hayley','armstrong']},
-    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante','angus']},
-    {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy']},
-    {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian']},
+    {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus','hayley','armstrong','gerard-way']},
+    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante','angus','mercury']},
+    {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro']},
+    {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett']},
     {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','keenan']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison']},
-    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus']},
+    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett']},
     {k:'bassistes', kind:'Instruments', label:'Les bassistes', ids:['hoppus','lemmy','araya']},
     {k:'g-kl',      kind:'Groupes', label:'Knocked Loose', ids:['knocked-loose','isaac-hale']},
     {k:'g-blink',   kind:'Groupes', label:'Blink-182', ids:['blink182','hoppus']},
@@ -960,7 +960,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['sykes','Oli Sykes','Bring Me the Horizon','Throne','XXXVIII','Chant','Metalcore'],
     ['hayley','Hayley Williams','Paramore','Misery Business','XXXIX','Chant','Pop punk'],
     ['armstrong','Billie Joe Armstrong','Green Day','Boulevard of Broken Dreams','XL','Chant, guitare','Punk rock'],
-    ['angus','Angus Young','AC/DC','Highway to Hell','XLI','Guitare','Hard rock']
+    ['angus','Angus Young','AC/DC','Highway to Hell','XLI','Guitare','Hard rock'],
+    ['dio','Ronnie James Dio','Dio','Holy Diver','XLII','Chant','Heavy metal'],
+    ['doro','Doro Pesch','Warlock','All We Are','XLIII','Chant','Heavy metal'],
+    ['hammett','Kirk Hammett','Metallica','Enter Sandman','XLIV','Guitare','Thrash metal'],
+    ['mercury','Freddie Mercury','Queen','Bohemian Rhapsody','XLV','Chant','Rock'],
+    ['gerard-way','Gerard Way','My Chemical Romance','Welcome to the Black Parade','XLVI','Chant','Emo']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -1003,7 +1008,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     sykes:['Créateur de mode', 'Il a fondé la marque de vêtements Drop Dead.'],
     hayley:['Couleur de scène', 'Elle a cofondé Good Dye Young, sa marque de coloration pour cheveux.'],
     armstrong:['Idiot à Broadway', 'L\'album American Idiot de Green Day est devenu une comédie musicale jouée à Broadway.'],
-    angus:['Uniforme d\'écolier', 'L\'idée de l\'uniforme d\'écolier vient de sa sœur Margaret.']
+    angus:['Uniforme d\'écolier', 'L\'idée de l\'uniforme d\'écolier vient de sa sœur Margaret.'],
+    dio:['Cornes du diable', 'C\'est lui qui a popularisé les cornes du diable dans le metal, un geste hérité de sa grand-mère italienne.'],
+    doro:['Metal Queen', 'Surnommée la reine du metal, elle tient la scène depuis les années 1980.'],
+    hammett:['Musée de l\'horreur', 'Sa collection d\'objets de films d\'horreur a été exposée dans un vrai musée.'],
+    mercury:['Live Aid', 'Son concert de Live Aid en 1985 reste l\'un des plus célèbres de l\'histoire du rock.'],
+    'gerard-way':['Umbrella Academy', 'Il a écrit la BD The Umbrella Academy, adaptée en série.']
   };
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }

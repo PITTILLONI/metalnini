@@ -1,4 +1,4 @@
-# Crédits des photos de référence (série 2)
+# Crédits des photos de référence (séries 2 et 3)
 
 Photos de Wikimedia Commons utilisées comme référence de ressemblance pour générer les cartes (usage perso, non commercial). Licences d'origine à respecter en cas de diffusion.
 
@@ -30,3 +30,8 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | armstrong | [GreenDayIOW230624_(307_of_367)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:GreenDayIOW230624_(307_of_367)_(cropped).jpg) | Raph_PH | CC BY 2.0 |
 | angus | [ACDCWembley030724_(115_of_169)_(53844255247)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:ACDCWembley030724_(115_of_169)_(53844255247)_(cropped).jpg) | Raph_PH | CC BY 2.0 |
 | corpsegrinder | [Cannibal_Corpse_Rockharz_2018_18.jpg](https://commons.wikimedia.org/wiki/File:Cannibal_Corpse_Rockharz_2018_18.jpg) | S. Bollmann | Attribution |
+| dio | [Ronnie-James-Dio_Heaven-N-Hell_2009-06-11_Chicago_Photoby_Adam-Bielawski.jpg](https://commons.wikimedia.org/wiki/File:Ronnie-James-Dio_Heaven-N-Hell_2009-06-11_Chicago_Photoby_Adam-Bielawski.jpg) | Photobra/Adam Bielawski | CC BY-SA 3.0 |
+| doro | [Doro_Pesch_–_Wacken_Open_Air_2014_03.jpg](https://commons.wikimedia.org/wiki/File:Doro_Pesch_%E2%80%93_Wacken_Open_Air_2014_03.jpg) | P. Schwichtenberg | CC BY-SA 3.0 |
+| hammett | [Kirk_Hammett_2025_Marvel_Stadium_(4).jpg](https://commons.wikimedia.org/wiki/File:Kirk_Hammett_2025_Marvel_Stadium_(4).jpg) | 4TheWynne | CC BY-SA 4.0 |
+| mercury | [Freddie_Mercury_performing_in_New_Haven,_CT,_November_1977.jpg](https://commons.wikimedia.org/wiki/File:Freddie_Mercury_performing_in_New_Haven,_CT,_November_1977.jpg) | Carl Lender | CC BY-SA 3.0 |
+| gerard-way | [Gerard_Way_at_Metlife_Stadium_(August_9,_2025)_by_Jonathan_Weber_for_Common_Revolt.jpg](https://commons.wikimedia.org/wiki/File:Gerard_Way_at_Metlife_Stadium_(August_9,_2025)_by_Jonathan_Weber_for_Common_Revolt.jpg) | Thatcommonkid | CC0 |
