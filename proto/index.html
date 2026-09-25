@@ -579,7 +579,8 @@
   .dev-t{margin:0 0 6px; font:600 .72rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .dev-row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0 10px; border-bottom:1px solid var(--border); margin-bottom:4px}
   .dev-row b{display:block; font-size:.9rem; font-weight:500} .dev-row small{display:block; margin-top:3px; font:500 .76rem/1.4 var(--mono); color:var(--muted)}
-  .dev-go{flex:none; min-height:44px; padding:0 16px}
+  .dev-go{flex:none; min-height:44px; padding:0 16px; text-decoration:none}
+  .dev-row{flex-wrap:wrap} #inst-safari{flex:1 1 100%}
 
   @media (prefers-reduced-motion:reduce){
     .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
@@ -729,7 +730,7 @@
     </div>
     <div class="field">
       <p class="dev-t">Sur ton téléphone</p>
-      <div class="dev-row"><div><b>App sur l'écran d'accueil</b><small id="inst-note"></small></div><button type="button" class="btn ghost dev-go" id="inst-go" hidden>Installer</button></div>
+      <div class="dev-row"><div><b>App sur l'écran d'accueil</b><small id="inst-note"></small></div><button type="button" class="btn ghost dev-go" id="inst-go" hidden>Installer</button><a class="btn ghost dev-go" id="inst-safari" hidden>Ouvrir dans Safari</a></div>
       <label class="toggle">Notifications <input type="checkbox" id="s-push"></label>
       <p class="note" id="push-note"></p>
     </div>
@@ -2441,6 +2442,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Installation et notifications ----------
   var VAPID = 'BFwwKTN8wXhWSicqw57pygCIoAgPGq8yUNVFf7ct8vPJbSWwZmciOGCFguIH5Bv_HqzIylv25ULgm3dlh8g4EEo';
   var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  // sur iPhone, seul Safari installe l'app (et donc les notifications) : Chrome, Firefox ou le navigateur d'Instagram renvoient vers Safari
+  var IOS_OTHER = IOS && (/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|FBAN|FBAV|Instagram|Line\/|Snapchat|LinkedInApp|Twitter/.test(navigator.userAgent) || !/Safari\//.test(navigator.userAgent));
   var installEvt = null, swReg = null;
   function standalone(){ return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
   function pushOk(){ return !!swReg && 'PushManager' in window && 'Notification' in window; }
@@ -2450,14 +2453,22 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function paintDevice(){
     var inst = standalone();
     document.getElementById('inst-note').textContent = inst ? 'Installée. Bien joué.' : installEvt ? 'En plein écran, sans la barre du navigateur.'
-      : IOS ? 'Dans Safari : touche Partager, puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
+      : IOS_OTHER ? 'Sur iPhone, l\'installation se fait dans Safari (Partager, puis « Sur l\'écran d\'accueil »).'
+      : IOS ? 'Touche Partager, puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
     document.getElementById('inst-go').hidden = inst || !installEvt;
+    var sf = document.getElementById('inst-safari'); sf.hidden = inst || !IOS_OTHER; sf.href = 'x-safari-' + location.href.split('#')[0];
     var perm = 'Notification' in window ? Notification.permission : 'default', box = document.getElementById('s-push');
     var why = !ONLINE ? 'Connecte-toi pour recevoir les notifications.' : IOS && !inst ? 'Sur iPhone, installe d\'abord l\'app sur l\'écran d\'accueil.'
       : !pushOk() ? 'Ton navigateur ne gère pas les notifications.' : perm === 'denied' ? 'Notifications bloquées dans les réglages du navigateur ou du téléphone.' : '';
     box.disabled = !!why; box.checked = !why && !!state.push && perm === 'granted';
     document.getElementById('push-note').textContent = why || 'Pour l\'instant : les cadeaux du Grand Architecte. Pas de spam, promis.';
   }
+  // iOS antérieur à 17 : le lien x-safari ne fait rien ; si on est toujours là après un instant, on copie l'adresse
+  document.getElementById('inst-safari').addEventListener('click', function(){
+    var url = location.href.split('#')[0];
+    setTimeout(function(){ if(document.hidden) return;
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Colle-le dans Safari.'); }, function(){ toast('Ouvre Safari et va sur ' + esc(url)); }); }, 1200);
+  });
   document.getElementById('inst-go').addEventListener('click', function(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.then(function(){ installEvt = null; paintDevice(); }); });
   function vapidKey(){ var s = VAPID.replace(/-/g, '+').replace(/_/g, '/'), raw = atob(s + '='.repeat((4 - s.length % 4) % 4)), out = new Uint8Array(raw.length); for(var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i); return out; }
   async function enablePush(){
