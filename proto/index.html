@@ -77,7 +77,8 @@
   #v-packs[data-step="open"] .quests, #v-packs[data-step="open"] .home-title, #v-packs[data-step="open"] .choose{display:none}
   /* choix du paquet : carrousel, le paquet du centre en avant, sa description dessous */
   .choose{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px 0 16px}
-  .pack-car{width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:16px calc(50% - var(--pw) / 2) 20px; --pw:min(52vw, 230px, calc((100dvh - 480px) * .58))}
+  .pack-car{width:100%; display:flex; align-items:center; gap:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:16px 0 20px; --pw:min(52vw, 230px, calc((100dvh - 540px) * .58))}
+  .pack-car::before, .pack-car::after{content:""; flex:0 0 calc(50% - var(--pw) / 2)}
   .pack-car::-webkit-scrollbar{display:none}
   .pack-car button{flex:0 0 var(--pw); scroll-snap-align:center; border:0; padding:0; background:none; cursor:pointer; transform:scale(.78); opacity:.45; transition:transform .25s ease, opacity .25s ease}
   .pack-car button.on{transform:none; opacity:1}
@@ -88,6 +89,12 @@
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
+  .formats{display:flex; gap:10px; margin:16px auto 0; max-width:420px}
+  .formats button{flex:1; min-height:56px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; text-align:center}
+  .formats button b{display:block; font:700 .9rem var(--mono)} .formats button small{display:block; margin-top:2px; font:500 .72rem var(--mono); color:var(--muted)}
+  .formats button[aria-checked="true"]{border-color:var(--gold); background:rgba(237,164,43,.1)} .formats button[aria-checked="true"] b{color:var(--gold-hi)}
+  .formats button:disabled{opacity:.4; cursor:default}
+  .pack.art.mini{width:max(110px, min(44vw, 190px, calc((100svh - 560px) * var(--pa,.5783))))}
   .open-head .back-btn{display:block; margin:0 auto 8px}
   .open-head h1{font-size:2rem}
   .home .open-head .pack-desc{display:block; margin:6px auto 0}
@@ -542,6 +549,10 @@
       <button type="button" class="back-btn" id="pack-back">← Changer de paquet</button>
       <h1 id="open-title"></h1>
       <p class="pack-desc" id="pack-desc"></p>
+      <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
+        <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
+        <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes chacun, plus de chances</small></button>
+      </div>
     </div>
     <div class="pack-wrap" id="pack-root">
       <div class="ptilt" id="ptilt">
@@ -817,7 +828,7 @@ const api = {
   async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
   async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed')); },
   async fusionCosts(){ const rows = must(await sb.from('settings').select('key, value').like('key', 'fusion_cost_%')), out = {}; rows.forEach(r => { out[r.key.replace('fusion_cost_', '')] = +r.value; }); return out; },
-  async openPack(type, requestId){ return must(await sb.rpc('open_pack', { p_pack_type: type, p_request_id: requestId })); },
+  async openPack(type, requestId, format){ return must(await sb.rpc('open_pack', { p_pack_type: type, p_request_id: requestId, p_format: format })); },
   async place(m, r){ must(await sb.rpc('place_card', { p_musician: m, p_rarity: r })); },
   async fuse(m, r){ return must(await sb.rpc('fuse_cards', { p_musician: m, p_rarity: r })); }
 };
@@ -955,10 +966,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 
   // ---------- Tirage ----------
-  function drawRarity(){
-    var total = 0; RARITIES.forEach(function(r){ total += Math.max(0, +state.odds[r.k] || 0); });
+  // petit paquet : moins de cartes, meilleures chances (mêmes valeurs que small_odds côté serveur)
+  var SMALL_SIZE = 2, SMALL_ODDS = {commune:50, rare:28, holo:14, signature:6, legendaire:2};
+  function drawRarity(odds){
+    odds = odds || state.odds; var total = 0; RARITIES.forEach(function(r){ total += Math.max(0, +odds[r.k] || 0); });
     var x = Math.random() * total, acc = 0;
-    for(var i=0;i<RARITIES.length;i++){ acc += Math.max(0, +state.odds[RARITIES[i].k] || 0); if(x < acc) return RARITIES[i].k; }
+    for(var i=0;i<RARITIES.length;i++){ acc += Math.max(0, +odds[RARITIES[i].k] || 0); if(x < acc) return RARITIES[i].k; }
     return 'commune';
   }
   // Le contenu est tiré dès que le paquet est entamé et conservé tel quel : abandonner la déchirure ne relance pas le tirage.
@@ -1167,17 +1180,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // en ligne : demande le paquet au serveur dès le début du geste (le tirage est alors figé côté serveur)
   function requestServerPack(type){
     if(pendingReq) return;
-    pendingReq = ONLINE.openPack(serverPack(type), uuid()).then(async function(rows){
-      state.pending = rows.map(function(r){ return {id:r.musician_id, r:r.rarity, isNew:r.is_new}; }); state.pendingType = type;
+    var fmt = packFormat();
+    pendingReq = ONLINE.openPack(serverPack(type), uuid(), fmt).then(async function(rows){
+      state.pending = rows.map(function(r){ return {id:r.musician_id, r:r.rarity, isNew:r.is_new}; }); state.pendingType = type; state.pendingFormat = fmt;
       applyInventory(await ONLINE.inventory()); save(); prepTease(); pendingReq = null; refreshDaily();
     }).catch(function(e){ pendingReq = null; toast(esc(e.message)); });
   }
   function pendingPack(){
     var type = state.packType || 'serie';
     if(ONLINE){ if(state.pending && state.pending.length) return state.pending; requestServerPack(type); return []; }
-    if(!state.pending || state.pending.length !== state.size || state.pendingType !== type){
-      var pool = packPool(type); state.pending = []; state.pendingType = type;
-      for(var i=0;i<state.size;i++){ state.pending.push({id:pool[Math.floor(Math.random()*pool.length)], r:drawRarity()}); }
+    var fmt = packFormat(), size = fmt === 'small' ? SMALL_SIZE : state.size;
+    if(!state.pending || state.pending.length !== size || state.pendingType !== type || state.pendingFormat !== fmt){
+      var pool = packPool(type); state.pending = []; state.pendingType = type; state.pendingFormat = fmt;
+      for(var i=0;i<size;i++){ state.pending.push({id:pool[Math.floor(Math.random()*pool.length)], r:drawRarity(fmt === 'small' ? SMALL_ODDS : null)}); }
       save();
     }
     return state.pending;
@@ -1205,12 +1220,30 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var t = new Date().toLocaleTimeString('fr-FR', {timeZone:'Europe/Paris', hour12:false}).split(':'), left = 24 * 60 - (+t[0] * 60 + +t[1]);
     return (left >= 60 ? Math.floor(left / 60) + ' h ' : '') + (left % 60) + ' min';
   }
+  function packFormat(){ return state.packsLeft === 1 ? 'small' : (state.packFormat || 'big'); }
+  function renderFormats(){
+    var f = packFormat(), locked = ONLINE && state.pending && state.pending.length;
+    [].forEach.call(document.querySelectorAll('#formats [data-f]'), function(b){
+      var k = b.getAttribute('data-f');
+      b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
+      b.disabled = locked || (k === 'big' && state.packsLeft === 1);
+      b.onclick = function(){ if(b.disabled) return; state.packFormat = k; save(); renderFormats(); prepTease(); };
+    });
+    document.getElementById('pack').classList.toggle('mini', f === 'small');
+    document.getElementById('pack').setAttribute('aria-label', 'Déchirer ' + (f === 'small' ? 'le petit paquet' : 'le paquet'));
+  }
+  // fin de révélation : ce qu'il reste pour aujourd'hui
+  function paintNext(){
+    var nx = document.getElementById('rev-next'); nx.hidden = state.packsLeft !== 0 && state.packsLeft !== 1;
+    nx.textContent = state.packsLeft === 1 ? 'Il te reste un petit paquet aujourd\'hui.' : 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.';
+  }
   function renderDaily(){
     var closed = state.packsLeft === 0, box = document.querySelector('.choose');
     box.classList.toggle('closed', closed);
-    document.getElementById('home-title').textContent = closed ? 'Le merch est fermé' : 'Choisis ton paquet du jour';
+    document.getElementById('home-title').textContent = closed ? 'Le merch est fermé' : state.packsLeft === 1 ? 'Il te reste un petit paquet' : 'Choisis ton paquet du jour';
     // le compteur du jour peut arriver après la dernière carte : on met aussi à jour la fin de révélation
-    var nx = document.getElementById('rev-next'); if(!document.getElementById('to-binder').hidden){ nx.hidden = !closed; nx.textContent = 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.'; }
+    if(!document.getElementById('to-binder').hidden) paintNext();
+    renderFormats();
     var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
     wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.' : '';
   }
@@ -1238,7 +1271,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     carPack();
     var cur = PACKS.filter(function(p){ return p.k === state.packType; })[0] || PACKS[0];
     pk.setAttribute('aria-label', 'Déchirer le paquet ' + cur.label);
-    document.getElementById('open-title').textContent = cur.label;
+    document.getElementById('open-title').textContent = cur.label; renderFormats();
     document.getElementById('pack-desc').textContent = cur.desc;
   }
 
@@ -1534,7 +1567,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }
     document.getElementById('to-binder').hidden = false; document.getElementById('share').hidden = false;
     // quand revenir : le paquet du jour vient d'être ouvert (en ligne, hors compte illimité)
-    var nx = document.getElementById('rev-next'); nx.hidden = state.packsLeft !== 0; nx.textContent = 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.';
+    paintNext();
   }
   // réaffiche une carte déjà retournée, sans rejouer la révélation
   function viewCard(i){

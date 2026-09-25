@@ -41,7 +41,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 ## Parcours Paquets (deux temps)
 1. **Choisir** : HUD, objectifs, « Choisis ton paquet du jour », carrousel de paquets, nom et description du paquet du centre dessous ; toucher le paquet du centre l'ouvre (pas de bouton). Paquet du jour utilisé : « Le merch est fermé » et le temps restant.
-2. **Ouvrir** : « ← Changer de paquet », nom et description du paquet, paquet en grand, geste pour déchirer. Un paquet serveur entamé rouvre directement cette étape.
+2. **Ouvrir** : « ← Changer de paquet », nom et description du paquet, choix du format (1 gros paquet de 5 cartes ou 2 petits de 2 cartes aux meilleures chances ; 2 points par jour, gros = 2, petit = 1), paquet en grand, geste pour déchirer. Un paquet serveur entamé rouvre directement cette étape.
 
 ## Parcours Révélation et rangement
 - **Révélation** : une carte à la fois ; phrase « combo » en bandeau incliné sur la carte (taille et couleur selon la rareté, ~3 s). La rangée du bas rouvre les cartes déjà vues. À la dernière carte : « Ranger dans le classeur » et partage (pas d'écran de résumé).
