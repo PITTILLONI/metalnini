@@ -122,6 +122,8 @@
     #pc-dots{display:none}
     .pack-car{--pw:max(96px, calc((100dvh - 470px) * .58))}
     #v-packs[data-step="choose"] .quests{display:none}
+    .rev-top{margin-bottom:14px} .card-info{margin-top:18px} .card-info .bio{margin-top:8px}
+    .reveal .pile{width:min(66vw, 300px, calc((100dvh - 425px) * .6667))}
   }
   .small-hint{margin:6px 0 0; font:600 .78rem var(--mono); color:var(--gold-hi); text-align:center}
   .pack-car button{position:relative}
@@ -203,8 +205,9 @@
   .reveal{position:fixed; inset:0; z-index:40; overflow:hidden; overscroll-behavior:none; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
   .reveal[hidden]{display:none}
   #reveal-one{width:100%; display:flex; flex-direction:column; align-items:center}
-  .reveal .counter{font:500 .72rem var(--mono); letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:14px}
-  .pile{position:relative; width:min(66vw, 300px, calc((100dvh - 360px) * .6667)); aspect-ratio:2/3}
+  .rev-top{display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:22px}
+  .reveal .counter{font:500 .72rem var(--mono); letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
+  .pile{position:relative; width:min(66vw, 300px, calc((100dvh - 390px) * .6667)); aspect-ratio:2/3}
   .pile.pull{animation:pull .6s cubic-bezier(.2,.9,.3,1)}
   @keyframes pull{from{transform:translateY(70vh) rotate(-4deg)}to{transform:none}}
   .under{position:absolute; inset:0; border-radius:14px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 6px 16px rgba(0,0,0,.55), inset 0 0 0 1px rgba(237,164,43,.35); transition:transform .25s ease}
@@ -238,7 +241,7 @@
   .sheen{position:absolute; inset:0; border-radius:14px; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.22) 48%,transparent 62%); background-size:250% 100%; background-position:150% 0; opacity:0}
   .flip.on .sheen[data-r="holo"], .flip.on .sheen[data-r="signature"], .flip.on .sheen[data-r="legendaire"]{opacity:1; animation:sheen 2.8s ease .8s infinite}
   @keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
-  .card-info{margin-top:16px; text-align:center; min-height:64px; visibility:hidden; transform:translateY(8px); transition:transform .3s ease .35s}
+  .card-info{margin-top:26px; text-align:center; min-height:64px; visibility:hidden; transform:translateY(8px); transition:transform .3s ease .35s}
   .card-info.on{visibility:visible; transform:none}
   .card-info .r{font:600 .78rem var(--mono); letter-spacing:.16em; text-transform:uppercase}
   /* phrase « combo » façon arcade : claque au-dessus de la carte, tient un instant, puis s'envole */
@@ -256,11 +259,12 @@
   .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
   @keyframes comboshake{50%{translate:4px 0}}
-  .card-info .bio{margin:6px auto 0; max-width:320px; font:500 .84rem/1.4 var(--mono); color:var(--muted)}
+  .card-info .bio{margin:12px auto 0; max-width:360px; font:500 .84rem/1.6 var(--mono); color:var(--muted)}
   /* extrait audio : jamais en lecture auto, lancé à la main */
   .listen{display:flex; align-items:center; justify-content:center; gap:12px; margin:10px auto 0; flex-wrap:wrap}
   .listen[hidden]{display:none}
-  .listen .lp{position:relative; display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 16px 0 12px; border:1px solid rgba(237,164,43,.45); border-radius:999px; background:rgba(237,164,43,.08); color:var(--gold-hi); font:600 .84rem var(--mono); cursor:pointer; overflow:hidden; max-width:260px}
+  .listen .lp{position:relative; display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 14px 0 10px; border:1px solid var(--border); border-radius:999px; background:transparent; color:var(--muted); font:500 .78rem var(--mono); cursor:pointer; overflow:hidden; max-width:260px; transition:color .2s ease, border-color .2s ease}
+  .listen .lp:hover, .listen .lp[aria-pressed="true"]{color:var(--gold-hi); border-color:rgba(237,164,43,.35)}
   .listen .lp span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .listen .lp svg{flex:none}
   .listen .lp::after{content:""; position:absolute; left:0; bottom:0; height:2px; width:calc(var(--pg, 0) * 100%); background:var(--gold)}
@@ -270,7 +274,7 @@
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
   .tag.new{background:var(--gold); color:#111}
   .tag.dup{background:var(--surface-2); color:var(--muted); border:1px solid var(--border)}
-  .reveal .hint{font:500 .7rem var(--mono); color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:14px}
+  .reveal .hint{font:500 .7rem var(--mono); color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:18px}
   .icon-btn{flex:0 0 auto; width:46px; height:46px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(237,164,43,.55); background:rgba(237,164,43,.07); color:var(--gold-hi); cursor:pointer;
     backdrop-filter:blur(8px); transition:transform .12s ease, background .12s ease}
   .icon-btn:active{transform:scale(.92); background:rgba(255,255,255,.14)}
@@ -426,7 +430,7 @@
   .toast b{color:var(--gold); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em}
   @keyframes toast{0%{transform:translateY(calc(-100% - 40px))}9%,88%{transform:none}100%{transform:translateY(calc(-100% - 40px))}}
   .stage{touch-action:none; user-select:none; -webkit-user-select:none}
-  .deck{display:flex; gap:6px; justify-content:center; margin-top:14px; min-height:62px; align-items:flex-end}
+  .deck{display:flex; gap:6px; justify-content:center; min-height:62px; align-items:flex-end}
   .deck i{display:block; width:36px; aspect-ratio:2/3; border-radius:4px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 4px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(237,164,43,.35); transition:transform .3s ease, opacity .3s ease}
   .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc,#8a8a92)}
   .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
@@ -719,7 +723,7 @@
   <button type="button" class="skip" id="skip">Tout révéler</button>
   <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
   <div id="reveal-one">
-    <div class="counter" id="counter"></div>
+    <div class="rev-top"><div class="counter" id="counter"></div><div class="deck" id="deck" aria-label="Cartes du paquet"></div></div>
     <p class="combo" id="combo" aria-live="polite"></p>
     <div class="pile" id="pile">
     <div id="rays" aria-hidden="true"></div>
@@ -737,7 +741,6 @@
     </div>
     <div class="card-info" id="card-info"><div class="r" id="ci-r"></div><div class="n" id="ci-n"></div><p class="bio" id="ci-bio"></p><div class="listen" id="ci-listen" hidden></div></div>
     <div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div>
-    <div class="deck" id="deck" aria-label="Cartes du paquet"></div>
     <button type="button" class="btn block rev-done" id="next-small" hidden></button>
     <button type="button" class="btn block rev-done" id="to-binder" hidden>Ranger dans le classeur</button>
     <p class="rev-next" id="rev-next" hidden></p>
