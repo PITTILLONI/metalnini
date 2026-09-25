@@ -12,7 +12,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 | Surfaces | `--surface`, `--surface-2` | `#161412`, `#1e1b18` | — |
 | Texte | `--text` | `#f3f0ea` | 17:1 |
 | Texte secondaire | `--muted` | `#a49e94` | 7,4:1 |
-| Or (accent, actif) | `--gold`, `--gold-hi`, `--gold-lo` | `#eda42b`, `#f6bd50`, `#b8761a` | 9,0:1 |
+| Or (accent, actif) | `--gold`, `--gold-hi`, `--gold-lo` | `#eb9a26`, `#f4b243`, `#b56c16` | 8,6:1 (réchauffé le 2026-09-25) |
 | Rouge (fonds, pastilles) | `--accent` | `#b23a3a` | réservé aux fonds (texte blanc dessus 5,9:1) |
 | Rouge (texte, surtitres) | `--accent-text` | `#e0605a` | 5,6:1 |
 | Raretés | Commune `#c9c3b8`, Rare `#3b82f6`, Holo `#a78bfa`, Signature `#f5c542`, Légendaire `#ef4444` | toujours doublées d'un libellé (jamais la couleur seule) |

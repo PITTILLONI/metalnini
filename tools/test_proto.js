@@ -200,7 +200,10 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await sleep(150);
   const d4 = dom4.window.document;
   check('sélecteur : 3 paquets proposés', d4.querySelectorAll('#pack-picker button').length === 3);
-  check('objectif affiché sur l\'écran paquets', !d4.getElementById('goal').hidden && /Prochain objectif/.test(d4.getElementById('goal').textContent), d4.getElementById('goal').textContent);
+  d4.getElementById('quest-open').click(); await sleep(20);
+  check('objectifs : icône avec leur nombre, feuille qui les liste', !d4.getElementById('quest-open').hidden && +d4.getElementById('quest-n').textContent > 0 && !d4.getElementById('quest-sheet').hidden && d4.querySelectorAll('#quest-list .goal').length === +d4.getElementById('quest-n').textContent, d4.getElementById('quest-list').textContent);
+  d4.querySelector('#quest-list .goal').click(); await sleep(20);
+  check('objectif touché : la feuille se ferme', d4.getElementById('quest-sheet').hidden);
   key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
   check('paquet Metalcore : uniquement des cartes Metalcore', got.every(id => ['spiritbox','jinjer','landmvrks','heriot','sykes'].includes(id)), got.join(','));
