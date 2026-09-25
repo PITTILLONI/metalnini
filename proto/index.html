@@ -104,14 +104,6 @@
   .formats button[aria-checked="true"]{border-color:var(--gold); background:rgba(237,164,43,.1)} .formats button[aria-checked="true"] b{color:var(--gold-hi)}
   .formats button:disabled{opacity:.4; cursor:default}
   .small-go{max-width:420px; margin-top:10px}
-  .picks{width:100%; max-width:420px; margin:10px auto 0}
-  .picks-t{margin:0 0 6px; font:600 .72rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-align:left}
-  .picks-row{display:flex; gap:10px}
-  .pick-slot{position:relative; flex:1; min-width:0; min-height:46px; display:flex; flex-direction:column; justify-content:center; padding:6px 10px; border:1px dashed rgba(243,240,234,.22); border-radius:12px; text-align:left}
-  .pick-slot i{font:600 .8rem var(--mono); font-style:normal; color:var(--muted)} .pick-slot small{font:500 .7rem var(--mono); color:rgba(164,158,148,.7)}
-  .pick-slot.full{flex-direction:row; align-items:center; gap:10px; border:1px solid rgba(237,164,43,.55); background:rgba(237,164,43,.07); padding-right:44px}
-  .pick-slot.full img{width:26px; aspect-ratio:.58; object-fit:contain} .pick-slot.full b{font:700 .82rem/1.2 var(--mono); color:var(--text); overflow:hidden; text-overflow:ellipsis}
-  .pick-x{position:absolute; right:2px; top:50%; margin-top:-22px; width:44px; height:44px; border:0; border-radius:50%; background:transparent; color:var(--muted); font-size:.95rem; cursor:pointer}
   /* mode petits paquets : la description cède la place au bouton d'ouverture */
   /* écrans bas (iPhone compact, barres de Safari) : on resserre pour que tout tienne sans défiler */
   @media (max-height:720px){
@@ -601,7 +593,6 @@
       <button type="button" role="radio" data-f="big"><b>1 gros paquet</b><small>5 cartes</small></button>
       <button type="button" role="radio" data-f="small"><b>2 petits paquets</b><small>2 cartes, + de chances</small></button>
     </div>
-    <div class="picks" id="picks"></div>
     <p class="small-hint" id="fmt-lock" hidden></p>
     <button type="button" class="btn block small-go" id="small-go" hidden></button>
 
@@ -1419,10 +1410,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     else { toast('Deux petits paquets max, fraté. Retire-en un pour changer.'); return; }
     state.picks = list; save(); paintCarousel(); buzz([12]);
   }
-  function removePick(i){ var list = picks(); list.splice(i, 1); state.picks = list; save(); paintCarousel(); }
-  // carrousel : visuels MINI en mode petit, badges sur les paquets choisis ; « Ta sélection » avec une case par paquet
+  // carrousel : visuels MINI en mode petit, badges sur les paquets choisis (la sélection se fait et se défait dans le carrousel)
   function paintCarousel(){
-    var small = packFormat() === 'small', list = picks(), max = pickMax();
+    var small = packFormat() === 'small', list = picks();
     document.querySelector('.choose').classList.toggle('small', small);
     [].forEach.call(document.querySelectorAll('#pack-picker button'), function(x){
       var k = x.getAttribute('data-p'), nums = list.map(function(y, i){ return y === k ? i + 1 : 0; }).filter(Boolean), n = nums.length;
@@ -1431,16 +1421,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(n > 0) x.insertAdjacentHTML('beforeend', '<span class="pick-n">' + (n > 1 ? '×2' : small ? nums[0] : '✓') + '</span>');
       x.setAttribute('aria-pressed', String(n > 0));
     });
-    var closed = state.packsLeft === 0, tray = document.getElementById('picks');
-    tray.hidden = closed;
-    tray.innerHTML = '<p class="picks-t">Ta sélection</p><div class="picks-row">' + Array.apply(null, Array(max)).map(function(_, i){
-      var k = list[i], pk = PACKS.filter(function(p){ return p.k === k; })[0];
-      return pk ? '<span class="pick-slot full"><img src="' + packSrc(k) + '" alt=""><b>' + esc(pk.label) + '</b><button type="button" class="pick-x" data-i="' + i + '" aria-label="Retirer ' + esc(pk.label) + '">✕</button></span>'
-                : '<span class="pick-slot"><i>' + (small ? 'Petit paquet ' + (i + 1) : 'Gros paquet') + '</i><small>Touche un paquet</small></span>';
-    }).join('') + '</div>';
-    [].forEach.call(tray.querySelectorAll('.pick-x'), function(x){ x.onclick = function(){ removePick(+x.getAttribute('data-i')); }; });
-    var go = document.getElementById('small-go'); go.hidden = closed || !list.length;
-    go.textContent = !small ? 'Ouvrir le gros paquet' : list.length > 1 ? 'Ouvrir mes 2 petits paquets' : 'Ouvrir mon petit paquet';
+    var closed = state.packsLeft === 0, go = document.getElementById('small-go'); go.hidden = closed; go.disabled = !list.length;
+    go.textContent = !list.length ? 'Choisis un paquet' : !small ? 'Ouvrir le gros paquet' : list.length > 1 ? 'Ouvrir mes 2 petits paquets' : 'Ouvrir mon petit paquet';
   }
   function packSrc(k){ return 'cards/pack-' + k + (packFormat() === 'small' && (window.METALNINI_MINIS || {})[k] ? '-mini' : '') + '.jpg'; }
   function packFormat(){ return state.packsLeft === 1 ? 'small' : (state.packFormat || 'big'); }
