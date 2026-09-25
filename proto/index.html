@@ -202,9 +202,9 @@
   .stats-row span{border:1px solid var(--border); border-radius:4px; padding:5px 9px}
 
   /* ---------- Reveal ---------- */
-  .reveal{position:fixed; inset:0; z-index:40; overflow:hidden; overscroll-behavior:none; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+  .reveal{position:fixed; inset:0; z-index:40; overflow:hidden; overscroll-behavior:none; background:radial-gradient(ellipse at center,#1b0c0c 0%,#050404 70%); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
   .reveal[hidden]{display:none}
-  #reveal-one{width:100%; display:flex; flex-direction:column; align-items:center}
+  #reveal-one{width:100%; display:flex; flex-direction:column; align-items:center; margin-top:clamp(0px, calc((100dvh - 820px) / 2), 80px)}   /* ancré en haut : le texte qui apparaît sous la carte ne fait pas remonter l'ensemble */
   .rev-top{display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:22px}
   .reveal .counter{font:500 .72rem var(--mono); letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
   .pile{position:relative; width:min(66vw, 300px, calc((100dvh - 390px) * .6667)); aspect-ratio:2/3}
@@ -708,6 +708,7 @@
     </div>
     <div class="field">
       <label class="toggle">Vibrations <input type="checkbox" id="s-sound"></label>
+      <label class="toggle">Extrait audio auto en fin de paquet <input type="checkbox" id="s-autoplay"></label>
     </div>
     <div class="field">
       <p class="note">Efface toute ta collection (sur ton compte si tu es connecté). Pas de retour possible.</p>
@@ -1093,21 +1094,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(audio){ audio.pause(); audio = null; }
     if(listenEl){ var b = listenEl.querySelector('.lp'); if(b){ b.style.setProperty('--pg', 0); b.setAttribute('aria-pressed', 'false'); b.firstChild.outerHTML = PLAY; } listenEl = null; }
   }
-  // remplit un conteneur .listen pour une carte ; il reste masqué si aucun extrait n'est trouvé
-  function showListen(el, id){
+  // remplit un conteneur .listen pour une carte ; il reste masqué si aucun extrait n'est trouvé ; auto : lecture lancée tout de suite (réglage « Extrait auto »)
+  function showListen(el, id, auto){
     stopListen(); el.hidden = true; el.innerHTML = ''; el.setAttribute('data-id', id);
     track(id).then(function(t){
       if(!t || el.getAttribute('data-id') !== id) return;
       el.innerHTML = '<button type="button" class="lp" aria-pressed="false">' + PLAY + '<span>Écouter · ' + esc(t.name) + '</span></button><a href="' + esc(t.link) + '" target="_blank" rel="noopener">Écouter sur Apple Music</a>';
       el.hidden = false;
       var b = el.querySelector('.lp');
-      b.onclick = function(){
-        if(audio && listenEl === el){ var on = audio.paused; on ? audio.play() : audio.pause(); b.firstChild.outerHTML = on ? PAUSE : PLAY; b.setAttribute('aria-pressed', on); return; }
+      function start(){
         stopListen(); listenEl = el; audio = new Audio(t.url); audio.volume = .8;
         audio.ontimeupdate = function(){ if(audio && audio.duration) b.style.setProperty('--pg', audio.currentTime / audio.duration); };
         audio.onended = stopListen;
         audio.play().catch(stopListen); b.firstChild.outerHTML = PAUSE; b.setAttribute('aria-pressed', 'true');
+      }
+      b.onclick = function(){
+        if(audio && listenEl === el){ var on = audio.paused; on ? audio.play() : audio.pause(); b.firstChild.outerHTML = on ? PAUSE : PLAY; b.setAttribute('aria-pressed', on); return; }
+        start();
       };
+      if(auto && state.autoplay !== false) start();
     });
   }
   function hideListen(el){ stopListen(); el.hidden = true; el.innerHTML = ''; el.removeAttribute('data-id'); }
@@ -1690,6 +1695,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       current = commitPack(); idx = 0; seenUpTo = -1;
       if(packFormat() === 'small' && state.smallQueue && state.smallQueue.length){ state.smallQueue.shift(); state.picks = state.smallQueue.slice(); save(); }
       current.forEach(function(x){ var i = new Image(); i.src = img(x.c.id, x.r); });
+      track(current[current.length - 1].c.id);
       setTimeout(function(){
         revealEl.hidden = false; document.getElementById('skip').hidden = false; stage.style.transition = 'none'; stage.style.transform = ''; showCard(); openStack();
         packEl.classList.remove('torn'); setTear(0); opening = false; document.getElementById('vignette').classList.remove('on'); document.getElementById('flames-pack').classList.remove('on'); renderStats();
@@ -1781,7 +1787,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         if(rank(r) >= 3){ ring(r); quake(); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
         document.getElementById('card-info').classList.add('on'); busy = false; seenUpTo = Math.max(seenUpTo, idx); renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
-        if(idx === current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id); }
+        if(idx === current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id, true); }
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
   }
@@ -2287,6 +2293,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('signout').hidden = !ONLINE;
     document.getElementById('odds-field').hidden = !!ONLINE; document.getElementById('s-size').closest('.field').hidden = !!ONLINE;
     var snd = document.getElementById('s-sound'); snd.checked = state.sound !== false; snd.onchange = function(){ state.sound = snd.checked; save(); };
+    var ap = document.getElementById('s-autoplay'); ap.checked = state.autoplay !== false; ap.onchange = function(){ state.autoplay = ap.checked; save(); if(!ap.checked) stopListen(); };
     var fz = document.getElementById('s-fuse'); fz.value = state.fuseBase || 3; fz.onchange = function(){ var v = Math.max(2, Math.min(10, parseInt(fz.value,10) || 3)); state.fuseBase = v; fz.value = v; save(); };
     var size = document.getElementById('s-size'); size.value = state.size;
     size.onchange = function(){ var v = Math.max(1, Math.min(10, parseInt(size.value,10) || 5)); state.size = v; size.value = v; state.pending = null; save(); };
