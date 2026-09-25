@@ -2462,13 +2462,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function paintDevice(){
     var inst = standalone();
     document.getElementById('inst-note').textContent = inst ? 'Installée. Bien joué.' : installEvt ? 'En plein écran, sans la barre du navigateur.'
-      : IOS ? 'Sur iPhone, ça se fait dans Safari : Partager, puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
+      : IOS ? 'Sur iPhone, ça se fait dans Safari : Partager, « En savoir plus », puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
     document.getElementById('inst-go').hidden = inst || !installEvt;
     // écran de connexion : le même raccourci, avant même d'avoir un compte (rien sur ordinateur sans installation possible)
     var ai = document.getElementById('auth-inst'), aiGo = document.getElementById('auth-inst-go'), aiTip = document.getElementById('auth-inst-tip');
     ai.hidden = inst || !(installEvt || IOS);
     aiGo.textContent = IOS ? 'Ouvrir dans Safari pour installer l\'app' : 'Installer l\'app sur ton téléphone';
-    aiTip.textContent = IOS ? 'Déjà dans Safari ? Partager, puis « Sur l\'écran d\'accueil ».' : 'En plein écran, avec les notifications.';
+    aiTip.textContent = IOS ? 'Déjà dans Safari ? Partager, « En savoir plus », puis « Sur l\'écran d\'accueil ».' : 'En plein écran, avec les notifications.';
     var sf = document.getElementById('inst-safari'); sf.hidden = inst || !IOS; sf.href = 'x-safari-' + location.href.split('#')[0];
     var perm = 'Notification' in window ? Notification.permission : 'default', box = document.getElementById('s-push');
     var why = !ONLINE ? 'Connecte-toi pour recevoir les notifications.' : IOS && !inst ? 'Sur iPhone, installe d\'abord l\'app sur l\'écran d\'accueil.'
