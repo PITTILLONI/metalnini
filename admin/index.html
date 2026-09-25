@@ -398,24 +398,55 @@ async function packs(el){
 const romanValue = n => { const v = {I:1,V:5,X:10,L:50,C:100}; let t = 0; for(let i = 0; i < n.length; i++){ const a = v[n[i]] || 0, b = v[n[i + 1]] || 0; t += a < b ? -a : a; } return t; };
 async function catalogTab(el){
   await loadCatalog();
-  const list = catalog.musicians.slice().sort((a, b) => romanValue(a.arcana_number) - romanValue(b.arcana_number));
+  const [bd, bm] = await Promise.all([sb.from('binders').select('*').order('sort'), sb.from('binder_members').select('*')]);
+  const binders = bd.data || [], members = bm.data || [];
+  const all = catalog.musicians.slice().sort((a, b) => romanValue(a.arcana_number) - romanValue(b.arcana_number));
+  let list = all;
+  const uniq = xs => [...new Set(xs.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
+  const opts = (xs, lab) => `<option value="">${lab}</option>` + xs.map(x => `<option value="${esc(x.v ?? x)}">${esc(x.l ?? x)}</option>`).join('');
   let at = 0, rar = 'commune';
-  el.innerHTML = `<div class="card viewer"><h3>Visuels des cartes</h3>
+  el.innerHTML = `<div class="card">
+    <div class="row" style="margin:0">
+      <div style="flex:2 1 220px"><label for="cat-q">Rechercher</label><input id="cat-q" type="search" placeholder="Nom, groupe, titre, n° d'arcane" autocomplete="off"></div>
+      <div><label for="cat-b">Classeur</label><select id="cat-b">${opts(binders.map(b => ({ v: b.id, l: b.label })), 'Tous')}</select></div>
+      <div><label for="cat-g">Sous-genre</label><select id="cat-g">${opts(uniq(all.map(m => m.subgenre)), 'Tous')}</select></div>
+      <div><label for="cat-i">Instrument</label><select id="cat-i">${opts(uniq(all.flatMap(m => m.instruments || [])), 'Tous')}</select></div>
+      <div><label for="cat-a">État</label><select id="cat-a"><option value="">Tous</option><option value="1">Actifs</option><option value="0">Inactifs</option></select></div>
+      <div class="fit"><button class="ghost" id="cat-reset">Effacer</button></div>
+    </div>
+    </div>
+    <div class="card viewer"><h3>Visuels des cartes</h3>
       <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
         <figure class="vw-card"><img id="vw-img" alt=""><figcaption id="vw-cap"></figcaption></figure>
         <button class="vw-arrow" id="vw-next" aria-label="Musicien suivant">›</button></div>
       <div class="vw-rars" id="vw-rars"></div>
       <p class="muted" style="font-size:.8rem; text-align:center; margin:8px 0 0">Flèches du clavier ← → pour changer de musicien, ↑ ↓ pour changer de rareté.</p></div>
-    <div class="card"><h3>Musiciens (${catalog.musicians.length})</h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
+    <div class="card"><h3>Musiciens <span class="muted" id="cat-count"></span></h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
     <div class="table-wrap"><table><tr><th></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
     ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}"><img src="../proto/cards/${esc(m.id)}-commune.jpg" alt="" style="width:40px;border-radius:4px"></button></td>
       <td><input data-f="name" value="${esc(m.name)}"></td><td><input data-f="band" value="${esc(m.band)}"></td><td><input data-f="arcana_title" value="${esc(m.arcana_title)}"></td>
       <td style="width:80px"><input data-f="arcana_number" value="${esc(m.arcana_number)}"></td><td><input data-f="subgenre" value="${esc(m.subgenre)}"></td>
       <td><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} style="width:auto"></td><td><button class="ghost save">OK</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
+    <tr id="cat-none" hidden><td colspan="8" class="muted">Aucun musicien ne correspond.</td></tr>
     </table></div></div>`;
+  // recherche et filtres : masquent les lignes (les saisies en cours restent) et limitent la visionneuse à la sélection
+  const norm = t => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const filter = () => {
+    const q = norm($('cat-q').value.trim()), b = $('cat-b').value, g = $('cat-g').value, ins = $('cat-i').value, a = $('cat-a').value;
+    const inB = b ? new Set(members.filter(x => x.binder_id === b).map(x => x.musician_id)) : null;
+    list = all.filter(m => (!q || norm([m.id, m.name, m.band, m.arcana_title, m.arcana_number].join(' ')).includes(q))
+      && (!inB || inB.has(m.id)) && (!g || m.subgenre === g) && (!ins || (m.instruments || []).includes(ins)) && (!a || String(+m.active) === a));
+    const ids = new Set(list.map(m => m.id));
+    el.querySelectorAll('tr[data-id]').forEach(tr => tr.hidden = !ids.has(tr.dataset.id));
+    $('cat-none').hidden = list.length > 0; $('cat-count').textContent = `(${list.length} / ${all.length})`;
+    const cur = list.findIndex(m => m.id === (shown || {}).id); at = cur >= 0 ? cur : 0; show();
+  };
+  ['cat-q', 'cat-b', 'cat-g', 'cat-i', 'cat-a'].forEach(id => $(id).addEventListener(id === 'cat-q' ? 'input' : 'change', filter));
+  $('cat-reset').onclick = () => { ['cat-q', 'cat-b', 'cat-g', 'cat-i', 'cat-a'].forEach(id => $(id).value = ''); filter(); };
+  let shown = null;
   // visionneuse : un musicien à la fois, ses 5 raretés en dessous
   const show = () => {
-    const m = list[at]; if(!m) return;
+    const m = list[at]; shown = m || null; el.querySelector('.viewer').hidden = !m; if(!m) return;
     $('vw-img').src = `../proto/cards/${m.id}-${rar}.jpg`; $('vw-img').alt = `${m.name}, ${RLABEL[rar]}`;
     $('vw-cap').innerHTML = `<b>N° ${esc(m.arcana_number)} · ${esc(m.name)}</b> · ${esc(m.band)} · <span class="r-${rar}">${RLABEL[rar]}</span>${m.active ? '' : ' · <span class="err">inactif</span>'}<br><span class="muted">${at + 1} / ${list.length}</span>`;
     $('vw-rars').innerHTML = RARITIES.map(r => `<button class="vw-rar${r === rar ? ' on' : ''}" data-r="${r}" aria-label="${RLABEL[r]}"><img src="../proto/cards/${m.id}-${r}.jpg" alt="" loading="lazy"><span class="r-${r}">${RLABEL[r]}</span></button>`).join('');
@@ -433,8 +464,8 @@ async function catalogTab(el){
   let x0 = null; const st = el.querySelector('.vw-card');
   st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
-  el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = list.findIndex(m => m.id === b.dataset.view); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
-  show();
+  el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
+  filter();
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
