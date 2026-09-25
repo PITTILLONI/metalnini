@@ -156,9 +156,9 @@
     border:1px solid rgba(235,154,38,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
-  .recap{margin:4px 0 18px}
-  .recap p{display:flex; align-items:baseline; justify-content:center; gap:10px; margin:0 0 6px !important; font:600 1.05rem var(--mono); color:var(--text) !important}
-  .recap b{font:800 2.2rem/1 var(--display); color:var(--gold-hi); min-width:1.2em; text-align:right}
+  .recap{width:fit-content; margin:4px auto 18px; text-align:left}
+  .recap p{display:flex; align-items:baseline; justify-content:flex-start; gap:10px; margin:0 0 6px !important; font:600 1.05rem var(--mono); color:var(--text) !important}
+  .recap b{font:800 2.2rem/1 var(--display); color:var(--gold-hi); min-width:.75em; text-align:left}
   .dealfx{position:fixed; inset:0; z-index:60; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.6); cursor:pointer}
   .dealfx[hidden]{display:none}
   .dealfx .box{max-width:340px; padding:18px 22px 16px; text-align:center; background:rgba(10,8,7,.95); border:2px solid var(--dc); transform:skewX(-6deg); box-shadow:0 0 36px -6px var(--dc), 0 12px 30px rgba(0,0,0,.6); animation:dealpop .42s cubic-bezier(.2,1.5,.4,1) both}
