@@ -1229,7 +1229,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       b.disabled = locked || (k === 'big' && state.packsLeft === 1);
       b.onclick = function(){ if(b.disabled) return; state.packFormat = k; save(); renderFormats(); prepTease(); };
     });
-    document.getElementById('pack').classList.toggle('mini', f === 'small');
+    // visuel du sachet : version « MINI » pour les petits paquets quand elle existe
+    var pk = document.getElementById('pack'), mini = f === 'small' && (window.METALNINI_MINIS || {})[state.packType];
+    pk.classList.toggle('mini', f === 'small');
+    pk.style.setProperty('--pimg', 'url(cards/pack-' + state.packType + (mini ? '-mini' : '') + '.jpg)');
+    pk.style.setProperty('--pa', mini || (window.METALNINI_PACKS || {})[state.packType] || .5783);
     document.getElementById('pack').setAttribute('aria-label', 'Déchirer ' + (f === 'small' ? 'le petit paquet' : 'le paquet'));
   }
   // fin de révélation : ce qu'il reste pour aujourd'hui

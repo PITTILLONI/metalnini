@@ -50,11 +50,14 @@ def crop_pack(src, dst):
                     "-s", "formatOptions", "80", src, "--out", dst], check=True, stdout=subprocess.DEVNULL)
     return round((x1 - x0) / (y1 - y0), 4)
 
-packs = {}
+packs, minis = {}, {}
 for key, name in (("serie", "pack-mosh" if os.path.exists(f"{CREAS}/pack-mosh.jpg") else "pack-a"), ("metalcore", "pack-metalcore"), ("hardcore", "pack-hardcore"), ("numetal", "pack-numetal"),
                   ("poppunk", "pack-poppunk"), ("legendes", "pack-legendes")):
     if os.path.exists(f"{CREAS}/{name}.jpg"):
         packs[key] = crop_pack(f"{CREAS}/{name}.jpg", f"{OUT}/pack-{key}.jpg")
+    # petit paquet (« MINI », 2 cartes) : même sachet, étiquette dédiée
+    if os.path.exists(f"{CREAS}/{name}-mini.jpg"):
+        minis[key] = crop_pack(f"{CREAS}/{name}-mini.jpg", f"{OUT}/pack-{key}-mini.jpg")
 if os.path.exists(f"{CREAS}/flames.jpg"):
     subprocess.run(["sips", "-Z", "1400", "-s", "format", "jpeg", "-s", "formatOptions", "76", f"{CREAS}/flames.jpg",
                     "--out", f"{OUT}/flames.jpg"], check=True, stdout=subprocess.DEVNULL)
@@ -62,5 +65,6 @@ if os.path.exists(f"{CREAS}/card-back.jpg"):
     subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
                     "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
 open(f"{OUT}/manifest.js", "w").write("window.METALNINI_READY = " + repr(ready).replace("'", '"') + ";\n"
-                                      + "window.METALNINI_PACKS = " + json.dumps(packs) + ";\n")
+                                      + "window.METALNINI_PACKS = " + json.dumps(packs) + ";\n"
+                                      + "window.METALNINI_MINIS = " + json.dumps(minis) + ";\n")
 print(f"{len(ready)} musiciens prêts : {', '.join(ready)}")
