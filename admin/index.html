@@ -51,6 +51,8 @@
   .bar b{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--text)}
   .msg{margin-top:10px; font-size:.88rem}
   .qr{background:#fff; padding:10px; border-radius:10px; display:inline-block}
+  .warn{font-size:.85rem; color:#f5c542; border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:8px 10px}
+  .steps{padding-left:18px; font-size:.88rem; line-height:1.5} .steps li{margin:6px 0}
   .qr img{display:block; width:190px; height:190px}
   code{font-family:var(--mono); font-size:.85em; background:var(--surface-2); padding:2px 6px; border-radius:4px; word-break:break-all}
   [hidden]{display:none!important}
@@ -75,9 +77,16 @@
   <!-- ============ DOUBLE AUTHENTIFICATION ============ -->
   <section id="v-mfa-enroll" class="card" hidden style="max-width:520px">
     <h2>Activer la double authentification</h2>
-    <p class="muted">Obligatoire pour l'admin. Scanne ce QR code avec une application d'authentification (Apple Mots de passe, Google Authenticator, 1Password…), puis saisis le code à 6 chiffres.</p>
+    <p class="muted">Obligatoire pour l'admin. Ton téléphone génère un code à 6 chiffres qui change toutes les 30 secondes ; tu le saisis ici à chaque connexion.</p>
+    <p class="warn">Ne recharge pas cette page avant d'avoir validé : chaque chargement crée un nouveau QR code, et l'ancien ne marche plus.</p>
     <div class="qr"><img id="qr" alt="QR code de double authentification"></div>
-    <p class="muted" style="font-size:.8rem">Ou saisis la clé : <code id="secret"></code></p>
+    <ol class="steps">
+      <li><b>Sur iPhone, sans rien installer :</b> ouvre l'app <b>Mots de passe</b> → <b>Codes</b> → <b>+</b> → <b>Scanner le QR code</b> (ou <b>Saisir la clé de configuration</b> et colle la clé ci-dessous). Nomme l'entrée « Metalnini admin ».</li>
+      <li><b>Ou</b> avec Google Authenticator : <b>+</b> → <b>Scanner un QR code</b>.</li>
+      <li>Saisis ici le code à 6 chiffres affiché dans l'app, puis <b>Valider</b>.</li>
+    </ol>
+    <p class="muted" style="font-size:.8rem">Clé de configuration : <code id="secret"></code> <button type="button" id="copy-secret" class="ghost fit" style="padding:4px 10px">Copier la clé</button></p>
+    <p class="muted" style="font-size:.8rem">Tu ouvres cette page sur l'iPhone lui-même ? <a id="otp-link" href="#" style="color:var(--gold)">Ajouter le code sur cet appareil</a></p>
     <label for="code-enroll">Code à 6 chiffres</label><input id="code-enroll" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
     <div class="row" style="margin-top:12px"><button id="btn-enroll" class="fit">Valider</button></div>
     <p id="enroll-msg" class="msg"></p>
@@ -166,9 +175,13 @@ async function startEnroll(){
   for(const x of (f.all || [])) if(x.status !== 'verified') await sb.auth.mfa.unenroll({ factorId: x.id });
   const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Metalnini admin' });
   if(error){ show('v-mfa-enroll'); return say($('enroll-msg'), error.message); }
-  $('qr').src = data.totp.qr_code; $('secret').textContent = data.totp.secret; $('btn-enroll').dataset.f = data.id;
+  $('qr').src = data.totp.qr_code; $('secret').textContent = data.totp.secret; $('otp-link').href = data.totp.uri; $('btn-enroll').dataset.f = data.id;
   show('v-mfa-enroll'); $('code-enroll').focus();
 }
+$('copy-secret').onclick = async () => {
+  try { await navigator.clipboard.writeText($('secret').textContent); say($('enroll-msg'), 'Clé copiée. Colle-la dans « Saisir la clé de configuration ».', true); }
+  catch (e) { say($('enroll-msg'), 'Copie impossible : sélectionne la clé à la main.'); }
+};
 $('btn-enroll').onclick = async () => {
   const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: $('btn-enroll').dataset.f, code: $('code-enroll').value.trim() });
   if(error) return say($('enroll-msg'), error.message);
