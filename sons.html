@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metalnini · Sons</title><link rel="icon" href="icons/icon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0c0b0a; --surface:#161412; --text:#f3f0ea; --muted:#a49e94; --border:rgba(255,255,255,.1); --gold:#eb9a26; --gold-hi:#f4b243}
+  body{margin:0; background:var(--bg); color:var(--text); font:15px/1.55 Inter, system-ui, sans-serif}
+  .wrap{max-width:1040px; margin:0 auto; padding:32px 16px 60px}
+  h1,h2{font-family:"Big Shoulders Display", sans-serif; text-transform:uppercase; line-height:.95; margin:0 0 12px} h1{font-size:2.6rem} h2{font-size:1.6rem; margin-top:36px}
+  p, li{color:var(--muted); max-width:72ch} strong{color:var(--text)} code{color:var(--gold-hi); font-size:.9em}
+  .eyebrow{font:600 .72rem Inter; letter-spacing:.16em; text-transform:uppercase; color:#e0605a; margin:0 0 8px}
+  .table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin-top:12px}
+  table{border-collapse:collapse; width:100%; min-width:760px} th,td{padding:10px 12px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; font-size:.9rem}
+  th{font:600 .72rem Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface)} td:nth-child(2){white-space:nowrap; color:var(--muted)}
+  a{color:var(--gold-hi)}
+</style></head><body><div class="wrap">
+<p class="eyebrow">Brief sonorisation</p>
+<h1>Les sons de Metalnini</h1>
+<p>Metalnini est un jeu de cartes à collectionner de musiciens rock et metal (références : Pokémon pour la collection, Balatro pour le côté « juteux » de chaque action). L'image est un tarot gravé : noir d'encre, or ancien, rouge sang. Le son doit être <strong>rock, drôle et satisfaisant</strong>, accessible à quelqu'un qui n'écoute pas de metal.</p>
+<p>Chaque son porte un <strong>nom</strong> (colonne de gauche). Il suffit de déposer le fichier du même nom dans <code>proto/sounds/</code> et de l'ajouter à <code>proto/sounds/manifest.js</code> : il est joué dans l'app au bon moment. Un son pas encore livré reste simplement muet.</p>
+<p><a href="proto/?sons">Banc d'essai</a> : la liste des sons, ceux qui sont livrés, et un bouton pour écouter chacun.</p>
+
+<h2>Livraison</h2>
+<ul>
+  <li><strong>Masters</strong> : WAV 48 kHz, 24 bits. On encode ensuite pour l'app.</li>
+  <li><strong>Fichiers pour l'app</strong> : MP3 (lu partout, iPhone compris). Musique 192 kb/s stéréo ; effets 128 kb/s, mono accepté.</li>
+  <li><strong>Nommage</strong> : exactement le nom de la colonne « Son », par exemple <code>reveal-legendaire.mp3</code>.</li>
+  <li><strong>Silence</strong> : aucun blanc au début (le son doit partir à l'instant du geste), queue coupée proprement.</li>
+  <li><strong>Niveaux</strong> : musique autour de −20 LUFS intégrés (c'est un fond) ; effets et jingles jusqu'à −14 LUFS en court terme ; crêtes à −1 dBTP maximum. Les sons d'interface (tap, select) nettement plus bas que le reste.</li>
+  <li><strong>Boucle</strong> : <code>music-main</code> doit boucler sans couture ni clic.</li>
+  <li><strong>Droits</strong> : compositions originales, ou banques libres (CC0, ou licence qui autorise l'usage dans une app). Jamais d'extrait de morceau existant, même très court.</li>
+</ul>
+
+<h2>Principes</h2>
+<ul>
+  <li>Une <strong>échelle de rareté</strong> audible : plus la carte est rare, plus le jingle est long, riche et fort. La Légendaire doit rester exceptionnelle.</li>
+  <li>Les sons fréquents (tap, flip, tear, deal) sont <strong>courts et jamais fatigants</strong> : on les entend des centaines de fois.</li>
+  <li>La musique se <strong>baisse</strong> automatiquement pendant une révélation et se <strong>coupe</strong> pendant l'écoute d'un extrait d'artiste : pas besoin de le gérer dans les fichiers.</li>
+  <li>Le joueur peut couper la musique et les effets séparément dans les réglages.</li>
+</ul>
+
+<h2>Liste des sons</h2>
+<div class="table-wrap"><table><thead><tr><th>Son</th><th>Famille</th><th>Moment dans le jeu</th><th>Durée</th><th>Intention</th></tr></thead><tbody>
+<tr><td><code>music-main</code></td><td>Musique</td><td>Fond sonore de l'app (accueil, classeurs, profil). Baisse pendant les révélations, se coupe pendant les extraits audio.</td><td>60 à 120 s, bouclable sans couture</td><td>Instrumental rock / metal accessible, énergie moyenne, pas de chant. Doit tenir 20 minutes sans lasser : peu de mélodie envahissante, un groove.</td></tr><tr><td><code>intro</code></td><td>Musique</td><td>Accroche de l'onboarding, au premier « Ouvrir mon premier paquet ».</td><td>1 à 2 s</td><td>Signature sonore de Metalnini : un power chord et un larsen maîtrisé. Donne envie.</td></tr><tr><td><code>reveal-commune</code></td><td>Révélation</td><td>Une carte Commune se retourne.</td><td>0,3 à 0,6 s</td><td>Sec, un peu drôle, sans déception : une corde étouffée, un « tchak ».</td></tr><tr><td><code>reveal-rare</code></td><td>Révélation</td><td>Une carte Rare se retourne.</td><td>0,8 à 1,2 s</td><td>Petit riff clair, bleu, satisfaisant.</td></tr><tr><td><code>reveal-holo</code></td><td>Révélation</td><td>Une carte Holo se retourne.</td><td>1 à 1,5 s</td><td>Brillant, irisé : chorus / shimmer sur un riff.</td></tr><tr><td><code>reveal-signature</code></td><td>Révélation</td><td>Une carte Signature se retourne.</td><td>1,5 à 2,5 s</td><td>Or : power chord plein, cymbale, un « Yeah! » ou un chœur court.</td></tr><tr><td><code>reveal-legendaire</code></td><td>Révélation</td><td>Une carte Légendaire se retourne.</td><td>2,5 à 4 s</td><td>L'explosion : gros riff, cri, impact, feu. Le son le plus fort et le plus rare du jeu.</td></tr><tr><td><code>heartbeat</code></td><td>Suspense</td><td>Paquet qui contient une Légendaire : trois battements avant l'ouverture.</td><td>0,4 s (un battement, joué 3 fois)</td><td>Grosse caisse sourde, battement de cœur.</td></tr><tr><td><code>rumble</code></td><td>Suspense</td><td>Juste avant de retourner une Signature ou une Légendaire.</td><td>0,6 à 2 s</td><td>Montée : grondement, feedback qui enfle, jusqu'au retournement.</td></tr><tr><td><code>tear</code></td><td>Jeu</td><td>Le sachet se déchire.</td><td>0,4 à 0,7 s</td><td>Déchirure de papier alu, nette et satisfaisante (le son qu'on entend le plus : pas fatigant).</td></tr><tr><td><code>flip</code></td><td>Jeu</td><td>Une carte se retourne (avant le jingle de rareté).</td><td>0,15 à 0,25 s</td><td>Swish de carte, discret.</td></tr><tr><td><code>deal</code></td><td>Jeu</td><td>« Tout ranger d'un coup » : chaque carte distribuée.</td><td>0,1 à 0,15 s</td><td>Carte qui glisse, façon croupier. Joué en rafale : très court, sans attaque agressive.</td></tr><tr><td><code>place</code></td><td>Jeu</td><td>Une carte se pose dans sa case du classeur.</td><td>0,15 à 0,3 s</td><td>« Clac » feutré d'une carte qui trouve sa place.</td></tr><tr><td><code>place-new</code></td><td>Jeu</td><td>Rangement à l'unité d'une nouvelle carte.</td><td>0,3 à 0,6 s</td><td>Comme place, avec une petite note de victoire.</td></tr><tr><td><code>duplicate</code></td><td>Jeu</td><td>Un doublon rejoint la pile (+1).</td><td>0,2 à 0,4 s</td><td>Pièce / jeton qui s'empile, léger.</td></tr><tr><td><code>upgrade</code></td><td>Jeu</td><td>Une carte « monte en grade » dans le classeur.</td><td>0,6 à 1 s</td><td>Riser qui monte et claque en haut.</td></tr><tr><td><code>binder-complete</code></td><td>Récompense</td><td>Un classeur est complété.</td><td>2 à 3 s</td><td>Fanfare rock : le patch cousu sur la veste. Fierté.</td></tr><tr><td><code>mastery</code></td><td>Récompense</td><td>Maîtrise d'un musicien (5 raretés réunies).</td><td>1,5 à 2 s</td><td>Chœur, choir hit, épique.</td></tr><tr><td><code>fusion</code></td><td>Récompense</td><td>Transformation de doublons en rareté supérieure.</td><td>1 à 1,5 s</td><td>Forge, métal qui se fond puis un éclat.</td></tr><tr><td><code>tear-card</code></td><td>Jeu</td><td>Une carte est déchirée (la détruire).</td><td>0,5 à 0,8 s</td><td>Carton épais qui se déchire, un peu dramatique.</td></tr><tr><td><code>gift</code></td><td>Récompense</td><td>Cadeau du Grand Architecte (carte ou paquet offert).</td><td>1 à 1,5 s</td><td>Mystique : cloche, orgue lointain, un peu occulte.</td></tr><tr><td><code>reward</code></td><td>Récompense</td><td>Mini offert (installation, notifications).</td><td>0,6 à 1 s</td><td>Petit jingle joyeux, « loot ».</td></tr><tr><td><code>tap</code></td><td>Interface</td><td>Toucher un bouton.</td><td>0,03 à 0,08 s</td><td>Clic très discret (joué souvent, volume bas) : médiator sur une corde étouffée.</td></tr><tr><td><code>select</code></td><td>Interface</td><td>Choisir une option (format, univers, carte de vitrine).</td><td>0,08 à 0,15 s</td><td>Un cran plus marqué que tap.</td></tr><tr><td><code>notify</code></td><td>Interface</td><td>Une notification apparaît en haut de l'écran.</td><td>0,2 à 0,4 s</td><td>Deux notes, amical.</td></tr>
+</tbody></table></div>
+</div></body></html>
