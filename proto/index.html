@@ -160,6 +160,39 @@
   .recap{width:fit-content; margin:4px auto 18px; text-align:left}
   .recap p{display:flex; align-items:baseline; justify-content:flex-start; gap:10px; margin:0 0 6px !important; font:600 1.05rem var(--mono); color:var(--text) !important}
   .recap b{font:800 2.2rem/1 var(--display); color:var(--gold-hi); min-width:.75em; text-align:left}
+  /* onboarding : écrans plein cadre, une idée par écran */
+  .onb{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(ellipse at 50% 18%, #2a170b 0%, var(--bg) 62%)}
+  .onb[hidden]{display:none}
+  .onb-in{min-height:100%; max-width:460px; margin:0 auto; display:flex; flex-direction:column; justify-content:center; gap:14px; padding:calc(28px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom)); text-align:center}
+  .onb h1, .onb h2{font-size:2.3rem; line-height:.95; margin:0} .onb h2{font-size:2rem}
+  .onb p{margin:0; color:var(--muted); line-height:1.5}
+  .onb .small{font:500 .78rem var(--mono); color:var(--muted)}
+  .onb .link{background:none; border:0; color:var(--gold-hi); font:600 .88rem var(--mono); text-decoration:underline; text-underline-offset:3px; cursor:pointer; min-height:44px}
+  .onb-fan{position:relative; height:clamp(190px, 52vw, 250px); margin:0 auto 6px; width:100%}
+  .onb-fan img{position:absolute; top:0; left:50%; height:100%; width:auto; aspect-ratio:2/3; object-fit:cover; border-radius:8px; box-shadow:0 18px 34px rgba(0,0,0,.65); animation:onbfloat 4s ease-in-out infinite}
+  .onb-fan img:nth-child(1){transform:translateX(-122%) rotate(-11deg); animation-delay:-1.3s} .onb-fan img:nth-child(2){transform:translateX(-50%); z-index:1} .onb-fan img:nth-child(3){transform:translateX(22%) rotate(11deg); animation-delay:-2.6s}
+  @keyframes onbfloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
+  .onb-logo{width:min(62%, 230px); margin:0 auto}
+  .onb .stick{position:sticky; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:2; box-shadow:0 -10px 24px 10px rgba(12,11,10,.85)}
+  @media (max-height:720px){ .onb-in{gap:10px} .onb-fan{height:clamp(140px, 38vw, 170px)} .onb h1{font-size:1.9rem} .onb-logo{width:min(48%, 180px)} .tile{min-height:84px} }
+  .tiles{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; text-align:left}
+  .tile{position:relative; min-height:96px; padding:10px 12px; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#140f0b; color:var(--text); cursor:pointer; display:flex; flex-direction:column; justify-content:flex-end; transition:transform .15s ease, border-color .15s ease}
+  .tile::before{content:""; position:absolute; inset:0; background:var(--ti) center 22%/cover; opacity:.35; transition:opacity .2s ease}
+  .tile::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 20%, rgba(8,6,5,.92) 78%)}
+  .tile b, .tile small{position:relative; z-index:1} .tile b{font:800 1.15rem/1 var(--display); text-transform:uppercase} .tile small{margin-top:4px; font:500 .72rem/1.3 var(--mono); color:var(--muted)}
+  .tile[aria-pressed="true"]{border-color:var(--gold); transform:scale(.98)} .tile[aria-pressed="true"]::before{opacity:.7} .tile[aria-pressed="true"] b{color:var(--gold-hi)}
+  .tile.any{grid-column:1 / -1; min-height:56px; justify-content:center; align-items:center; text-align:center}
+  .steps{display:flex; flex-direction:column; gap:10px; text-align:left}
+  .steps div{display:flex; align-items:center; gap:14px; padding:12px 14px; border:1px solid var(--border); border-radius:14px; background:var(--surface)}
+  .steps i{flex:none; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; border:1px solid rgba(235,154,38,.5); color:var(--gold-hi); font:800 1rem var(--display); font-style:normal}
+  .steps span{font-size:.95rem; line-height:1.35} .steps em{font-style:normal; color:var(--gold-hi); font-weight:600}
+  .gift-chip{display:inline-block; align-self:center; padding:6px 14px; border-radius:999px; background:rgba(235,154,38,.12); border:1px solid rgba(235,154,38,.5); color:var(--gold-hi); font:700 .78rem var(--mono); letter-spacing:.08em; text-transform:uppercase}
+  .auth-later{display:block; margin:12px auto 0; min-height:44px; background:none; border:0; color:var(--muted); font:500 .82rem var(--mono); text-decoration:underline; cursor:pointer}
+  .auth-later[hidden]{display:none}
+  .save-banner{display:flex; flex-direction:column; gap:2px; width:100%; margin:0 0 14px; padding:12px 14px; min-height:44px; border:1px solid rgba(224,96,90,.5); border-radius:12px; background:rgba(178,58,58,.12); color:var(--text); text-align:left; cursor:pointer}
+  .save-banner[hidden]{display:none} .save-banner b{font:600 .88rem var(--mono)} .save-banner span{font:600 .8rem var(--mono); color:var(--accent-text)}
+  .coach{margin:0 0 6px; font:600 .82rem var(--mono); color:var(--gold-hi); animation:nudge 1.8s ease-in-out infinite}
+  .coach[hidden]{display:none}
   .dealfx{position:fixed; inset:0; z-index:60; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.6); cursor:pointer}
   .dealfx[hidden]{display:none}
   .dealfx .box{max-width:340px; padding:18px 22px 16px; text-align:center; background:rgba(10,8,7,.95); border:2px solid var(--dc); transform:skewX(-6deg); box-shadow:0 0 36px -6px var(--dc), 0 12px 30px rgba(0,0,0,.6); animation:dealpop .42s cubic-bezier(.2,1.5,.4,1) both}
@@ -627,7 +660,7 @@
   .dev-row{flex-wrap:wrap} #inst-safari{flex:1 1 100%}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.pub-fan button,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.onb-fan img,.coach,.pub-fan button,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
   }
 </style>
 </head>
@@ -685,6 +718,7 @@
     <h1>Classeurs</h1>
     <div class="kind-chips" id="binder-kinds" role="tablist" aria-label="Catégories de classeurs"></div>
   </div>
+  <button type="button" class="save-banner" id="save-banner" hidden><b>Tes cartes ne sont pas encore sauvegardées</b><span>Créer mon compte</span></button>
   <div class="binder-list" id="binder-list"></div>
   <button type="button" class="ask-artist" id="ask-artist"><b>Il manque un artiste ?</b><span>Propose-le au Grand Architecte</span></button>
   <div class="binder-page" id="binder-page">
@@ -861,7 +895,7 @@
   <form class="uname-in auth" id="auth-form" data-mode="loading" novalidate>
     <img class="auth-logo" src="cards/logo.webp" alt="Metalnini" width="900" height="534">
     <h2 id="auth-t"><span data-only="loading">Balances en cours…</span><span data-only="signup">Rejoins le pit</span><span data-only="login">Re-bienvenue</span><span data-only="forgot">Trou de mémoire ?</span><span data-only="sent">Check tes mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
-    <p class="note" data-only="signup" style="color:var(--muted)">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
+    <p class="note" data-only="signup" style="color:var(--muted)" id="auth-intro">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
     <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
     <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
@@ -873,6 +907,7 @@
       <button type="button" data-only="login forgot" data-go="signup">Créer un compte</button>
       <button type="button" data-only="login" data-go="forgot">Mot de passe oublié</button>
     </div>
+    <button type="button" class="auth-later" id="auth-later" hidden>Plus tard, je veux encore jouer</button>
     <div class="auth-inst" id="auth-inst" hidden><button type="button" id="auth-inst-go"></button><p id="auth-inst-tip"></p></div>
   </form>
 </div>
@@ -909,6 +944,7 @@
     <div class="modal-actions"><button type="button" class="btn" id="wl-go">Ouvrir mon cadeau</button><button type="button" class="btn ghost" id="wl-later">Plus tard</button></div>
   </div>
 </div>
+<div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Bienvenue"></div>
 <div class="dealfx" id="dealfx" hidden role="status" aria-live="assertive"></div>
 <div class="modal" id="deal-recap" hidden role="dialog" aria-modal="true" aria-labelledby="recap-t">
   <div class="modal-in">
@@ -929,7 +965,7 @@
 <div id="fxlayer" aria-hidden="true"></div>
 <div id="vignette" aria-hidden="true"></div>
 <div class="dupfx" id="dupfx" hidden><p class="df-skip" id="df-skip"></p><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""><div class="df-plus" id="df-plus"></div></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div></div>
-<div class="tray" id="tray" hidden><div class="tray-in"><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
+<div class="tray" id="tray" hidden><div class="tray-in"><p class="coach" id="coach" hidden>Touche une carte : elle file à sa place dans ton classeur.</p><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
 <label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
 
@@ -970,9 +1006,9 @@ const api = {
     if(session.user.is_anonymous){ await sb.auth.signOut(); return null; }
     return session.user;
   },
-  async signUp(email, password, username){
+  async signUp(email, password, username, welcomeToken){
     if(!must(await sb.rpc('username_available', { p_username: username }))) throw new Error('ce pseudo est déjà pris');
-    const d = must(await sb.auth.signUp({ email, password, options: { data: { username }, emailRedirectTo: here } }));
+    const d = must(await sb.auth.signUp({ email, password, options: { data: welcomeToken ? { username, welcome_token: welcomeToken } : { username }, emailRedirectTo: here } }));
     if(d.user && d.user.identities && d.user.identities.length === 0) throw new Error('un compte existe déjà avec cet e-mail : connecte-toi');
     return !!d.session;
   },
@@ -984,6 +1020,10 @@ const api = {
   onRecovery(cb){ sb.auth.onAuthStateChange(e => { if(e === 'PASSWORD_RECOVERY') cb(); }); },
   async tear(m, r){ return must(await sb.rpc('tear_card', { p_musician: m, p_rarity: r })); },
   async setPower(v){ return must(await sb.rpc('set_metal_power', { p_power: v })); },
+  async previewWelcome(styles){ return must(await sb.rpc('preview_welcome_pack', { p_styles: styles })); },
+  async claimWelcome(token, placed){ return must(await sb.rpc('claim_welcome_pack', { p_token: token, p_placed: placed })); },
+  async claimInstall(){ return must(await sb.rpc('claim_install_reward')); },
+  async claimPush(){ return must(await sb.rpc('claim_push_reward')); },
   async requestArtist(a, n){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n })); },
   async savePush(e, k, a){ must(await sb.rpc('save_push_subscription', { p_endpoint: e, p_p256dh: k, p_auth: a })); },
   async deletePush(e){ must(await sb.rpc('delete_push_subscription', { p_endpoint: e })); },
@@ -1301,8 +1341,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(api.onRecovery && !api._rec){ api._rec = true; api.onRecovery(function(){ showAuth('newpw'); }); }
       var user = await api.user();
       hideSplash();
-      if(!user){ ONLINE = null; setNet(); showAuth(/type=recovery/.test(location.hash) ? 'newpw' : 'signup'); return; }
-      document.getElementById('auth').hidden = true;
+      if(!user){ ONLINE = null; setNet();
+        if(/type=recovery/.test(location.hash)) showAuth('newpw');
+        else if(state.welcome){ document.getElementById('auth').hidden = true; renderStats(); }   // cartes de bienvenue pas encore sauvegardées : on continue à jouer
+        else if(!state.onbSeen) startOnboarding(); else showAuth('signup');
+        return; }
+      document.getElementById('auth').hidden = true; document.getElementById('auth-later').hidden = true;
+      await claimWelcome(api, user);
       applyInventory(await api.inventory());
       FUSE_COSTS = await api.fusionCosts();
       state.username = await api.username();
@@ -1310,6 +1355,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
+      if(standalone()) onbInstalled(api); else setTimeout(onbInstall, 2500);
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -1333,7 +1379,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       btn.disabled = true; err.textContent = '';
       try{
         if(m === 'signup'){
-          var direct = await AUTH.signUp(em, p, name.value.trim());
+          var direct = await AUTH.signUp(em, p, name.value.trim(), state.welcome && state.welcome.token);
           if(direct){ box.hidden = true; window.metalniniOnline(AUTH); }
           else { document.getElementById('auth-sent').textContent = 'Lien envoyé à ' + em + '. Ouvre-le sur cet appareil, et on t\'ouvre les portes. Rien reçu ? Fouille les spams.'; set('sent'); }
         } else if(m === 'login'){ await AUTH.signIn(em, p); pw.value = ''; box.hidden = true; window.metalniniOnline(AUTH); }
@@ -1789,6 +1835,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['packs','binder','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder();
+    if(v === 'packs' && state.welcome && !ONLINE){ onbSave(); }
     if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
     if(v === 'settings') renderSettings();
@@ -2201,6 +2248,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var tray = document.getElementById('tray'); tray.hidden = !tp.length || document.getElementById('v-binder').hidden;
     document.body.classList.toggle('placing', !tray.hidden);
     document.getElementById('tray-n').textContent = 'À ranger · ' + tp.length;
+    document.getElementById('coach').hidden = !(state.welcome && !ONLINE && tp.length);
+    if(state.welcome && !ONLINE && !tp.length && placedSome){ placedSome = false; setTimeout(onbSave, 900); }
     document.getElementById('tray-cards').innerHTML = tp.map(function(k){ var p = k.split('|'); return '<button type="button" data-k="' + k + '" aria-label="Ranger ' + esc(card(p[0]).who) + '"><img src="' + img(p[0], p[1]) + '" alt="" style="--rc:' + COLORS[p[1]] + '"></button>'; }).join('');
     [].forEach.call(document.querySelectorAll('#tray-cards button'), function(b){ b.addEventListener('click', function(){ placeCard(b.getAttribute('data-k'), b); }); });
   }
@@ -2278,7 +2327,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
   // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
   var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
-  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden; }
+  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden; }
   function showWl(e, t, p, src, go){
     document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
     document.getElementById('wl-go').textContent = go || 'Ouvrir mon cadeau';
@@ -2386,7 +2435,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     kindsEl.innerHTML = KINDS.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + k + '</button>'; }).join('');
     [].forEach.call(kindsEl.children, function(btn){ btn.onclick = function(){ state.binderKind = btn.getAttribute('data-kind'); state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); }; });
     var inPage = state.binderOpen && binderOf(state.binder).kind === kind;
-    document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage; document.getElementById('binder-page').hidden = !inPage;
+    document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage;
+    document.getElementById('save-banner').hidden = !(state.welcome && !ONLINE); document.getElementById('binder-page').hidden = !inPage;
     if(!inPage){
       var list = document.getElementById('binder-list');
       // un classeur dont aucune carte n'est encore prête n'apparaît pas
@@ -2591,6 +2641,106 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '\nécran : ' + screen.width + ' × ' + screen.height + '\nfenêtre : ' + innerWidth + ' × ' + innerHeight + '\n100dvh : ' + probe.offsetHeight + ' (sans marges ' + (probe.offsetHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)) + ')' +
         '\nzone sûre haut / bas : ' + cs.paddingTop + ' / ' + cs.paddingBottom + '\nbarre d\'onglets : haut ' + Math.round(tb.top) + ', bas ' + Math.round(tb.bottom); };
     tick(); addEventListener('resize', tick); setInterval(tick, 1000);
+  }
+  // ---------- Onboarding : on joue d'abord, on sauvegarde ensuite ----------
+  // univers ancrés sur des noms connus de tous (on n'a pas besoin d'être metalleux pour choisir)
+  var STYLE_TILES = [['legendes', 'mercury', 'Légendes du rock', 'Queen, AC/DC, Jimi Hendrix'], ['grunge', 'cobain', 'Grunge', 'Nirvana, Foo Fighters, Soundgarden'],
+    ['numetal', 'bennington', 'Nu metal', 'Linkin Park, Korn, System of a Down'], ['poppunk', 'hayley', 'Pop punk', 'Blink-182, Green Day, Paramore'],
+    ['heavy', 'ozzy', 'Heavy metal', 'Ozzy, Iron Maiden, Motörhead'], ['thrash', 'hetfield', 'Thrash', 'Metallica, Megadeth, Slayer'],
+    ['metalcore', 'spiritbox', 'Metalcore', 'Spiritbox, Jinjer, Landmvrks'], ['hardcore', 'knocked-loose', 'Hardcore & extrême', 'Knocked Loose, Gojira, Cannibal Corpse']];
+  var onbEl = document.getElementById('onb');
+  function onbShow(html){ onbEl.innerHTML = '<div class="onb-in">' + html + '</div>'; onbEl.hidden = false; onbEl.scrollTop = 0; }
+  function onbClose(){ onbEl.hidden = true; onbEl.innerHTML = ''; }
+  function startOnboarding(){ document.getElementById('auth').hidden = true; onbHook(); }
+  function onbHook(){
+    onbShow('<img class="onb-logo" src="cards/logo.webp" alt="Metalnini">' +
+      '<div class="onb-fan" aria-hidden="true"><img src="' + img('hayley', 'holo') + '" alt=""><img src="' + img('prince', 'signature') + '" alt=""><img src="' + img('hetfield', 'legendaire') + '" alt=""></div>' +
+      '<h1>Le rock et le metal en cartes à collectionner</h1>' +
+      '<p>Ouvre des paquets, complète tes classeurs, compare ta collection avec tes potes. Pas besoin de savoir growler.</p>' +
+      '<button type="button" class="btn block" id="onb-go">Ouvrir mon premier paquet</button>' +
+      '<p class="small">Gratuit, et sans compte pour commencer.</p>' +
+      '<button type="button" class="link" id="onb-login">Déjà un compte ? Connexion</button>');
+    document.getElementById('onb-go').onclick = function(){ buzz([12]); onbTaste(); };
+    document.getElementById('onb-login').onclick = function(){ onbClose(); showAuth('login'); };
+  }
+  function onbTaste(){
+    var sel = [], any = false;
+    onbShow('<h2>Qu\'est-ce qui passe dans tes écouteurs ?</h2><p>Choisis 1 à 3 univers : on compose ton premier paquet avec.</p>' +
+      '<div class="tiles">' + STYLE_TILES.map(function(t){ return '<button type="button" class="tile" data-s="' + t[0] + '" aria-pressed="false" style="--ti:url(' + img(t[1], 'commune') + ')"><b>' + esc(t[2]) + '</b><small>' + esc(t[3]) + '</small></button>'; }).join('') +
+      '<button type="button" class="tile any" data-s="" aria-pressed="false"><b>Aucune idée · Surprends-moi</b></button></div>' +
+      '<button type="button" class="btn block stick" id="onb-pack" disabled>Choisis au moins un univers</button>');
+    var go = document.getElementById('onb-pack');
+    function paint(){ [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ var k = b.getAttribute('data-s'); b.setAttribute('aria-pressed', String(k ? sel.indexOf(k) !== -1 : any)); });
+      go.disabled = !sel.length && !any; go.textContent = any ? 'Surprends-moi' : sel.length ? 'Composer mon paquet (' + sel.length + '/3)' : 'Choisis au moins un univers'; }
+    [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ b.onclick = function(){ var k = b.getAttribute('data-s'); buzz([10]);
+      if(!k){ any = !any; sel = []; } else { any = false; var n = sel.indexOf(k); if(n !== -1) sel.splice(n, 1); else if(sel.length < 3) sel.push(k); else { toast('Trois univers max. T\'es éclectique, on a compris.'); return; } }
+      paint(); }; });
+    go.onclick = function(){ onbPack(sel); };
+  }
+  // paquet de bienvenue tiré par le serveur avant le compte (jeton), révélé comme un vrai paquet
+  async function onbPack(styles){
+    var go = document.getElementById('onb-pack'); go.disabled = true; go.textContent = 'On mélange…';
+    try{
+      var rows = await AUTH.previewWelcome(styles);
+      if(!rows || !rows.length) throw new Error('paquet vide');
+      var keys = rows.map(function(r){ return r.musician_id + '|' + r.rarity; });
+      state.welcome = {token:rows[0].token, keys:keys}; state.owned = {}; state.toPlace = keys.slice(); state.fresh = {}; state.onbSeen = true;
+      keys.forEach(function(k){ state.owned[k] = 1; state.fresh[k.split('|')[0]] = true; }); save();
+      onbClose();
+      current = rows.filter(function(r){ return card(r.musician_id); }).map(function(r){ return {c:card(r.musician_id), r:r.rarity, isNew:true}; }); idx = 0; seenUpTo = -1;
+      revealEl.hidden = false; document.getElementById('skip').hidden = false; showCard();
+      setTimeout(function(){ document.getElementById('counter').textContent = 'Ton paquet de bienvenue'; }, 0);
+    }catch(e){ go.disabled = false; go.textContent = 'Réessayer'; toast('Le serveur a raté son stage diving. Réessaie.'); }
+  }
+  // sauvegarder : le compte, proposé une fois les cartes rangées, jamais imposé
+  function onbSave(){
+    if(ONLINE || !state.welcome || !document.getElementById('auth').hidden) return;
+    if(busyScreen() || dealing){ setTimeout(onbSave, 700); return; }
+    document.getElementById('auth-intro').textContent = 'Tes cartes sont à toi. Crée ton compte pour ne pas les perdre : un pseudo, un e-mail, c\'est tout.';
+    showAuth('signup'); document.getElementById('auth-later').hidden = false;
+  }
+  document.getElementById('auth-later').addEventListener('click', function(){ document.getElementById('auth').hidden = true; this.hidden = true; renderBinder(); });
+  document.getElementById('save-banner').addEventListener('click', onbSave);
+  // après la connexion : réclamer le paquet de bienvenue (jeton local, sinon celui gardé dans le compte)
+  async function claimWelcome(api, user){
+    var tok = (state.welcome && state.welcome.token) || (user.user_metadata && user.user_metadata.welcome_token);
+    if(!tok) return;
+    var placedKeys = state.welcome ? state.welcome.keys.filter(function(k){ return (state.toPlace || []).indexOf(k) === -1; }) : [];
+    try{ await api.claimWelcome(tok, placedKeys); }catch(e){}
+    state.welcome = null; save();
+  }
+  // installer : juste après le compte, avec une récompense au premier lancement depuis l'icône
+  function onbInstall(){
+    if(standalone() || state.installAsked || !(IOS || installEvt)) return;
+    if(busyScreen()){ setTimeout(onbInstall, 900); return; }
+    state.installAsked = true; save();
+    onbShow('<span class="gift-chip">Un mini offert</span><h2>Mets Metalnini dans ta poche</h2>' +
+      '<p>Sur ton écran d\'accueil, en plein écran, avec ton paquet du jour qui t\'attend. Le mini tombe au premier lancement depuis l\'icône.</p>' +
+      (IOS ? '<div class="steps"><div><i>1</i><span>Dans <em>Safari</em>, touche <em>Partager</em> (le carré avec une flèche)</span></div><div><i>2</i><span>Touche <em>En savoir plus</em></span></div><div><i>3</i><span>Choisis <em>Sur l\'écran d\'accueil</em>, puis <em>Ajouter</em></span></div></div>' +
+        '<button type="button" class="btn ghost block" id="onb-safari">Ouvrir dans Safari</button>'
+      : '<button type="button" class="btn block" id="onb-inst">Installer l\'app</button>') +
+      '<button type="button" class="link" id="onb-later">Plus tard</button>');
+    var sf = document.getElementById('onb-safari'); if(sf) sf.onclick = function(){ document.getElementById('inst-safari').click(); };
+    var ins = document.getElementById('onb-inst'); if(ins) ins.onclick = function(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.then(function(c){ installEvt = null; paintDevice(); if(c && c.outcome === 'accepted') onbClose(); }); };
+    document.getElementById('onb-later').onclick = onbClose;
+  }
+  // premier lancement depuis l'icône : la récompense d'installation, puis les notifications (pré-autorisation qui en montre la valeur)
+  function onbInstalled(api){
+    if(!standalone()) return;
+    if(!state.installRewarded) api.claimInstall().then(function(ok){ state.installRewarded = true; save(); if(ok){ toast('Installée. Ton mini t\'attend, en bonus.'); refreshDaily(); } }).catch(function(){});
+    setTimeout(onbPush, 1600);
+  }
+  function onbPush(){
+    if(!ONLINE || state.pushAsked || !pushOk() || Notification.permission !== 'default') return;
+    if(busyScreen()){ setTimeout(onbPush, 900); return; }
+    state.pushAsked = true; save();
+    onbShow('<span class="gift-chip">Encore un mini offert</span><h2>Ton paquet du jour, sans y penser</h2>' +
+      '<div class="steps"><div><i>18h</i><span>Ton <em>paquet du jour</em> est prêt</span></div><div><i>+</i><span>Les <em>cadeaux</em> du Grand Architecte</span></div><div><i>★</i><span>Les <em>nouvelles cartes</em> dès leur arrivée</span></div></div>' +
+      '<p class="small">Deux notifications par jour au plus. Tu coupes quand tu veux dans les réglages.</p>' +
+      '<button type="button" class="btn block" id="onb-push">Activer les notifications</button><button type="button" class="link" id="onb-nopush">Plus tard</button>');
+    document.getElementById('onb-push').onclick = async function(){ this.disabled = true; await enablePush(); onbClose();
+      if(state.push) ONLINE.claimPush().then(function(ok){ if(ok){ toast('Notifications activées. Ton mini t\'attend, en bonus.'); refreshDaily(); } }).catch(function(){}); };
+    document.getElementById('onb-nopush').onclick = onbClose;
   }
   // ---------- Installation et notifications ----------
   var VAPID = 'BFwwKTN8wXhWSicqw57pygCIoAgPGq8yUNVFf7ct8vPJbSWwZmciOGCFguIH5Bv_HqzIylv25ULgm3dlh8g4EEo';
