@@ -187,6 +187,9 @@
   .steps i{flex:none; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; border:1px solid rgba(235,154,38,.5); color:var(--gold-hi); font:800 1rem var(--display); font-style:normal}
   .steps span{font-size:.95rem; line-height:1.35} .steps em{font-style:normal; color:var(--gold-hi); font-weight:600}
   .gift-chip{display:inline-block; align-self:center; padding:6px 14px; border-radius:999px; background:rgba(235,154,38,.12); border:1px solid rgba(235,154,38,.5); color:var(--gold-hi); font:700 .78rem var(--mono); letter-spacing:.08em; text-transform:uppercase}
+  .inst-banner{display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; margin:10px 0 0; padding:10px 14px; min-height:44px; border:1px dashed rgba(235,154,38,.5); border-radius:12px; background:rgba(235,154,38,.06); color:var(--text); cursor:pointer; text-align:left}
+  .inst-banner[hidden]{display:none} .inst-banner b{font:600 .84rem var(--mono)} .inst-banner span{flex:none; font:700 .72rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gold-hi)}
+  #v-packs[data-step="open"] .inst-banner{display:none}
   .auth-later{display:block; margin:12px auto 0; min-height:44px; background:none; border:0; color:var(--muted); font:500 .82rem var(--mono); text-decoration:underline; cursor:pointer}
   .auth-later[hidden]{display:none}
   .save-banner{display:flex; flex-direction:column; gap:2px; width:100%; margin:0 0 14px; padding:12px 14px; min-height:44px; border:1px solid rgba(224,96,90,.5); border-radius:12px; background:rgba(178,58,58,.12); color:var(--text); text-align:left; cursor:pointer}
@@ -673,6 +676,7 @@
     <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm quest-btn" id="quest-open" aria-label="Objectifs" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="quest-n" id="quest-n"></span></button><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
   <h1 class="home-title" id="home-title">Cartes du jour</h1>
+  <button type="button" class="inst-banner" id="inst-banner" hidden><b>Mets Metalnini sur ton écran d'accueil</b><span>Un mini offert</span></button>
   <p class="bonus-line" id="reserve-line" hidden></p>
   <p class="bonus-line" id="bonus-line" hidden></p>
   <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
@@ -1355,7 +1359,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
-      if(standalone()) onbInstalled(api); else setTimeout(onbInstall, 2500);
+      paintDevice(); if(standalone()) onbInstalled(api); else setTimeout(onbInstall, 2500);
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -2699,6 +2703,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('auth-intro').textContent = 'Tes cartes sont à toi. Crée ton compte pour ne pas les perdre : un pseudo, un e-mail, c\'est tout.';
     showAuth('signup'); document.getElementById('auth-later').hidden = false;
   }
+  document.getElementById('inst-banner').addEventListener('click', function(){ onbInstall(true); });
   document.getElementById('auth-later').addEventListener('click', function(){ document.getElementById('auth').hidden = true; this.hidden = true; renderBinder(); });
   document.getElementById('save-banner').addEventListener('click', onbSave);
   // après la connexion : réclamer le paquet de bienvenue (jeton local, sinon celui gardé dans le compte)
@@ -2710,10 +2715,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     state.welcome = null; save();
   }
   // installer : juste après le compte, avec une récompense au premier lancement depuis l'icône
-  function onbInstall(){
-    if(standalone() || state.installAsked || !(IOS || installEvt)) return;
-    if(busyScreen()){ setTimeout(onbInstall, 900); return; }
-    state.installAsked = true; save();
+  function onbInstall(force){
+    if(standalone() || !(IOS || installEvt)) return;
+    var ask = state.installAsk || {n:0, t:0};
+    if(!force && (ask.n >= 3 || Date.now() - ask.t < 3 * 864e5)) return;
+    if(busyScreen()){ if(!force) setTimeout(onbInstall, 900); return; }
+    state.installAsk = {n:ask.n + 1, t:Date.now()}; save();
     onbShow('<span class="gift-chip">Un mini offert</span><h2>Mets Metalnini dans ta poche</h2>' +
       '<p>Sur ton écran d\'accueil, en plein écran, avec ton paquet du jour qui t\'attend. Le mini tombe au premier lancement depuis l\'icône.</p>' +
       (IOS ? '<div class="steps"><div><i>1</i><span>Dans <em>Safari</em>, touche <em>Partager</em> (le carré avec une flèche)</span></div><div><i>2</i><span>Touche <em>En savoir plus</em></span></div><div><i>3</i><span>Choisis <em>Sur l\'écran d\'accueil</em>, puis <em>Ajouter</em></span></div></div>' +
@@ -2750,7 +2757,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var installEvt = null, swReg = null;
   function standalone(){ return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
   function pushOk(){ return !!swReg && 'PushManager' in window && 'Notification' in window; }
-  addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; paintDevice(); });
+  addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; paintDevice(); if(ONLINE) setTimeout(onbInstall, 1500); });
   addEventListener('appinstalled', function(){ installEvt = null; paintDevice(); toast('Metalnini est sur ton écran d\'accueil.'); });
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(function(r){ swReg = r; paintDevice(); syncPush(); }).catch(function(){});
   function paintDevice(){
@@ -2758,6 +2765,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('inst-note').textContent = inst ? 'Installée. Bien joué.' : installEvt ? 'En plein écran, sans la barre du navigateur.'
       : IOS ? 'Sur iPhone, ça se fait dans Safari : Partager, « En savoir plus », puis « Sur l\'écran d\'accueil ».' : 'Menu du navigateur : « Installer l\'application » ou « Ajouter au Dock ».';
     document.getElementById('inst-go').hidden = inst || !installEvt;
+    document.getElementById('inst-banner').hidden = inst || !ONLINE || !(IOS || installEvt);
     // écran de connexion : le même raccourci, avant même d'avoir un compte (rien sur ordinateur sans installation possible)
     var ai = document.getElementById('auth-inst'), aiGo = document.getElementById('auth-inst-go'), aiTip = document.getElementById('auth-inst-tip');
     ai.hidden = inst || !(installEvt || IOS);
