@@ -143,13 +143,15 @@
   .pack.shake{animation:shake .5s ease}
   @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
   /* boutons : même hauteur, même typo partout ; or plein (principal), filet (secondaire), rouge plein (danger) */
-  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:50px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
-    font:600 .88rem/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink); background:var(--gold); transition:transform .12s ease, background .15s ease, border-color .15s ease}
-  .btn:hover{background:var(--gold-hi)} .btn:active{transform:scale(.98)}
+  /* boutons « encre et or » : noir d'encre, filet et lettres d'or, typo des titres de cartes (le jaune plein détonnait avec la DA) */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:50px; padding:0 22px; border:0; border-radius:6px; cursor:pointer;
+    font:800 1.08rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi); background:linear-gradient(180deg, #1b140e, #100c08);
+    box-shadow:inset 0 0 0 1px var(--gold), 0 0 18px rgba(235,154,38,.16); transition:transform .12s ease, background .15s ease, box-shadow .15s ease}
+  .btn:hover{background:linear-gradient(180deg, #241a11, #140f0a); box-shadow:inset 0 0 0 1px var(--gold-hi), 0 0 24px rgba(235,154,38,.28)} .btn:active{transform:scale(.98)}
   .btn:disabled{opacity:.45; cursor:default; transform:none}
   .btn.ghost{color:var(--text); background:transparent; box-shadow:inset 0 0 0 1px rgba(243,240,234,.22)}
   .btn.ghost:hover{box-shadow:inset 0 0 0 1px rgba(243,240,234,.45); background:rgba(255,255,255,.03)}
-  .btn.danger{color:#fff; background:var(--accent)} .btn.danger:hover{background:#c44545}
+  .btn.danger{color:#fff; background:var(--accent); box-shadow:none} .btn.danger:hover{background:#c44545; box-shadow:none}
   .btn.block{width:100%}
   .modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
   .modal[hidden]{display:none}

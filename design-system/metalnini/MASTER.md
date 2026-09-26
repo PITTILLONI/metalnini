@@ -23,8 +23,8 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - Aucun texte sous ~11 px (0,7 rem) ; corps de texte ≥ 14 px ; chiffres en `tabular-nums` (`.num`).
 
 ## Composants
-- **Boutons** : un seul système, même hauteur (50 px) et même typo (Inter 600, capitales, 0,08 em) partout.
-  - Principal `.btn` : or plein, texte encre. Un seul par écran. `.btn.block` pour la pleine largeur.
+- **Boutons** : un seul système, même hauteur (50 px) et même typo partout (Big Shoulders Display 800, capitales, 0,1 em), coins de 6 px.
+  - Principal `.btn` « encre et or » (décidé le 2026-09-26, l'aplat jaune détonnait avec la DA des cartes) : fond noir d'encre, filet et lettres or, légère lueur dorée. Un seul par écran. `.btn.block` pour la pleine largeur.
   - Secondaire `.btn.ghost` : fond transparent, filet os fin.
   - Danger `.btn.danger` : rouge plein, toujours derrière une modale de confirmation.
 - **Icône seule** `.icon-btn` : rond, filet or fin, `aria-label` obligatoire, 44 px minimum.
