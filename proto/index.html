@@ -195,6 +195,9 @@
   .inst-banner{display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; margin:10px 0 0; padding:10px 14px; min-height:44px; border:1px dashed rgba(235,154,38,.5); border-radius:12px; background:rgba(235,154,38,.06); color:var(--text); cursor:pointer; text-align:left}
   .inst-banner[hidden]{display:none} .inst-banner b{font:600 .84rem var(--mono)} .inst-banner span{flex:none; font:700 .72rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gold-hi)}
   #v-packs[data-step="open"] .inst-banner{display:none}
+  .pw-wrap{position:relative; display:block} .auth .pw-wrap input{padding-right:52px}
+  .pw-eye{position:absolute; right:2px; top:calc(50% + 1px); transform:translateY(-50%); width:44px; height:44px; margin-top:0; border:0; background:none; color:var(--muted); display:grid; place-items:center; cursor:pointer}
+  .pw-eye:hover, .pw-eye[aria-pressed="true"]{color:var(--gold-hi)} .pw-eye .ec{display:none} .pw-eye[aria-pressed="true"] .eo{display:none} .pw-eye[aria-pressed="true"] .ec{display:inline}
   .auth-later{display:block; margin:12px auto 0; min-height:44px; background:none; border:0; color:var(--muted); font:500 .82rem var(--mono); text-decoration:underline; cursor:pointer}
   .auth-later[hidden]{display:none}
   .save-banner{display:flex; flex-direction:column; gap:2px; width:100%; margin:0 0 14px; padding:12px 14px; min-height:44px; border:1px solid rgba(224,96,90,.5); border-radius:12px; background:rgba(178,58,58,.12); color:var(--text); text-align:left; cursor:pointer}
@@ -654,6 +657,7 @@
   .auth-inst button[hidden]{display:none} .auth-inst p{margin:6px 0 0; font:500 .78rem/1.4 var(--mono); color:var(--muted)}
   .auth .links button{background:none; border:0; color:var(--gold, #d4a24c); padding:0; font:inherit; cursor:pointer; text-decoration:underline}
   .auth [data-only]{display:none}
+  .auth[data-mode="signup"] .pw-hint, .auth[data-mode="newpw"] .pw-hint{display:inline}
   .auth[data-mode="signup"] [data-only~="signup"], .auth[data-mode="login"] [data-only~="login"], .auth[data-mode="forgot"] [data-only~="forgot"],
   .auth[data-mode="sent"] [data-only~="sent"], .auth[data-mode="newpw"] [data-only~="newpw"], .auth[data-mode="loading"] [data-only~="loading"]{display:block}
   .auth[data-mode="loading"] #auth-go{display:none}
@@ -910,7 +914,7 @@
     <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
     <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
-    <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span data-only="signup newpw" style="display:inline">(12 caractères minimum)</span></label><input id="au-pw" type="password" autocomplete="current-password"></div>
+    <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span class="pw-hint" data-only="signup newpw">(12 caractères minimum)</span></label><span class="pw-wrap"><input id="au-pw" type="password" autocomplete="current-password"><button type="button" class="pw-eye" id="pw-eye" aria-label="Afficher le mot de passe" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="eo" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle class="eo" cx="12" cy="12" r="3"/><path class="ec" d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></span></div>
     <p class="err" id="auth-err"></p>
     <button type="submit" class="btn" id="auth-go"><span data-only="signup">Je rentre dans le pit</span><span data-only="login">Je remonte sur scène</span><span data-only="forgot">Envoie-moi le lien</span><span data-only="sent">Renvoyer l'e-mail</span><span data-only="newpw">Enregistrer</span></button>
     <div class="links">
@@ -2769,6 +2773,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     showAuth('signup'); document.getElementById('auth-later').hidden = false;
   }
   document.getElementById('inst-banner').addEventListener('click', function(){ onbInstall(true); });
+  // œil du mot de passe : afficher ou masquer, remasqué à chaque envoi
+  function pwShow(on){ var i = document.getElementById('au-pw'), b = document.getElementById('pw-eye'); i.type = on ? 'text' : 'password';
+    b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? 'Masquer le mot de passe' : 'Afficher le mot de passe'); }
+  document.getElementById('pw-eye').addEventListener('click', function(){ pwShow(this.getAttribute('aria-pressed') !== 'true'); document.getElementById('au-pw').focus(); });
+  document.getElementById('auth-form').addEventListener('submit', function(){ pwShow(false); }, true);
   document.getElementById('auth-later').addEventListener('click', function(){ document.getElementById('auth').hidden = true; this.hidden = true; renderBinder(); });
   document.getElementById('save-banner').addEventListener('click', onbSave);
   // après la connexion : réclamer le paquet de bienvenue (jeton local, sinon celui gardé dans le compte)
