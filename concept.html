@@ -513,9 +513,9 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
     <li><b>Goûts</b> : 1 à 3 univers ancrés sur des groupes connus, ou « Surprends-moi ».</li>
     <li><b>Paquet de bienvenue</b> tiré par le serveur avant le compte (jeton) : 5 musiciens, au moins une Rare, deux cartes des univers choisis.</li>
     <li><b>Rangement guidé</b>, puis <b>sauvegarde</b> : création du compte proposée une fois les cartes rangées, jamais imposée (« Plus tard » possible, bandeau persistant). Le paquet est réclamé à la première connexion.</li>
-    <li><b>Installation</b> juste après, avec un mini offert au premier lancement depuis l'icône ; guide en 3 étapes sur iPhone. Pour les joueurs déjà inscrits : l'écran revient jusqu'à 3 fois (tous les 3 jours) et un bandeau reste sur l'accueil tant que l'app n'est pas installée.</li>
+    <li><b>Installation</b> juste après, avec un paquet offert au premier lancement depuis l'icône ; guide en 3 étapes sur iPhone. Pour les joueurs déjà inscrits : l'écran revient jusqu'à 3 fois (tous les 3 jours) et un bandeau reste sur l'accueil tant que l'app n'est pas installée.</li>
     <li>Le paquet standard offert à l'inscription est retiré (réglage à 0) : le paquet de bienvenue le remplace.</li>
-    <li><b>Notifications</b> au premier lancement installé : écran qui en montre la valeur, puis la demande d'autorisation ; un mini offert si l'appareil est abonné.</li>
+    <li><b>Notifications</b> au premier lancement installé : écran qui en montre la valeur, puis la demande d'autorisation ; un paquet offert si l'appareil est abonné.</li>
   </ol>
 </section>
 
@@ -601,7 +601,7 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
   <div class="table-wrap"><table>
     <thead><tr><th>Moment</th><th>Texte</th></tr></thead>
     <tbody>
-      <tr><td>Accueil</td><td>« Cartes du jour » · formats « 1 standard » et « 2 mini » · une accroche par paquet (« Pour ceux qui trouvent le metalcore trop poli. ») · « Le merch est fermé » quand le paquet du jour est ouvert · « Glisse pour l'éventrer → »</td></tr>
+      <tr><td>Accueil</td><td>« Cartes du jour » · formats « Standard · 5 cartes » et « Mini · 2 cartes, + de chances » · une accroche par paquet (« Pour ceux qui trouvent le metalcore trop poli. ») · « Le merch est fermé » quand le paquet du jour est ouvert · « Glisse pour l'éventrer → »</td></tr>
       <tr><td>Révélation</td><td>Phrase « combo » sur la carte, plus intense selon la rareté : « Commune. Même le roadie en a une. », « C'est un banger, frérot ! », « Wallah… LÉGENDAIRE ! » · doublon « T'as déjà le t-shirt, papy. » · triplé « Triplé ! Cheh. »</td></tr>
       <tr><td>Fin de paquet</td><td>« Ranger dans le classeur » dès la dernière carte · paquet faible : « Que des Communes. Cheh. »</td></tr>
       <tr><td>Objectifs</td><td>Feuille « Tes objectifs », ouverte depuis l'icône drapeau de l'en-tête · « Plus que 2 cartes et Pop punk est plié » · « Partage ta plus belle carte » · « Enregistre ton plus beau cri » · « Transformation possible »</td></tr>
@@ -1559,7 +1559,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
     <li class="tl-item done"><span class="tl-dot" aria-hidden="true"></span>
       <div class="tl-head"><h3>1 · Paquet + classeur</h3><span class="tl-status">Validé sur le web · à porter en natif</span></div>
       <ul>
-        <li><b>Fait (prototype web)</b> : paquet du jour tiré par le serveur, au choix 1 standard (5 cartes) ou 2 mini (2 cartes, meilleures chances), 6 paquets ; révélation carte par carte mise en scène selon la rareté, présentation de l'artiste et extrait audio officiel ; classeur avec bac « À ranger », rangement à l'unité ou d'un coup ; fiche carte ; admin : catalogue, paquets et probabilités, comptes. Catalogue : 45 musiciens, 225 cartes.</li>
+        <li><b>Fait (prototype web)</b> : paquet du jour tiré par le serveur, au choix 1 standard (5 cartes) ou 1 mini (2 cartes, meilleures chances), 6 paquets ; révélation carte par carte mise en scène selon la rareté, présentation de l'artiste et extrait audio officiel ; classeur avec bac « À ranger », rangement à l'unité ou d'un coup ; fiche carte ; admin : catalogue, paquets et probabilités, comptes. Catalogue : 45 musiciens, 225 cartes.</li>
         <li><b>Reste</b> : reveal en state machine Rive, portage SwiftUI.</li>
       </ul>
     </li>
@@ -1726,12 +1726,12 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
   <div class="table-wrap"><table>
     <thead><tr><th>Question</th><th>État</th></tr></thead>
     <tbody>
-      <tr><td>Nombre de cartes par paquet</td><td>Tranché dans le prototype (2026-09-24) : 1 paquet standard de 5 cartes ou 2 minis de 2 cartes (meilleures chances) ; tailles réglables dans l'admin</td></tr>
+      <tr><td>Nombre de cartes par paquet</td><td>Tranché dans le prototype : un seul paquet par jour, au choix 1 standard de 5 cartes ou 1 mini de 2 cartes aux meilleures chances (2026-09-26) ; tailles réglables dans l'admin</td></tr>
       <tr><td>Probabilités par rareté (Commune → Légendaire), avec un plancher garanti par paquet</td><td>[À PRÉCISER]</td></tr>
       <tr><td>La carte « de base » est-elle une rareté à part ou la Commune ?</td><td>[À PRÉCISER] — aujourd'hui, chaque artiste a une base et 5 raretés, soit 6 visuels</td></tr>
       <tr><td>Classeur unique filtrable ou un classeur par sous-genre</td><td>Point ouvert (onglet <a class="xref" href="#architecture">Architecture</a>)</td></tr>
       <tr><td>Composition des classeurs de test</td><td>Tranché (2026-09-24) : 10 classeurs, voir ci-dessous</td></tr>
-      <tr><td>Rythme du paquet gratuit (quotidien ou autre) pour le test</td><td>Tranché dans le prototype : quotidien, 2 points par jour (1 standard = 2 points, 1 mini = 1 point), remis à zéro à minuit (heure de Paris) ; points bonus en plus (bienvenue, cadeaux)</td></tr>
+      <tr><td>Rythme du paquet gratuit (quotidien ou autre) pour le test</td><td>Tranché dans le prototype : un paquet par jour (2 points, standard ou mini), remis à minuit (heure de Paris), jours d'absence gardés en réserve (7 jours par défaut) ; points bonus en plus (cadeaux, installation, notifications)</td></tr>
       <tr><td>Plateforme et stack du prototype</td><td>Tranché : iOS natif, back-end managé, admin web (voir « Architecture et phases »)</td></tr>
       <tr><td>Spécification de la state machine Rive du reveal (variables : rareté, type de carte)</td><td>À faire, dépend du gabarit de carte stabilisé</td></tr>
     </tbody>
