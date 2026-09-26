@@ -49,6 +49,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 ## Autres écrans
 - **Profil** : page à part (avatar, pseudo, capacité de metaleux en texte, cri). La capacité se modifie dans une feuille du bas : idées proposées ou texte perso (120 caractères).
+- **Profil public** (« veste à patchs ») : médaillon photo cerclé d'or, pseudo, titre gagné en pastille (Groupie → Légende du pit), capacité en citation, bouton « Écouter son cri » ; vitrine de 3 cartes en éventail ; patchs ronds brodés (classeurs complétés, surpiqûre or en pointillés ; manquants en pointillés os) ; pin's de maîtrise ; setlist en tuiles. Plein écran, fermeture en haut à droite.
 - **Notifications** : encadré arrondi à marges, en haut de l'écran ; descend et remonte, sans fondu ; une seule à la fois.
 - **Fermer** : bouton rond en surimpression en haut à droite, il ne prend pas de place.
 
