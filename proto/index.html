@@ -100,10 +100,12 @@
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
-  .formats{display:flex; gap:10px; margin:14px auto 0; width:100%; max-width:420px}
-  .formats button{flex:1; min-height:48px; padding:6px 8px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; text-align:center}
-  .formats button b{display:block; font:700 .9rem var(--mono)} .formats button small{display:block; margin-top:2px; font:500 .72rem var(--mono); color:var(--muted)}
-  .formats button[aria-checked="true"]{border-color:var(--gold); background:rgba(235,154,38,.1)} .formats button[aria-checked="true"] b{color:var(--gold-hi)}
+  /* format du paquet : deux « mises » de jeu, picto de sachet et contenu */
+  .formats{display:flex; justify-content:center; gap:10px; margin:14px auto 0; width:100%; max-width:360px}
+  .formats button{flex:1; display:flex; align-items:center; gap:10px; min-height:52px; padding:6px 12px; border:0; border-radius:10px; background:#100c08; box-shadow:inset 0 0 0 1px rgba(243,240,234,.14); color:var(--muted); cursor:pointer; text-align:left; transition:box-shadow .15s ease, color .15s ease, transform .12s ease}
+  .formats .fi{flex:none; display:flex; align-items:flex-end; gap:2px; height:30px}
+  .formats b{display:block; font:800 1rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase} .formats small{display:block; margin-top:3px; font:600 .68rem/1.2 var(--mono)}
+  .formats button[aria-checked="true"]{color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold), 0 0 16px rgba(235,154,38,.25)} .formats button:active{transform:scale(.97)}
   .formats button:disabled{opacity:.4; cursor:default}
   .small-go{max-width:420px; margin-top:10px}
   /* mode petits paquets : la description cède la place au bouton d'ouverture */
@@ -112,7 +114,7 @@
     .home .hud{padding-bottom:6px}
     .home-title{font-size:1.45rem; margin-top:12px}
     .choose{padding:0 0 8px} .pack-car{padding:10px 0 12px} .pack-info{min-height:0; padding-top:8px} .pack-info h2{font-size:1.45rem} .pack-info p{font-size:.84rem}
-    .formats button{min-height:48px; padding:6px 8px} .small-go{margin-top:8px}
+    .small-go{margin-top:8px}
     #pc-dots{display:none}
     .pack-car{--pw:max(96px, calc((100dvh - 470px) * .58))}
     .rev-top{margin-bottom:14px} .card-info{margin-top:18px} .card-info .bio{margin-top:8px}
@@ -682,8 +684,8 @@
   <p class="bonus-line" id="reserve-line" hidden></p>
   <p class="bonus-line" id="bonus-line" hidden></p>
   <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
-    <button type="button" role="radio" data-f="big"><b>1 standard</b><small>5 cartes</small></button>
-    <button type="button" role="radio" data-f="small"><b>2 mini</b><small>2 cartes, + de chances</small></button>
+    <button type="button" role="radio" data-f="big"><span class="fi"><svg viewBox="0 0 24 32" width="22" height="30" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="16" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></span><span><b>Standard</b><small>5 cartes</small></span></button>
+    <button type="button" role="radio" data-f="small"><span class="fi"><svg viewBox="0 0 24 32" width="15" height="21" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="16" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg><svg viewBox="0 0 24 32" width="15" height="21" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="16" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></span><span><b>Mini</b><small>2 × 2, + de chances</small></span></button>
   </div>
   <p class="small-hint" id="fmt-lock" hidden></p>
   <div class="choose">
