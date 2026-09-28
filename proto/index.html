@@ -100,13 +100,13 @@
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
-  /* format du paquet : deux « mises » de jeu, picto de sachet et contenu */
+  /* format du paquet : picto de sachet et contenu, sans cadre ; le choix actif passe en or et grossit */
   .formats{display:flex; justify-content:center; gap:12px; margin:12px auto 0}
-  .formats button{width:96px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px 7px; border:0; border-radius:10px; background:#100c08; box-shadow:inset 0 0 0 1px rgba(243,240,234,.14); color:var(--muted); cursor:pointer; text-align:center; transition:box-shadow .15s ease, color .15s ease, transform .12s ease}
+  .formats button{width:96px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px 7px; border:0; border-radius:10px; background:none; color:var(--muted); cursor:pointer; text-align:center; transition:color .15s ease, transform .15s ease}
   .formats .fi{display:flex; align-items:flex-end; justify-content:center; gap:3px; height:28px}
   .formats .fi svg{height:100%; width:auto} .formats button[data-f="small"] .fi svg{height:72%}
   .formats b{display:block; font:800 .95rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase} .formats small{display:block; margin-top:2px; font:600 .64rem/1.25 var(--mono)}
-  .formats button[aria-checked="true"]{color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold), 0 0 16px rgba(235,154,38,.25)} .formats button:active{transform:scale(.97)}
+  .formats button[aria-checked="true"]{color:var(--gold-hi); transform:scale(1.08)} .formats button:active{transform:scale(.97)}
   .formats button:disabled{opacity:.4; cursor:default}
   .small-go{max-width:420px; margin-top:10px}
   /* mode petits paquets : la description cède la place au bouton d'ouverture */
@@ -195,6 +195,15 @@
   .inst-banner{display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; margin:10px 0 0; padding:10px 14px; min-height:44px; border:1px dashed rgba(235,154,38,.5); border-radius:12px; background:rgba(235,154,38,.06); color:var(--text); cursor:pointer; text-align:left}
   .inst-banner[hidden]{display:none} .inst-banner b{font:600 .84rem var(--mono)} .inst-banner span{flex:none; font:700 .72rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gold-hi)}
   #v-packs[data-step="open"] .inst-banner{display:none}
+  /* feuille d'installation : un seul chemin selon l'appareil, étapes illustrées par les icônes du système */
+  .inst-in{display:flex; flex-direction:column; align-items:center; text-align:center} .inst-in h2{margin:10px 0 6px} .inst-in .pf-note{color:var(--muted); max-width:34ch}
+  .is-steps{list-style:none; width:100%; margin:6px 0 14px; padding:0; display:flex; flex-direction:column; gap:8px; text-align:left}
+  .is-steps[hidden]{display:none}
+  .is-steps li{display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--bg)}
+  .is-steps b{flex:none; width:12px; font:800 1.15rem var(--display); color:var(--gold-hi)}
+  .is-steps svg{flex:none; width:38px; height:38px; padding:8px; border-radius:10px; background:var(--surface-2); color:#4c9dff}
+  .is-steps span{font-size:.95rem; line-height:1.35} .is-steps em{font-style:normal; font-weight:600; color:var(--text)}
+  .inst-in .btn{margin-top:4px} .inst-in .btn[hidden], .inst-in .link[hidden]{display:none}
   .pw-wrap{position:relative; display:block} .auth .pw-wrap input{padding-right:52px}
   .pw-eye{position:absolute; right:2px; top:calc(50% + 1px); transform:translateY(-50%); width:44px; height:44px; margin-top:0; border:0; background:none; color:var(--muted); display:grid; place-items:center; cursor:pointer}
   .pw-eye:hover, .pw-eye[aria-pressed="true"]{color:var(--gold-hi)} .pw-eye .ec{display:none} .pw-eye[aria-pressed="true"] .eo{display:none} .pw-eye[aria-pressed="true"] .ec{display:inline}
@@ -248,7 +257,7 @@
   .patch.off i{background:transparent; box-shadow:none} .patch.off i::after{inset:0; border-color:rgba(243,240,234,.2)}
   .patch small{font:600 .68rem/1.2 var(--mono); color:var(--muted); max-width:78px} .patch:not(.off) small{color:var(--text)}
   .pub-pins{display:flex; flex-wrap:wrap; gap:10px}
-  .pin{width:44px; height:44px; border-radius:50%; background:center 20%/220% auto; border:2px solid var(--gold); box-shadow:0 0 0 2px var(--bg), 0 0 14px rgba(245,197,66,.35)}
+  .pub-pins .pin{width:44px; height:44px; border-radius:50%; background:center 20%/220% auto; border:2px solid var(--gold); box-shadow:0 0 0 2px var(--bg), 0 0 14px rgba(245,197,66,.35)}
   .pub-stats{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
   .pub-stats div{padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
   .pub-stats b{display:block; font:800 1.7rem/1 var(--display); color:var(--gold-hi); font-variant-numeric:tabular-nums}
@@ -319,6 +328,13 @@
   .pcard .pin{position:relative; border-radius:12px; overflow:hidden; transform-style:preserve-3d; transition:transform .12s linear; box-shadow:0 18px 40px rgba(0,0,0,.6)}
   .pcard .pin img{display:block; width:100%}
   .pcard .detail-img{margin:0; width:100%; border-radius:0}
+  .pcard{position:relative} .pcard .pin{cursor:zoom-in}
+  .zoom-go{position:absolute; right:-8px; bottom:-8px; z-index:2; width:44px; height:44px; background:rgba(10,8,7,.85)}
+  /* carte en plein écran : la plus grande possible entre les zones de sécurité, un toucher referme */
+  .zoom{position:fixed; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; background:rgba(5,4,4,.96); padding:calc(64px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); cursor:zoom-out; animation:dfin .18s ease-out}
+  .zoom[hidden]{display:none}
+  .zoom img{display:block; max-width:100%; max-height:100%; aspect-ratio:2/3; object-fit:contain; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.7)}
+  .zoom-x{position:absolute; top:calc(12px + env(safe-area-inset-top)); right:16px}
   .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:none}
   .flip.on + .glow{opacity:1; transition:opacity .6s ease .35s}
   .glow[data-r="rare"]{box-shadow:0 0 38px 6px rgba(59,130,246,.55)}
@@ -433,8 +449,9 @@
   /* ---------- Détail ---------- */
   .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center}
   .sheet[hidden]{display:none}
-  .sheet-in{position:relative; overscroll-behavior:contain; width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
-  /* bouton fermer : en surimpression, il ne prend pas de place */
+  .sheet-in{position:relative; display:flex; flex-direction:column; width:100%; max-width:560px; max-height:94vh; max-height:calc(100dvh - env(safe-area-inset-top) - 12px); overflow:hidden; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 0 calc(20px + env(safe-area-inset-bottom))}
+  #detail{min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:0 16px}
+  /* bouton fermer : en surimpression, hors de la zone qui défile, il ne prend pas de place */
   .sheet-close{position:absolute; top:12px; right:12px; z-index:6; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(255,255,255,.18); background:rgba(10,8,7,.72); color:var(--text); font-size:1rem; cursor:pointer}
   .detail-img{width:min(72%, 280px); margin:44px auto 14px; display:block; border-radius:12px}
   .detail h2{font-size:1.5rem; margin-top:4px}
@@ -803,6 +820,22 @@
     <button type="button" class="btn block" id="sh-save">Enregistrer</button>
   </div>
 </div>
+<div class="bsheet" id="inst-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="is-t">
+  <div class="bsheet-in inst-in">
+    <i class="grab" aria-hidden="true"></i>
+    <span class="gift-chip">Un paquet offert</span>
+    <h2 id="is-t">Metalnini sur ton écran d'accueil</h2>
+    <p class="pf-note" id="is-note"></p>
+    <ol class="is-steps" id="is-steps" hidden>
+      <li><b>1</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M7 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-1"/></svg><span>Touche <em>Partager</em></span></li>
+      <li><b>2</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Touche <em>En savoir plus</em></span></li>
+      <li><b>3</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg><span><em>Sur l'écran d'accueil</em>, puis <em>Ajouter</em></span></li>
+    </ol>
+    <button type="button" class="btn block" id="is-go" hidden></button>
+    <button type="button" class="link" id="is-safari" hidden>Pas dans Safari ? Ouvre-le dedans</button>
+    <button type="button" class="link" id="is-later">Plus tard</button>
+  </div>
+</div>
 <div class="pub" id="pub" hidden role="dialog" aria-modal="true" aria-labelledby="pub-name">
   <button type="button" class="icon-btn pub-x" id="pub-x" aria-label="Fermer le profil"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <div class="pub-in" id="pub-in"></div>
@@ -988,6 +1021,11 @@
     <button type="button" class="sheet-close" id="sheet-close" aria-label="Fermer">✕</button>
     <div id="detail"></div>
   </div>
+</div>
+
+<div class="zoom" id="zoom" hidden role="dialog" aria-modal="true" aria-label="Carte en plein écran">
+  <button type="button" class="icon-btn zoom-x" id="zoom-x" aria-label="Fermer le plein écran"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <img id="zoom-img" alt="">
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Navigation">
@@ -1369,7 +1407,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
-      paintDevice(); if(standalone()) onbInstalled(api); else setTimeout(onbInstall, 2500);
+      paintDevice(); if(standalone()) onbInstalled(api); else setTimeout(askInstall, 2500);
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -2567,7 +2605,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div></div>' :
+    var head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = head +
       '<p class="eyebrow">Arcane ' + c.num + (r ? ' · <span style="color:' + rarity(r).color + '">' + rarity(r).label + '</span>' : ' · pas encore obtenue') + '</p>' +
@@ -2600,7 +2638,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var pc = document.getElementById('pcard');
     if(pc){ setTarget(pc, document.getElementById('pin'), r);
       pc.addEventListener('pointermove', function(e){ var rr = pc.getBoundingClientRect(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
-      pc.addEventListener('pointerdown', askMotion); } else clearTarget();
+      pc.addEventListener('pointerdown', askMotion);
+      document.getElementById('pin').addEventListener('click', function(){ openZoom(img(id, r), c.who + ', ' + rarity(r).label); });
+      document.getElementById('zoom-go').addEventListener('click', function(){ openZoom(img(id, r), c.who + ', ' + rarity(r).label); }); } else clearTarget();
   }
   // transformation : paliers exponentiels, ×2 à chaque rareté (3, 6, 12, 24 doublons par défaut) ; en ligne, le serveur fixe les coûts
   var FUSE_COSTS = null;
@@ -2672,7 +2712,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function closeDetail(){ stopListen(); sheet.hidden = true; clearTarget(); if(!document.getElementById('v-binder').hidden) renderBinder(); }
   document.getElementById('sheet-close').addEventListener('click', closeDetail);
   sheet.addEventListener('click', function(e){ if(e.target === sheet) closeDetail(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeDetail(); });
+  // plein écran depuis la fiche : toucher la carte ou l'icône ; un toucher n'importe où, la croix ou Échap referment
+  var zoomEl = document.getElementById('zoom');
+  function openZoom(src, alt){ var im = document.getElementById('zoom-img'); im.src = src; im.alt = alt; zoomEl.hidden = false; document.getElementById('zoom-x').focus(); }
+  function closeZoom(){ zoomEl.hidden = true; var g = document.getElementById('zoom-go'); if(g) g.focus(); }
+  zoomEl.addEventListener('click', closeZoom);
+  document.addEventListener('keydown', function(e){ if(e.key !== 'Escape') return; if(!zoomEl.hidden) closeZoom(); else if(!sheet.hidden) closeDetail(); });
 
   // ---------- Réglages ----------
   // banc d'essai des sons (?sons) : chaque son attendu (fiche : sons.html), livré ou non, à écouter
@@ -2753,7 +2798,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('auth-intro').textContent = 'Tes cartes sont à toi. Crée ton compte pour ne pas les perdre : un pseudo, un e-mail, c\'est tout.';
     showAuth('signup'); document.getElementById('auth-later').hidden = false;
   }
-  document.getElementById('inst-banner').addEventListener('click', function(){ onbInstall(true); });
+  document.getElementById('inst-banner').addEventListener('click', function(){ askInstall(true); });
   // œil du mot de passe : afficher ou masquer, remasqué à chaque envoi
   function pwShow(on){ var i = document.getElementById('au-pw'), b = document.getElementById('pw-eye'); i.type = on ? 'text' : 'password';
     b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? 'Masquer le mot de passe' : 'Afficher le mot de passe'); }
@@ -2769,23 +2814,34 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     try{ await api.claimWelcome(tok, placedKeys); }catch(e){}
     state.welcome = null; save();
   }
-  // installer : juste après le compte, avec une récompense au premier lancement depuis l'icône
-  function onbInstall(force){
+  // installer : feuille proposée à la connexion (3 fois au plus, tous les 3 jours), et à tout moment depuis le bandeau de l'accueil.
+  // Un seul chemin selon l'appareil : bouton du navigateur, étapes de Safari, ou passage par Safari depuis un autre navigateur iPhone.
+  var instSheet = document.getElementById('inst-sheet');
+  // navigateurs iPhone qui s'annoncent (Chrome, Firefox, Edge, Opera, DuckDuckGo, Google, Instagram, Facebook…) ; Arc se fait passer pour Safari
+  var IOS_OTHER = /CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|GSA\/|Instagram|FBAN|FBAV|Line\//.test(navigator.userAgent);
+  function askInstall(force){
     if(standalone() || !(IOS || installEvt)) return;
-    var ask = state.installAsk || {n:0, t:0};
+    delete state.installAsk;
+    var ask = state.instAsk || {n:0, t:0};
     if(!force && (ask.n >= 3 || Date.now() - ask.t < 3 * 864e5)) return;
-    if(busyScreen()){ if(!force) setTimeout(onbInstall, 900); return; }
-    state.installAsk = {n:ask.n + 1, t:Date.now()}; save();
-    onbShow('<span class="gift-chip">Un paquet offert</span><h2>Mets Metalnini dans ta poche</h2>' +
-      '<p>Sur ton écran d\'accueil, en plein écran, avec ton paquet du jour qui t\'attend. Le paquet tombe au premier lancement depuis l\'icône.</p>' +
-      (IOS ? '<div class="steps"><div><i>1</i><span>Dans <em>Safari</em>, touche <em>Partager</em> (le carré avec une flèche)</span></div><div><i>2</i><span>Touche <em>En savoir plus</em></span></div><div><i>3</i><span>Choisis <em>Sur l\'écran d\'accueil</em>, puis <em>Ajouter</em></span></div></div>' +
-        '<button type="button" class="btn ghost block" id="onb-safari">Ouvrir dans Safari</button>'
-      : '<button type="button" class="btn block" id="onb-inst">Installer l\'app</button>') +
-      '<button type="button" class="link" id="onb-later">Plus tard</button>');
-    var sf = document.getElementById('onb-safari'); if(sf) sf.onclick = function(){ document.getElementById('inst-safari').click(); };
-    var ins = document.getElementById('onb-inst'); if(ins) ins.onclick = function(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.then(function(c){ installEvt = null; paintDevice(); if(c && c.outcome === 'accepted') onbClose(); }); };
-    document.getElementById('onb-later').onclick = onbClose;
+    if(busyScreen() || !instSheet.hidden){ if(!force) setTimeout(askInstall, 900); return; }
+    if(!force){ state.instAsk = {n:ask.n + 1, t:Date.now()}; save(); }
+    var mode = installEvt ? 'prompt' : IOS_OTHER ? 'other' : 'safari', go = document.getElementById('is-go');
+    document.getElementById('is-note').textContent = mode === 'prompt' ? 'En plein écran, sans la barre du navigateur. Ton paquet tombe à la première ouverture depuis l\'icône.'
+      : mode === 'other' ? 'Sur iPhone, ça passe par Safari. Ouvre Metalnini dedans, on te montre la suite.'
+      : 'Trois touches dans Safari. Ton paquet tombe à la première ouverture depuis l\'icône.';
+    document.getElementById('is-steps').hidden = mode !== 'safari';
+    document.getElementById('is-safari').hidden = mode !== 'safari';
+    go.hidden = mode === 'safari'; go.textContent = mode === 'prompt' ? 'Installer' : 'Ouvrir dans Safari';
+    instSheet.hidden = false;
   }
+  document.getElementById('is-go').addEventListener('click', function(){
+    if(!installEvt){ document.getElementById('inst-safari').click(); return; }   // le lien x-safari et son secours « lien copié »
+    installEvt.prompt(); installEvt.userChoice.then(function(c){ installEvt = null; paintDevice(); if(c && c.outcome === 'accepted') instSheet.hidden = true; });
+  });
+  document.getElementById('is-safari').addEventListener('click', function(){ document.getElementById('inst-safari').click(); });
+  document.getElementById('is-later').addEventListener('click', function(){ instSheet.hidden = true; });
+  instSheet.addEventListener('click', function(e){ if(e.target === instSheet) instSheet.hidden = true; });
   // premier lancement depuis l'icône : la récompense d'installation, puis les notifications (pré-autorisation qui en montre la valeur)
   function onbInstalled(api){
     if(!standalone()) return;
@@ -2812,8 +2868,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var installEvt = null, swReg = null;
   function standalone(){ return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
   function pushOk(){ return !!swReg && 'PushManager' in window && 'Notification' in window; }
-  addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; paintDevice(); if(ONLINE) setTimeout(onbInstall, 1500); });
-  addEventListener('appinstalled', function(){ installEvt = null; paintDevice(); toast('Metalnini est sur ton écran d\'accueil.'); });
+  addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; paintDevice(); if(ONLINE) setTimeout(askInstall, 1500); });
+  addEventListener('appinstalled', function(){ installEvt = null; paintDevice(); instSheet.hidden = true; toast('Metalnini est sur ton écran d\'accueil.'); });
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(function(r){ swReg = r; paintDevice(); syncPush(); }).catch(function(){});
   function paintDevice(){
     var inst = standalone();
@@ -2914,7 +2970,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'artist-sheet', 'show-sheet', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

@@ -49,10 +49,12 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 ## Autres écrans
 - **Profil** : page à part (avatar, pseudo, capacité de metaleux en texte, cri). La capacité se modifie dans une feuille du bas : idées proposées ou texte perso (120 caractères).
-- **Format du paquet** : deux tuiles compactes (~96 px) centrées, un seul paquet par jour : Standard · 5 cartes (grand sachet) ou Mini · 2 cartes, + de chances (petit sachet) ; picto en haut, nom en Big Shoulders ; choisie = filet et lettres or avec lueur, l'autre en os discret.
+- **Format du paquet** : deux choix compacts (~96 px) centrés, sans cadre ni fond (picto et texte seuls, décidé le 2026-09-28), un seul paquet par jour : Standard · 5 cartes (grand sachet) ou Mini · 2 cartes, + de chances (petit sachet) ; picto en haut, nom en Big Shoulders ; choisi = lettres or et légèrement grossi (×1,08), l'autre en os discret.
+- **Installer l'app** : feuille du bas « Un paquet offert », un seul chemin selon l'appareil : bouton « Installer » (Android, Chrome), trois étapes illustrées par les icônes de Safari (Partager, En savoir plus, Sur l'écran d'accueil) avec « Pas dans Safari ? » en lien, ou « Ouvrir dans Safari » depuis un autre navigateur iPhone. Proposée à la connexion (3 fois au plus, tous les 3 jours) et depuis le bandeau de l'accueil.
 - **Profil public** (« veste à patchs ») : médaillon photo cerclé d'or, pseudo, titre gagné en pastille (Groupie → Légende du pit), capacité en citation, bouton « Écouter son cri » ; vitrine de 3 cartes en éventail ; patchs ronds brodés (classeurs complétés, surpiqûre or en pointillés ; manquants en pointillés os) ; pin's de maîtrise ; setlist en tuiles. Plein écran, fermeture en haut à droite.
 - **Notifications** : encadré arrondi à marges, en haut de l'écran ; descend et remonte, sans fondu ; une seule à la fois.
-- **Fermer** : bouton rond en surimpression en haut à droite, il ne prend pas de place.
+- **Fermer** : bouton rond en surimpression en haut à droite, il ne prend pas de place. Dans une feuille, il reste hors de la zone qui défile, et la feuille s'arrête sous la barre d'état (`100dvh - env(safe-area-inset-top)`).
+- **Carte en plein écran** : depuis la fiche, toucher la carte ou l'icône d'agrandissement (coin bas droit) ; carte la plus grande possible entre les zones de sécurité, fond noir d'encre ; un toucher, la croix ou Échap referment.
 
 ## Interaction et mouvement
 - Cibles tactiles ≥ 44 × 44 px, 8 px d'écart minimum ; retour visuel à l'appui (échelle 0,97-0,98 ou opacité).
