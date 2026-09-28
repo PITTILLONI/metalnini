@@ -145,7 +145,11 @@
   .prog .on{color:var(--gold-hi)}
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
-  .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2}
+  .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
+  /* échange réduit : pastille au-dessus de la barre d'onglets pour y revenir */
+  .trade-pill{position:fixed; left:16px; right:16px; bottom:96px; z-index:25; max-width:520px; margin:0 auto; min-height:48px; display:flex; align-items:center; gap:12px; padding:10px 16px; border:1px solid var(--gold); border-radius:999px; background:var(--ink); color:var(--text); font:600 .86rem var(--mono); text-align:left; cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,.6); animation:sheetup .24s cubic-bezier(.2,.8,.2,1)}
+  .trade-pill[hidden]{display:none} .trade-pill b{color:var(--gold-hi)} .trade-pill em{flex:1; min-width:0; font-style:normal; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .trade-pill span{flex:none; color:var(--gold-hi); font-weight:700; text-transform:uppercase; letter-spacing:.08em}
   .trade-in{max-width:520px; margin:0 auto; padding:calc(24px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); text-align:center}
   .trade-in h2{font-size:1.9rem; margin:0 60px 6px} .trade-in > .pf-note{color:var(--muted); max-width:34ch; margin:0 auto 14px}
   .tr-qr{width:min(64vw, 240px); aspect-ratio:1; margin:6px auto 12px; padding:10px; border-radius:14px; background:var(--text)}
@@ -162,9 +166,9 @@
   .tr-cards{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
   .tr-card{position:relative; padding:0; border:0; background:none; cursor:pointer; text-align:center; color:var(--muted)}
   .tr-card img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
+  .tr-card small b{color:var(--text)}
   .tr-card small{display:block; margin-top:3px; font:600 .66rem/1.2 var(--mono); text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .tr-card .n{position:absolute; top:4px; right:4px; min-width:22px; padding:1px 5px; border-radius:9px; background:rgba(10,8,7,.85); color:var(--text); font:700 .7rem/18px var(--mono)}
-  .tr-card .last{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; background:var(--accent); color:#fff; font:700 .6rem/16px var(--mono); text-transform:uppercase}
+  .tr-card .last{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--accent); color:#fff; font:700 .6rem/16px var(--mono); text-transform:uppercase}
   .tr-card:disabled{opacity:.35; cursor:default}
   .tr-add{aspect-ratio:2/3; border:1px dashed rgba(235,154,38,.55); border-radius:6px; background:none; color:var(--gold-hi); font:700 .78rem var(--mono); cursor:pointer}
   .tr-empty{grid-column:1 / -1; margin:0; color:var(--muted); font-size:.9rem}
@@ -175,9 +179,10 @@
   .tp-tabs button{min-height:44px; border:0; border-radius:9px; background:none; color:var(--muted); font:800 .95rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
   .tp-tabs button[aria-selected="true"]{background:var(--surface-2); color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.45)}
   #tp-note{color:var(--muted); margin:0 0 4px}
+  .tp-dup{min-height:44px; margin:4px 0 0; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--muted); font:600 .8rem var(--mono); cursor:pointer}
+  .tp-dup[aria-pressed="true"]{border-color:var(--gold); color:var(--gold-hi); background:rgba(235,154,38,.08)}
   .tr-card .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .6rem/16px var(--mono); text-transform:uppercase; text-align:center}
   .tr-card .tag.want{background:var(--gold); color:var(--ink)} .tr-card .tag.new{background:rgba(10,8,7,.88); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold)}
-  .tr-card .last{top:auto; bottom:22px}
   .tp-item{position:relative} .tp-item.on .tr-card img{outline:2px solid var(--gold); outline-offset:1px}
   .tp-item .gv{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--gold); color:var(--ink); font:700 .62rem/16px var(--mono); text-transform:uppercase; text-align:center; pointer-events:none}
   .tp-minus{position:absolute; top:-8px; left:-8px; z-index:2; width:32px; height:32px; display:grid; place-items:center; padding:0; border:1px solid var(--gold); border-radius:50%; background:var(--ink); color:var(--gold-hi); cursor:pointer}
@@ -1101,9 +1106,11 @@
 </div>
 
 <div class="trade" id="trade" hidden role="dialog" aria-modal="true" aria-label="Échange">
+  <button type="button" class="icon-btn trade-min" id="trade-min" aria-label="Réduire l'échange, il reste ouvert"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg></button>
   <button type="button" class="icon-btn trade-x" id="trade-x" aria-label="Quitter l'échange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="trade-in" id="trade-in"></div>
 </div>
+<button type="button" class="trade-pill" id="trade-pill" hidden></button>
 <div class="bsheet" id="trade-pick" hidden role="dialog" aria-modal="true" aria-labelledby="tp-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1209,6 +1216,7 @@ const api = {
   async tradeConfirm(id, ok, version){ return must(await sb.rpc('trade_confirm', { p_trade: id, p_ok: ok, p_version: version })); },
   async tradeCancel(id){ must(await sb.rpc('trade_cancel', { p_trade: id })); },
   async tradeCount(){ return must(await sb.rpc('my_trade_count')); },
+  async tradeActive(){ return must(await sb.rpc('trade_active')); },
   async tradePartnerCards(id){ return must(await sb.rpc('trade_partner_cards', { p_trade: id })); },
   async tradeWant(id, m, r, on){ return must(await sb.rpc('trade_want', { p_trade: id, p_musician: m, p_rarity: r, p_on: on })); },
   tradeWatch(id, cb){
@@ -1516,6 +1524,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
+      else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if((state.favBands || []).length && !state.favSent) api.setFavBands(state.favBands).then(function(){ state.favSent = true; save(); }).catch(function(){});
@@ -1975,24 +1984,42 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return m ? (m[1] + (m[2] || '')).toUpperCase() : null; }
   function needOnline(){ if(ONLINE) return true; toast('Connecte-toi pour échanger : il faut un compte des deux côtés.'); return false; }
   function coteOf(list){ return list.reduce(function(a, x){ return a + COTE[x.r] * x.n; }, 0); }
-  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); snd(t.status === 'open' ? 'trade-code' : 'trade-join'); }
+  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); paintPill(); snd(t.status === 'open' ? 'trade-code' : 'trade-join'); }
+  // réduire : l'échange reste ouvert (temps réel compris), une pastille permet d'y revenir depuis n'importe quel écran
+  var pillEl = document.getElementById('trade-pill');
+  function paintPill(){
+    var t = trade, on = !!t && tradeEl.hidden && (t.status === 'open' || t.status === 'live');
+    pillEl.hidden = !on; if(!on) return;
+    var who = esc(t.partner || 'ton pote');
+    pillEl.innerHTML = '<em>' + (t.status === 'open' ? 'Ton code <b>' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</b> attend ton pote' : 'Échange avec <b>' + who + '</b>' + (t.their_ok ? ' · a validé' : ((t.their_wants || []).length ? ' · te demande des cartes' : ''))) + '</em><span>Reprendre</span>';
+    pillEl.style.bottom = (document.querySelector('.tabbar').getBoundingClientRect().height + 10) + 'px';
+  }
+  function tradeMin(){ stopScan(); pickEl.hidden = true; if(!trade){ tradeClose(); return; } tradeEl.hidden = true; paintPill(); }
+  pillEl.addEventListener('click', tradeResume);
+  document.getElementById('trade-min').addEventListener('click', tradeMin);
   function tradeWatch(){ tradeUnwatchAll(); tradeUnwatch = ONLINE.tradeWatch(trade.id, tradeRefresh); tradePoll = setInterval(tradeRefresh, 4000); }
   function tradeUnwatchAll(){ if(tradeUnwatch) tradeUnwatch(); tradeUnwatch = null; clearInterval(tradePoll); tradePoll = null; }
   function tradeRefresh(){ if(!trade || !ONLINE) return; var id = trade.id;
     ONLINE.tradeState(id).then(function(t){ if(trade && trade.id === id) tradeApply(t); }).catch(function(){}); }
   function tradeApply(t){
     var old = trade; trade = t;
-    if(t.status === 'done'){ if(!old || old.status !== 'done') tradeDone(t); return; }
+    // sondage et temps réel renvoient souvent le même état : rien ne bouge à l'écran (sur iPhone, redessiner fait sauter la page)
+    if(old && JSON.stringify(old) === JSON.stringify(t)) return;
+    // conclu pendant que l'échange est réduit : la révélation attend que l'écran en cours soit libre
+    if(t.status === 'done'){ if(!old || old.status !== 'done') (function wait(){ if(tradeEl.hidden && busyScreen()){ setTimeout(wait, 1000); return; } tradeDone(t); })(); return; }
+    if(t.status === 'cancelled' && tradeEl.hidden){ snd('trade-cancel'); toast(esc(t.partner || 'Ton pote') + ' a quitté l\'échange. Rien n\'a bougé.'); tradeClose(); return; }
     if(old && old.id === t.id){
-      if(old.status === 'open' && t.status === 'live') snd('trade-join');
+      if(old.status === 'open' && t.status === 'live'){ snd('trade-join'); if(tradeEl.hidden) toast('<b>' + esc(t.partner || 'Ton pote') + '</b> est dans l\'échange. Touche la pastille pour y aller.'); }
       else if(t.status === 'cancelled' && old.status !== 'cancelled') snd('trade-cancel');
       else if(JSON.stringify(old.get) !== JSON.stringify(t.get) || JSON.stringify(old.their_wants) !== JSON.stringify(t.their_wants)) snd('trade-partner');
       if(t.their_ok && !old.their_ok) snd('trade-ready');
     }
-    renderTrade();
+    if(tradeEl.hidden) paintPill(); else renderTrade();
   }
-  function tradeClose(){ tradeUnwatchAll(); stopScan(); trade = null; tradeScan = false; tradeEl.hidden = true; pickEl.hidden = true; }
-  async function tradeHost(){ if(!needOnline() || tradeBusy) return; tradeBusy = true;
+  function tradeClose(){ tradeUnwatchAll(); stopScan(); trade = null; tradeScan = false; tradeEl.hidden = true; pickEl.hidden = true; paintPill(); }
+  // un échange déjà ouvert (réduit) : on y revient au lieu d'en créer un autre
+  function tradeResume(){ if(!trade) return false; tradeEl.hidden = false; renderTrade(); paintPill(); return true; }
+  async function tradeHost(){ if(!needOnline() || tradeBusy || tradeResume()) return; tradeBusy = true;
     try{ tradeShow(await ONLINE.tradeCreate()); }catch(e){ snd('nope'); toast(esc(e.message)); } tradeBusy = false; }
   async function tradeJoin(code){
     if(!needOnline() || tradeBusy) return; code = codeFrom(code || '');
@@ -2001,7 +2028,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     try{ tradeShow(await ONLINE.tradeJoin(code)); }catch(e){ snd('nope'); toast(esc(e.message)); if(tradeScan) renderTrade(); }
     tradeBusy = false;
   }
-  function openScan(){ if(!needOnline()) return; trade = null; tradeScan = true; tradeEl.hidden = false; renderTrade(); }
+  function openScan(){
+    if(!needOnline()) return;
+    var start = function(){ trade = null; tradeScan = true; tradeEl.hidden = false; renderTrade(); paintPill(); };
+    if(!trade){ start(); return; }
+    askConfirm({eyebrow:'Échange', title:'Quitter l\'échange en cours ?', text:'Pour en scanner un autre, tu quittes celui avec ' + (trade.partner || 'ton code en attente') + '. Rien ne bouge dans vos collections.', yes:'Quitter et scanner', no:'Garder mon échange'},
+      function(){ var id = trade.id; tradeClose(); ONLINE.tradeCancel(id).catch(function(){}); start(); });
+  }
   // caméra : lecteur natif du navigateur si présent, sinon jsQR (Safari) ; le code peut toujours se taper à la main
   async function startScan(){
     var v = document.getElementById('tr-video'), note = document.getElementById('tr-cam-note');
@@ -2036,10 +2069,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // o : label (fin du libellé d'accessibilité), tag / tagCls (étiquette du haut), last (dernier exemplaire), off (désactivée)
   function trCard(x, o){ o = o || {}; var c = card(x.m), rr = rarity(x.r);
     return '<button type="button" class="tr-card" data-m="' + x.m + '" data-r="' + x.r + '"' + (o.off ? ' disabled' : '') + ' aria-label="' + esc(c.who) + ', ' + rr.label + (x.n > 1 ? ', ' + x.n + ' exemplaires' : '') + (o.tag ? ', ' + o.tag : '') + (o.last ? ', dernier exemplaire' : '') + (o.label || '') + '">' +
-      '<img src="' + img(x.m, x.r) + '" alt="" loading="lazy">' + (x.n > 1 ? '<span class="n num">×' + x.n + '</span>' : '') +
+      '<img src="' + img(x.m, x.r) + '" alt="" loading="lazy">' +
       (o.tag ? '<span class="tag ' + o.tagCls + '">' + o.tag + '</span>' : '') + (o.last ? '<span class="last">Dernière</span>' : '') +
-      '<small style="color:' + rr.color + '">' + rr.label + '</small></button>'; }
+      '<small style="color:' + rr.color + '">' + rr.label + (x.n > 1 ? ' <b class="num">×' + x.n + '</b>' : '') + '</small></button>'; }
   function renderTrade(){
+    var y = tradeEl.scrollTop; renderTradeIn(); tradeEl.scrollTop = y;
+  }
+  function renderTradeIn(){
     var t = trade, who = t && t.partner ? esc(t.partner) : 'Ton pote';
     if(tradeScan){
       tradeIn.innerHTML = '<p class="eyebrow">Échange</p><h2>Scanne son code</h2><p class="pf-note" id="tr-cam-note">Vise le QR code affiché dans son Metal Corner.</p>' +
@@ -2091,20 +2127,24 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function givenOf(m, r){ var x = (trade.give || []).filter(function(g){ return !m || (g.m === m && (!r || g.r === r)); }); return x.reduce(function(a, g){ return a + g.n; }, 0); }
   // feuille des cartes : « Mon classeur » trié par intérêt pour le pote (demandées, nouvelles pour lui, rareté qu'il n'a pas, le reste),
   // « Son classeur » trié par intérêt pour moi ; toucher une de ses cartes la demande (elle remonte en tête chez lui)
-  var pickTab = 'mine', theirCards = null;
+  var pickTab = 'mine', theirCards = null, pickDup = false;
   function wanted(list, k){ return (list || []).some(function(w){ return w.m + '|' + w.r === k; }); }
   function pickSections(groups){
     return groups.filter(function(g){ return g.keys.length; }).map(function(g){
       return '<p class="eyebrow">' + g.title + '</p><div class="tr-cards">' + g.keys.map(g.card).join('') + '</div>'; }).join('');
   }
   function renderPick(){
+    var box = pickEl.querySelector('.bsheet-in'), y = box.scrollTop; renderPickIn(); box.scrollTop = y;
+  }
+  function renderPickIn(){
     var t = trade; if(!t) return;
     var who = esc(t.partner || 'ton pote'), body = document.getElementById('tp-body'), note = document.getElementById('tp-note');
     [].forEach.call(pickEl.querySelectorAll('.tp-tabs button'), function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-t') === pickTab)); });
     var dupFirst = function(a, b){ return (state.owned[b] > 1) - (state.owned[a] > 1) || byRarity(a, b); };
     if(pickTab === 'mine'){
       note.innerHTML = '<b>Touche</b> une carte pour la poser, <b>touche encore</b> pour ajouter un doublon, <b>−</b> pour en retirer. En tête : ce qui ferait plaisir à ' + who + '.';
-      var keys = ownedKeys().sort(dupFirst), tc = theirCards;
+      var all = ownedKeys(), dups = all.filter(function(k){ return state.owned[k] > 1; }).length;
+      var keys = all.filter(function(k){ return !pickDup || state.owned[k] > 1; }).sort(dupFirst), tc = theirCards;
       var has = function(k){ return tc && tc[k]; }, hasMus = function(m){ return tc && Object.keys(tc).some(function(k){ return k.split('|')[0] === m; }); };
       var g = {want:[], nw:[], rar:[], rest:[]};
       keys.forEach(function(k){ var m = k.split('|')[0];
@@ -2113,12 +2153,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return '<div class="tp-item' + (gv ? ' on' : '') + '">' + trCard({m:p[0], r:p[1], n:left}, {tag:tag, tagCls:cls, off:left < 1, last:left === 1 && total(p[0]) - givenOf(p[0]) === 1,
             label:gv ? ', ' + gv + ' posée' + (gv > 1 ? 's' : '') + (left ? ', toucher pour en poser une de plus' : '') : ', toucher pour la poser'}) +
           (gv ? '<span class="gv num">Posée' + (gv > 1 ? ' ×' + gv : '') + '</span><button type="button" class="tp-minus" data-m="' + p[0] + '" data-r="' + p[1] + '" aria-label="Retirer un exemplaire de ' + esc(c.who) + ' de l\'échange"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12l14 0"/></svg></button>' : '') + '</div>'; }; };
-      body.innerHTML = keys.length ? pickSections([
+      body.innerHTML = (dups ? '<button type="button" class="tp-dup" id="tp-dup" aria-pressed="' + pickDup + '">Doublons seulement <span class="num">(' + dups + ')</span></button>' : '') + (keys.length ? pickSections([
         {title:'Demandées par ' + who, keys:g.want, card:mine('Demandée', 'want')},
         {title:'Nouvelles pour ' + who, keys:g.nw, card:mine('Nouvelle', 'new')},
         {title:'Raretés que ' + who + ' n\'a pas', keys:g.rar, card:mine()},
         {title:tc ? who + ' les a déjà' : 'Tes cartes', keys:g.rest, card:mine()}])
-        : '<p class="tr-empty">Ouvre d\'abord un paquet : ton classeur est vide.</p>';
+        : '<p class="tr-empty">Ouvre d\'abord un paquet : ton classeur est vide.</p>');
+      if(dups) document.getElementById('tp-dup').onclick = function(){ pickDup = !pickDup; renderPick(); };
       [].forEach.call(body.querySelectorAll('.tr-card:not(:disabled)'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'); setItem(m, r, givenOf(m, r) + 1); }; });
       [].forEach.call(body.querySelectorAll('.tp-minus'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'); setItem(m, r, givenOf(m, r) - 1); }; });
       var n = givenOf(); document.getElementById('tp-ok').textContent = n ? 'C\'est bon · ' + n + ' posée' + (n > 1 ? 's' : '') : 'C\'est bon';

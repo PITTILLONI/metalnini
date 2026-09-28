@@ -250,7 +250,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -263,7 +263,20 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('échange : code affiché en attendant le pote', !d6.getElementById('trade').hidden && /ABC 234/.test(d6.getElementById('trade-in').textContent));
   Object.assign(T, { status:'live', partner:'Riffeuse', get:[{m:'jinjer', r:'holo', n:1}] }); watchCb(); await sleep(50);
   check('échange : le pote arrive, sa carte s\'affiche côté « Tu reçois »', /Riffeuse/.test(d6.getElementById('trade-in').textContent) && d6.querySelectorAll('#tr-get .tr-card').length === 1);
+  d6.getElementById('trade-min').click(); await sleep(20);
+  check('réduire : l\'échange reste ouvert, une pastille pour y revenir', d6.getElementById('trade').hidden && !d6.getElementById('trade-pill').hidden && /Riffeuse/.test(d6.getElementById('trade-pill').textContent));
+  d6.querySelector('.tabbar [data-v="binder"]').click(); await sleep(20);
+  T.their_ok = true; watchCb(); await sleep(50);
+  check('réduit : la pastille suit l\'échange (le pote a validé)', /a validé/.test(d6.getElementById('trade-pill').textContent));
+  T.their_ok = false; d6.getElementById('trade-pill').click(); await sleep(20);
+  check('pastille touchée : retour dans l\'échange', !d6.getElementById('trade').hidden && d6.getElementById('trade-pill').hidden);
+  d6.getElementById('trade-min').click(); d6.getElementById('tab-corner').click(); await sleep(20); d6.getElementById('tr-host').click(); await sleep(20);
+  check('échange réduit : « Montrer mon code » y revient au lieu d\'en ouvrir un autre', !d6.getElementById('trade').hidden && /Riffeuse/.test(d6.getElementById('trade-in').textContent));
   d6.getElementById('tr-add').click(); await sleep(20);
+  check('doublons : le nombre d\'exemplaires reste visible sous la carte, même avec une étiquette', /×2/.test(d6.querySelector('#tp-body .tr-card[data-r="commune"] small').textContent));
+  d6.getElementById('tp-dup').click(); await sleep(20);
+  check('filtre « Doublons seulement »', d6.querySelectorAll('#tp-body .tr-card').length === 1 && d6.querySelector('#tp-body .tr-card').getAttribute('data-r') === 'commune');
+  d6.getElementById('tp-dup').click(); await sleep(20);
   const lastKorn = d6.querySelector('#tp-body .tr-card[data-r="rare"]');
   check('choix des cartes : en tête, la rareté que le pote n\'a pas (Korn Rare avant la Commune qu\'il a)', d6.querySelector('#tp-body .tr-card').getAttribute('data-r') === 'rare' && /Raretés que Riffeuse/.test(d6.getElementById('tp-body').textContent));
   lastKorn.click(); await sleep(50);
