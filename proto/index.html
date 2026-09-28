@@ -3144,6 +3144,29 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(state.push) ONLINE.claimPush().then(function(ok){ if(ok){ snd('reward'); toast('Notifications activées. Ton paquet t\'attend, en bonus.'); refreshDaily(); } }).catch(function(){}); };
     document.getElementById('onb-nopush').onclick = onbClose;
   }
+  // ---------- Mises à jour ----------
+  // le déploiement (workflow Pages) remplace __BUILD__ par le commit et publie version.json. L'app compare au lancement,
+  // au retour au premier plan et toutes les 10 minutes ; nouvelle version : rechargement dès que rien n'est en cours.
+  // L'adresse ?v=… contourne le cache du navigateur et du CDN ; en local (__BUILD__ intact), rien ne se passe.
+  var BUILD = '__BUILD__', updWaiting = null;
+  if(/[?&]v=/.test(location.search)) history.replaceState(null, '', location.pathname + location.search.replace(/[?&]v=[^&]*/, '').replace(/^&/, '?') + location.hash);
+  function updIdle(){ return !busyScreen() && !dealing && document.getElementById('sheet').hidden && document.getElementById('trade-pick').hidden; }
+  function updApply(){
+    if(!updWaiting) return;
+    if(!updIdle()){ setTimeout(updApply, 3000); return; }
+    toast('Nouvelle version du pit. On recharge…');
+    setTimeout(function(){ location.replace(location.pathname + '?v=' + updWaiting + location.hash); }, 1200);
+  }
+  function updCheck(){
+    if(BUILD.indexOf('__') === 0 || updWaiting || document.hidden || !window.fetch) return;
+    fetch('version.json?t=' + Date.now(), {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+      if(!d || !d.v || d.v === BUILD) return;
+      updWaiting = d.v; updApply();
+    }).catch(function(){});
+  }
+  document.addEventListener('visibilitychange', updCheck);
+  setInterval(updCheck, 6e5); setTimeout(updCheck, 4000);
+
   // ---------- Installation et notifications ----------
   var VAPID = 'BFwwKTN8wXhWSicqw57pygCIoAgPGq8yUNVFf7ct8vPJbSWwZmciOGCFguIH5Bv_HqzIylv25ULgm3dlh8g4EEo';
   var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);

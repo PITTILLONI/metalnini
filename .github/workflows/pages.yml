@@ -23,6 +23,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # version du proto : l'app compare BUILD à version.json et se recharge d'elle-même ; les manifestes suivent la version (cache contourné)
+      - name: Version du proto
+        run: |
+          V="${GITHUB_SHA::7}"
+          sed -i "s/BUILD = '__BUILD__'/BUILD = '$V'/; s#cards/manifest.js\"#cards/manifest.js?v=$V\"#; s#sounds/manifest.js\"#sounds/manifest.js?v=$V\"#" proto/index.html
+          printf '{"v":"%s"}\n' "$V" > proto/version.json
+          grep -q "BUILD = '$V'" proto/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'

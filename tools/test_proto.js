@@ -295,6 +295,22 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const st8 = JSON.parse(w7.localStorage.getItem('metalnini-proto-v1'));
   check('groupes favoris : gardés (même le dernier tapé), puis le paquet de bienvenue', st8.favBands.join() === 'Gojira,Ghost,Mastodon' && !st8.favSent && !!asked);
 
+  // 12. Mise à jour : nouvelle version publiée → rechargement, mais jamais pendant une révélation
+  const htmlV = html.replace("BUILD = '__BUILD__'", "BUILD = 'aaa1111'");
+  const dom8 = new JSDOM(htmlV, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/?v=aaa1111', beforeParse(w8){
+    w8.localStorage.setItem('metalnini-proto-v1', JSON.stringify({ onbSeen:true, owned:{}, toPlace:[] })); w8.matchMedia = () => ({ matches: false }); w8.scrollTo = () => {};
+    w8.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w8.HTMLElement.prototype.setPointerCapture = () => {}; w8.HTMLElement.prototype.scrollIntoView = () => {};
+    w8.fetch = async u => /version\.json/.test(u) ? { ok: true, json: async () => ({ v: 'bbb2222' }) } : { ok: false, json: async () => null };
+    w8.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const w8 = dom8.window, d8 = w8.document;
+  check('mise à jour : ?v= retiré de l\'adresse au chargement', w8.location.search === '');
+  d8.getElementById('auth').hidden = true; d8.getElementById('reveal').hidden = false;
+  d8.dispatchEvent(new w8.Event('visibilitychange')); await sleep(100);
+  check('mise à jour : attend la fin de la révélation', ![...d8.querySelectorAll('.toast')].some(t => /Nouvelle version/.test(t.textContent)));
+  d8.getElementById('reveal').hidden = true; await sleep(3200);
+  check('mise à jour : rechargement annoncé une fois au calme', [...d8.querySelectorAll('.toast')].some(t => /Nouvelle version/.test(t.textContent)));
+
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
   process.exit(0);
