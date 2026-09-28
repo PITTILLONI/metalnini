@@ -170,7 +170,21 @@
   .tr-empty{grid-column:1 / -1; margin:0; color:var(--muted); font-size:.9rem}
   .tr-status{margin:16px 0 10px; font:600 .86rem var(--mono); color:var(--muted)} .tr-status .ok{color:var(--gold-hi)}
   .tr-note{margin:10px 0 0; font-size:.8rem; color:var(--muted)}
-  #trade-pick .bsheet-in{max-height:86dvh; overflow-y:auto} #trade-pick .tr-cards{margin:10px 0 14px}
+  #trade-pick .bsheet-in{max-height:86dvh; overflow-y:auto} #trade-pick .tr-cards{margin:8px 0 16px} #trade-pick .eyebrow{margin:6px 0 0}
+  .tp-tabs{display:grid; grid-template-columns:1fr 1fr; gap:4px; margin:0 0 10px; padding:4px; border:1px solid var(--border); border-radius:12px; background:var(--bg)}
+  .tp-tabs button{min-height:44px; border:0; border-radius:9px; background:none; color:var(--muted); font:800 .95rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
+  .tp-tabs button[aria-selected="true"]{background:var(--surface-2); color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.45)}
+  #tp-note{color:var(--muted); margin:0 0 4px}
+  .tr-card .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .6rem/16px var(--mono); text-transform:uppercase; text-align:center}
+  .tr-card .tag.want{background:var(--gold); color:var(--ink)} .tr-card .tag.new{background:rgba(10,8,7,.88); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold)}
+  .tr-card .last{top:auto; bottom:22px}
+  .tp-item{position:relative} .tp-item.on .tr-card img{outline:2px solid var(--gold); outline-offset:1px}
+  .tp-item .gv{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--gold); color:var(--ink); font:700 .62rem/16px var(--mono); text-transform:uppercase; text-align:center; pointer-events:none}
+  .tp-minus{position:absolute; top:-8px; left:-8px; z-index:2; width:32px; height:32px; display:grid; place-items:center; padding:0; border:1px solid var(--gold); border-radius:50%; background:var(--ink); color:var(--gold-hi); cursor:pointer}
+  .tp-minus::before{content:""; position:absolute; inset:-6px}
+  .tr-link{min-height:44px; margin:-10px 0 0; padding:0; border:0; background:none; color:var(--gold-hi); font:600 .8rem var(--mono); text-decoration:underline; text-underline-offset:3px; cursor:pointer}
+  .tr-wants{display:block; width:100%; margin:10px 0 0; min-height:44px; padding:8px 12px; border:1px solid rgba(235,154,38,.5); border-radius:10px; background:rgba(235,154,38,.08); color:var(--text); font:600 .84rem var(--mono); text-align:left; cursor:pointer}
+  .tr-wants b{color:var(--gold-hi)}
 
   .goal.quest{position:relative; width:100%; display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 10px; min-height:52px; padding:9px 14px;
     background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:left; cursor:pointer; max-width:none}
@@ -1093,9 +1107,10 @@
 <div class="bsheet" id="trade-pick" hidden role="dialog" aria-modal="true" aria-labelledby="tp-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
-    <h2 id="tp-t">Tes cartes</h2>
-    <p class="pf-note">Doublons en premier. Touche une carte pour la poser dans l'échange.</p>
-    <div class="tr-cards" id="tp-grid"></div>
+    <h2 id="tp-t" class="sr-only">Cartes de l'échange</h2>
+    <div class="tp-tabs" role="tablist" aria-label="Classeurs"><button type="button" role="tab" data-t="mine" aria-selected="true">Mon classeur</button><button type="button" role="tab" data-t="theirs" aria-selected="false">Son classeur</button></div>
+    <p class="pf-note" id="tp-note"></p>
+    <div id="tp-body"></div>
     <button type="button" class="btn block" id="tp-ok">C'est bon</button>
   </div>
 </div>
@@ -1194,6 +1209,8 @@ const api = {
   async tradeConfirm(id, ok, version){ return must(await sb.rpc('trade_confirm', { p_trade: id, p_ok: ok, p_version: version })); },
   async tradeCancel(id){ must(await sb.rpc('trade_cancel', { p_trade: id })); },
   async tradeCount(){ return must(await sb.rpc('my_trade_count')); },
+  async tradePartnerCards(id){ return must(await sb.rpc('trade_partner_cards', { p_trade: id })); },
+  async tradeWant(id, m, r, on){ return must(await sb.rpc('trade_want', { p_trade: id, p_musician: m, p_rarity: r, p_on: on })); },
   tradeWatch(id, cb){
     const ch = sb.channel('trade-' + id).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'trades', filter: 'id=eq.' + id }, () => cb()).subscribe();
     return () => { sb.removeChannel(ch); };
@@ -1969,7 +1986,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(old && old.id === t.id){
       if(old.status === 'open' && t.status === 'live') snd('trade-join');
       else if(t.status === 'cancelled' && old.status !== 'cancelled') snd('trade-cancel');
-      else if(JSON.stringify(old.get) !== JSON.stringify(t.get)) snd('trade-partner');
+      else if(JSON.stringify(old.get) !== JSON.stringify(t.get) || JSON.stringify(old.their_wants) !== JSON.stringify(t.their_wants)) snd('trade-partner');
       if(t.their_ok && !old.their_ok) snd('trade-ready');
     }
     renderTrade();
@@ -2016,9 +2033,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var el = document.getElementById('tr-qr'); if(el) el.innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); })
       .catch(function(){ var el = document.getElementById('tr-qr'); if(el) el.hidden = true; });
   }
-  function trCard(x, extra){ var c = card(x.m), rr = rarity(x.r);
-    return '<button type="button" class="tr-card" data-m="' + x.m + '" data-r="' + x.r + '" aria-label="' + esc(c.who) + ', ' + rr.label + (x.n > 1 ? ', ' + x.n + ' exemplaires' : '') + (extra || '') + '">' +
-      '<img src="' + img(x.m, x.r) + '" alt="" loading="lazy">' + (x.n > 1 ? '<span class="n num">×' + x.n + '</span>' : '') + '<small style="color:' + rr.color + '">' + rr.label + '</small></button>'; }
+  // o : label (fin du libellé d'accessibilité), tag / tagCls (étiquette du haut), last (dernier exemplaire), off (désactivée)
+  function trCard(x, o){ o = o || {}; var c = card(x.m), rr = rarity(x.r);
+    return '<button type="button" class="tr-card" data-m="' + x.m + '" data-r="' + x.r + '"' + (o.off ? ' disabled' : '') + ' aria-label="' + esc(c.who) + ', ' + rr.label + (x.n > 1 ? ', ' + x.n + ' exemplaires' : '') + (o.tag ? ', ' + o.tag : '') + (o.last ? ', dernier exemplaire' : '') + (o.label || '') + '">' +
+      '<img src="' + img(x.m, x.r) + '" alt="" loading="lazy">' + (x.n > 1 ? '<span class="n num">×' + x.n + '</span>' : '') +
+      (o.tag ? '<span class="tag ' + o.tagCls + '">' + o.tag + '</span>' : '') + (o.last ? '<span class="last">Dernière</span>' : '') +
+      '<small style="color:' + rr.color + '">' + rr.label + '</small></button>'; }
   function renderTrade(){
     var t = trade, who = t && t.partner ? esc(t.partner) : 'Ton pote';
     if(tradeScan){
@@ -2046,15 +2066,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       document.getElementById('tr-end').onclick = tradeClose; tradeUnwatchAll(); return;
     }
     var give = t.give || [], get = t.get || [];
+    var wantsLeft = (t.their_wants || []).filter(function(w){ return state.owned[w.m + '|' + w.r] && !give.some(function(g){ return g.m === w.m && g.r === w.r; }); });
     tradeIn.innerHTML = '<p class="eyebrow">Échange avec</p><h2>' + who + '</h2>' +
       '<div class="tr-side"><div class="tr-h"><b>Tu donnes</b><span class="num">Cote ' + coteOf(give) + '</span></div><div class="tr-cards" id="tr-give">' +
-        give.map(function(x){ return trCard(x, ', toucher pour retirer'); }).join('') + '<button type="button" class="tr-add" id="tr-add">+ Ajouter</button></div></div>' +
-      '<div class="tr-side"><div class="tr-h"><b>Tu reçois</b><span class="num">Cote ' + coteOf(get) + '</span></div><div class="tr-cards" id="tr-get">' +
+        give.map(function(x){ return trCard(x, {label:', toucher pour retirer'}); }).join('') + '<button type="button" class="tr-add" id="tr-add">+ Ajouter</button></div>' +
+        (wantsLeft.length ? '<button type="button" class="tr-wants" id="tr-wants"><b>' + who + ' te demande ' + wantsLeft.length + ' carte' + (wantsLeft.length > 1 ? 's' : '') + '</b> · Voir</button>' : '') + '</div>' +
+      '<div class="tr-side"><div class="tr-h"><b>Tu reçois</b><span class="num">Cote ' + coteOf(get) + '</span></div><button type="button" class="tr-link" id="tr-theirs">Voir son classeur et demander</button><div class="tr-cards" id="tr-get">' +
         (get.length ? get.map(function(x){ return trCard(x); }).join('') : '<p class="tr-empty">' + who + ' n\'a rien posé pour l\'instant.</p>') + '</div></div>' +
       '<p class="tr-status">' + (t.their_ok ? '<span class="ok">' + who + ' a validé.</span>' : who + ' n\'a pas encore validé.') + (t.my_ok ? ' <span class="ok">Toi aussi.</span>' : '') + '</p>' +
       '<button type="button" class="btn block' + (t.my_ok ? ' ghost' : '') + '" id="tr-ok">' + (t.my_ok ? 'Retirer ma validation' : 'Valider l\'échange') + '</button>' +
       '<p class="tr-note">Une carte posée ou retirée, et tout le monde revalide. La cote est indicative.</p>';
-    document.getElementById('tr-add').onclick = openPick;
+    document.getElementById('tr-add').onclick = function(){ openPick('mine'); };
+    document.getElementById('tr-theirs').onclick = function(){ openPick('theirs'); };
+    if(wantsLeft.length) document.getElementById('tr-wants').onclick = function(){ openPick('mine'); };
     [].forEach.call(document.querySelectorAll('#tr-give .tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r');
       setItem(m, r, give.filter(function(x){ return x.m === m && x.r === r; })[0].n - 1); }; });
     [].forEach.call(document.querySelectorAll('#tr-get .tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r');
@@ -2064,17 +2088,64 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function setItem(m, r, n){ if(!trade) return; var up = n > givenOf(m, r);
     ONLINE.tradeSetItem(trade.id, m, r, n).then(function(t){ snd(up ? 'trade-add' : 'trade-remove'); tradeApply(t); }).catch(function(e){ snd('nope'); toast(esc(e.message)); }); }
-  function givenOf(m, r){ var x = (trade.give || []).filter(function(g){ return g.m === m && (!r || g.r === r); }); return x.reduce(function(a, g){ return a + g.n; }, 0); }
-  // choix des cartes : doublons d'abord, puis les plus rares ; « Dernière » quand la donner viderait sa case
-  function renderPick(){
-    var keys = ownedKeys().sort(function(a, b){ return (state.owned[b] > 1) - (state.owned[a] > 1) || byRarity(a, b); });
-    var el = document.getElementById('tp-grid');
-    el.innerHTML = keys.length ? keys.map(function(k){ var p = k.split('|'), left = state.owned[k] - givenOf(p[0], p[1]), last = left === 1 && total(p[0]) - givenOf(p[0]) === 1;
-      return trCard({m:p[0], r:p[1], n:left}, last ? ', dernier exemplaire' : '').replace('<button', '<button' + (left < 1 ? ' disabled' : '')).replace('</small>', '</small>' + (last ? '<span class="last">Dernière</span>' : '')); }).join('')
-      : '<p class="tr-empty">Ouvre d\'abord un paquet : ton classeur est vide.</p>';
-    [].forEach.call(el.querySelectorAll('.tr-card:not(:disabled)'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'); setItem(m, r, givenOf(m, r) + 1); }; });
+  function givenOf(m, r){ var x = (trade.give || []).filter(function(g){ return !m || (g.m === m && (!r || g.r === r)); }); return x.reduce(function(a, g){ return a + g.n; }, 0); }
+  // feuille des cartes : « Mon classeur » trié par intérêt pour le pote (demandées, nouvelles pour lui, rareté qu'il n'a pas, le reste),
+  // « Son classeur » trié par intérêt pour moi ; toucher une de ses cartes la demande (elle remonte en tête chez lui)
+  var pickTab = 'mine', theirCards = null;
+  function wanted(list, k){ return (list || []).some(function(w){ return w.m + '|' + w.r === k; }); }
+  function pickSections(groups){
+    return groups.filter(function(g){ return g.keys.length; }).map(function(g){
+      return '<p class="eyebrow">' + g.title + '</p><div class="tr-cards">' + g.keys.map(g.card).join('') + '</div>'; }).join('');
   }
-  function openPick(){ renderPick(); pickEl.hidden = false; }
+  function renderPick(){
+    var t = trade; if(!t) return;
+    var who = esc(t.partner || 'ton pote'), body = document.getElementById('tp-body'), note = document.getElementById('tp-note');
+    [].forEach.call(pickEl.querySelectorAll('.tp-tabs button'), function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-t') === pickTab)); });
+    var dupFirst = function(a, b){ return (state.owned[b] > 1) - (state.owned[a] > 1) || byRarity(a, b); };
+    if(pickTab === 'mine'){
+      note.innerHTML = '<b>Touche</b> une carte pour la poser, <b>touche encore</b> pour ajouter un doublon, <b>−</b> pour en retirer. En tête : ce qui ferait plaisir à ' + who + '.';
+      var keys = ownedKeys().sort(dupFirst), tc = theirCards;
+      var has = function(k){ return tc && tc[k]; }, hasMus = function(m){ return tc && Object.keys(tc).some(function(k){ return k.split('|')[0] === m; }); };
+      var g = {want:[], nw:[], rar:[], rest:[]};
+      keys.forEach(function(k){ var m = k.split('|')[0];
+        if(wanted(t.their_wants, k)) g.want.push(k); else if(tc && !hasMus(m)) g.nw.push(k); else if(tc && !has(k)) g.rar.push(k); else g.rest.push(k); });
+      var mine = function(tag, cls){ return function(k){ var p = k.split('|'), gv = givenOf(p[0], p[1]), left = state.owned[k] - gv, c = card(p[0]);
+        return '<div class="tp-item' + (gv ? ' on' : '') + '">' + trCard({m:p[0], r:p[1], n:left}, {tag:tag, tagCls:cls, off:left < 1, last:left === 1 && total(p[0]) - givenOf(p[0]) === 1,
+            label:gv ? ', ' + gv + ' posée' + (gv > 1 ? 's' : '') + (left ? ', toucher pour en poser une de plus' : '') : ', toucher pour la poser'}) +
+          (gv ? '<span class="gv num">Posée' + (gv > 1 ? ' ×' + gv : '') + '</span><button type="button" class="tp-minus" data-m="' + p[0] + '" data-r="' + p[1] + '" aria-label="Retirer un exemplaire de ' + esc(c.who) + ' de l\'échange"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12l14 0"/></svg></button>' : '') + '</div>'; }; };
+      body.innerHTML = keys.length ? pickSections([
+        {title:'Demandées par ' + who, keys:g.want, card:mine('Demandée', 'want')},
+        {title:'Nouvelles pour ' + who, keys:g.nw, card:mine('Nouvelle', 'new')},
+        {title:'Raretés que ' + who + ' n\'a pas', keys:g.rar, card:mine()},
+        {title:tc ? who + ' les a déjà' : 'Tes cartes', keys:g.rest, card:mine()}])
+        : '<p class="tr-empty">Ouvre d\'abord un paquet : ton classeur est vide.</p>';
+      [].forEach.call(body.querySelectorAll('.tr-card:not(:disabled)'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'); setItem(m, r, givenOf(m, r) + 1); }; });
+      [].forEach.call(body.querySelectorAll('.tp-minus'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'); setItem(m, r, givenOf(m, r) - 1); }; });
+      var n = givenOf(); document.getElementById('tp-ok').textContent = n ? 'C\'est bon · ' + n + ' posée' + (n > 1 ? 's' : '') : 'C\'est bon';
+      return;
+    }
+    note.innerHTML = '<b>Touche</b> une carte pour la demander, <b>touche encore</b> pour annuler. Elle remonte en tête chez ' + who + ', qui décide de la poser.';
+    document.getElementById('tp-ok').textContent = 'C\'est bon';
+    if(!theirCards){ body.innerHTML = '<p class="tr-empty">On ouvre son classeur…</p>'; return; }
+    var tk = Object.keys(theirCards).filter(function(k){ return card(k.split('|')[0]); }).sort(byRarity), h = {nw:[], rar:[], rest:[]};
+    tk.forEach(function(k){ var m = k.split('|')[0]; if(!best(m)) h.nw.push(k); else if(!state.owned[k]) h.rar.push(k); else h.rest.push(k); });
+    var theirs = function(tagNew){ return function(k){ var p = k.split('|'), on = wanted(t.my_wants, k);
+      return trCard({m:p[0], r:p[1], n:theirCards[k]}, on ? {tag:'Demandée', tagCls:'want', label:', toucher pour annuler la demande'} : tagNew ? {tag:'Nouvelle', tagCls:'new', label:', toucher pour la demander'} : {label:', toucher pour la demander'}); }; };
+    body.innerHTML = tk.length ? pickSections([
+      {title:'Nouvelles pour toi', keys:h.nw, card:theirs(true)},
+      {title:'Raretés qui te manquent', keys:h.rar, card:theirs()},
+      {title:'Tu les as déjà', keys:h.rest, card:theirs()}])
+      : '<p class="tr-empty">' + who + ' n\'a encore aucune carte.</p>';
+    [].forEach.call(body.querySelectorAll('.tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'), on = wanted(trade.my_wants, m + '|' + r);
+      ONLINE.tradeWant(trade.id, m, r, !on).then(function(nt){ snd(on ? 'trade-remove' : 'select'); tradeApply(nt); }).catch(function(e){ snd('nope'); toast(esc(e.message)); }); }; });
+  }
+  function openPick(tab){
+    pickTab = tab || 'mine'; theirCards = null; pickEl.hidden = false; renderPick();
+    var id = trade.id;
+    ONLINE.tradePartnerCards(id).then(function(rows){ if(!trade || trade.id !== id) return; theirCards = {}; rows.forEach(function(r){ theirCards[r.musician_id + '|' + r.rarity] = r.copies; }); renderPick(); })
+      .catch(function(){ theirCards = {}; renderPick(); });
+  }
+  [].forEach.call(pickEl.querySelectorAll('.tp-tabs button'), function(b){ b.addEventListener('click', function(){ pickTab = b.getAttribute('data-t'); renderPick(); pickEl.querySelector('.bsheet-in').scrollTop = 0; }); });
   document.getElementById('tp-ok').addEventListener('click', function(){ pickEl.hidden = true; });
   pickEl.addEventListener('click', function(e){ if(e.target === pickEl) pickEl.hidden = true; });
   // valider : alerte si une case se vide (dernier exemplaire donné) ou si un classeur complet ne l'est plus

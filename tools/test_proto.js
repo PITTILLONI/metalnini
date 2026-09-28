@@ -246,12 +246,14 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await sleep(150);
   const w6 = dom6.window, d6 = w6.document;
   let inv = [{musician_id:'korn', rarity:'rare', copies:1, placed:true}, {musician_id:'korn', rarity:'commune', copies:2, placed:true}], watchCb = null;
-  const T = { id:'t1', code:'ABC234', status:'open', version:0, host:true, partner:null, left:false, my_ok:false, their_ok:false, give:[], get:[], bonus:null };
+  const T = { id:'t1', code:'ABC234', status:'open', version:0, host:true, partner:null, left:false, my_ok:false, their_ok:false, give:[], get:[], my_wants:[], their_wants:[], bonus:null };
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
     async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
+    async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
+    async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
     async tradeSetItem(id, m, r, n){ T.give = T.give.filter(x => !(x.m === m && x.r === r)); if(n) T.give.push({m, r, n}); T.version++; T.my_ok = T.their_ok = false; return snap(); },
     async tradeConfirm(id, ok, v){ if(v !== T.version) throw new Error('changé'); T.my_ok = ok; if(T.my_ok && T.their_ok){ T.status = 'done'; T.bonus = {m:'spiritbox', r:'commune'};
       inv = [{musician_id:'korn', rarity:'commune', copies:2, placed:true}, {musician_id:'jinjer', rarity:'holo', copies:1, placed:false}, {musician_id:'spiritbox', rarity:'commune', copies:1, placed:false}]; } return snap(); } };
@@ -262,12 +264,20 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   Object.assign(T, { status:'live', partner:'Riffeuse', get:[{m:'jinjer', r:'holo', n:1}] }); watchCb(); await sleep(50);
   check('échange : le pote arrive, sa carte s\'affiche côté « Tu reçois »', /Riffeuse/.test(d6.getElementById('trade-in').textContent) && d6.querySelectorAll('#tr-get .tr-card').length === 1);
   d6.getElementById('tr-add').click(); await sleep(20);
-  const lastKorn = d6.querySelector('#tp-grid .tr-card[data-r="rare"]');
-  check('choix des cartes : doublons en premier', d6.querySelector('#tp-grid .tr-card').getAttribute('data-r') === 'commune');
+  const lastKorn = d6.querySelector('#tp-body .tr-card[data-r="rare"]');
+  check('choix des cartes : en tête, la rareté que le pote n\'a pas (Korn Rare avant la Commune qu\'il a)', d6.querySelector('#tp-body .tr-card').getAttribute('data-r') === 'rare' && /Raretés que Riffeuse/.test(d6.getElementById('tp-body').textContent));
   lastKorn.click(); await sleep(50);
   check('carte posée : elle passe côté « Tu donnes »', d6.querySelectorAll('#tr-give .tr-card').length === 1 && T.version === 1);
-  d6.querySelector('#tp-grid .tr-card[data-r="commune"]').click(); await sleep(50); d6.querySelector('#tp-grid .tr-card[data-r="commune"]').click(); await sleep(50);
-  check('toutes les Korn posées : « Dernière » signalé sur la dernière', !!d6.querySelector('#tp-grid .last') || d6.querySelectorAll('#tp-grid .tr-card:disabled').length === 2);
+  d6.querySelector('#tp-body .tr-card[data-r="commune"]').click(); await sleep(50); d6.querySelector('#tp-body .tr-card[data-r="commune"]').click(); await sleep(50);
+  check('toutes les Korn posées : « Dernière » signalé sur la dernière', !!d6.querySelector('#tp-body .last') || d6.querySelectorAll('#tp-body .tr-card:disabled').length === 2);
+  check('carte posée : marquée « Posée » avec un bouton − ; total dans le bouton', !!d6.querySelector('#tp-body .tp-item.on .tp-minus') && /2 posées|3 posées/.test(d6.getElementById('tp-ok').textContent));
+  check('mon classeur : trié selon le classeur du pote', /Riffeuse les a déjà|Raretés que Riffeuse|Nouvelles pour Riffeuse/.test(d6.getElementById('tp-body').textContent));
+  d6.querySelector('.tp-tabs [data-t="theirs"]').click(); await sleep(30);
+  check('son classeur : celles qui me manquent en tête', /Nouvelles pour toi/.test(d6.getElementById('tp-body').textContent) && d6.querySelector('#tp-body .tr-card').getAttribute('data-m') === 'jinjer');
+  d6.querySelector('#tp-body .tr-card[data-m="jinjer"]').click(); await sleep(50);
+  check('demander une de ses cartes : étiquette « Demandée »', T.my_wants.length === 1 && /Demandée/.test(d6.querySelector('#tp-body .tr-card[data-m="jinjer"]').textContent));
+  T.their_wants = [{m:'korn', r:'rare'}]; watchCb(); await sleep(50);
+  d6.querySelector('.tp-tabs [data-t="mine"]').click(); await sleep(20);
   d6.getElementById('tp-ok').click(); d6.getElementById('tr-ok').click(); await sleep(30);
   check('valider en donnant son dernier exemplaire : alerte avant', !d6.getElementById('confirm').hidden && /dernier/i.test(d6.getElementById('confirm-t').textContent));
   d6.getElementById('confirm-no').click();
