@@ -4,174 +4,303 @@
   "famille": "Musique",
   "moment": "Fond sonore de l'app (accueil, classeurs, profil). Baisse pendant les révélations, se coupe pendant les extraits audio.",
   "duree": "60 à 120 s, bouclable sans couture",
-  "intention": "Instrumental rock / metal accessible, énergie moyenne, pas de chant. Doit tenir 20 minutes sans lasser : peu de mélodie envahissante, un groove."
+  "intention": "Instrumental rock / metal accessible, énergie moyenne, pas de chant. Doit tenir 20 minutes sans lasser : peu de mélodie envahissante, un groove.",
+  "priorite": "P1"
  },
  {
   "id": "intro",
   "famille": "Musique",
   "moment": "Accroche de l'onboarding, au premier « Ouvrir mon premier paquet ».",
   "duree": "1 à 2 s",
-  "intention": "Signature sonore de Metalnini : un power chord et un larsen maîtrisé. Donne envie."
+  "intention": "Signature sonore de Metalnini : un power chord et un larsen maîtrisé. Donne envie.",
+  "priorite": "P2"
  },
  {
   "id": "reveal-commune",
   "famille": "Révélation",
   "moment": "Une carte Commune se retourne.",
   "duree": "0,3 à 0,6 s",
-  "intention": "Sec, un peu drôle, sans déception : une corde étouffée, un « tchak »."
+  "intention": "Sec, un peu drôle, sans déception : une corde étouffée, un « tchak ».",
+  "priorite": "P1"
  },
  {
   "id": "reveal-rare",
   "famille": "Révélation",
   "moment": "Une carte Rare se retourne.",
   "duree": "0,8 à 1,2 s",
-  "intention": "Petit riff clair, bleu, satisfaisant."
+  "intention": "Petit riff clair, bleu, satisfaisant.",
+  "priorite": "P1"
  },
  {
   "id": "reveal-holo",
   "famille": "Révélation",
   "moment": "Une carte Holo se retourne.",
   "duree": "1 à 1,5 s",
-  "intention": "Brillant, irisé : chorus / shimmer sur un riff."
+  "intention": "Brillant, irisé : chorus / shimmer sur un riff.",
+  "priorite": "P1"
  },
  {
   "id": "reveal-signature",
   "famille": "Révélation",
   "moment": "Une carte Signature se retourne.",
   "duree": "1,5 à 2,5 s",
-  "intention": "Or : power chord plein, cymbale, un « Yeah! » ou un chœur court."
+  "intention": "Or : power chord plein, cymbale, un « Yeah! » ou un chœur court.",
+  "priorite": "P1"
  },
  {
   "id": "reveal-legendaire",
   "famille": "Révélation",
   "moment": "Une carte Légendaire se retourne.",
   "duree": "2,5 à 4 s",
-  "intention": "L'explosion : gros riff, cri, impact, feu. Le son le plus fort et le plus rare du jeu."
+  "intention": "L'explosion : gros riff, cri, impact, feu. Le son le plus fort et le plus rare du jeu.",
+  "priorite": "P1"
  },
  {
   "id": "heartbeat",
   "famille": "Suspense",
   "moment": "Paquet qui contient une Légendaire : trois battements avant l'ouverture.",
   "duree": "0,4 s (un battement, joué 3 fois)",
-  "intention": "Grosse caisse sourde, battement de cœur."
+  "intention": "Grosse caisse sourde, battement de cœur.",
+  "priorite": "P2"
  },
  {
   "id": "rumble",
   "famille": "Suspense",
   "moment": "Juste avant de retourner une Signature ou une Légendaire.",
   "duree": "0,6 à 2 s",
-  "intention": "Montée : grondement, feedback qui enfle, jusqu'au retournement."
+  "intention": "Montée : grondement, feedback qui enfle, jusqu'au retournement.",
+  "priorite": "P2"
  },
  {
   "id": "tear",
   "famille": "Jeu",
   "moment": "Le sachet se déchire.",
   "duree": "0,4 à 0,7 s",
-  "intention": "Déchirure de papier alu, nette et satisfaisante (le son qu'on entend le plus : pas fatigant)."
+  "intention": "Déchirure de papier alu, nette et satisfaisante (le son qu'on entend le plus : pas fatigant).",
+  "priorite": "P1"
  },
  {
   "id": "flip",
   "famille": "Jeu",
   "moment": "Une carte se retourne (avant le jingle de rareté).",
   "duree": "0,15 à 0,25 s",
-  "intention": "Swish de carte, discret."
+  "intention": "Swish de carte, discret.",
+  "priorite": "P1"
  },
  {
   "id": "deal",
   "famille": "Jeu",
   "moment": "« Tout ranger d'un coup » : chaque carte distribuée.",
   "duree": "0,1 à 0,15 s",
-  "intention": "Carte qui glisse, façon croupier. Joué en rafale : très court, sans attaque agressive."
+  "intention": "Carte qui glisse, façon croupier. Joué en rafale : très court, sans attaque agressive.",
+  "priorite": "P2"
  },
  {
   "id": "place",
   "famille": "Jeu",
   "moment": "Une carte se pose dans sa case du classeur.",
   "duree": "0,15 à 0,3 s",
-  "intention": "« Clac » feutré d'une carte qui trouve sa place."
+  "intention": "« Clac » feutré d'une carte qui trouve sa place.",
+  "priorite": "P1"
  },
  {
   "id": "place-new",
   "famille": "Jeu",
   "moment": "Rangement à l'unité d'une nouvelle carte.",
   "duree": "0,3 à 0,6 s",
-  "intention": "Comme place, avec une petite note de victoire."
+  "intention": "Comme place, avec une petite note de victoire.",
+  "priorite": "P2"
  },
  {
   "id": "duplicate",
   "famille": "Jeu",
   "moment": "Un doublon rejoint la pile (+1).",
   "duree": "0,2 à 0,4 s",
-  "intention": "Pièce / jeton qui s'empile, léger."
+  "intention": "Pièce / jeton qui s'empile, léger.",
+  "priorite": "P1"
  },
  {
   "id": "upgrade",
   "famille": "Jeu",
   "moment": "Une carte « monte en grade » dans le classeur.",
   "duree": "0,6 à 1 s",
-  "intention": "Riser qui monte et claque en haut."
+  "intention": "Riser qui monte et claque en haut.",
+  "priorite": "P2"
  },
  {
   "id": "binder-complete",
   "famille": "Récompense",
   "moment": "Un classeur est complété.",
   "duree": "2 à 3 s",
-  "intention": "Fanfare rock : le patch cousu sur la veste. Fierté."
+  "intention": "Fanfare rock : le patch cousu sur la veste. Fierté.",
+  "priorite": "P1"
  },
  {
   "id": "mastery",
   "famille": "Récompense",
   "moment": "Maîtrise d'un musicien (5 raretés réunies).",
   "duree": "1,5 à 2 s",
-  "intention": "Chœur, choir hit, épique."
+  "intention": "Chœur, choir hit, épique.",
+  "priorite": "P2"
  },
  {
   "id": "fusion",
   "famille": "Récompense",
   "moment": "Transformation de doublons en rareté supérieure.",
   "duree": "1 à 1,5 s",
-  "intention": "Forge, métal qui se fond puis un éclat."
+  "intention": "Forge, métal qui se fond puis un éclat.",
+  "priorite": "P1"
  },
  {
   "id": "tear-card",
   "famille": "Jeu",
   "moment": "Une carte est déchirée (la détruire).",
   "duree": "0,5 à 0,8 s",
-  "intention": "Carton épais qui se déchire, un peu dramatique."
+  "intention": "Carton épais qui se déchire, un peu dramatique.",
+  "priorite": "P2"
  },
  {
   "id": "gift",
   "famille": "Récompense",
   "moment": "Cadeau du Grand Architecte (carte ou paquet offert).",
   "duree": "1 à 1,5 s",
-  "intention": "Mystique : cloche, orgue lointain, un peu occulte."
+  "intention": "Mystique : cloche, orgue lointain, un peu occulte.",
+  "priorite": "P1"
  },
  {
   "id": "reward",
   "famille": "Récompense",
   "moment": "Mini offert (installation, notifications).",
   "duree": "0,6 à 1 s",
-  "intention": "Petit jingle joyeux, « loot »."
+  "intention": "Petit jingle joyeux, « loot ».",
+  "priorite": "P2"
  },
  {
   "id": "tap",
   "famille": "Interface",
   "moment": "Toucher un bouton.",
   "duree": "0,03 à 0,08 s",
-  "intention": "Clic très discret (joué souvent, volume bas) : médiator sur une corde étouffée."
+  "intention": "Clic très discret (joué souvent, volume bas) : médiator sur une corde étouffée.",
+  "priorite": "P1"
  },
  {
   "id": "select",
   "famille": "Interface",
   "moment": "Choisir une option (format, univers, carte de vitrine).",
   "duree": "0,08 à 0,15 s",
-  "intention": "Un cran plus marqué que tap."
+  "intention": "Un cran plus marqué que tap.",
+  "priorite": "P2"
  },
  {
   "id": "notify",
   "famille": "Interface",
   "moment": "Une notification apparaît en haut de l'écran.",
   "duree": "0,2 à 0,4 s",
-  "intention": "Deux notes, amical."
+  "intention": "Deux notes, amical.",
+  "priorite": "P2"
+ },
+ {
+  "id": "trade-scan",
+  "famille": "Échange",
+  "moment": "Le QR code de ton pote est reconnu par la caméra.",
+  "duree": "0,2 à 0,4 s",
+  "intention": "Confirmation nette et courte : un médiator qui gratte une corde, ou un bip d'ampli. Doit rassurer tout de suite.",
+  "priorite": "P1"
+ },
+ {
+  "id": "trade-code",
+  "famille": "Échange",
+  "moment": "Ton code d'échange s'affiche, en attente de ton pote.",
+  "duree": "0,5 à 1 s",
+  "intention": "Un ampli qu'on allume : souffle, petit « ploc » de lampe. Discret, il annonce l'attente.",
+  "priorite": "P2"
+ },
+ {
+  "id": "trade-join",
+  "famille": "Échange",
+  "moment": "Ton pote entre dans l'échange (vu des deux côtés).",
+  "duree": "0,6 à 1 s",
+  "intention": "Arrivée d'un complice : deux notes qui se répondent, comme deux guitares qui s'accordent.",
+  "priorite": "P1"
+ },
+ {
+  "id": "trade-add",
+  "famille": "Échange",
+  "moment": "Tu poses une carte dans l'échange.",
+  "duree": "0,2 à 0,4 s",
+  "intention": "Carte posée sur la table : « clac » de carton, légèrement plus appuyé que place.",
+  "priorite": "P1"
+ },
+ {
+  "id": "trade-remove",
+  "famille": "Échange",
+  "moment": "Tu retires une carte de l'échange.",
+  "duree": "0,2 à 0,3 s",
+  "intention": "Le même geste à l'envers : glissé court, plus léger que trade-add.",
+  "priorite": "P2"
+ },
+ {
+  "id": "trade-partner",
+  "famille": "Échange",
+  "moment": "Ton pote pose ou retire une carte (ton écran change sans que tu touches).",
+  "duree": "0,3 à 0,5 s",
+  "intention": "Attire l'œil sans agresser : petite cloche sèche ou harmonique, différente de trade-add.",
+  "priorite": "P1"
+ },
+ {
+  "id": "trade-ready",
+  "famille": "Échange",
+  "moment": "Ton pote a validé l'échange.",
+  "duree": "0,5 à 0,8 s",
+  "intention": "Tension positive : accord suspendu qui appelle la résolution (ta validation).",
+  "priorite": "P1"
+ },
+ {
+  "id": "trade-done",
+  "famille": "Échange",
+  "moment": "Les deux ont validé : échange conclu, juste avant la révélation des cartes reçues.",
+  "duree": "1,5 à 2,5 s",
+  "intention": "Le « tope là » du metal : deux guitares à l'unisson, impact, chœur de foule court. Moment fort, un cran sous la Signature.",
+  "priorite": "P1"
+ },
+ {
+  "id": "trade-cancel",
+  "famille": "Échange",
+  "moment": "Échange annulé, ou ton pote a quitté la session.",
+  "duree": "0,5 à 0,8 s",
+  "intention": "Retombée sans drame : corde qu'on relâche, larsen coupé net.",
+  "priorite": "P2"
+ },
+ {
+  "id": "meet-bonus",
+  "famille": "Récompense",
+  "moment": "Carte bonus de première rencontre avec un fan (après un échange conclu).",
+  "duree": "1 à 1,5 s",
+  "intention": "Cadeau complice, plus chaleureux que gift : riff court et joyeux, un « hey ! » de foule.",
+  "priorite": "P1"
+ },
+ {
+  "id": "title",
+  "famille": "Récompense",
+  "moment": "Nouveau titre débloqué (Metal Corner, Roadie…).",
+  "duree": "1 à 2 s",
+  "intention": "Fanfare metal courte : roulement de toms et power chord, comme une entrée sur scène.",
+  "priorite": "P2"
+ },
+ {
+  "id": "zoom",
+  "famille": "Interface",
+  "moment": "Une carte s'ouvre en plein écran.",
+  "duree": "0,2 à 0,4 s",
+  "intention": "Souffle court et ample, comme une carte qu'on lève à la lumière.",
+  "priorite": "P2"
+ },
+ {
+  "id": "nope",
+  "famille": "Interface",
+  "moment": "Action refusée (code inconnu, carte plus disponible, trop de cartes).",
+  "duree": "0,2 à 0,4 s",
+  "intention": "Non, gentiment : deux notes descendantes étouffées. Jamais un buzzer agressif.",
+  "priorite": "P2"
  }
 ]

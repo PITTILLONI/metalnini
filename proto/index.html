@@ -1642,7 +1642,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('sh-grid').innerHTML = ownedKeys().sort(byRarity).map(function(k){ var n = shSel.indexOf(k), p = k.split('|');
       return '<button type="button" data-k="' + esc(k) + '" aria-pressed="' + (n !== -1) + '" aria-label="' + esc(card(p[0]).who + ', ' + rarity(p[1]).label) + '"><img src="' + kImg(k) + '" alt="" loading="lazy">' + (n !== -1 ? '<b>' + (n + 1) + '</b>' : '') + '</button>'; }).join('') || '<p class="pub-empty">Ouvre un paquet d\'abord.</p>';
     [].forEach.call(document.querySelectorAll('#sh-grid button'), function(b){ b.onclick = function(){ var k = b.getAttribute('data-k'), n = shSel.indexOf(k);
-      if(n !== -1) shSel.splice(n, 1); else if(shSel.length < 3) shSel.push(k); else { toast('Trois cartes max. Retire-en une d\'abord.'); return; } paintShowSheet(); }; });
+      if(n !== -1) shSel.splice(n, 1); else if(shSel.length < 3){ shSel.push(k); snd('select'); } else { toast('Trois cartes max. Retire-en une d\'abord.'); return; } paintShowSheet(); }; });
   }
   document.getElementById('pf-show-edit').addEventListener('click', function(){ shSel = showcase(); paintShowSheet(); showSheet.hidden = false; });
   document.getElementById('sh-save').addEventListener('click', function(){ state.showcase = shSel.slice(); save(); paintShowcase(); showSheet.hidden = true; toast('Vitrine mise à jour.'); });
@@ -1803,7 +1803,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function picks(){ return (state.picks || []).filter(function(k){ return PACKS.some(function(p){ return p.k === k; }); }).slice(0, 1); }
   function togglePick(k){
     var list = picks()[0] === k ? [] : [k];
-    state.picks = list; save(); paintCarousel(); buzz([12]);
+    state.picks = list; save(); paintCarousel(); buzz([12]); snd('select');
   }
   // carrousel : visuels MINI en mode petit, badges sur les paquets choisis (la sélection se fait et se défait dans le carrousel)
   function paintCarousel(){
@@ -1837,7 +1837,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var k = b.getAttribute('data-f');
       b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
       b.disabled = locked;
-      b.onclick = function(){ if(b.disabled) return; state.packFormat = k; save(); renderFormats(); paintCarousel(); centerCarousel(); };
+      b.onclick = function(){ if(b.disabled) return; snd('select'); state.packFormat = k; save(); renderFormats(); paintCarousel(); centerCarousel(); };
     });
     // visuel du sachet : version « MINI » pour les petits paquets quand elle existe
     var pk = document.getElementById('pack'), mini = f === 'small' && (window.METALNINI_MINIS || {})[state.packType];
@@ -1958,20 +1958,30 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return m ? (m[1] + (m[2] || '')).toUpperCase() : null; }
   function needOnline(){ if(ONLINE) return true; toast('Connecte-toi pour échanger : il faut un compte des deux côtés.'); return false; }
   function coteOf(list){ return list.reduce(function(a, x){ return a + COTE[x.r] * x.n; }, 0); }
-  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); }
+  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); snd(t.status === 'open' ? 'trade-code' : 'trade-join'); }
   function tradeWatch(){ tradeUnwatchAll(); tradeUnwatch = ONLINE.tradeWatch(trade.id, tradeRefresh); tradePoll = setInterval(tradeRefresh, 4000); }
   function tradeUnwatchAll(){ if(tradeUnwatch) tradeUnwatch(); tradeUnwatch = null; clearInterval(tradePoll); tradePoll = null; }
   function tradeRefresh(){ if(!trade || !ONLINE) return; var id = trade.id;
     ONLINE.tradeState(id).then(function(t){ if(trade && trade.id === id) tradeApply(t); }).catch(function(){}); }
-  function tradeApply(t){ var was = trade && trade.status; trade = t; if(t.status === 'done'){ if(was !== 'done') tradeDone(t); return; } renderTrade(); }
+  function tradeApply(t){
+    var old = trade; trade = t;
+    if(t.status === 'done'){ if(!old || old.status !== 'done') tradeDone(t); return; }
+    if(old && old.id === t.id){
+      if(old.status === 'open' && t.status === 'live') snd('trade-join');
+      else if(t.status === 'cancelled' && old.status !== 'cancelled') snd('trade-cancel');
+      else if(JSON.stringify(old.get) !== JSON.stringify(t.get)) snd('trade-partner');
+      if(t.their_ok && !old.their_ok) snd('trade-ready');
+    }
+    renderTrade();
+  }
   function tradeClose(){ tradeUnwatchAll(); stopScan(); trade = null; tradeScan = false; tradeEl.hidden = true; pickEl.hidden = true; }
   async function tradeHost(){ if(!needOnline() || tradeBusy) return; tradeBusy = true;
-    try{ tradeShow(await ONLINE.tradeCreate()); }catch(e){ toast(esc(e.message)); } tradeBusy = false; }
+    try{ tradeShow(await ONLINE.tradeCreate()); }catch(e){ snd('nope'); toast(esc(e.message)); } tradeBusy = false; }
   async function tradeJoin(code){
     if(!needOnline() || tradeBusy) return; code = codeFrom(code || '');
     if(!code){ toast('Un code, c\'est 6 caractères.'); return; }
     tradeBusy = true; stopScan();
-    try{ tradeShow(await ONLINE.tradeJoin(code)); }catch(e){ toast(esc(e.message)); if(tradeScan) renderTrade(); }
+    try{ tradeShow(await ONLINE.tradeJoin(code)); }catch(e){ snd('nope'); toast(esc(e.message)); if(tradeScan) renderTrade(); }
     tradeBusy = false;
   }
   function openScan(){ if(!needOnline()) return; trade = null; tradeScan = true; tradeEl.hidden = false; renderTrade(); }
@@ -1993,7 +2003,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           else { var k = Math.min(1, 640 / v.videoWidth); cv.width = v.videoWidth * k; cv.height = v.videoHeight * k; cx.drawImage(v, 0, 0, cv.width, cv.height);
             var d = cx.getImageData(0, 0, cv.width, cv.height), q = jsqr(d.data, d.width, d.height); txt = q && q.data; }
           var code = txt && codeFrom(txt);
-          if(code){ buzz(30); tradeJoin(code); return; }
+          if(code){ buzz(30); snd('trade-scan'); tradeJoin(code); return; }
         }
         raf = requestAnimationFrame(tick);
       };
@@ -2052,7 +2062,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('tr-ok').onclick = tradeConfirm;
     if(!pickEl.hidden) renderPick();
   }
-  function setItem(m, r, n){ if(!trade) return; ONLINE.tradeSetItem(trade.id, m, r, n).then(tradeApply).catch(function(e){ toast(esc(e.message)); }); }
+  function setItem(m, r, n){ if(!trade) return; var up = n > givenOf(m, r);
+    ONLINE.tradeSetItem(trade.id, m, r, n).then(function(t){ snd(up ? 'trade-add' : 'trade-remove'); tradeApply(t); }).catch(function(e){ snd('nope'); toast(esc(e.message)); }); }
   function givenOf(m, r){ var x = (trade.give || []).filter(function(g){ return g.m === m && (!r || g.r === r); }); return x.reduce(function(a, g){ return a + g.n; }, 0); }
   // choix des cartes : doublons d'abord, puis les plus rares ; « Dernière » quand la donner viderait sa case
   function renderPick(){
@@ -2069,7 +2080,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // valider : alerte si une case se vide (dernier exemplaire donné) ou si un classeur complet ne l'est plus
   function tradeConfirm(){
     var t = trade; if(!t) return;
-    var send = function(ok){ ONLINE.tradeConfirm(t.id, ok, t.version).then(tradeApply).catch(function(e){ toast(esc(e.message)); tradeRefresh(); }); };
+    var send = function(ok){ ONLINE.tradeConfirm(t.id, ok, t.version).then(tradeApply).catch(function(e){ snd('nope'); toast(esc(e.message)); tradeRefresh(); }); };
     if(t.my_ok){ send(false); return; }
     if(!t.give.length && !t.get.length){ toast('Pose au moins une carte, sinon c\'est juste un câlin.'); return; }
     var empty = t.give.map(function(x){ return x.m; }).filter(function(id, i, a){ return a.indexOf(id) === i && total(id) - givenOf(id) <= 0 && !t.get.some(function(g){ return g.m === id; }); });
@@ -2085,15 +2096,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     tradeClose();
     try{ applyInventory(await ONLINE.inventory()); }catch(e){}
     ONLINE.tradeCount().then(function(n){ var first = !state.trades && n > 0; state.trades = n; save(); renderCorner();
-      if(first) setTimeout(function(){ toast('<b>Titre débloqué</b> · Metal Corner'); }, 2400); }).catch(function(){});
+      if(first) setTimeout(function(){ snd('title'); toast('<b>Titre débloqué</b> · Metal Corner'); }, 2400); }).catch(function(){});
     renderStats(); renderBinder();
     var got = (t.get || []).concat(t.bonus ? [t.bonus] : []).filter(function(x){ return card(x.m); });
-    if(!got.length){ toast('Échange conclu. Tes cartes sont parties chez ' + esc(t.partner) + '.'); return; }
+    if(!got.length){ snd('trade-done'); toast('Échange conclu. Tes cartes sont parties chez ' + esc(t.partner) + '.'); return; }
     current = got.map(function(x){ var isNew = (state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1; if(isNew) state.fresh[x.m] = true; return {c:card(x.m), r:x.r, isNew:isNew}; });
-    save(); idx = 0; seenUpTo = -1; snd('reward');
+    save(); idx = 0; seenUpTo = -1; snd('trade-done');
     revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
     setTimeout(function(){ document.getElementById('counter').textContent = 'Échange avec ' + t.partner; }, 0);
-    if(t.bonus) setTimeout(function(){ toast('<b>Première rencontre</b> avec ' + esc(t.partner) + ' : une carte bonus en plus.'); }, 900);
+    if(t.bonus) setTimeout(function(){ snd('meet-bonus'); toast('<b>Première rencontre</b> avec ' + esc(t.partner) + ' : une carte bonus en plus.'); }, 900);
   }
   document.getElementById('tr-host').addEventListener('click', tradeHost);
   document.getElementById('tr-scan').addEventListener('click', openScan);
@@ -2979,7 +2990,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   sheet.addEventListener('click', function(e){ if(e.target === sheet) closeDetail(); });
   // plein écran depuis la fiche : toucher la carte ou l'icône ; un toucher n'importe où, la croix ou Échap referment
   var zoomEl = document.getElementById('zoom');
-  function openZoom(src, alt){ var im = document.getElementById('zoom-img'); im.src = src; im.alt = alt; zoomEl.hidden = false; document.getElementById('zoom-x').focus(); }
+  function openZoom(src, alt){ snd('zoom'); var im = document.getElementById('zoom-img'); im.src = src; im.alt = alt; zoomEl.hidden = false; document.getElementById('zoom-x').focus(); }
   function closeZoom(){ zoomEl.hidden = true; var g = document.getElementById('zoom-go'); if(g) g.focus(); }
   zoomEl.addEventListener('click', closeZoom);
   document.addEventListener('keydown', function(e){ if(e.key !== 'Escape') return; if(!zoomEl.hidden) closeZoom(); else if(!sheet.hidden) closeDetail(); });
@@ -2987,7 +2998,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Réglages ----------
   // banc d'essai des sons (?sons) : chaque son attendu (fiche : sons.html), livré ou non, à écouter
   if(/[?&]sons\b/.test(location.search)){
-    var CUE_LIST = ["music-main", "intro", "reveal-commune", "reveal-rare", "reveal-holo", "reveal-signature", "reveal-legendaire", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete", "mastery", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify"];
+    var CUE_LIST = ["music-main", "intro", "reveal-commune", "reveal-rare", "reveal-holo", "reveal-signature", "reveal-legendaire", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete", "mastery", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify", "trade-scan", "trade-code", "trade-join", "trade-add", "trade-remove", "trade-partner", "trade-ready", "trade-done", "trade-cancel", "meet-bonus", "title", "zoom", "nope"];
     var sb = document.createElement('div'); sb.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:#0c0b0a;padding:20px 16px;font:14px Inter,sans-serif;color:#f3f0ea';
     sb.innerHTML = '<h2 style="margin:0 0 6px">Banc d\'essai des sons</h2><p style="color:#a49e94;margin:0 0 14px">' + Object.keys(SOUNDS).length + ' / ' + CUE_LIST.length + ' livrés. Touche un son pour l\'écouter.</p>' +
       CUE_LIST.map(function(c){ var ok = !!SOUNDS[c]; return '<button type="button" data-c="' + c + '" style="display:flex;justify-content:space-between;width:100%;min-height:44px;margin:0 0 6px;padding:0 14px;border:0;border-radius:8px;background:#161412;color:' + (ok ? '#f4b243' : '#6d675e') + ';font:600 14px Inter;cursor:pointer"><span>' + c + '</span><span>' + (ok ? 'livré' : 'manquant') + '</span></button>'; }).join('');
@@ -3036,7 +3047,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var go = document.getElementById('onb-pack');
     function paint(){ [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ var k = b.getAttribute('data-s'); b.setAttribute('aria-pressed', String(k ? sel.indexOf(k) !== -1 : any)); });
       go.disabled = !sel.length && !any; go.textContent = any ? 'Surprends-moi' : sel.length ? 'Composer mon paquet (' + sel.length + '/3)' : 'Choisis au moins un univers'; }
-    [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ b.onclick = function(){ var k = b.getAttribute('data-s'); buzz([10]);
+    [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ b.onclick = function(){ var k = b.getAttribute('data-s'); buzz([10]); snd('select');
       if(!k){ any = !any; sel = []; } else { any = false; var n = sel.indexOf(k); if(n !== -1) sel.splice(n, 1); else if(sel.length < 3) sel.push(k); else { toast('Trois univers max. T\'es éclectique, on a compris.'); return; } }
       paint(); }; });
     go.onclick = function(){ onbBands(sel); };
@@ -3050,7 +3061,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       '<button type="button" class="btn block" id="onb-pack">Composer mon paquet</button><button type="button" class="link" id="onb-skip">Passer</button>');
     var input = document.getElementById('fav-in');
     function has(v){ return list.some(function(x){ return x.toLowerCase() === v.toLowerCase(); }); }
-    function add(){ var v = input.value.trim(); input.value = ''; if(v.length >= 2 && list.length < 5 && !has(v)){ list.push(v); buzz([10]); } }
+    function add(){ var v = input.value.trim(); input.value = ''; if(v.length >= 2 && list.length < 5 && !has(v)){ list.push(v); buzz([10]); snd('select'); } }
     function paint(){
       document.getElementById('fav-chips').innerHTML = list.map(function(b, i){ return '<button type="button" class="fav-chip" data-i="' + i + '" aria-label="Retirer ' + esc(b) + '">' + esc(b) + X + '</button>'; }).join('');
       [].forEach.call(onbEl.querySelectorAll('.fav-chip'), function(c){ c.onclick = function(){ list.splice(+c.getAttribute('data-i'), 1); paint(); }; });
