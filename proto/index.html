@@ -2283,8 +2283,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       .then(function(b){ return new Promise(function(res, rej){ sndCtx.decodeAudioData(b, res, rej); }); }).catch(function(){ return null; });
     return sndBuf[c];
   }
+  // variantes : « reveal-rare » joue reveal-rare-1, -2… livrées (ou reveal-rare lui-même), au hasard, jamais deux fois de suite la même
+  var sndLast = {};
+  function sndPick(c){
+    var all = [c]; for(var i = 1; i <= 5; i++) all.push(c + '-' + i);
+    var list = all.filter(function(k){ return SOUNDS[k]; }); if(list.length > 1) list = list.filter(function(k){ return k !== sndLast[c]; });
+    var k = list[Math.floor(Math.random() * list.length)] || null; sndLast[c] = k; return k;
+  }
   function snd(c, vol){
-    if(!c || !SOUNDS[c] || !sndOn() || !sndCtx) return;
+    c = c && sndPick(c);
+    if(!c || !sndOn() || !sndCtx) return;
     sndLoad(c).then(function(buf){ if(!buf) return; var src = sndCtx.createBufferSource(), g = sndCtx.createGain(); g.gain.value = vol == null ? 1 : vol;
       src.buffer = buf; src.connect(g); g.connect(sfxBus); src.start(); });
   }
@@ -3069,7 +3077,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Réglages ----------
   // banc d'essai des sons (?sons) : chaque son attendu (fiche : sons.html), livré ou non, à écouter
   if(/[?&]sons\b/.test(location.search)){
-    var CUE_LIST = ["music-main", "intro", "reveal-commune", "reveal-rare", "reveal-holo", "reveal-signature", "reveal-legendaire", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete", "mastery", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify", "trade-scan", "trade-code", "trade-join", "trade-add", "trade-remove", "trade-partner", "trade-ready", "trade-done", "trade-cancel", "meet-bonus", "title", "zoom", "nope"];
+    var CUE_LIST = ["music-main", "intro", "reveal-commune-1", "reveal-commune-2", "reveal-rare-1", "reveal-rare-2", "reveal-holo-1", "reveal-holo-2", "reveal-signature-1", "reveal-signature-2", "reveal-legendaire-1", "reveal-legendaire-2", "reveal-legendaire-3", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete-1", "binder-complete-2", "mastery-1", "mastery-2", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify", "trade-scan", "trade-code", "trade-join", "trade-add", "trade-remove", "trade-partner", "trade-ready", "trade-done", "trade-cancel", "meet-bonus", "title", "zoom", "nope"];
     var sb = document.createElement('div'); sb.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:#0c0b0a;padding:20px 16px;font:14px Inter,sans-serif;color:#f3f0ea';
     sb.innerHTML = '<h2 style="margin:0 0 6px">Banc d\'essai des sons</h2><p style="color:#a49e94;margin:0 0 14px">' + Object.keys(SOUNDS).length + ' / ' + CUE_LIST.length + ' livrés. Touche un son pour l\'écouter.</p>' +
       CUE_LIST.map(function(c){ var ok = !!SOUNDS[c]; return '<button type="button" data-c="' + c + '" style="display:flex;justify-content:space-between;width:100%;min-height:44px;margin:0 0 6px;padding:0 14px;border:0;border-radius:8px;background:#161412;color:' + (ok ? '#f4b243' : '#6d675e') + ';font:600 14px Inter;cursor:pointer"><span>' + c + '</span><span>' + (ok ? 'livré' : 'manquant') + '</span></button>'; }).join('');

@@ -16,44 +16,92 @@
   "priorite": "P2"
  },
  {
-  "id": "reveal-commune",
+  "id": "reveal-commune-1",
   "famille": "Révélation",
-  "moment": "Une carte Commune se retourne.",
+  "moment": "Une carte Commune se retourne. Variante 1 sur 2, tirée au hasard.",
   "duree": "0,3 à 0,6 s",
-  "intention": "Sec, un peu drôle, sans déception : une corde étouffée, un « tchak ».",
+  "intention": "Corde étouffée, un « tchak » sec, un peu drôle, sans déception.",
   "priorite": "P1"
  },
  {
-  "id": "reveal-rare",
+  "id": "reveal-commune-2",
   "famille": "Révélation",
-  "moment": "Une carte Rare se retourne.",
+  "moment": "Une carte Commune se retourne. Variante 2 sur 2, tirée au hasard.",
+  "duree": "0,3 à 0,6 s",
+  "intention": "Autre couleur, même énergie : caisse claire sèche et basse étouffée.",
+  "priorite": "P1"
+ },
+ {
+  "id": "reveal-rare-1",
+  "famille": "Révélation",
+  "moment": "Une carte Rare se retourne. Variante 1 sur 2, tirée au hasard.",
   "duree": "0,8 à 1,2 s",
   "intention": "Petit riff clair, bleu, satisfaisant.",
   "priorite": "P1"
  },
  {
-  "id": "reveal-holo",
+  "id": "reveal-rare-2",
   "famille": "Révélation",
-  "moment": "Une carte Holo se retourne.",
+  "moment": "Une carte Rare se retourne. Variante 2 sur 2, tirée au hasard.",
+  "duree": "0,8 à 1,2 s",
+  "intention": "Autre riff de même longueur : lick en harmoniques, bleu et net.",
+  "priorite": "P1"
+ },
+ {
+  "id": "reveal-holo-1",
+  "famille": "Révélation",
+  "moment": "Une carte Holo se retourne. Variante 1 sur 2, tirée au hasard.",
   "duree": "1 à 1,5 s",
   "intention": "Brillant, irisé : chorus / shimmer sur un riff.",
   "priorite": "P1"
  },
  {
-  "id": "reveal-signature",
+  "id": "reveal-holo-2",
   "famille": "Révélation",
-  "moment": "Une carte Signature se retourne.",
+  "moment": "Une carte Holo se retourne. Variante 2 sur 2, tirée au hasard.",
+  "duree": "1 à 1,5 s",
+  "intention": "Arpège irisé, cymbale à l'envers qui monte, impact léger.",
+  "priorite": "P1"
+ },
+ {
+  "id": "reveal-signature-1",
+  "famille": "Révélation",
+  "moment": "Une carte Signature se retourne. Variante 1 sur 2, tirée au hasard.",
   "duree": "1,5 à 2,5 s",
   "intention": "Or : power chord plein, cymbale, un « Yeah! » ou un chœur court.",
   "priorite": "P1"
  },
  {
-  "id": "reveal-legendaire",
+  "id": "reveal-signature-2",
   "famille": "Révélation",
-  "moment": "Une carte Légendaire se retourne.",
-  "duree": "2,5 à 4 s",
-  "intention": "L'explosion : gros riff, cri, impact, feu. Le son le plus fort et le plus rare du jeu.",
+  "moment": "Une carte Signature se retourne. Variante 2 sur 2, tirée au hasard.",
+  "duree": "1,5 à 2,5 s",
+  "intention": "Power chord et fry scream court (moins d'une seconde), façon metalcore.",
   "priorite": "P1"
+ },
+ {
+  "id": "reveal-legendaire-1",
+  "famille": "Révélation",
+  "moment": "Une carte Légendaire se retourne. Variante 1 sur 3, tirée au hasard.",
+  "duree": "2,5 à 4 s",
+  "intention": "L'explosion : gros riff, impact, feu, et un growl profond façon death metal.",
+  "priorite": "P1"
+ },
+ {
+  "id": "reveal-legendaire-2",
+  "famille": "Révélation",
+  "moment": "Une carte Légendaire se retourne. Variante 2 sur 3, tirée au hasard.",
+  "duree": "2,5 à 4 s",
+  "intention": "Breakdown lourd, double pédale et fry scream aigu.",
+  "priorite": "P1"
+ },
+ {
+  "id": "reveal-legendaire-3",
+  "famille": "Révélation",
+  "moment": "Une carte Légendaire se retourne. Variante 3 sur 3, tirée au hasard.",
+  "duree": "2,5 à 4 s",
+  "intention": "L'ultime : growl grave et fry scream aigu en duo, sur le plus gros impact du jeu.",
+  "priorite": "P2"
  },
  {
   "id": "heartbeat",
@@ -128,19 +176,35 @@
   "priorite": "P2"
  },
  {
-  "id": "binder-complete",
+  "id": "binder-complete-1",
   "famille": "Récompense",
-  "moment": "Un classeur est complété.",
+  "moment": "Un classeur est complété, variante 1 sur 2, tirée au hasard.",
   "duree": "2 à 3 s",
   "intention": "Fanfare rock : le patch cousu sur la veste. Fierté.",
   "priorite": "P1"
  },
  {
-  "id": "mastery",
+  "id": "binder-complete-2",
   "famille": "Récompense",
-  "moment": "Maîtrise d'un musicien (5 raretés réunies).",
+  "moment": "Un classeur est complété, variante 2 sur 2, tirée au hasard.",
+  "duree": "2 à 3 s",
+  "intention": "Fanfare rock et fry scream de victoire à la fin.",
+  "priorite": "P2"
+ },
+ {
+  "id": "mastery-1",
+  "famille": "Récompense",
+  "moment": "Maîtrise d'un musicien (5 raretés réunies), variante 1 sur 2, tirée au hasard.",
   "duree": "1,5 à 2 s",
   "intention": "Chœur, choir hit, épique.",
+  "priorite": "P2"
+ },
+ {
+  "id": "mastery-2",
+  "famille": "Récompense",
+  "moment": "Maîtrise d'un musicien, variante 2 sur 2, tirée au hasard.",
+  "duree": "1,5 à 2 s",
+  "intention": "Growl long et tenu sur un accord épique, chœur derrière.",
   "priorite": "P2"
  },
  {
