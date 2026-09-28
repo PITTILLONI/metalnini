@@ -242,7 +242,7 @@
  {
   "id": "trade-partner",
   "famille": "Échange",
-  "moment": "Ton pote pose ou retire une carte (ton écran change sans que tu touches).",
+  "moment": "Ton pote pose, retire ou te demande une carte (ton écran change sans que tu touches).",
   "duree": "0,3 à 0,5 s",
   "intention": "Attire l'œil sans agresser : petite cloche sèche ou harmonique, différente de trade-add.",
   "priorite": "P1"
