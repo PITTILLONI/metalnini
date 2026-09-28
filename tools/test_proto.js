@@ -240,7 +240,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   // 10. Échange en ligne (faux serveur en mémoire) : code, pote qui rejoint, cartes posées, alerte du dernier exemplaire, double validation, révélation
   const s7 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'korn|rare':1,'korn|commune':2}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, onbSeen:true, toPlace:[] };
   const dom6 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w6){
-    w6.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s7)); w6.matchMedia = () => ({ matches: false }); w6.scrollTo = () => {};
+    w6.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s7)); w6.HTMLMediaElement.prototype.play = () => Promise.resolve(); w6.matchMedia = () => ({ matches: false }); w6.scrollTo = () => {};
     w6.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w6.HTMLElement.prototype.setPointerCapture = () => {}; w6.HTMLElement.prototype.scrollIntoView = () => {};
     w6.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
@@ -250,7 +250,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async cryUrl(){ return 'data:audio/wav;base64,'; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -263,6 +263,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('échange : code affiché en attendant le pote', !d6.getElementById('trade').hidden && /ABC 234/.test(d6.getElementById('trade-in').textContent));
   Object.assign(T, { status:'live', partner:'Riffeuse', get:[{m:'jinjer', r:'holo', n:1}] }); watchCb(); await sleep(50);
   check('échange : le pote arrive, sa carte s\'affiche côté « Tu reçois »', /Riffeuse/.test(d6.getElementById('trade-in').textContent) && d6.querySelectorAll('#tr-get .tr-card').length === 1);
+  const imgBefore = d6.querySelector('#tr-get .tr-card img'); T.their_ok = true; watchCb(); await sleep(50);
+  check('mise à jour ciblée : le pote valide, sa carte n\'est pas recréée (rien ne saute)', d6.querySelector('#tr-get .tr-card img') === imgBefore && /Riffeuse a validé/.test(d6.getElementById('trade-in').textContent));
+  T.their_ok = false; watchCb(); await sleep(50);
   d6.getElementById('trade-min').click(); await sleep(20);
   check('réduire : l\'échange reste ouvert, une pastille pour y revenir', d6.getElementById('trade').hidden && !d6.getElementById('trade-pill').hidden && /Riffeuse/.test(d6.getElementById('trade-pill').textContent));
   d6.querySelector('.tabbar [data-v="binder"]').click(); await sleep(20);
@@ -295,9 +298,10 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('valider en donnant son dernier exemplaire : alerte avant', !d6.getElementById('confirm').hidden && /dernier/i.test(d6.getElementById('confirm-t').textContent));
   d6.getElementById('confirm-no').click();
   d6.querySelector('#tr-give .tr-card[data-r="commune"]').click(); await sleep(50);
-  T.their_ok = true; watchCb(); await sleep(50);
-  d6.getElementById('tr-ok').click(); await sleep(300);
+  T.their_ok = true; T.partner_cry = 'u2/cry.webm'; watchCb(); await sleep(50);
+  d6.getElementById('tr-ok').click(); await sleep(1500);
   check('double validation : échange conclu, cartes reçues et bonus révélés', d6.getElementById('trade').hidden && !d6.getElementById('reveal').hidden && /Riffeuse/.test(d6.getElementById('counter').textContent));
+  check('échange conclu : le cri du pote retentit', [...d6.querySelectorAll('.toast')].some(t => /Le cri de/.test(t.textContent)));
   const st7 = JSON.parse(w6.localStorage.getItem('metalnini-proto-v1'));
   check('après l\'échange : cartes reçues à ranger, Korn Rare partie', st7.toPlace.includes('jinjer|holo') && st7.toPlace.includes('spiritbox|commune') && !st7.owned['korn|rare']);
 
