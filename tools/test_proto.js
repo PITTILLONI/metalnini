@@ -201,10 +201,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await sleep(150);
   const d4 = dom4.window.document;
   check('sélecteur : 3 paquets proposés', d4.querySelectorAll('#pack-picker button').length === 3);
-  d4.getElementById('quest-open').click(); await sleep(20);
-  check('objectifs : icône avec leur nombre, feuille qui les liste', !d4.getElementById('quest-open').hidden && +d4.getElementById('quest-n').textContent > 0 && !d4.getElementById('quest-sheet').hidden && d4.querySelectorAll('#quest-list .goal').length === +d4.getElementById('quest-n').textContent, d4.getElementById('quest-list').textContent);
+  d4.getElementById('tab-corner').click(); await sleep(20);
+  check('Metal Corner : onglet ouvert, objectifs listés, leur nombre en pastille', !d4.getElementById('v-corner').hidden && !d4.getElementById('quest-n').hidden && d4.querySelectorAll('#quest-list .goal').length === +d4.getElementById('quest-n').textContent, d4.getElementById('quest-list').textContent);
+  d4.getElementById('tr-host').click(); await sleep(20);
+  check('échange hors ligne : il faut un compte, rien ne s\'ouvre', d4.getElementById('trade').hidden && /Connecte-toi/.test((d4.querySelector('.toast') || {}).textContent || ''));
   d4.querySelector('#quest-list .goal').click(); await sleep(20);
-  check('objectif touché : la feuille se ferme', d4.getElementById('quest-sheet').hidden);
+  check('objectif touché : on arrive là où il se joue', !d4.getElementById('v-binder').hidden && d4.getElementById('v-corner').hidden);
   d4.getElementById('ask-artist').click(); await sleep(20);
   check('demande d\'artiste : feuille ouverte, hors ligne il faut un compte', !d4.getElementById('artist-sheet').hidden && d4.getElementById('as-send').disabled && /Connecte-toi/.test(d4.getElementById('as-err').textContent));
   d4.getElementById('as-cancel').click(); await sleep(20);
@@ -234,6 +236,64 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('paquet avec Légendaire : flammes gravées affichées', d5.getElementById('flames-pack').classList.contains('on'));
   await sleep(2600);
   check('puis la pile de cartes s\'ouvre', !d5.getElementById('reveal').hidden);
+
+  // 10. Échange en ligne (faux serveur en mémoire) : code, pote qui rejoint, cartes posées, alerte du dernier exemplaire, double validation, révélation
+  const s7 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'korn|rare':1,'korn|commune':2}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, onbSeen:true, toPlace:[] };
+  const dom6 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w6){
+    w6.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s7)); w6.matchMedia = () => ({ matches: false }); w6.scrollTo = () => {};
+    w6.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w6.HTMLElement.prototype.setPointerCapture = () => {}; w6.HTMLElement.prototype.scrollIntoView = () => {};
+    w6.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const w6 = dom6.window, d6 = w6.document;
+  let inv = [{musician_id:'korn', rarity:'rare', copies:1, placed:true}, {musician_id:'korn', rarity:'commune', copies:2, placed:true}], watchCb = null;
+  const T = { id:'t1', code:'ABC234', status:'open', version:0, host:true, partner:null, left:false, my_ok:false, their_ok:false, give:[], get:[], bonus:null };
+  const snap = () => JSON.parse(JSON.stringify(T));
+  const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
+    async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
+    async tradeSetItem(id, m, r, n){ T.give = T.give.filter(x => !(x.m === m && x.r === r)); if(n) T.give.push({m, r, n}); T.version++; T.my_ok = T.their_ok = false; return snap(); },
+    async tradeConfirm(id, ok, v){ if(v !== T.version) throw new Error('changé'); T.my_ok = ok; if(T.my_ok && T.their_ok){ T.status = 'done'; T.bonus = {m:'spiritbox', r:'commune'};
+      inv = [{musician_id:'korn', rarity:'commune', copies:2, placed:true}, {musician_id:'jinjer', rarity:'holo', copies:1, placed:false}, {musician_id:'spiritbox', rarity:'commune', copies:1, placed:false}]; } return snap(); } };
+  await w6.metalniniOnline(fake); await sleep(100);
+  d6.getElementById('tab-corner').click(); await sleep(20);
+  d6.getElementById('tr-host').click(); await sleep(50);
+  check('échange : code affiché en attendant le pote', !d6.getElementById('trade').hidden && /ABC 234/.test(d6.getElementById('trade-in').textContent));
+  Object.assign(T, { status:'live', partner:'Riffeuse', get:[{m:'jinjer', r:'holo', n:1}] }); watchCb(); await sleep(50);
+  check('échange : le pote arrive, sa carte s\'affiche côté « Tu reçois »', /Riffeuse/.test(d6.getElementById('trade-in').textContent) && d6.querySelectorAll('#tr-get .tr-card').length === 1);
+  d6.getElementById('tr-add').click(); await sleep(20);
+  const lastKorn = d6.querySelector('#tp-grid .tr-card[data-r="rare"]');
+  check('choix des cartes : doublons en premier', d6.querySelector('#tp-grid .tr-card').getAttribute('data-r') === 'commune');
+  lastKorn.click(); await sleep(50);
+  check('carte posée : elle passe côté « Tu donnes »', d6.querySelectorAll('#tr-give .tr-card').length === 1 && T.version === 1);
+  d6.querySelector('#tp-grid .tr-card[data-r="commune"]').click(); await sleep(50); d6.querySelector('#tp-grid .tr-card[data-r="commune"]').click(); await sleep(50);
+  check('toutes les Korn posées : « Dernière » signalé sur la dernière', !!d6.querySelector('#tp-grid .last') || d6.querySelectorAll('#tp-grid .tr-card:disabled').length === 2);
+  d6.getElementById('tp-ok').click(); d6.getElementById('tr-ok').click(); await sleep(30);
+  check('valider en donnant son dernier exemplaire : alerte avant', !d6.getElementById('confirm').hidden && /dernier/i.test(d6.getElementById('confirm-t').textContent));
+  d6.getElementById('confirm-no').click();
+  d6.querySelector('#tr-give .tr-card[data-r="commune"]').click(); await sleep(50);
+  T.their_ok = true; watchCb(); await sleep(50);
+  d6.getElementById('tr-ok').click(); await sleep(300);
+  check('double validation : échange conclu, cartes reçues et bonus révélés', d6.getElementById('trade').hidden && !d6.getElementById('reveal').hidden && /Riffeuse/.test(d6.getElementById('counter').textContent));
+  const st7 = JSON.parse(w6.localStorage.getItem('metalnini-proto-v1'));
+  check('après l\'échange : cartes reçues à ranger, Korn Rare partie', st7.toPlace.includes('jinjer|holo') && st7.toPlace.includes('spiritbox|commune') && !st7.owned['korn|rare']);
+
+  // 11. Onboarding : groupes favoris après les univers (facultatif, 5 au plus), gardés jusqu'au compte
+  const dom7 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w7){
+    w7.matchMedia = () => ({ matches: false }); w7.scrollTo = () => {};
+    w7.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w7.HTMLElement.prototype.setPointerCapture = () => {}; w7.HTMLElement.prototype.scrollIntoView = () => {};
+    w7.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const w7 = dom7.window, d7 = w7.document; let asked = null;
+  await w7.metalniniOnline({ async user(){ return null; }, async previewWelcome(st){ asked = st; return [{token:'tk', musician_id:'korn', rarity:'commune'}]; } }); await sleep(50);
+  d7.getElementById('onb-go').click(); await sleep(20);
+  d7.querySelector('.tile[data-s]:not([data-s=""])').click(); d7.getElementById('onb-pack').click(); await sleep(20);
+  check('onboarding : écran des groupes favoris après les univers', !!d7.getElementById('fav-in'));
+  ['Gojira', 'gojira', 'Ghost'].forEach(v => { d7.getElementById('fav-in').value = v; d7.getElementById('fav-form').dispatchEvent(new w7.Event('submit', { cancelable: true })); });
+  check('groupes favoris : ajoutés en pastilles, sans doublon', d7.querySelectorAll('.fav-chip').length === 2);
+  d7.getElementById('fav-in').value = 'Mastodon'; d7.getElementById('onb-pack').click(); await sleep(50);
+  const st8 = JSON.parse(w7.localStorage.getItem('metalnini-proto-v1'));
+  check('groupes favoris : gardés (même le dernier tapé), puis le paquet de bienvenue', st8.favBands.join() === 'Gojira,Ghost,Mastodon' && !st8.favSent && !!asked);
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');

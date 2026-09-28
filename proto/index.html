@@ -129,15 +129,52 @@
   .open-head .back-btn{display:block; margin:0 auto 8px}
   .open-head h1{font-size:2rem}
   .home .open-head .pack-desc{display:block; margin:6px auto 0}
-  .quest-btn{position:relative}
-  .quest-n{position:absolute; top:-3px; right:-3px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--gold); color:var(--ink); font:800 .7rem/18px var(--mono); text-align:center}
-  .quest-list{display:flex; flex-direction:column; gap:10px; max-height:60dvh; overflow-y:auto; padding-bottom:4px}
+  .quest-n{position:absolute; top:0; left:calc(50% + 6px); min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--gold); color:var(--ink); font:800 .7rem/18px var(--mono); text-align:center}
+  .quest-list{display:flex; flex-direction:column; gap:10px}
+  /* ---------- Metal Corner : échange, objectifs, progression ---------- */
+  .corner-sub{margin:4px 0 0; color:var(--muted); font-size:.9rem}
+  .corner-sec{margin:22px 0 0} .corner-sec h2{font-size:1.45rem; margin:0 0 6px}
+  .trade-box{padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface)}
+  .trade-box .pf-note{color:var(--muted)} .tr-go{display:flex; flex-direction:column; gap:10px; margin-top:14px}
+  .corner-empty{margin:0; color:var(--muted); font-size:.92rem}
+  .prog{display:grid; grid-template-columns:1fr auto; align-items:center; gap:6px 10px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
+  .prog + .prog{margin-top:10px} .prog b{font:800 1.15rem/1.1 var(--display); letter-spacing:.04em; text-transform:uppercase} .prog small{grid-column:1 / -1; color:var(--muted); font-size:.84rem}
+  .prog .on{color:var(--gold-hi)}
+  .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
+  .trade[hidden]{display:none}
+  .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2}
+  .trade-in{max-width:520px; margin:0 auto; padding:calc(24px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); text-align:center}
+  .trade-in h2{font-size:1.9rem; margin:0 60px 6px} .trade-in > .pf-note{color:var(--muted); max-width:34ch; margin:0 auto 14px}
+  .tr-qr{width:min(64vw, 240px); aspect-ratio:1; margin:6px auto 12px; padding:10px; border-radius:14px; background:var(--text)}
+  .tr-qr svg{display:block; width:100%; height:100%}
+  .tr-code{margin:0 0 16px; font:800 2.2rem/1 var(--display); letter-spacing:.2em; color:var(--gold-hi)}
+  .tr-wait{margin:16px 0 0; font:600 .84rem var(--mono); color:var(--muted); animation:trwait 1.6s ease-in-out infinite}
+  @keyframes trwait{50%{opacity:.45}}
+  .tr-cam{position:relative; width:min(78vw, 300px); aspect-ratio:1; margin:6px auto 10px; border-radius:16px; overflow:hidden; background:#000}
+  .tr-cam video{width:100%; height:100%; object-fit:cover; display:block}
+  .tr-cam i{position:absolute; inset:14%; border:2px solid var(--gold); border-radius:14px; box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+  .tr-join{margin-top:10px; text-align:left} .tr-join .pf-row{align-items:stretch} .tr-join input{flex:1; min-width:0; text-transform:uppercase; letter-spacing:.14em; font-weight:700}
+  .tr-side{margin-top:14px; padding:12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); text-align:left}
+  .tr-h{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px} .tr-h b{font:800 1.1rem var(--display); letter-spacing:.06em; text-transform:uppercase} .tr-h span{font:600 .76rem var(--mono); color:var(--muted)}
+  .tr-cards{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
+  .tr-card{position:relative; padding:0; border:0; background:none; cursor:pointer; text-align:center; color:var(--muted)}
+  .tr-card img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
+  .tr-card small{display:block; margin-top:3px; font:600 .66rem/1.2 var(--mono); text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .tr-card .n{position:absolute; top:4px; right:4px; min-width:22px; padding:1px 5px; border-radius:9px; background:rgba(10,8,7,.85); color:var(--text); font:700 .7rem/18px var(--mono)}
+  .tr-card .last{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; background:var(--accent); color:#fff; font:700 .6rem/16px var(--mono); text-transform:uppercase}
+  .tr-card:disabled{opacity:.35; cursor:default}
+  .tr-add{aspect-ratio:2/3; border:1px dashed rgba(235,154,38,.55); border-radius:6px; background:none; color:var(--gold-hi); font:700 .78rem var(--mono); cursor:pointer}
+  .tr-empty{grid-column:1 / -1; margin:0; color:var(--muted); font-size:.9rem}
+  .tr-status{margin:16px 0 10px; font:600 .86rem var(--mono); color:var(--muted)} .tr-status .ok{color:var(--gold-hi)}
+  .tr-note{margin:10px 0 0; font-size:.8rem; color:var(--muted)}
+  #trade-pick .bsheet-in{max-height:86dvh; overflow-y:auto} #trade-pick .tr-cards{margin:10px 0 14px}
+
   .goal.quest{position:relative; width:100%; display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 10px; min-height:52px; padding:9px 14px;
     background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:left; cursor:pointer; max-width:none}
   .goal.quest b{font:600 .86rem/1.3 var(--mono); letter-spacing:0; text-transform:none; color:var(--text)}
   .goal.quest .pc{font:600 .78rem var(--mono); color:var(--gold); font-variant-numeric:tabular-nums}
-  .goal .qbar{grid-column:1 / -1; display:block; height:3px; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden}
-  .goal .qbar i{display:block; height:100%; background:var(--gold)}
+  .goal .qbar, .prog .qbar{grid-column:1 / -1; display:block; height:3px; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden}
+  .goal .qbar i, .prog .qbar i{display:block; height:100%; background:var(--gold)}
   .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
   .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
         background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%), #111; box-shadow:0 18px 50px rgba(0,0,0,.6), inset 0 0 0 1px rgba(235,154,38,.35);
@@ -172,6 +209,10 @@
   .onb h1, .onb h2{font-size:2.3rem; line-height:.95; margin:0} .onb h2{font-size:2rem}
   .onb p{margin:0; color:var(--muted); line-height:1.5}
   .onb .small{font:500 .78rem var(--mono); color:var(--muted)}
+  .fav-form{text-align:left} .fav-form input{flex:1; min-width:0}
+  .fav-chips{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; min-height:44px}
+  .fav-chip{display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 14px; border:1px solid rgba(235,154,38,.5); border-radius:999px; background:rgba(235,154,38,.08); color:var(--text); font:600 .9rem var(--mono); cursor:pointer}
+  .fav-chip svg{color:var(--gold-hi)}
   .onb .link{background:none; border:0; color:var(--gold-hi); font:600 .88rem var(--mono); text-decoration:underline; text-underline-offset:3px; cursor:pointer; min-height:44px}
   .onb-fan{position:relative; height:clamp(190px, 52vw, 250px); margin:0 auto 6px; width:100%}
   .onb-fan img{position:absolute; top:0; left:50%; height:100%; width:auto; aspect-ratio:2/3; object-fit:cover; border-radius:8px; box-shadow:0 18px 34px rgba(0,0,0,.65); animation:onbfloat 4s ease-in-out infinite}
@@ -667,6 +708,8 @@
   .uname .err{color:#f87171; font-size:.85rem; min-height:1.2em; margin:0 0 10px}
   .uname .err.ok{color:#86efac}
   .auth input{margin:6px 0 4px; font-size:1rem; padding:12px 14px}
+  .auth-spam{margin:12px 0 0; padding:12px 14px; border:1px solid rgba(235,154,38,.45); border-radius:12px; background:rgba(235,154,38,.06); font-size:.9rem; line-height:1.45; color:var(--text)}
+  .auth-spam b{color:var(--gold-hi)} .auth-spam em{font-style:normal; font-weight:600}
   .auth label{display:block; font:500 .72rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:10px}
   .auth .links{display:flex; justify-content:space-between; gap:12px; margin-top:14px; font-size:.85rem}
   .auth-inst{margin-top:18px; padding-top:14px; border-top:1px solid var(--border); text-align:center}
@@ -699,7 +742,7 @@
 <main id="v-packs" class="view wrap home" data-step="choose">
   <header class="hud">
     <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg></button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
-    <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm quest-btn" id="quest-open" aria-label="Objectifs" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="quest-n" id="quest-n"></span></button><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
+    <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
   </header>
   <h1 class="home-title" id="home-title">Cartes du jour</h1>
   <button type="button" class="inst-banner" id="inst-banner" hidden><b>Mets Metalnini sur ton écran d'accueil</b><span>Un paquet offert</span></button>
@@ -739,6 +782,23 @@
       <p class="swipe-hint">Glisse pour l'éventrer →</p>
     </div>
   </div>
+</main>
+
+<!-- ============ METAL CORNER ============ -->
+<main id="v-corner" class="view wrap" hidden>
+  <div class="binder-head">
+    <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button>
+    <h1>Metal Corner</h1>
+    <p class="corner-sub">Le coin des fans : échanges, objectifs et progression.</p>
+  </div>
+  <section class="corner-sec trade-box">
+    <p class="eyebrow">Échanger</p>
+    <h2>Troque tes cartes avec un pote</h2>
+    <p class="pf-note">Chacun pose ses cartes, vous validez tous les deux, c'est plié. Côte à côte ou à distance.</p>
+    <div class="tr-go"><button type="button" class="btn block" id="tr-host">Montrer mon code</button><button type="button" class="btn ghost block" id="tr-scan">Scanner son code</button></div>
+  </section>
+  <section class="corner-sec"><p class="eyebrow">Tes objectifs</p><div class="quest-list" id="quest-list"></div></section>
+  <section class="corner-sec"><p class="eyebrow">Ta progression</p><div id="corner-prog"></div></section>
 </main>
 
 <!-- ============ CLASSEUR ============ -->
@@ -943,6 +1003,7 @@
     <h2 id="auth-t"><span data-only="loading">Balances en cours…</span><span data-only="signup">Rejoins le pit</span><span data-only="login">Re-bienvenue</span><span data-only="forgot">Trou de mémoire ?</span><span data-only="sent">Check tes mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
     <p class="note" data-only="signup" style="color:var(--muted)" id="auth-intro">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
     <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
+    <p class="auth-spam" data-only="sent"><b>Rien dans ta boîte ?</b> Regarde dans <em>Spam</em> ou <em>Promotions</em>, puis marque le mail « Pas un spam » : les suivants arriveront au bon endroit.</p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
     <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
     <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span class="pw-hint" data-only="signup newpw">(12 caractères minimum)</span></label><span class="pw-wrap"><input id="au-pw" type="password" autocomplete="current-password"><button type="button" class="pw-eye" id="pw-eye" aria-label="Afficher le mot de passe" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="eo" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle class="eo" cx="12" cy="12" r="3"/><path class="ec" d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></span></div>
@@ -963,13 +1024,6 @@
   if(!has && !/type=|access_token|error=/.test(location.hash)) document.getElementById('auth-form').dataset.mode = 'signup';
 })();
 </script>
-<div class="bsheet" id="quest-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="qs-t">
-  <div class="bsheet-in">
-    <i class="grab" aria-hidden="true"></i>
-    <h2 id="qs-t">Tes objectifs</h2>
-    <div class="quest-list" id="quest-list"></div>
-  </div>
-</div>
 <div class="bsheet" id="sort-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ss-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1023,6 +1077,19 @@
   </div>
 </div>
 
+<div class="trade" id="trade" hidden role="dialog" aria-modal="true" aria-label="Échange">
+  <button type="button" class="icon-btn trade-x" id="trade-x" aria-label="Quitter l'échange"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="trade-in" id="trade-in"></div>
+</div>
+<div class="bsheet" id="trade-pick" hidden role="dialog" aria-modal="true" aria-labelledby="tp-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="tp-t">Tes cartes</h2>
+    <p class="pf-note">Doublons en premier. Touche une carte pour la poser dans l'échange.</p>
+    <div class="tr-cards" id="tp-grid"></div>
+    <button type="button" class="btn block" id="tp-ok">C'est bon</button>
+  </div>
+</div>
 <div class="zoom" id="zoom" hidden role="dialog" aria-modal="true" aria-label="Carte en plein écran">
   <button type="button" class="icon-btn zoom-x" id="zoom-x" aria-label="Fermer le plein écran"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <img id="zoom-img" alt="">
@@ -1031,6 +1098,7 @@
 <nav class="tabbar" role="tablist" aria-label="Navigation">
   <button type="button" data-v="packs" aria-selected="true"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l1 1 1-1 1 1 1-1 1 1 1-1 1 1 1-1 1 1 1-1 1 1v15l-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1z"/><path d="M13.6 8.6a3.8 3.8 0 1 0 0 6.8 3.2 3.2 0 1 1 0-6.8z" fill="currentColor" stroke="none"/><circle cx="14.4" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M14.4 9.7v-.9M14.4 15.2v-.9M16.7 12h.9"/></svg>Paquets</button>
   <button type="button" data-v="binder" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="3.2" y="6.2" width="8" height="12" rx="1.2" transform="rotate(-16 7.2 12.2)"/><rect x="12.8" y="6.2" width="8" height="12" rx="1.2" transform="rotate(16 16.8 12.2)"/><rect x="8" y="4" width="8" height="13" rx="1.2" fill="#0d0a08"/><path d="M12 7.6l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"/></svg>Classeur</button>
+  <button type="button" data-v="corner" aria-selected="false" id="tab-corner"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12.5V4.2a1.2 1.2 0 0 1 2.4 0v7.3"/><path d="M15.6 11.5V4.2a1.2 1.2 0 0 1 2.4 0v9.3c0 4-2.6 7-6.3 7-2.9 0-4.9-1.6-5.7-4.2l-.8-2.7a1.2 1.2 0 0 1 2.2-.9l.6 1.3"/><path d="M10.4 11.5v-1a1.2 1.2 0 0 1 2.6 0v1M13 11.5v-1a1.3 1.3 0 0 1 2.6 0v1"/><path d="M8 12.5c1.4-.9 3.4-1 5 .3"/></svg>Metal Corner<span class="quest-n" id="quest-n" hidden></span></button>
 </nav>
 
 <script src="cards/manifest.js"></script>
@@ -1043,7 +1111,7 @@ const must = r => { if(r.error) throw new Error(frMsg(r.error.message)); return 
 const here = location.origin + location.pathname;
 // messages d'authentification courants, en français
 function frMsg(m){
-  const t = { 'Invalid login credentials': 'e-mail ou mot de passe incorrect', 'Email not confirmed': 'adresse pas encore confirmée : clique sur le lien reçu par e-mail',
+  const t = { 'Invalid login credentials': 'e-mail ou mot de passe incorrect', 'Email not confirmed': 'adresse pas encore confirmée : clique sur le lien reçu par e-mail (regarde aussi dans les spams)',
     'User already registered': 'un compte existe déjà avec cet e-mail : connecte-toi', 'email rate limit exceeded': 'trop d\'e-mails envoyés, réessaie plus tard' };
   for(const k in t) if(m.indexOf(k) === 0) return t[k];
   if(/Password should be at least/.test(m)) return 'mot de passe trop court : 12 caractères minimum';
@@ -1081,6 +1149,7 @@ const api = {
   async deletePush(e){ must(await sb.rpc('delete_push_subscription', { p_endpoint: e })); },
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
   async claimCryGift(){ return must(await sb.rpc('claim_cry_gift')); },
+  async setFavBands(list){ must(await sb.rpc('set_fav_bands', { p_bands: list })); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
   async giftNotices(){ return must(await sb.rpc('my_gift_notices')) || []; },
   async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
@@ -1107,7 +1176,19 @@ const api = {
   async fusionCosts(){ const rows = must(await sb.from('settings').select('key, value').like('key', 'fusion_cost_%')), out = {}; rows.forEach(r => { out[r.key.replace('fusion_cost_', '')] = +r.value; }); return out; },
   async openPack(type, requestId, format){ return must(await sb.rpc('open_pack', { p_pack_type: type, p_request_id: requestId, p_format: format })); },
   async place(m, r){ must(await sb.rpc('place_card', { p_musician: m, p_rarity: r })); },
-  async fuse(m, r){ return must(await sb.rpc('fuse_cards', { p_musician: m, p_rarity: r })); }
+  async fuse(m, r){ return must(await sb.rpc('fuse_cards', { p_musician: m, p_rarity: r })); },
+  // échange : session par code, composition en direct (temps réel sur la ligne de la session), validation des deux côtés
+  async tradeCreate(){ return must(await sb.rpc('trade_create')); },
+  async tradeJoin(code){ return must(await sb.rpc('trade_join', { p_code: code })); },
+  async tradeState(id){ return must(await sb.rpc('trade_state', { p_trade: id })); },
+  async tradeSetItem(id, m, r, n){ return must(await sb.rpc('trade_set_item', { p_trade: id, p_musician: m, p_rarity: r, p_copies: n })); },
+  async tradeConfirm(id, ok, version){ return must(await sb.rpc('trade_confirm', { p_trade: id, p_ok: ok, p_version: version })); },
+  async tradeCancel(id){ must(await sb.rpc('trade_cancel', { p_trade: id })); },
+  async tradeCount(){ return must(await sb.rpc('my_trade_count')); },
+  tradeWatch(id, cb){
+    const ch = sb.channel('trade-' + id).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'trades', filter: 'id=eq.' + id }, () => cb()).subscribe();
+    return () => { sb.removeChannel(ch); };
+  }
 };
 if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi = api;
 </script>
@@ -1407,9 +1488,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
-      paintDevice(); if(standalone()) onbInstalled(api); else setTimeout(askInstall, 2500);
+      paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
+      if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
+      if((state.favBands || []).length && !state.favSent) api.setFavBands(state.favBands).then(function(){ state.favSent = true; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
       if(!state.username) askUsername();
     }catch(e){ hideSplash(); ONLINE = null; setNet(); document.getElementById('auth').hidden = true; toast('Le serveur a raté son stage diving : mode hors ligne'); }
@@ -1433,7 +1516,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         if(m === 'signup'){
           var direct = await AUTH.signUp(em, p, name.value.trim(), state.welcome && state.welcome.token);
           if(direct){ box.hidden = true; window.metalniniOnline(AUTH); }
-          else { document.getElementById('auth-sent').textContent = 'Lien envoyé à ' + em + '. Ouvre-le sur cet appareil, et on t\'ouvre les portes. Rien reçu ? Fouille les spams.'; set('sent'); }
+          else { document.getElementById('auth-sent').textContent = 'Lien envoyé à ' + em + '. Ouvre-le sur cet appareil, et on t\'ouvre les portes.'; set('sent'); }
         } else if(m === 'login'){ await AUTH.signIn(em, p); pw.value = ''; box.hidden = true; window.metalniniOnline(AUTH); }
         else if(m === 'forgot'){ await AUTH.forgot(em); document.getElementById('auth-sent').textContent = 'Si un compte existe pour ' + em + ', un lien pour changer le mot de passe vient d\'être envoyé.'; set('sent'); }
         else if(m === 'sent'){ await AUTH.resend(em); err.className = 'err ok'; err.textContent = 'E-mail renvoyé.'; }
@@ -1837,23 +1920,191 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     out = out.concat(binders.slice(0, 1), side.slice(0, 1), binders.slice(1, 2), mastery, side.slice(1), binders.slice(2));
     return out.slice(0, 5);
   }
-  // objectifs : icône de l'en-tête (avec leur nombre) qui ouvre une feuille ; chaque objectif mène là où il se joue
-  var questSheet = document.getElementById('quest-sheet');
+  // objectifs : dans l'onglet Metal Corner (leur nombre en pastille sur l'onglet) ; chaque objectif mène là où il se joue
   function renderGoals(){
-    var list = goals(), btn = document.getElementById('quest-open');
-    btn.hidden = !list.length; document.getElementById('quest-n').textContent = list.length;
-    btn.setAttribute('aria-label', 'Objectifs (' + list.length + ')');
-    if(!list.length) questSheet.hidden = true;
+    var list = goals(), n = document.getElementById('quest-n');
+    n.hidden = !list.length; n.textContent = list.length;
+    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (list.length ? ', ' + list.length + ' objectif' + (list.length > 1 ? 's' : '') : ''));
     var el = document.getElementById('quest-list');
-    el.innerHTML = list.map(function(g){
+    el.innerHTML = list.length ? list.map(function(g){
       return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
-        '<b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></button>'; }).join('');
-    [].forEach.call(el.querySelectorAll('.goal'), function(b){ b.onclick = function(){ questSheet.hidden = true;
+        '<b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></button>'; }).join('')
+      : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>';
+    [].forEach.call(el.querySelectorAll('.goal'), function(b){ b.onclick = function(){
       if(b.getAttribute('data-act') === 'profile'){ openProfile(); return; } revealEl.hidden = true; openBinder(b.getAttribute('data-b')); go('binder'); if(b.getAttribute('data-d')) openDetail(b.getAttribute('data-d')); }; });
   }
-  document.getElementById('quest-open').addEventListener('click', function(){ renderGoals(); questSheet.hidden = false; });
-  questSheet.addEventListener('click', function(e){ if(e.target === questSheet) questSheet.hidden = true; });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !questSheet.hidden) questSheet.hidden = true; });
+  // ---------- Échange ----------
+  // cote indicative selon la rareté, pour équilibrer à l'œil (jamais convertible en argent)
+  var COTE = {commune:1, rare:3, holo:8, signature:20, legendaire:50};
+  var QR_LIB = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js', SCAN_LIB = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+  var tradeEl = document.getElementById('trade'), tradeIn = document.getElementById('trade-in'), pickEl = document.getElementById('trade-pick');
+  var trade = null, tradeScan = false, tradeBusy = false, tradeUnwatch = null, tradePoll = null, scanStop = null;
+  // lien d'invitation (?troc=CODE) : ouvert avant la connexion, il est rejoint dès que le joueur est en ligne
+  var pendingTroc = (/[?&]troc=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;
+  if(pendingTroc) history.replaceState(null, '', location.pathname + location.hash);
+  function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
+    var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
+  function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
+  function codeFrom(txt){ var m = /[?&]troc=([A-Za-z0-9]{6})/.exec(txt) || /^\s*([A-Za-z0-9]{3})[\s-]?([A-Za-z0-9]{3})\s*$/.exec(txt);
+    return m ? (m[1] + (m[2] || '')).toUpperCase() : null; }
+  function needOnline(){ if(ONLINE) return true; toast('Connecte-toi pour échanger : il faut un compte des deux côtés.'); return false; }
+  function coteOf(list){ return list.reduce(function(a, x){ return a + COTE[x.r] * x.n; }, 0); }
+  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); }
+  function tradeWatch(){ tradeUnwatchAll(); tradeUnwatch = ONLINE.tradeWatch(trade.id, tradeRefresh); tradePoll = setInterval(tradeRefresh, 4000); }
+  function tradeUnwatchAll(){ if(tradeUnwatch) tradeUnwatch(); tradeUnwatch = null; clearInterval(tradePoll); tradePoll = null; }
+  function tradeRefresh(){ if(!trade || !ONLINE) return; var id = trade.id;
+    ONLINE.tradeState(id).then(function(t){ if(trade && trade.id === id) tradeApply(t); }).catch(function(){}); }
+  function tradeApply(t){ var was = trade && trade.status; trade = t; if(t.status === 'done'){ if(was !== 'done') tradeDone(t); return; } renderTrade(); }
+  function tradeClose(){ tradeUnwatchAll(); stopScan(); trade = null; tradeScan = false; tradeEl.hidden = true; pickEl.hidden = true; }
+  async function tradeHost(){ if(!needOnline() || tradeBusy) return; tradeBusy = true;
+    try{ tradeShow(await ONLINE.tradeCreate()); }catch(e){ toast(esc(e.message)); } tradeBusy = false; }
+  async function tradeJoin(code){
+    if(!needOnline() || tradeBusy) return; code = codeFrom(code || '');
+    if(!code){ toast('Un code, c\'est 6 caractères.'); return; }
+    tradeBusy = true; stopScan();
+    try{ tradeShow(await ONLINE.tradeJoin(code)); }catch(e){ toast(esc(e.message)); if(tradeScan) renderTrade(); }
+    tradeBusy = false;
+  }
+  function openScan(){ if(!needOnline()) return; trade = null; tradeScan = true; tradeEl.hidden = false; renderTrade(); }
+  // caméra : lecteur natif du navigateur si présent, sinon jsQR (Safari) ; le code peut toujours se taper à la main
+  async function startScan(){
+    var v = document.getElementById('tr-video'), note = document.getElementById('tr-cam-note');
+    try{
+      var stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+      if(!tradeScan){ stream.getTracks().forEach(function(x){ x.stop(); }); return; }
+      v.srcObject = stream; await v.play();
+      var det = 'BarcodeDetector' in window ? new BarcodeDetector({formats:['qr_code']}) : null, jsqr = det ? null : await loadLib(SCAN_LIB, 'jsQR');
+      var cv = document.createElement('canvas'), cx = cv.getContext('2d', {willReadFrequently:true}), live = true, raf = 0;
+      scanStop = function(){ live = false; cancelAnimationFrame(raf); stream.getTracks().forEach(function(x){ x.stop(); }); scanStop = null; };
+      var tick = async function(){
+        if(!live) return;
+        if(v.readyState >= 2){
+          var txt = null;
+          if(det){ try{ var found = await det.detect(v); txt = found[0] && found[0].rawValue; }catch(e){} }
+          else { var k = Math.min(1, 640 / v.videoWidth); cv.width = v.videoWidth * k; cv.height = v.videoHeight * k; cx.drawImage(v, 0, 0, cv.width, cv.height);
+            var d = cx.getImageData(0, 0, cv.width, cv.height), q = jsqr(d.data, d.width, d.height); txt = q && q.data; }
+          var code = txt && codeFrom(txt);
+          if(code){ buzz(30); tradeJoin(code); return; }
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      tick();
+    }catch(e){ if(note) note.textContent = 'Caméra indisponible. Tape son code juste en dessous.'; }
+  }
+  function stopScan(){ if(scanStop) scanStop(); }
+  function paintQr(code){
+    loadLib(QR_LIB, 'qrcode').then(function(qrcode){ var q = qrcode(0, 'M'); q.addData(tradeLink(code)); q.make();
+      var el = document.getElementById('tr-qr'); if(el) el.innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); })
+      .catch(function(){ var el = document.getElementById('tr-qr'); if(el) el.hidden = true; });
+  }
+  function trCard(x, extra){ var c = card(x.m), rr = rarity(x.r);
+    return '<button type="button" class="tr-card" data-m="' + x.m + '" data-r="' + x.r + '" aria-label="' + esc(c.who) + ', ' + rr.label + (x.n > 1 ? ', ' + x.n + ' exemplaires' : '') + (extra || '') + '">' +
+      '<img src="' + img(x.m, x.r) + '" alt="" loading="lazy">' + (x.n > 1 ? '<span class="n num">×' + x.n + '</span>' : '') + '<small style="color:' + rr.color + '">' + rr.label + '</small></button>'; }
+  function renderTrade(){
+    var t = trade, who = t && t.partner ? esc(t.partner) : 'Ton pote';
+    if(tradeScan){
+      tradeIn.innerHTML = '<p class="eyebrow">Échange</p><h2>Scanne son code</h2><p class="pf-note" id="tr-cam-note">Vise le QR code affiché dans son Metal Corner.</p>' +
+        '<div class="tr-cam"><video id="tr-video" playsinline muted></video><i aria-hidden="true"></i></div>' +
+        '<form class="tr-join" id="tr-join"><label class="pf-label" for="tr-code-in">Ou tape son code</label><div class="pf-row"><input class="as-in" id="tr-code-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="7" placeholder="ABC 234"><button type="submit" class="btn">Rejoindre</button></div></form>';
+      document.getElementById('tr-join').onsubmit = function(e){ e.preventDefault(); tradeJoin(document.getElementById('tr-code-in').value); };
+      startScan(); return;
+    }
+    if(t.status === 'open'){
+      tradeIn.innerHTML = '<p class="eyebrow">Échange</p><h2>Montre ce code</h2><p class="pf-note">Ton pote le scanne depuis son Metal Corner. Pas à côté de toi ? Envoie-lui le lien.</p>' +
+        '<div class="tr-qr" id="tr-qr" role="img" aria-label="QR code de l\'échange"></div><p class="tr-code num">' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</p>' +
+        '<button type="button" class="btn ghost block" id="tr-send">Envoyer le lien</button><p class="tr-wait">En attente de ton pote…</p>';
+      paintQr(t.code);
+      document.getElementById('tr-send').onclick = function(){
+        var url = tradeLink(t.code), txt = 'Viens échanger des cartes avec moi sur Metalnini. Code : ' + t.code;
+        if(navigator.share) navigator.share({title:'Metalnini', text:txt, url:url}).catch(function(){});
+        else (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Envoie-le à ton pote.'); }, function(){ toast('Code à lui donner : ' + t.code); });
+      };
+      return;
+    }
+    if(t.status === 'cancelled'){
+      tradeIn.innerHTML = '<p class="eyebrow">Échange</p><h2>Échange annulé</h2><p class="pf-note">' + (t.left ? who + ' a quitté l\'échange. Rien n\'a bougé dans vos collections.' : 'La session a expiré. Rien n\'a bougé.') + '</p>' +
+        '<button type="button" class="btn block" id="tr-end">Fermer</button>';
+      document.getElementById('tr-end').onclick = tradeClose; tradeUnwatchAll(); return;
+    }
+    var give = t.give || [], get = t.get || [];
+    tradeIn.innerHTML = '<p class="eyebrow">Échange avec</p><h2>' + who + '</h2>' +
+      '<div class="tr-side"><div class="tr-h"><b>Tu donnes</b><span class="num">Cote ' + coteOf(give) + '</span></div><div class="tr-cards" id="tr-give">' +
+        give.map(function(x){ return trCard(x, ', toucher pour retirer'); }).join('') + '<button type="button" class="tr-add" id="tr-add">+ Ajouter</button></div></div>' +
+      '<div class="tr-side"><div class="tr-h"><b>Tu reçois</b><span class="num">Cote ' + coteOf(get) + '</span></div><div class="tr-cards" id="tr-get">' +
+        (get.length ? get.map(function(x){ return trCard(x); }).join('') : '<p class="tr-empty">' + who + ' n\'a rien posé pour l\'instant.</p>') + '</div></div>' +
+      '<p class="tr-status">' + (t.their_ok ? '<span class="ok">' + who + ' a validé.</span>' : who + ' n\'a pas encore validé.') + (t.my_ok ? ' <span class="ok">Toi aussi.</span>' : '') + '</p>' +
+      '<button type="button" class="btn block' + (t.my_ok ? ' ghost' : '') + '" id="tr-ok">' + (t.my_ok ? 'Retirer ma validation' : 'Valider l\'échange') + '</button>' +
+      '<p class="tr-note">Une carte posée ou retirée, et tout le monde revalide. La cote est indicative.</p>';
+    document.getElementById('tr-add').onclick = openPick;
+    [].forEach.call(document.querySelectorAll('#tr-give .tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r');
+      setItem(m, r, give.filter(function(x){ return x.m === m && x.r === r; })[0].n - 1); }; });
+    [].forEach.call(document.querySelectorAll('#tr-get .tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r');
+      openZoom(img(m, r), card(m).who + ', ' + rarity(r).label); }; });
+    document.getElementById('tr-ok').onclick = tradeConfirm;
+    if(!pickEl.hidden) renderPick();
+  }
+  function setItem(m, r, n){ if(!trade) return; ONLINE.tradeSetItem(trade.id, m, r, n).then(tradeApply).catch(function(e){ toast(esc(e.message)); }); }
+  function givenOf(m, r){ var x = (trade.give || []).filter(function(g){ return g.m === m && (!r || g.r === r); }); return x.reduce(function(a, g){ return a + g.n; }, 0); }
+  // choix des cartes : doublons d'abord, puis les plus rares ; « Dernière » quand la donner viderait sa case
+  function renderPick(){
+    var keys = ownedKeys().sort(function(a, b){ return (state.owned[b] > 1) - (state.owned[a] > 1) || byRarity(a, b); });
+    var el = document.getElementById('tp-grid');
+    el.innerHTML = keys.length ? keys.map(function(k){ var p = k.split('|'), left = state.owned[k] - givenOf(p[0], p[1]), last = left === 1 && total(p[0]) - givenOf(p[0]) === 1;
+      return trCard({m:p[0], r:p[1], n:left}, last ? ', dernier exemplaire' : '').replace('<button', '<button' + (left < 1 ? ' disabled' : '')).replace('</small>', '</small>' + (last ? '<span class="last">Dernière</span>' : '')); }).join('')
+      : '<p class="tr-empty">Ouvre d\'abord un paquet : ton classeur est vide.</p>';
+    [].forEach.call(el.querySelectorAll('.tr-card:not(:disabled)'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r'); setItem(m, r, givenOf(m, r) + 1); }; });
+  }
+  function openPick(){ renderPick(); pickEl.hidden = false; }
+  document.getElementById('tp-ok').addEventListener('click', function(){ pickEl.hidden = true; });
+  pickEl.addEventListener('click', function(e){ if(e.target === pickEl) pickEl.hidden = true; });
+  // valider : alerte si une case se vide (dernier exemplaire donné) ou si un classeur complet ne l'est plus
+  function tradeConfirm(){
+    var t = trade; if(!t) return;
+    var send = function(ok){ ONLINE.tradeConfirm(t.id, ok, t.version).then(tradeApply).catch(function(e){ toast(esc(e.message)); tradeRefresh(); }); };
+    if(t.my_ok){ send(false); return; }
+    if(!t.give.length && !t.get.length){ toast('Pose au moins une carte, sinon c\'est juste un câlin.'); return; }
+    var empty = t.give.map(function(x){ return x.m; }).filter(function(id, i, a){ return a.indexOf(id) === i && total(id) - givenOf(id) <= 0 && !t.get.some(function(g){ return g.m === id; }); });
+    if(!empty.length){ send(true); return; }
+    var broken = BINDERS.filter(function(b){ return b.kind !== 'Collection' && binderDone(b) && b.ids.some(function(id){ return empty.indexOf(id) !== -1; }); });
+    askConfirm({eyebrow:'Échange', title:empty.length > 1 ? 'Tu donnes tes derniers exemplaires' : 'Tu donnes ton dernier ' + card(empty[0]).who,
+      text:(empty.length > 1 ? empty.length + ' cases de ton classeur redeviennent vides.' : 'Sa case de ton classeur redevient vide.') +
+        (broken.length ? ' ' + broken.map(binderLabel).join(', ') + (broken.length > 1 ? ' ne seront plus complets.' : ' ne sera plus complet.') : ''),
+      yes:'Valider quand même', no:'Je réfléchis'}, function(){ send(true); });
+  }
+  // échange conclu : les cartes reçues (et la carte bonus de rencontre) se révèlent comme au sortir d'un paquet, puis attendent dans « À ranger »
+  async function tradeDone(t){
+    tradeClose();
+    try{ applyInventory(await ONLINE.inventory()); }catch(e){}
+    ONLINE.tradeCount().then(function(n){ var first = !state.trades && n > 0; state.trades = n; save(); renderCorner();
+      if(first) setTimeout(function(){ toast('<b>Titre débloqué</b> · Metal Corner'); }, 2400); }).catch(function(){});
+    renderStats(); renderBinder();
+    var got = (t.get || []).concat(t.bonus ? [t.bonus] : []).filter(function(x){ return card(x.m); });
+    if(!got.length){ toast('Échange conclu. Tes cartes sont parties chez ' + esc(t.partner) + '.'); return; }
+    current = got.map(function(x){ var isNew = (state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1; if(isNew) state.fresh[x.m] = true; return {c:card(x.m), r:x.r, isNew:isNew}; });
+    save(); idx = 0; seenUpTo = -1; snd('reward');
+    revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
+    setTimeout(function(){ document.getElementById('counter').textContent = 'Échange avec ' + t.partner; }, 0);
+    if(t.bonus) setTimeout(function(){ toast('<b>Première rencontre</b> avec ' + esc(t.partner) + ' : une carte bonus en plus.'); }, 900);
+  }
+  document.getElementById('tr-host').addEventListener('click', tradeHost);
+  document.getElementById('tr-scan').addEventListener('click', openScan);
+  document.getElementById('trade-x').addEventListener('click', function(){
+    if(!trade || trade.status !== 'live'){ if(trade && trade.status === 'open') ONLINE.tradeCancel(trade.id).catch(function(){}); tradeClose(); return; }
+    askConfirm({eyebrow:'Échange', title:'Quitter l\'échange ?', text:'Rien ne bouge dans vos collections. ' + (trade.partner || 'Ton pote') + ' sera prévenu.', yes:'Quitter', no:'Rester'},
+      function(){ var id = trade.id; tradeClose(); ONLINE.tradeCancel(id).catch(function(){}); });
+  });
+
+  // progression : titre du profil et titre social « Metal Corner » (premier échange conclu)
+  function renderCorner(){
+    renderGoals();
+    var t = titleOf(myProfile().score), tr = state.trades || 0, nx = t.next, cur = TITLES.filter(function(x){ return x[1] === t.label; })[0][0];
+    var pct = nx ? Math.round((1 - nx.left / (nx.left + myProfile().score - cur)) * 100) : 100;
+    document.getElementById('corner-prog').innerHTML =
+      '<div class="prog"><b class="on">' + esc(t.label) + '</b><span class="num">' + (nx ? pct + ' %' : 'Max') + '</span>' +
+        '<i class="qbar"><i style="width:' + pct + '%"></i></i><small>' + (nx ? 'Prochain titre : ' + esc(nx.label) + '. Classeurs complétés et maîtrises comptent double.' : 'Tu es au sommet. Garde la couronne.') + '</small></div>' +
+      '<div class="prog"><b' + (tr ? ' class="on"' : '') + '>Metal Corner</b><span class="num">' + tr + ' échange' + (tr > 1 ? 's' : '') + '</span>' +
+        '<small>' + (tr ? 'Titre débloqué. Chaque nouveau fan croisé t\'offre une carte bonus.' : 'Ton premier échange débloque le titre, et une carte bonus par nouveau fan.') + '</small></div>';
+  }
   function commitPack(){
     if(ONLINE){
       var o = state.pending.map(function(d){ var c = card(d.id) || CARDS[0]; if(d.isNew) state.fresh[c.id] = true; return {c:c, r:d.r, isNew:!!d.isNew}; });
@@ -1877,9 +2128,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Navigation ----------
   var tabs = [].slice.call(document.querySelectorAll('.tabbar button'));
   function go(v){
-    ['packs','binder','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
+    ['packs','binder','corner','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder();
+    if(v === 'corner'){ renderCorner(); if(ONLINE) ONLINE.tradeCount().then(function(n){ state.trades = n; save(); renderCorner(); }).catch(function(){}); }
     if(v === 'packs' && state.welcome && !ONLINE){ onbSave(); }
     if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
@@ -1888,7 +2140,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   tabs.forEach(function(t){ t.addEventListener('click', function(){ go(t.getAttribute('data-v')); }); });
   var lastView = 'packs';
-  [].forEach.call(document.querySelectorAll('[data-go="settings"]'), function(b){ b.addEventListener('click', function(){ lastView = document.getElementById('v-binder').hidden ? 'packs' : 'binder'; go('settings'); }); });
+  [].forEach.call(document.querySelectorAll('[data-go="settings"]'), function(b){ b.addEventListener('click', function(){ lastView = ['packs', 'binder', 'corner'].filter(function(x){ return !document.getElementById('v-' + x).hidden; })[0] || 'packs'; go('settings'); }); });
   document.getElementById('settings-back').addEventListener('click', function(){ go(lastView); });
 
   // ---------- Paquets ----------
@@ -2407,7 +2659,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
   // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
   var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
-  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden; }
+  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden || !document.getElementById('trade').hidden; }
   function showWl(e, t, p, src, go){
     document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
     document.getElementById('wl-go').textContent = go || 'Ouvrir mon cadeau';
@@ -2774,7 +3026,28 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ b.onclick = function(){ var k = b.getAttribute('data-s'); buzz([10]);
       if(!k){ any = !any; sel = []; } else { any = false; var n = sel.indexOf(k); if(n !== -1) sel.splice(n, 1); else if(sel.length < 3) sel.push(k); else { toast('Trois univers max. T\'es éclectique, on a compris.'); return; } }
       paint(); }; });
-    go.onclick = function(){ onbPack(sel); };
+    go.onclick = function(){ onbBands(sel); };
+  }
+  // groupes favoris (facultatif, 5 au plus) : servent à choisir les prochaines cartes ; envoyés au serveur une fois le compte créé
+  function onbBands(styles){
+    var list = (state.favBands || []).slice(), X = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    onbShow('<h2>Tes groupes du moment ?</h2><p>Jusqu\'à 5. On s\'en sert pour choisir les prochaines cartes du jeu.</p>' +
+      '<form class="fav-form" id="fav-form"><label class="pf-label" for="fav-in">Un groupe ou un artiste</label><div class="pf-row"><input class="as-in" id="fav-in" maxlength="60" autocomplete="off" placeholder="ex. Gojira"><button type="submit" class="btn ghost">Ajouter</button></div></form>' +
+      '<div class="fav-chips" id="fav-chips"></div>' +
+      '<button type="button" class="btn block" id="onb-pack">Composer mon paquet</button><button type="button" class="link" id="onb-skip">Passer</button>');
+    var input = document.getElementById('fav-in');
+    function has(v){ return list.some(function(x){ return x.toLowerCase() === v.toLowerCase(); }); }
+    function add(){ var v = input.value.trim(); input.value = ''; if(v.length >= 2 && list.length < 5 && !has(v)){ list.push(v); buzz([10]); } }
+    function paint(){
+      document.getElementById('fav-chips').innerHTML = list.map(function(b, i){ return '<button type="button" class="fav-chip" data-i="' + i + '" aria-label="Retirer ' + esc(b) + '">' + esc(b) + X + '</button>'; }).join('');
+      [].forEach.call(onbEl.querySelectorAll('.fav-chip'), function(c){ c.onclick = function(){ list.splice(+c.getAttribute('data-i'), 1); paint(); }; });
+      input.disabled = list.length >= 5; input.placeholder = list.length >= 5 ? 'Cinq, c\'est complet' : 'ex. Gojira';
+    }
+    document.getElementById('fav-form').onsubmit = function(e){ e.preventDefault(); add(); paint(); input.focus(); };
+    function done(keep){ if(keep) add(); state.favBands = keep ? list : []; state.favSent = false; save(); onbPack(styles); }
+    document.getElementById('onb-pack').onclick = function(){ done(true); };
+    document.getElementById('onb-skip').onclick = function(){ done(false); };
+    paint();
   }
   // paquet de bienvenue tiré par le serveur avant le compte (jeton), révélé comme un vrai paquet
   async function onbPack(styles){
@@ -2970,7 +3243,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'quest-sheet', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

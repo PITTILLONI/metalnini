@@ -450,6 +450,7 @@ async function catalogTab(el){
     </div>
     </div>
     <div class="card" id="req-card"><h3>Demandes d'artistes</h3><div id="req-list" class="muted">Chargement…</div></div>
+    <div class="card" id="fav-card"><h3>Groupes favoris des joueurs</h3><p class="muted" style="font-size:.85rem">Déclarés à l'onboarding (5 au plus par joueur).</p><div id="fav-list" class="muted">Chargement…</div></div>
     <div class="card viewer"><h3>Visuels des cartes</h3>
       <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
         <figure class="vw-card"><img id="vw-img" alt=""><figcaption id="vw-cap"></figcaption></figure>
@@ -500,7 +501,7 @@ async function catalogTab(el){
   st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
   el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
-  filter(); requests();
+  filter(); requests(); favBands();
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
@@ -528,6 +529,17 @@ async function requests(){
     const res = await sb.from('artist_requests').update({ done: true }).in('id', groups[+b.dataset.req].rows.map(x => x.id)).select('id');
     if(res.error) say(b, res.error.message); else requests();
   });
+}
+
+// groupes favoris déclarés à l'onboarding, les plus cités d'abord
+async function favBands(){
+  const box = $('fav-list'); if(!box) return;
+  const r = await sb.rpc('admin_fav_bands');
+  if(r.error){ box.textContent = 'Indisponible (migration 0027 à appliquer ?) : ' + r.error.message; return; }
+  if(!r.data.length){ box.textContent = 'Aucun groupe déclaré pour l\'instant.'; return; }
+  box.className = '';
+  box.innerHTML = `<div class="table-wrap"><table><tr><th>Groupe ou artiste</th><th>Joueurs</th><th>Catalogue</th></tr>
+    ${r.data.map(x => `<tr><td><b>${esc(x.band)}</b></td><td>${x.fans}</td><td class="muted">${x.in_catalog ? 'déjà dedans' : '—'}</td></tr>`).join('')}</table></div>`;
 }
 
 // ---------------------------------------------------------------- journal

@@ -30,8 +30,8 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Icône seule** `.icon-btn` : rond, filet or fin, `aria-label` obligatoire, 44 px minimum.
 - **Bordures** : un seul filet fin (1 px). Pas de double bordure ni de double filet (retour utilisateur du 2026-09-25).
 - **Surfaces** (tuiles, objectifs, modales) : `--surface`, filet `--border`, rayon 12-14 px, sans ombre intérieure.
-- **Objectifs** : une ligne par objectif (texte, pourcentage, filet de progression de 3 px), à glisser, un point par objectif.
-- **Barre d'onglets** : 2 entrées (Paquets, Classeur), fond encre, filet or fin, icônes SVG maison ; Réglages en haut à droite.
+- **Objectifs** : une ligne par objectif (texte, pourcentage, filet de progression de 3 px), listés dans l'onglet Metal Corner ; chacun mène là où il se joue.
+- **Barre d'onglets** : 3 entrées (Paquets, Classeur, Metal Corner), fond encre, filet or fin, icônes SVG maison ; Réglages en haut à droite. Le nombre d'objectifs s'affiche en pastille or sur l'onglet Metal Corner.
 - **Icônes** : SVG au trait 1,4-2 px, `currentColor`. Pas d'emoji ni de glyphes Unicode comme icônes.
 
 ## Parcours Classeurs
@@ -46,6 +46,13 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 ## Parcours Révélation et rangement
 - **Révélation** : une carte à la fois ; phrase « combo » en bandeau incliné sur la carte (taille et couleur selon la rareté, ~3 s). La rangée du bas rouvre les cartes déjà vues. À la dernière carte : « Ranger dans le classeur » et partage (pas d'écran de résumé).
 - **Rangement** : chaque carte s'affiche en grand, bonus en bandeau (lettrage Metal Mania) ; consigne sur deux lignes au-dessus ; un toucher range et passe à la suivante. Transformation proposée quand elle devient possible.
+
+## Parcours Metal Corner et échange
+1. **Onglet** : bloc « Échanger » (Montrer mon code, Scanner son code), objectifs, progression (titre du profil, titre « Metal Corner » et nombre d'échanges).
+2. **Montrer mon code** : QR code sur fond os, code à 6 caractères en or (« ABC 234 »), « Envoyer le lien » (feuille de partage, sinon lien copié), « En attente de ton pote… ».
+3. **Scanner** : caméra carrée avec cadre or, et toujours le champ « Ou tape son code ».
+4. **Composition** : « Tu donnes » (toucher une carte la retire, « + Ajouter » ouvre ses cartes, doublons d'abord, « Dernière » en rouge si la donner vide sa case) et « Tu reçois » (toucher = plein écran), cote indicative de chaque côté, état de validation du pote, « Valider l'échange ». Toute carte posée ou retirée annule les validations. Donner un dernier exemplaire passe par une confirmation qui cite les classeurs complets touchés.
+5. **Conclusion** : les cartes reçues, puis la carte bonus de première rencontre, se révèlent comme un paquet (« Échange avec … ») et attendent dans « À ranger ».
 
 ## Autres écrans
 - **Profil** : page à part (avatar, pseudo, capacité de metaleux en texte, cri). La capacité se modifie dans une feuille du bas : idées proposées ou texte perso (120 caractères).
@@ -70,6 +77,8 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - Hauteurs calculées sur la place réelle (`dvh`, mesure JS pour le carrousel), jamais sur `100vh`.
 
 ## Contenu
+- **E-mail de confirmation** : encadré or « Rien dans ta boîte ? » (Spam, Promotions, « Pas un spam ») sur l'écran d'attente.
+- **Onboarding** : après les univers, « Tes groupes du moment ? » (5 au plus, pastilles, « Passer »), envoyés au serveur à la création du compte.
 - Ton rock'n'roll (guide dans `concept.html`, Ligne édito) : clair d'abord, une vanne par écran.
 - Carte non trouvée : ni nom, ni groupe, ni titre ; classeur de groupe « Groupe mystère » tant qu'aucune carte du groupe n'est trouvée.
 
