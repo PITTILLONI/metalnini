@@ -32,7 +32,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Surfaces** (tuiles, objectifs, modales) : `--surface`, filet `--border`, rayon 12-14 px, sans ombre intérieure.
 - **Objectifs** : une ligne par objectif (texte, pourcentage, filet de progression de 3 px), listés dans l'onglet Metal Corner ; chacun mène là où il se joue.
 - **Barre d'onglets** : 3 entrées (Paquets, Classeur, Metal Corner), fond encre, filet or fin, icônes SVG maison ; Réglages en haut à droite. Le nombre d'objectifs s'affiche en pastille or sur l'onglet Metal Corner.
-- **Icônes** : SVG au trait 1,4-2 px, `currentColor`. Pas d'emoji ni de glyphes Unicode comme icônes.
+- **Icônes** : Tabler Icons (MIT) pour l'interface, copiées en SVG en ligne (aucun chargement externe), trait 1,4-2 px, `currentColor` ; la main « cornes » de Metal Corner est dérivée de `hand-love-you`. Restent maison : le croissant (logo), le sachet de paquet et les glyphes de Safari de la feuille d'installation. Game-icons.net (CC BY 3.0, crédit de l'auteur obligatoire à côté de chaque usage) est réservé aux éléments décoratifs (badges, patchs, titres). Pas d'emoji ni de glyphes Unicode comme icônes.
 
 ## Parcours Classeurs
 1. **Catégories** en puces : Collection, Styles, Instruments, Groupes.
@@ -61,6 +61,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Profil public** (« veste à patchs ») : médaillon photo cerclé d'or, pseudo, titre gagné en pastille (Groupie → Légende du pit), capacité en citation, bouton « Écouter son cri » ; vitrine de 3 cartes en éventail ; patchs ronds brodés (classeurs complétés, surpiqûre or en pointillés ; manquants en pointillés os) ; pin's de maîtrise ; setlist en tuiles. Plein écran, fermeture en haut à droite.
 - **Notifications** : encadré arrondi à marges, en haut de l'écran ; descend et remonte, sans fondu ; une seule à la fois.
 - **Fermer** : bouton rond en surimpression en haut à droite, il ne prend pas de place. Dans une feuille, il reste hors de la zone qui défile, et la feuille s'arrête sous la barre d'état (`100dvh - env(safe-area-inset-top)`).
+- **Fiche carte** : rareté en surtitre rouge, nom de l'artiste en titre (blanc), groupe dessous, puces, écoute, coup spécial juste sous l'écoute, raretés obtenues, puis « Transformations » : une jauge de crans par palier (un cran par doublon, « 3/3 »), prête = cadre et crans à la couleur de la rareté visée et bouton « Transformer en … », sinon « Encore N doublons ».
 - **Carte en plein écran** : depuis la fiche, toucher la carte ou l'icône d'agrandissement (coin bas droit) ; carte la plus grande possible entre les zones de sécurité, fond noir d'encre ; un toucher, la croix ou Échap referment.
 
 ## Interaction et mouvement

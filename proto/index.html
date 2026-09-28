@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Metal+Mania&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Metalnini — Prototype</title>
+<!-- Icônes : Tabler Icons (MIT, © 2020-2026 Paweł Kuna, tabler.io/icons) ; main « cornes » dérivée de hand-love-you. Croissant, sachet et glyphes de Safari : maison. -->
 <style>
   :root{--safe-b:max(0px, calc(env(safe-area-inset-bottom) - 14px))}   /* app installée : zone de la barre d'accueil, rognée comme une barre d'onglets native */
   :root{
@@ -554,12 +555,18 @@
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
   .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
 
-  .fuse{margin-top:14px; display:flex; flex-direction:column; gap:8px}
-  .fuse button{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; text-align:left; cursor:pointer; font-size:.88rem}
-  .fuse button b{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em}
-  .fuse .dis{opacity:.45; cursor:default}
+  /* transformations : une jauge de crans par palier (un cran = un doublon), prête = cadre et crans à la couleur de la rareté visée, puis le bouton */
+  .fuse{margin-top:18px; display:flex; flex-direction:column; gap:10px} .fuse .eyebrow{margin:0} .fuse .note{margin:0}
+  .fz{padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface-2)}
+  .fz.ready{border-color:var(--fc)}
+  .fz-h{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; font:800 1.05rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase}
+  .fz-h .num{font:600 .8rem var(--mono); letter-spacing:0; color:var(--muted)} .fz.ready .fz-h .num{color:var(--fc)}
+  .fz-g{display:flex; gap:3px} .fz-g i{flex:1; height:10px; border-radius:2px; background:rgba(255,255,255,.09)} .fz-g i.on{background:var(--fc)}
+  .fz.ready .fz-g i{animation:fzpulse 1.6s ease-in-out infinite}
+  @keyframes fzpulse{50%{opacity:.6}}
+  .fz small{display:block; margin-top:8px; font:500 .76rem var(--mono); color:var(--muted)} .fz .btn{margin-top:10px}
   .mastery{margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid rgba(235,154,38,.35); background:rgba(235,154,38,.08); font-size:.86rem}
-  .move{margin-top:14px; padding:12px 14px; border:1px solid rgba(235,154,38,.35); border-radius:12px; background:rgba(235,154,38,.06)}
+  .move{margin:0 0 18px; padding:12px 14px; border:1px solid rgba(235,154,38,.35); border-radius:12px; background:rgba(235,154,38,.06)}
   .move .eyebrow{margin:0 0 6px} .move b{display:block; font:800 1.3rem/1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .move p:last-child{margin:6px 0 0; font-size:.88rem; color:var(--muted)}
   .detail-actions{display:flex; gap:10px; margin-top:16px} .detail-actions .btn{flex:1}
   .tearfx i{position:fixed; background-size:cover; background-position:center; border-radius:10px; will-change:transform}
@@ -742,7 +749,7 @@
 <main id="v-packs" class="view wrap home" data-step="choose">
   <header class="hud">
     <div class="hud-me"><button type="button" class="av" id="hud-av" aria-label="Mon profil : photo et cri"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg></button><span><b id="hud-name">Invité</b><small class="net" id="net">Hors ligne</small></span></div>
-    <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button></div>
+    <div class="hud-right"><div class="hud-stats" id="stats-row"></div><button type="button" class="icon-btn sm" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg></button></div>
   </header>
   <h1 class="home-title" id="home-title">Cartes du jour</h1>
   <button type="button" class="inst-banner" id="inst-banner" hidden><b>Mets Metalnini sur ton écran d'accueil</b><span>Un paquet offert</span></button>
@@ -787,7 +794,7 @@
 <!-- ============ METAL CORNER ============ -->
 <main id="v-corner" class="view wrap" hidden>
   <div class="binder-head">
-    <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button>
+    <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg></button>
     <h1>Metal Corner</h1>
     <p class="corner-sub">Le coin des fans : échanges, objectifs et progression.</p>
   </div>
@@ -804,7 +811,7 @@
 <!-- ============ CLASSEUR ============ -->
 <main id="v-binder" class="view wrap" hidden>
   <div class="binder-head">
-    <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></svg></button>
+    <button type="button" class="icon-btn sm corner" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg></button>
     <h1>Classeurs</h1>
     <div class="kind-chips" id="binder-kinds" role="tablist" aria-label="Catégories de classeurs"></div>
   </div>
@@ -814,7 +821,7 @@
   <div class="binder-page" id="binder-page">
     <div class="bp-head">
       <button type="button" class="back-btn" id="binder-back"></button>
-      <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
+      <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></button></div>
       <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
     </div>
   <div class="grid" id="grid"></div>
@@ -897,7 +904,7 @@
   </div>
 </div>
 <div class="pub" id="pub" hidden role="dialog" aria-modal="true" aria-labelledby="pub-name">
-  <button type="button" class="icon-btn pub-x" id="pub-x" aria-label="Fermer le profil"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button type="button" class="icon-btn pub-x" id="pub-x" aria-label="Fermer le profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="pub-in" id="pub-in"></div>
 </div>
 <div class="bsheet" id="artist-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="as-t">
@@ -957,7 +964,7 @@
 <div class="reveal" id="reveal" hidden aria-live="polite">
   <div class="flames" id="flames-reveal" aria-hidden="true"><i></i><i></i><i></i></div>
   <button type="button" class="skip" id="skip">Tout révéler</button>
-  <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
+  <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1"/><path d="M12 14v-11"/><path d="M9 6l3 -3l3 3"/></svg></button>
   <div id="reveal-one">
     <div class="rev-top"><div class="counter" id="counter"></div><div class="deck" id="deck" aria-label="Cartes du paquet"></div><div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div></div>
     <p class="combo" id="combo" aria-live="polite"></p>
@@ -1006,7 +1013,7 @@
     <p class="auth-spam" data-only="sent"><b>Rien dans ta boîte ?</b> Regarde dans <em>Spam</em> ou <em>Promotions</em>, puis marque le mail « Pas un spam » : les suivants arriveront au bon endroit.</p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
     <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
-    <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span class="pw-hint" data-only="signup newpw">(12 caractères minimum)</span></label><span class="pw-wrap"><input id="au-pw" type="password" autocomplete="current-password"><button type="button" class="pw-eye" id="pw-eye" aria-label="Afficher le mot de passe" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="eo" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle class="eo" cx="12" cy="12" r="3"/><path class="ec" d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></span></div>
+    <div data-only="signup login newpw"><label for="au-pw">Mot de passe <span class="pw-hint" data-only="signup newpw">(12 caractères minimum)</span></label><span class="pw-wrap"><input id="au-pw" type="password" autocomplete="current-password"><button type="button" class="pw-eye" id="pw-eye" aria-label="Afficher le mot de passe" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><g class="eo"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/></g><g class="ec"><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"/><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87"/><path d="M3 3l18 18"/></g></svg></button></span></div>
     <p class="err" id="auth-err"></p>
     <button type="submit" class="btn" id="auth-go"><span data-only="signup">Je rentre dans le pit</span><span data-only="login">Je remonte sur scène</span><span data-only="forgot">Envoie-moi le lien</span><span data-only="sent">Renvoyer l'e-mail</span><span data-only="newpw">Enregistrer</span></button>
     <div class="links">
@@ -1078,7 +1085,7 @@
 </div>
 
 <div class="trade" id="trade" hidden role="dialog" aria-modal="true" aria-label="Échange">
-  <button type="button" class="icon-btn trade-x" id="trade-x" aria-label="Quitter l'échange"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button type="button" class="icon-btn trade-x" id="trade-x" aria-label="Quitter l'échange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="trade-in" id="trade-in"></div>
 </div>
 <div class="bsheet" id="trade-pick" hidden role="dialog" aria-modal="true" aria-labelledby="tp-t">
@@ -1091,14 +1098,14 @@
   </div>
 </div>
 <div class="zoom" id="zoom" hidden role="dialog" aria-modal="true" aria-label="Carte en plein écran">
-  <button type="button" class="icon-btn zoom-x" id="zoom-x" aria-label="Fermer le plein écran"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button type="button" class="icon-btn zoom-x" id="zoom-x" aria-label="Fermer le plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <img id="zoom-img" alt="">
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Navigation">
   <button type="button" data-v="packs" aria-selected="true"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l1 1 1-1 1 1 1-1 1 1 1-1 1 1 1-1 1 1 1-1 1 1v15l-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1-1 1-1-1z"/><path d="M13.6 8.6a3.8 3.8 0 1 0 0 6.8 3.2 3.2 0 1 1 0-6.8z" fill="currentColor" stroke="none"/><circle cx="14.4" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M14.4 9.7v-.9M14.4 15.2v-.9M16.7 12h.9"/></svg>Paquets</button>
-  <button type="button" data-v="binder" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="3.2" y="6.2" width="8" height="12" rx="1.2" transform="rotate(-16 7.2 12.2)"/><rect x="12.8" y="6.2" width="8" height="12" rx="1.2" transform="rotate(16 16.8 12.2)"/><rect x="8" y="4" width="8" height="13" rx="1.2" fill="#0d0a08"/><path d="M12 7.6l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"/></svg>Classeur</button>
-  <button type="button" data-v="corner" aria-selected="false" id="tab-corner"><svg class="ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12.5V4.2a1.2 1.2 0 0 1 2.4 0v7.3"/><path d="M15.6 11.5V4.2a1.2 1.2 0 0 1 2.4 0v9.3c0 4-2.6 7-6.3 7-2.9 0-4.9-1.6-5.7-4.2l-.8-2.7a1.2 1.2 0 0 1 2.2-.9l.6 1.3"/><path d="M10.4 11.5v-1a1.2 1.2 0 0 1 2.6 0v1M13 11.5v-1a1.3 1.3 0 0 1 2.6 0v1"/><path d="M8 12.5c1.4-.9 3.4-1 5 .3"/></svg>Metal Corner<span class="quest-n" id="quest-n" hidden></span></button>
+  <button type="button" data-v="binder" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="ico" width="26" height="26" aria-hidden="true"><path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/></svg>Classeur</button>
+  <button type="button" data-v="corner" aria-selected="false" id="tab-corner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="ico" width="26" height="26" aria-hidden="true"><path d="M11 11.5v-1a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 12v-6.5a1.5 1.5 0 0 1 3 0v10.5a6 6 0 0 1 -6 6h-2a4 4 0 0 1 -4 -4v-5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M8 16.5c1.6 -1.6 3.8 -2.1 6.2 -1.5"/></svg>Metal Corner<span class="quest-n" id="quest-n" hidden></span></button>
 </nav>
 
 <script src="cards/manifest.js"></script>
@@ -1379,8 +1386,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       .catch(function(){ delete tracks[id]; return null; });
     return tracks[id];
   }
-  var PLAY = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>';
-  var PAUSE = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z" fill="currentColor"/></svg>';
+  var PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"/></svg>';
+  var PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z"/><path fill="currentColor" d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z"/></svg>';
   // fondu d'entrée : 0 → 0,8 en 0,7 s (l'iPhone ignore le volume réglé par le code : l'extrait y démarre plein pot)
   function fadeIn(){
     var a = audio, t0 = performance.now();
@@ -2149,8 +2156,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     renderPacks(); renderGoals();
     var nm = CARDS.filter(function(c){ return mastered(c.id); }).length;
     document.getElementById('stats-row').innerHTML =
-      '<span class="num" title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/></svg></i>' + ownedCount() + '/' + CARDS.length + '</span>' +
-      '<span class="num" title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i><svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg></i>' + nm + '</span>';
+      '<span class="num" title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 5a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2l0 -14"/></svg></i>' + ownedCount() + '/' + CARDS.length + '</span>' +
+      '<span class="num" title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i><svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/></svg></i>' + nm + '</span>';
   }
 
   // ---------- Effets : vibration, lumière ----------
@@ -2857,14 +2864,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>' :
+    var head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = head +
-      '<p class="eyebrow">Arcane ' + c.num + (r ? ' · <span style="color:' + rarity(r).color + '">' + rarity(r).label + '</span>' : ' · pas encore obtenue') + '</p>' +
+      '<p class="eyebrow">' + (r ? rarity(r).label : 'Pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
-      (r ? '<h2>' + esc(c.title) + '</h2><p class="sub">' + esc(c.who) + ' · ' + esc(c.band) + '</p>' +
+      (r ? '<h2>' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + '</p>' +
            '<div class="chips"><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>' +
-           '<div class="listen" id="d-listen" hidden></div>'
+           '<div class="listen" id="d-listen" hidden></div>' +
+           (MOVES[id] ? '<div class="move"><p class="eyebrow">Coup spécial</p><b>' + esc(MOVES[id][0]) + '</b><p>' + esc(MOVES[id][1]) + '</p></div>' : '')
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
       '<p class="note" style="margin:0 0 8px">Raretés obtenues</p><div class="variants">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0;
@@ -2873,7 +2881,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       }).join('') + '</div>' + fuseBlock(id) +
       (mastered(id) ? '<div class="mastery">★ <b>Maîtrise</b> : tu possèdes les 5 raretés de ' + esc(c.who) + '.</div>'
                     : (r ? '<p class="note" style="margin-top:12px">Maîtrise : ' + RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }).length + '/5 raretés. Réunis-les toutes pour le badge.</p>' : '')) +
-      (r && MOVES[id] ? '<div class="move"><p class="eyebrow">Coup spécial</p><b>' + esc(MOVES[id][0]) + '</b><p>' + esc(MOVES[id][1]) + '</p></div>' : '') +
       (r ? '<div class="detail-actions"><button type="button" class="btn ghost" id="d-share">Partager</button><button type="button" class="btn danger" id="d-tear">Déchirer</button></div>' : '');
     if(r){
       showListen(document.getElementById('d-listen'), id);
@@ -2902,11 +2909,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function fuseBlock(id){
     var rows = RARITIES.slice(0, -1).map(function(x, i){
       var n = state.owned[id+'|'+x.k] || 0; if(!n) return '';
-      var dup = n - 1, next = RARITIES[i+1], cost = fuseCost(x.k), ok = dup >= cost;
-      return '<button type="button"' + (ok ? ' data-from="' + x.k + '"' : ' class="dis" disabled') + '>Transformer <b>' + cost + ' doublons ' + x.label + '</b> → <b style="color:' + next.color + '">1 ' + next.label + '</b>' +
-             (ok ? '' : '<br><span class="note">' + dup + '/' + cost + ' doublons</span>') + '</button>';
+      var dup = n - 1, next = RARITIES[i+1], cost = fuseCost(x.k), ok = dup >= cost, fill = Math.min(dup, cost), ticks = '';
+      for(var t = 0; t < cost; t++) ticks += '<i' + (t < fill ? ' class="on"' : '') + '></i>';
+      return '<div class="fz' + (ok ? ' ready' : '') + '" style="--fc:' + next.color + '">' +
+        '<div class="fz-h"><span><span style="color:' + x.color + '">' + x.label + '</span> → <span style="color:' + next.color + '">' + next.label + '</span></span><span class="num">' + fill + '/' + cost + '</span></div>' +
+        '<div class="fz-g" role="img" aria-label="' + fill + ' doublons ' + x.label + ' sur ' + cost + '">' + ticks + '</div>' +
+        (ok ? '<button type="button" class="btn block" data-from="' + x.k + '">Transformer en ' + next.label + '</button>'
+            : '<small>Encore ' + (cost - dup) + ' doublon' + (cost - dup > 1 ? 's' : '') + ' ' + x.label + '</small>') + '</div>';
     }).join('');
-    return rows ? '<div class="fuse"><p class="note" style="margin:0">Transformer ses doublons (on garde toujours un exemplaire). Chaque palier coûte deux fois plus que le précédent.</p>' + rows + '</div>' : '';
+    return rows ? '<div class="fuse"><p class="eyebrow">Transformations</p>' + rows + '<p class="note">Tu gardes toujours un exemplaire. Chaque palier coûte deux fois plus que le précédent.</p></div>' : '';
   }
   function fuse(id, from){
     var i = rank(from), next = RARITIES[i+1].k, kFrom = id+'|'+from, kNext = id+'|'+next;
@@ -3030,7 +3041,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // groupes favoris (facultatif, 5 au plus) : servent à choisir les prochaines cartes ; envoyés au serveur une fois le compte créé
   function onbBands(styles){
-    var list = (state.favBands || []).slice(), X = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    var list = (state.favBands || []).slice(), X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>';
     onbShow('<h2>Tes groupes du moment ?</h2><p>Jusqu\'à 5. On s\'en sert pour choisir les prochaines cartes du jeu.</p>' +
       '<form class="fav-form" id="fav-form"><label class="pf-label" for="fav-in">Un groupe ou un artiste</label><div class="pf-row"><input class="as-in" id="fav-in" maxlength="60" autocomplete="off" placeholder="ex. Gojira"><button type="submit" class="btn ghost">Ajouter</button></div></form>' +
       '<div class="fav-chips" id="fav-chips"></div>' +
