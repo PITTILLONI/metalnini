@@ -238,7 +238,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('puis la pile de cartes s\'ouvre', !d5.getElementById('reveal').hidden);
 
   // 10. Échange en ligne (faux serveur en mémoire) : code, pote qui rejoint, cartes posées, alerte du dernier exemplaire, double validation, révélation
-  const s7 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'korn|rare':1,'korn|commune':2}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, onbSeen:true, toPlace:[] };
+  const s7 = { size:5, odds:{commune:60,rare:25,holo:10,signature:4,legendaire:1}, owned:{'korn|rare':1,'korn|commune':2}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, onbSeen:true, toPlace:[], shared:true };
   const dom6 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w6){
     w6.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s7)); w6.HTMLMediaElement.prototype.play = () => Promise.resolve(); w6.matchMedia = () => ({ matches: false }); w6.scrollTo = () => {};
     w6.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w6.HTMLElement.prototype.setPointerCapture = () => {}; w6.HTMLElement.prototype.scrollIntoView = () => {};
@@ -250,7 +250,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async cryUrl(){ return 'data:audio/wav;base64,'; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async cryUrl(){ return 'data:audio/wav;base64,'; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -259,6 +259,10 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
       inv = [{musician_id:'korn', rarity:'commune', copies:2, placed:true}, {musician_id:'jinjer', rarity:'holo', copies:1, placed:false}, {musician_id:'spiritbox', rarity:'commune', copies:1, placed:false}]; } return snap(); } };
   await w6.metalniniOnline(fake); await sleep(100);
   d6.getElementById('tab-corner').click(); await sleep(20);
+  check('objectif terminé : en tête de Metal Corner, pastille rouge sur l\'onglet', !!d6.querySelector('#quest-list .goal.claim') && d6.getElementById('quest-n').classList.contains('claim'));
+  d6.querySelector('#quest-list .goal.claim').click(); await sleep(100);
+  check('objectif touché : la récompense se révèle, l\'objectif disparaît', !d6.getElementById('reveal').hidden && /Objectif atteint/.test(d6.getElementById('counter').textContent) && !d6.querySelector('#quest-list .goal.claim'));
+  d6.getElementById('reveal').hidden = true;
   d6.getElementById('tr-host').click(); await sleep(50);
   check('échange : code affiché en attendant le pote', !d6.getElementById('trade').hidden && /ABC 234/.test(d6.getElementById('trade-in').textContent));
   Object.assign(T, { status:'live', partner:'Riffeuse', get:[{m:'jinjer', r:'holo', n:1}] }); watchCb(); await sleep(50);
@@ -276,12 +280,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d6.getElementById('trade-min').click(); d6.getElementById('tab-corner').click(); await sleep(20); d6.getElementById('tr-host').click(); await sleep(20);
   check('échange réduit : « Montrer mon code » y revient au lieu d\'en ouvrir un autre', !d6.getElementById('trade').hidden && /Riffeuse/.test(d6.getElementById('trade-in').textContent));
   d6.getElementById('tr-add').click(); await sleep(20);
-  check('doublons : le nombre d\'exemplaires reste visible sous la carte, même avec une étiquette', /×2/.test(d6.querySelector('#tp-body .tr-card[data-r="commune"] small').textContent));
+  check('doublons : le nombre d\'exemplaires reste visible sous la carte, même avec une étiquette', /×2/.test(d6.querySelector('#tp-body .tr-card[data-m="korn"][data-r="commune"] small').textContent));
   d6.getElementById('tp-dup').click(); await sleep(20);
   check('filtre « Doublons seulement »', d6.querySelectorAll('#tp-body .tr-card').length === 1 && d6.querySelector('#tp-body .tr-card').getAttribute('data-r') === 'commune');
   d6.getElementById('tp-dup').click(); await sleep(20);
   const lastKorn = d6.querySelector('#tp-body .tr-card[data-r="rare"]');
-  check('choix des cartes : en tête, la rareté que le pote n\'a pas (Korn Rare avant la Commune qu\'il a)', d6.querySelector('#tp-body .tr-card').getAttribute('data-r') === 'rare' && /Raretés que Riffeuse/.test(d6.getElementById('tp-body').textContent));
+  check('choix des cartes : en tête, la rareté que le pote n\'a pas (Korn Rare avant la Commune qu\'il a)', (() => { const ks = [...d6.querySelectorAll('#tp-body .tr-card[data-m="korn"]')].map(b => b.getAttribute('data-r')); return ks[0] === 'rare' && ks[1] === 'commune'; })() && /Raretés que Riffeuse/.test(d6.getElementById('tp-body').textContent));
   lastKorn.click(); await sleep(50);
   check('carte posée : elle passe côté « Tu donnes »', d6.querySelectorAll('#tr-give .tr-card').length === 1 && T.version === 1);
   d6.querySelector('#tp-body .tr-card[data-r="commune"]').click(); await sleep(50); d6.querySelector('#tp-body .tr-card[data-r="commune"]').click(); await sleep(50);

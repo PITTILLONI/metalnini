@@ -195,6 +195,11 @@
     background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:left; cursor:pointer; max-width:none}
   .goal.quest b{font:600 .86rem/1.3 var(--mono); letter-spacing:0; text-transform:none; color:var(--text)}
   .goal.quest .pc{font:600 .78rem var(--mono); color:var(--gold); font-variant-numeric:tabular-nums}
+  .goal.quest.claim{border-color:var(--gold); background:rgba(235,154,38,.1); box-shadow:0 0 18px rgba(235,154,38,.18)}
+  .goal.quest.claim .pc{padding:6px 12px; border:1px solid var(--gold); border-radius:999px; font:800 .8rem var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi)}
+  .goal.quest.claim small{grid-column:1 / -1; font:500 .74rem var(--mono); color:var(--gold-hi)} .goal.quest.claim:disabled{opacity:.5}
+  .quest-n.claim{background:var(--accent); color:#fff; animation:claimpulse 1.8s ease-in-out infinite}
+  @keyframes claimpulse{50%{transform:scale(1.15)}}
   .goal .qbar, .prog .qbar{grid-column:1 / -1; display:block; height:3px; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden}
   .goal .qbar i, .prog .qbar i{display:block; height:100%; background:var(--gold)}
   .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
@@ -1217,6 +1222,8 @@ const api = {
   async tradeCancel(id){ must(await sb.rpc('trade_cancel', { p_trade: id })); },
   async tradeCount(){ return must(await sb.rpc('my_trade_count')); },
   async tradeActive(){ return must(await sb.rpc('trade_active')); },
+  async claims(){ return must(await sb.from('objective_claims').select('key')).map(r => r.key); },
+  async claimObjective(key){ return must(await sb.rpc('claim_objective', { p_key: key })); },
   async cryUrl(path){ return (must(await sb.storage.from('cries').createSignedUrl(path, 600))).signedUrl; },
   async tradePartnerCards(id){ return must(await sb.rpc('trade_partner_cards', { p_trade: id })); },
   async tradeWant(id, m, r, on){ return must(await sb.rpc('trade_want', { p_trade: id, p_musician: m, p_rarity: r, p_on: on })); },
@@ -1524,6 +1531,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
+      api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
@@ -1956,17 +1964,44 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     out = out.concat(binders.slice(0, 1), side.slice(0, 1), binders.slice(1, 2), mastery, side.slice(1), binders.slice(2));
     return out.slice(0, 5);
   }
-  // objectifs : dans l'onglet Metal Corner (leur nombre en pastille sur l'onglet) ; chaque objectif mène là où il se joue
+  // objectifs terminés, récompense à toucher dans Metal Corner (en ligne : le serveur vérifie et donne, une seule fois)
+  function claimables(){
+    if(!ONLINE || !state.claims) return [];
+    var out = [];
+    BINDERS.forEach(function(b){ var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
+      if(ids.length && ids.every(function(id){ return placed(id); })) out.push({key:'binder:' + b.k, title:'Classeur plié : ' + binderLabel(b), gift:'1 paquet au choix'}); });
+    CARDS.forEach(function(c){ if(mastered(c.id)) out.push({key:'mastery:' + c.id, title:'Maîtrise : ' + c.who, gift:'1 carte Rare minimum'}); });
+    if(avatarSrc()) out.push({key:'avatar', title:'Ta tête sur ton profil', gift:'1 carte que tu n\'as pas'});
+    if(state.shared) out.push({key:'share', title:'Ta plus belle carte partagée', gift:'1 carte que tu n\'as pas'});
+    return out.filter(function(o){ return !state.claims[o.key]; });
+  }
+  function claimObjective(o, btn){
+    btn.disabled = true;
+    ONLINE.claimObjective(o.key).then(async function(res){
+      state.claims[o.key] = true; save(); renderCorner();
+      if(res.kind === 'points'){ snd('reward'); refreshDaily(); toast('<b>Récompense</b> · 1 paquet au choix ajouté à tes cartes du jour.'); return; }
+      try{ applyInventory(await ONLINE.inventory()); }catch(e){}
+      renderStats(); if(!card(res.m)) return;
+      if(res.new) state.fresh[res.m] = true; save();
+      current = [{c:card(res.m), r:res.r, isNew:res.new}]; idx = 0; seenUpTo = -1; snd('gift');
+      revealEl.hidden = false; document.getElementById('skip').hidden = true; showCard();
+      setTimeout(function(){ document.getElementById('counter').textContent = 'Objectif atteint · ' + o.title; }, 0);
+    }).catch(function(e){ btn.disabled = false; snd('nope'); toast(esc(e.message)); });
+  }
+  // objectifs : dans l'onglet Metal Corner, les terminés (à toucher) en tête ; pastille de l'onglet = récompenses à récupérer, sinon objectifs en cours
   function renderGoals(){
-    var list = goals(), n = document.getElementById('quest-n');
-    n.hidden = !list.length; n.textContent = list.length;
-    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (list.length ? ', ' + list.length + ' objectif' + (list.length > 1 ? 's' : '') : ''));
+    var list = goals(), done = claimables(), n = document.getElementById('quest-n'), c = done.length || list.length;
+    n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!done.length);
+    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (done.length ? ', ' + done.length + ' récompense' + (done.length > 1 ? 's' : '') + ' à récupérer' : list.length ? ', ' + list.length + ' objectif' + (list.length > 1 ? 's' : '') : ''));
     var el = document.getElementById('quest-list');
-    el.innerHTML = list.length ? list.map(function(g){
+    el.innerHTML = done.map(function(o, i){
+      return '<button type="button" class="goal quest claim" data-claim="' + i + '"><b>' + esc(o.title) + '</b><span class="pc">Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></button>'; }).join('') +
+      (list.length ? list.map(function(g){
       return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
         '<b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></button>'; }).join('')
-      : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>';
-    [].forEach.call(el.querySelectorAll('.goal'), function(b){ b.onclick = function(){
+      : done.length ? '' : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>');
+    [].forEach.call(el.querySelectorAll('[data-claim]'), function(b){ b.onclick = function(){ claimObjective(done[+b.getAttribute('data-claim')], b); }; });
+    [].forEach.call(el.querySelectorAll('.goal:not(.claim)'), function(b){ b.onclick = function(){
       if(b.getAttribute('data-act') === 'profile'){ openProfile(); return; } revealEl.hidden = true; openBinder(b.getAttribute('data-b')); go('binder'); if(b.getAttribute('data-d')) openDetail(b.getAttribute('data-d')); }; });
   }
   // mise à jour ciblée : applique un nouveau HTML sans recréer ce qui n'a pas changé (les images restent en place, rien ne saute).
@@ -2796,12 +2831,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         var comps = newCompletions(), mast = newMasteries();
         if(dealing){
           var ev = up ? [{t:rarity(r).label + ' !', s:card(id).who + ' monte en grade', c:COLORS[r]}] : [];
-          comps.forEach(function(bb){ ev.push({t:'Classeur complété', s:bb.label + ' · Carte Collector et badge dans ta poche', c:COLORS.signature, sfx:'complete'}); });
-          mast.forEach(function(c){ ev.push({t:'Maîtrise', s:c.who + ' · les 5 raretés réunies. Respect.', c:COLORS.signature, sfx:'mastery'}); });
+          comps.forEach(function(bb){ ev.push({t:'Classeur complété', s:bb.label + ' · Ta récompense t\'attend dans Metal Corner', c:COLORS.signature, sfx:'complete'}); });
+          mast.forEach(function(c){ ev.push({t:'Maîtrise', s:c.who + ' · 5 raretés. Récompense dans Metal Corner.', c:COLORS.signature, sfx:'mastery'}); });
           dealLog.comps += comps.length; dealLog.mast += mast.length;
           dealFx(ev, function(){ setTimeout(done, 120); }); return;
         }
-        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Carte Collector et badge dans ta poche.'); }, 300 + i*1300); });
+        comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Ta récompense t\'attend dans Metal Corner.'); }, 300 + i*1300); });
         setTimeout(function(){ celebrate(mast); }, comps.length * 1300);
         if(then) setTimeout(then, 700); else if(done) setTimeout(done, 380);
       }, reduce ? 0 : dealing ? 330 : 560);
@@ -2931,7 +2966,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.innerHTML = html; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3700); }
   function celebrate(list){
     list.forEach(function(c, i){ setTimeout(function(){ SFX.mastery();
-      toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies. Respect. Badge débloqué.'); }, 500 + i*1200); });
+      toast('<b>Maîtrise</b> · ' + esc(c.who) + '<br>Les 5 raretés réunies. Ta récompense t\'attend dans Metal Corner.'); }, 500 + i*1200); });
   }
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
   // classeurs : catégorie (puces) → cartes de classeur → page du classeur ; « Collection » ouvre directement toutes les cartes

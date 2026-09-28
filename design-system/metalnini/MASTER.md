@@ -48,7 +48,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Rangement** : chaque carte s'affiche en grand, bonus en bandeau (lettrage Metal Mania) ; consigne sur deux lignes au-dessus ; un toucher range et passe à la suivante. Transformation proposée quand elle devient possible.
 
 ## Parcours Metal Corner et échange
-1. **Onglet** : bloc « Échanger » (Montrer mon code, Scanner son code), objectifs, progression (titre du profil, titre « Metal Corner » et nombre d'échanges).
+1. **Onglet** : bloc « Échanger » (Montrer mon code, Scanner son code), objectifs (les terminés en tête, cadre or, « Terminé · récompense » et bouton « Récupérer » ; pastille rouge qui pulse sur l'onglet tant qu'il y a une récompense à prendre), progression (titre du profil, titre « Metal Corner » et nombre d'échanges).
 2. **Montrer mon code** : QR code sur fond os, code à 6 caractères en or (« ABC 234 »), « Envoyer le lien » (feuille de partage, sinon lien copié), « En attente de ton pote… ».
 3. **Scanner** : caméra carrée avec cadre or, et toujours le champ « Ou tape son code ».
 4. **Composition** : « Tu donnes » (toucher une carte la retire, « + Ajouter » ouvre la feuille des cartes, encart « X te demande N cartes · Voir ») et « Tu reçois » (toucher = plein écran), cote indicative de chaque côté, état de validation du pote, « Valider l'échange ». Toute carte posée ou retirée annule les validations. Donner un dernier exemplaire passe par une confirmation qui cite les classeurs complets touchés.
