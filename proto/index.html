@@ -185,6 +185,29 @@
   .tp-tabs button{min-height:44px; border:0; border-radius:9px; background:none; color:var(--muted); font:800 .95rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
   .tp-tabs button[aria-selected="true"]{background:var(--surface-2); color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.45)}
   #tp-note{color:var(--muted); margin:0 0 4px}
+  /* troc : ce que je donne part vers le pote, ce que je reçois arrive ; pas de révélation carte par carte */
+  .troc{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(ellipse at 50% 30%, #1d130c 0%, var(--bg) 70%)}
+  .troc[hidden]{display:none}
+  .troc-in{max-width:520px; margin:0 auto; padding:calc(28px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align:center; display:flex; flex-direction:column; gap:10px}
+  .troc-in h2{font-size:2rem; margin:0}
+  .troc-stage{display:flex; flex-direction:column; align-items:center; gap:12px; margin:8px 0}
+  .troc-row{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%}
+  .troc-row p{width:100%; margin:0; font:600 .72rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .troc-row figure{position:relative; margin:0; width:min(22vw, 92px)} .troc-row.give figure{width:min(16vw, 64px); opacity:.55}
+  .troc-row img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; box-shadow:0 10px 22px rgba(0,0,0,.6)}
+  .troc-row figcaption{margin-top:4px; font:600 .64rem/1.2 var(--mono); text-transform:uppercase}
+  .troc-row .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .58rem/15px var(--mono); text-transform:uppercase; background:rgba(10,8,7,.88); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold)}
+  .troc-row .tag.bonus{background:var(--gold); color:var(--ink); box-shadow:none}
+  .troc-swap{width:56px; height:56px; display:grid; place-items:center; border-radius:50%; border:1px solid var(--gold); color:var(--gold-hi); background:var(--ink)}
+  .troc-note{margin:0; color:var(--muted); font-size:.88rem}
+  /* potes, propositions, historique */
+  .friend, .invite, .hist{display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:12px; width:100%; min-height:60px; padding:8px 10px; margin:0 0 8px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); text-align:left}
+  .invite{border-color:var(--gold); background:rgba(235,154,38,.08)}
+  .f-av{width:44px; height:44px; border-radius:50%; background:var(--surface-2) center/cover; border:1px solid var(--gold); display:grid; place-items:center; font:800 1.1rem var(--display); color:var(--gold-hi)}
+  .friend b, .invite b, .hist b{display:block; font:600 .9rem/1.25 var(--mono)} .friend small, .invite small, .hist small{display:block; color:var(--muted); font:500 .74rem var(--mono)}
+  .f-acts{display:flex; gap:6px} .f-acts button{min-height:40px; padding:0 12px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--gold-hi); font:600 .76rem var(--mono); cursor:pointer}
+  .hist{grid-template-columns:1fr auto} .h-cards{display:flex; gap:3px; margin-top:6px} .h-cards img{width:26px; aspect-ratio:2/3; object-fit:cover; border-radius:3px} .h-cards i{align-self:center; margin:0 4px; color:var(--muted); font-style:normal}
+  .pub-miss{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px} .pub-miss img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
   #mastery-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} #mastery-sheet .pf-note{color:var(--muted)} #mastery-sheet .eyebrow{margin:14px 0 8px}
   .ms-crowned{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
   .ms-crowned button{position:relative; padding:0; border:0; background:none; cursor:pointer; color:var(--text); font:600 .66rem/1.2 var(--mono); text-align:center}
@@ -853,8 +876,11 @@
     <p class="pf-note">Chacun pose ses cartes, vous validez tous les deux, c'est plié. Côte à côte ou à distance.</p>
     <div class="tr-go"><button type="button" class="btn block" id="tr-host">Montrer mon code</button><button type="button" class="btn ghost block" id="tr-scan">Scanner son code</button></div>
   </section>
+  <section class="corner-sec" id="invites-sec" hidden><p class="eyebrow">On te propose un échange</p><div id="invites"></div></section>
+  <section class="corner-sec" id="friends-sec" hidden><p class="eyebrow">Mes potes</p><div id="friends"></div></section>
   <section class="corner-sec"><p class="eyebrow">Tes objectifs</p><div class="quest-list" id="quest-list"></div></section>
   <section class="corner-sec"><p class="eyebrow">Ta progression</p><div id="corner-prog"></div></section>
+  <section class="corner-sec" id="history-sec" hidden><p class="eyebrow">Tes échanges</p><div id="history"></div></section>
 </main>
 
 <!-- ============ CLASSEUR ============ -->
@@ -1140,6 +1166,16 @@
   <div class="trade-in" id="trade-in"></div>
 </div>
 <button type="button" class="trade-pill" id="trade-pill" hidden></button>
+<div class="troc" id="troc" hidden role="dialog" aria-modal="true" aria-labelledby="troc-t">
+  <div class="troc-in">
+    <p class="eyebrow">Troc conclu</p><h2 id="troc-t"></h2>
+    <div class="troc-stage"><div class="troc-row give" id="troc-give"></div><div class="troc-swap" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></div><div class="troc-row get" id="troc-get"></div></div>
+    <p class="troc-note" id="troc-note"></p>
+    <button type="button" class="btn block" id="troc-go">Ranger dans le classeur</button>
+    <button type="button" class="btn ghost block" id="troc-follow" hidden></button>
+    <button type="button" class="link" id="troc-close">Fermer</button>
+  </div>
+</div>
 <div class="bsheet" id="mastery-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ms-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1215,6 +1251,13 @@ const api = {
   async claimPush(){ return must(await sb.rpc('claim_push_reward')); },
   async requestArtist(a, n, prio){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
+  async myTrades(){ return must(await sb.rpc('my_trades', { p_limit: 20 })); },
+  async friends(){ return must(await sb.rpc('my_friends')); },
+  async follow(id, on){ must(await sb.rpc('follow', { p_friend: id, p_on: on })); },
+  async friendCards(id){ return must(await sb.rpc('friend_cards', { p_friend: id })); },
+  async tradeInvite(id){ return must(await sb.rpc('trade_invite', { p_friend: id })); },
+  async tradeInvites(){ return must(await sb.rpc('my_trade_invites')); },
+  async mediaUrl(bucket, path){ return path ? (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl : null; },
   async savePush(e, k, a){ must(await sb.rpc('save_push_subscription', { p_endpoint: e, p_p256dh: k, p_auth: a })); },
   async deletePush(e){ must(await sb.rpc('delete_push_subscription', { p_endpoint: e })); },
   async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
@@ -1257,7 +1300,6 @@ const api = {
   async tradeActive(){ return must(await sb.rpc('trade_active')); },
   async claims(){ return must(await sb.from('objective_claims').select('key')).map(r => r.key); },
   async claimObjective(key){ return must(await sb.rpc('claim_objective', { p_key: key })); },
-  async cryUrl(path){ return (must(await sb.storage.from('cries').createSignedUrl(path, 600))).signedUrl; },
   async tradePartnerCards(id){ return must(await sb.rpc('trade_partner_cards', { p_trade: id })); },
   async tradeWant(id, m, r, on){ return must(await sb.rpc('trade_want', { p_trade: id, p_musician: m, p_rarity: r, p_on: on })); },
   tradeWatch(id, cb){
@@ -1567,7 +1609,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.tickets().then(function(n){ state.tickets = n; save(); }).catch(function(){});
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
-      else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
+      else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
+      api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if((state.favBands || []).length && !state.favSent) api.setFavBands(state.favBands).then(function(){ state.favSent = true; save(); }).catch(function(){});
@@ -1688,8 +1731,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div><b>' + d.stats.cards + '<small style="font-size:.55em; color:var(--muted)">/' + d.stats.total + '</small></b><span>musiciens</span></div>' +
         '<div><b>' + d.stats.legend + '</b><span>Légendaire' + (d.stats.legend > 1 ? 's' : '') + '</span></div>' +
         '<div><b>' + d.stats.packs + '</b><span>paquets ouverts</span></div>' +
-        '<div><b style="font-size:1.15rem; line-height:1.15">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>';
+        '<div><b style="font-size:1.15rem; line-height:1.15">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>' +
+      (d.friend ? '<section class="pub-sec"><p class="eyebrow">Il lui manque, tu l\'as en double</p>' + (d.missing.length ? '<div class="pub-miss">' + d.missing.map(function(k){ return '<img src="' + kImg(k) + '" alt="' + esc(card(k.split('|')[0]).who) + '">'; }).join('') + '</div>' : '<p class="pub-empty">Rien pour l\'instant : tes doublons, il les a déjà.</p>') +
+        '<button type="button" class="btn block" id="pub-trade" style="margin-top:14px">Lui proposer un échange</button></section>' : '');
     var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ try{ new Audio(d.cry).play(); }catch(e){} };
+    var pt = document.getElementById('pub-trade'); if(pt) pt.onclick = function(){ closePub(); inviteFriend(d.friend, pt); };
     [].forEach.call(document.querySelectorAll('.pub-fan button'), function(b){ b.onclick = function(){ if(!d.own) return; closePub(); openDetail(b.getAttribute('data-k').split('|')[0]); }; });
   }
   var pubEl = document.getElementById('pub');
@@ -2301,7 +2347,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // le cri du pote retentit juste après le jingle : par le moteur audio (déjà débloqué, donc même sans geste sur iPhone), sinon lecteur classique
   function partnerCry(t){
     if(!t.partner_cry || !sndOn()) return;
-    ONLINE.cryUrl(t.partner_cry).then(function(url){
+    ONLINE.mediaUrl('cries', t.partner_cry).then(function(url){
       setTimeout(function(){
         toast('Le cri de <b>' + esc(t.partner || 'ton pote') + '</b> résonne dans le pit.');
         var fallback = function(){ var pl = new Audio(url).play(); if(pl) pl.catch(function(){}); };
@@ -2311,21 +2357,91 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       }, 1100);
     }).catch(function(){});
   }
-  // échange conclu : les cartes reçues (et la carte bonus de rencontre) se révèlent comme au sortir d'un paquet, puis attendent dans « À ranger »
+  // échange conclu : écran de troc (ce que je donne part, ce que je reçois arrive, bonus de rencontre en évidence), puis « À ranger »
+  var trocEl = document.getElementById('troc'), friendIds = {};
   async function tradeDone(t){
     tradeClose();
     try{ applyInventory(await ONLINE.inventory()); }catch(e){}
     ONLINE.tradeCount().then(function(n){ var first = !state.trades && n > 0; state.trades = n; save(); renderCorner();
-      if(first) setTimeout(function(){ snd('title'); toast('<b>Titre débloqué</b> · Metal Corner'); }, 2400); }).catch(function(){});
+      if(first) setTimeout(function(){ snd('title'); toast('<b>Titre débloqué</b> · Metal Corner'); }, 3200); }).catch(function(){});
     renderStats(); renderBinder();
-    var got = (t.get || []).concat(t.bonus ? [t.bonus] : []).filter(function(x){ return card(x.m); });
-    if(!got.length){ snd('trade-done'); partnerCry(t); toast('Échange conclu. Tes cartes sont parties chez ' + esc(t.partner) + '.'); return; }
-    current = got.map(function(x){ var isNew = (state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1; if(isNew) state.fresh[x.m] = true; return {c:card(x.m), r:x.r, isNew:isNew}; });
-    save(); idx = 0; seenUpTo = -1; snd('trade-done'); partnerCry(t);
-    revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
-    setTimeout(function(){ document.getElementById('counter').textContent = 'Échange avec ' + t.partner; }, 0);
-    if(t.bonus) setTimeout(function(){ snd('meet-bonus'); toast('<b>Première rencontre</b> avec ' + esc(t.partner) + ' : une carte bonus en plus.'); }, 900);
+    var got = (t.get || []).filter(function(x){ return card(x.m); }), bonus = t.bonus && card(t.bonus.m) ? t.bonus : null;
+    got.forEach(function(x){ if((state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1) state.fresh[x.m] = true; }); if(bonus) state.fresh[bonus.m] = true; save();
+    var fig = function(x, tag, cls){ var rr = rarity(x.r);
+      return '<figure>' + (tag ? '<span class="tag ' + (cls || '') + '">' + tag + '</span>' : '') + '<img src="' + img(x.m, x.r) + '" alt="' + esc(card(x.m).who) + ', ' + rr.label + '"><figcaption style="color:' + rr.color + '">' + rr.label + (x.n > 1 ? ' ×' + x.n : '') + '</figcaption></figure>'; };
+    document.getElementById('troc-t').textContent = 'avec ' + (t.partner || 'ton pote');
+    document.getElementById('troc-give').innerHTML = '<p>Tu donnes</p>' + ((t.give || []).filter(function(x){ return card(x.m); }).map(function(x){ return fig(x); }).join('') || '<p>Rien : un vrai cadeau</p>');
+    document.getElementById('troc-get').innerHTML = '<p>Tu reçois</p>' + (got.map(function(x){ return fig(x, (state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1 && !best(x.m) ? 'Nouvelle' : ''); }).join('') || '') + (bonus ? fig(bonus, 'Bonus rencontre', 'bonus') : '') + (got.length || bonus ? '' : '<p>Rien en retour : tu as fait un cadeau</p>');
+    document.getElementById('troc-note').textContent = got.length || bonus ? 'Tes nouvelles cartes t\'attendent dans le classeur, à ranger.' : '';
+    document.getElementById('troc-go').hidden = !(got.length || bonus);
+    var fb = document.getElementById('troc-follow'), pid = t.partner_id;
+    fb.hidden = !pid || friendIds[pid]; fb.textContent = 'Suivre ' + (t.partner || 'ton pote'); fb.disabled = false;
+    fb.onclick = function(){ fb.disabled = true; ONLINE.follow(pid, true).then(function(){ friendIds[pid] = true; fb.hidden = true; snd('select'); toast(esc(t.partner || 'Ton pote') + ' rejoint tes potes.'); renderSocial(); }).catch(function(e){ fb.disabled = false; toast(esc(e.message)); }); };
+    trocEl.hidden = false; trocEl.scrollTop = 0; snd('trade-done'); partnerCry(t);
+    if(bonus) setTimeout(function(){ snd('meet-bonus'); }, 1600);
+    if(!reduce && Element.prototype.animate){
+      [].forEach.call(trocEl.querySelectorAll('.give figure'), function(f, i){ f.animate([{transform:'translateY(0)', opacity:1}, {transform:'translateY(-40px) scale(.9)', opacity:.55}], {duration:600, delay:200 + i * 70, easing:'cubic-bezier(.4,0,.2,1)', fill:'backwards'}); });
+      trocEl.querySelector('.troc-swap').animate([{transform:'rotate(0)'}, {transform:'rotate(180deg)'}], {duration:700, delay:300, easing:'cubic-bezier(.6,0,.2,1)'});
+      [].forEach.call(trocEl.querySelectorAll('.get figure'), function(f, i){ f.animate([{transform:'translateY(-120px) scale(.7) rotate(-6deg)', opacity:0}, {transform:'translateY(0) scale(1) rotate(0)', opacity:1}], {duration:650, delay:700 + i * 120, easing:'cubic-bezier(.2,.9,.3,1.2)', fill:'backwards'}); });
+    }
   }
+  document.getElementById('troc-go').addEventListener('click', function(){ trocEl.hidden = true; openBinder('all'); go('binder'); });
+  document.getElementById('troc-close').addEventListener('click', function(){ trocEl.hidden = true; });
+
+  // Metal Corner social : propositions d'échange reçues, mes potes (profil, échange direct), historique des échanges
+  var friendsList = [], invitesList = [];
+  function renderSocial(){
+    if(!ONLINE) return;
+    ONLINE.tradeInvites().then(function(list){ invitesList = list || []; paintInvites(); }).catch(function(){});
+    ONLINE.friends().then(function(list){ friendsList = list || []; friendIds = {}; friendsList.forEach(function(f){ friendIds[f.friend_id] = true; }); paintFriends(); }).catch(function(){});
+    ONLINE.myTrades().then(paintHistory).catch(function(){});
+  }
+  function avatarHtml(name, url){ return '<span class="f-av"' + (url ? ' style="background-image:url(\'' + esc(url) + '\')"' : '') + '>' + (url ? '' : esc((name || '?').charAt(0).toUpperCase())) + '</span>'; }
+  function paintInvites(){
+    document.getElementById('invites-sec').hidden = !invitesList.length;
+    document.getElementById('invites').innerHTML = invitesList.map(function(v, i){
+      return '<div class="invite">' + avatarHtml(v.from_name) + '<span><b>' + esc(v.from_name || 'Un pote') + '</b><small>te propose un échange</small></span><span class="f-acts"><button type="button" data-join="' + i + '">Rejoindre</button></span></div>'; }).join('');
+    [].forEach.call(document.querySelectorAll('[data-join]'), function(b){ b.onclick = function(){ tradeJoin(invitesList[+b.getAttribute('data-join')].code); }; });
+  }
+  function paintFriends(){
+    document.getElementById('friends-sec').hidden = !friendsList.length;
+    var box = document.getElementById('friends');
+    box.innerHTML = friendsList.map(function(f, i){
+      return '<div class="friend">' + avatarHtml(f.username, null) + '<span><b>' + esc(f.username || 'Pote') + '</b><small>' + f.trades + ' échange' + (f.trades > 1 ? 's' : '') + (f.last_trade ? ' · dernier le ' + new Date(f.last_trade).toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) : '') + '</small></span>' +
+        '<span class="f-acts"><button type="button" data-fp="' + i + '">Profil</button><button type="button" data-ft="' + i + '">Échanger</button></span></div>'; }).join('');
+    friendsList.forEach(function(f, i){ if(!f.avatar_path) return; ONLINE.mediaUrl('avatars', f.avatar_path).then(function(u){ var el = box.querySelectorAll('.f-av')[i]; if(el && u){ el.style.backgroundImage = 'url("' + u + '")'; el.textContent = ''; } }).catch(function(){}); });
+    [].forEach.call(box.querySelectorAll('[data-fp]'), function(b){ b.onclick = function(){ openFriend(friendsList[+b.getAttribute('data-fp')]); }; });
+    [].forEach.call(box.querySelectorAll('[data-ft]'), function(b){ b.onclick = function(){ inviteFriend(friendsList[+b.getAttribute('data-ft')], b); }; });
+  }
+  function inviteFriend(f, btn){
+    if(!needOnline() || tradeResume()) return;
+    btn.disabled = true;
+    ONLINE.tradeInvite(f.friend_id).then(function(t){ tradeShow(t); toast('Proposition envoyée à ' + esc(f.username || 'ton pote') + '. Il reçoit une notification.'); })
+      .catch(function(e){ snd('nope'); toast(esc(e.message)); }).then(function(){ btn.disabled = false; });
+  }
+  function paintHistory(rows){
+    rows = (rows || []).filter(function(h){ return h.done_at; });
+    document.getElementById('history-sec').hidden = !rows.length;
+    var mini = function(list){ return (list || []).filter(function(x){ return card(x.m); }).slice(0, 4).map(function(x){ return '<img src="' + img(x.m, x.r) + '" alt="' + esc(card(x.m).who) + '" loading="lazy">'; }).join(''); };
+    document.getElementById('history').innerHTML = rows.slice(0, 8).map(function(h){
+      return '<div class="hist"><span><b>' + esc(h.partner || 'Pote') + '</b><small>' + new Date(h.done_at).toLocaleDateString('fr-FR', {day:'numeric', month:'long'}) + '</small><span class="h-cards">' + (mini(h.gave) || '<i>rien</i>') + '<i>⇄</i>' + (mini(h.got) || '<i>rien</i>') + '</span></span></div>'; }).join('');
+  }
+  // profil d'un pote : même veste à patchs que le mien, calculée sur son classeur, avec ce qui lui manque et que j'ai en double
+  function profileWith(owned, toPlace, fn){ var o = state.owned, t = state.toPlace; state.owned = owned; state.toPlace = toPlace; try{ return fn(); } finally { state.owned = o; state.toPlace = t; } }
+  async function openFriend(f){
+    try{
+      var rows = await ONLINE.friendCards(f.friend_id), owned = {}, toPlace = [];
+      rows.forEach(function(r){ if(!card(r.musician_id)) return; var k = r.musician_id + '|' + r.rarity; owned[k] = r.copies; if(!r.placed) toPlace.push(k); });
+      var d = profileWith(owned, toPlace, function(){ var p = myProfile(); p.showcase = ownedKeys().sort(byRarity).filter(function(k, i, a){ return a.map(function(x){ return x.split('|')[0]; }).indexOf(k.split('|')[0]) === i; }).slice(0, 3); return p; });
+      d.own = false; d.name = f.username || 'Pote'; d.power = f.metal_power; d.stats.packs = '—';
+      d.avatar = await ONLINE.mediaUrl('avatars', f.avatar_path).catch(function(){ return null; });
+      d.cry = await ONLINE.mediaUrl('cries', f.cry_path).catch(function(){ return null; });
+      // ce qui lui manque et que j'ai en double : de quoi lui proposer un échange
+      d.missing = ownedKeys().filter(function(k){ return state.owned[k] > 1 && !Object.keys(owned).some(function(x){ return x.split('|')[0] === k.split('|')[0]; }); }).sort(byRarity).slice(0, 8);
+      d.friend = f; openPub(d);
+    }catch(e){ toast(esc(e.message)); }
+  }
+
   document.getElementById('tr-host').addEventListener('click', tradeHost);
   document.getElementById('tr-scan').addEventListener('click', openScan);
   document.getElementById('trade-x').addEventListener('click', function(){
@@ -2393,7 +2509,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['packs','binder','corner','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder();
-    if(v === 'corner'){ renderCorner(); if(ONLINE) ONLINE.tradeCount().then(function(n){ state.trades = n; save(); renderCorner(); }).catch(function(){}); }
+    if(v === 'corner'){ renderCorner(); renderSocial(); if(ONLINE) ONLINE.tradeCount().then(function(n){ state.trades = n; save(); renderCorner(); }).catch(function(){}); }
     if(v === 'packs' && state.welcome && !ONLINE){ onbSave(); }
     if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
@@ -2929,7 +3045,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
   // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
   var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
-  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden || !document.getElementById('trade').hidden; }
+  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden || !document.getElementById('trade').hidden || !document.getElementById('troc').hidden; }
   function showWl(e, t, p, src, go){
     document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
     document.getElementById('wl-go').textContent = go || 'Ouvrir mon cadeau';
@@ -3548,7 +3664,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'mastery-sheet', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'mastery-sheet', 'troc', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

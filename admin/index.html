@@ -140,6 +140,7 @@
       <button data-t="players">Joueurs</button>
       <button data-t="packs">Paquets & probabilités</button>
       <button data-t="catalog">Catalogue</button>
+      <button data-t="trades">Échanges</button>
       <button data-t="log">Journal</button>
       <button data-t="team">Admins</button>
       <button data-t="account">Mon compte</button>
@@ -148,6 +149,7 @@
     <section data-p="players" hidden></section>
     <section data-p="packs" hidden></section>
     <section data-p="catalog" hidden></section>
+    <section data-p="trades" hidden></section>
     <section data-p="log" hidden></section>
     <section data-p="team" hidden></section>
     <section data-p="account" hidden></section>
@@ -247,7 +249,7 @@ async function openTab(t){
   tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.t === t)));
   document.querySelectorAll('[data-p]').forEach(p => p.hidden = p.dataset.p !== t);
   const el = document.querySelector(`[data-p="${t}"]`); el.innerHTML = '<p class="muted">Chargement…</p>';
-  try { await ({dash, players, packs, catalogTab, log, team, account})[t === 'catalog' ? 'catalogTab' : t](el); }
+  try { await ({dash, players, packs, catalogTab, trades, log, team, account})[t === 'catalog' ? 'catalogTab' : t](el); }
   catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; }
 }
 async function loadCatalog(){
@@ -325,8 +327,10 @@ async function player(p){
       <p class="err" style="margin:0 0 6px; font-weight:600">Supprimer le joueur</p>
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Efface définitivement le compte, sa collection et son historique de paquets. Irréversible. Impossible sur un admin.</p>
       <div class="row"><div><label for="del-confirm">Tape SUPPRIMER pour confirmer</label><input id="del-confirm" autocomplete="off"></div>
-        <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>`;
+        <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>
+    <div class="card"><h3>Ses échanges</h3><div id="pl-trades" class="muted">Chargement…</div></div>`;
   d.scrollIntoView({ behavior: 'smooth' });
+  sb.rpc('admin_trades', { p_user: p.id, p_limit: 50 }).then(r => { $('pl-trades').className = ''; $('pl-trades').innerHTML = r.error ? esc(r.error.message) : tradesTable(r.data); });
   // photo et cri : fichiers privés, lus par lien signé (1 h)
   if(p.avatar_path || p.cry_path || p.metal_power){
     const url = async (bucket, path) => path ? ((await sb.storage.from(bucket).createSignedUrl(path, 3600)).data || {}).signedUrl : null;
@@ -564,6 +568,25 @@ async function favBands(){
   box.className = '';
   box.innerHTML = `<div class="table-wrap"><table><tr><th>Groupe ou artiste</th><th>Joueurs</th><th>Catalogue</th></tr>
     ${r.data.map(x => `<tr><td><b>${esc(x.band)}</b></td><td>${x.fans}</td><td class="muted">${x.in_catalog ? 'déjà dedans' : '—'}</td></tr>`).join('')}</table></div>`;
+}
+
+// ---------------------------------------------------------------- échanges
+// historique : qui a donné quoi à qui ; statut (en attente, en cours, conclu, annulé)
+const TSTATUS = {open:'en attente', live:'en cours', done:'conclu', cancelled:'annulé'};
+function tradeCards(list){
+  if(!list || !list.length) return '<span class="muted">rien</span>';
+  return list.map(x => { const m = catalog.musicians.find(y => y.id === x.m); return esc(m ? m.name : x.m) + ' <span class="muted">' + RLABEL[x.r] + (x.n > 1 ? ' ×' + x.n : '') + '</span>'; }).join('<br>');
+}
+function tradesTable(rows){
+  if(!rows.length) return '<p class="muted">Aucun échange.</p>';
+  return `<div class="table-wrap"><table><tr><th>Date</th><th>Statut</th><th>Joueur A</th><th>A donne</th><th>Joueur B</th><th>B donne</th></tr>
+    ${rows.map(t => `<tr><td>${fmt(t.done_at || t.created_at)}</td><td>${t.status === 'done' ? '<span class="ok">conclu</span>' : TSTATUS[t.status]}</td>
+      <td><b>${esc(t.host)}</b></td><td style="font-size:.85rem">${tradeCards(t.host_gave)}</td><td><b>${esc(t.guest || '—')}</b></td><td style="font-size:.85rem">${tradeCards(t.guest_gave)}</td></tr>`).join('')}</table></div>`;
+}
+async function trades(el){
+  const rows = await sb.rpc('admin_trades', { p_user: null, p_limit: 200 }).then(must);
+  const done = rows.filter(t => t.status === 'done').length;
+  el.innerHTML = `<div class="card"><h3>Échanges · ${done} conclu${done > 1 ? 's' : ''} sur les ${rows.length} derniers</h3>${tradesTable(rows)}</div>`;
 }
 
 // ---------------------------------------------------------------- équipe d'admin

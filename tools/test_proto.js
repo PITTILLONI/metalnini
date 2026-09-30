@@ -247,12 +247,13 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
     w6.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
   const w6 = dom6.window, d6 = w6.document;
+  let pals = [];
   let inv = [{musician_id:'korn', rarity:'rare', copies:1, placed:true}, {musician_id:'korn', rarity:'commune', copies:2, placed:true}], watchCb = null;
-  const T = { id:'t1', code:'ABC234', status:'open', version:0, host:true, partner:null, left:false, my_ok:false, their_ok:false, give:[], get:[], my_wants:[], their_wants:[], bonus:null };
+  const T = { id:'t1', code:'ABC234', partner_id:'u2', status:'open', version:0, host:true, partner:null, left:false, my_ok:false, their_ok:false, give:[], get:[], my_wants:[], their_wants:[], bonus:null };
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async cryUrl(){ return 'data:audio/wav;base64,'; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async tradeInvites(){ return []; }, async friends(){ return pals; }, async myTrades(){ return T.status === 'done' ? [{id:'t1', done_at:'2026-09-30T10:00:00Z', partner:'Riffeuse', gave:T.give, got:T.get}] : []; }, async follow(id){ pals = [{friend_id:id, username:'Riffeuse', trades:1, last_trade:'2026-09-30T10:00:00Z'}]; }, async mediaUrl(){ return 'data:audio/wav;base64,'; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -306,8 +307,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d6.querySelector('#tr-give .tr-card[data-r="commune"]').click(); await sleep(50);
   T.their_ok = true; T.partner_cry = 'u2/cry.webm'; watchCb(); await sleep(50);
   d6.getElementById('tr-ok').click(); await sleep(1500);
-  check('double validation : échange conclu, cartes reçues et bonus révélés', d6.getElementById('trade').hidden && !d6.getElementById('reveal').hidden && /Riffeuse/.test(d6.getElementById('counter').textContent));
+  check('double validation : écran de troc (je donne / je reçois, bonus de rencontre), pas de révélation', d6.getElementById('trade').hidden && !d6.getElementById('troc').hidden && d6.getElementById('reveal').hidden && /Riffeuse/.test(d6.getElementById('troc-t').textContent) && /Bonus rencontre/.test(d6.getElementById('troc-get').textContent));
   check('échange conclu : le cri du pote retentit', [...d6.querySelectorAll('.toast')].some(t => /Le cri de/.test(t.textContent)));
+  check('troc : bouton « Suivre » le pote', !d6.getElementById('troc-follow').hidden && /Suivre Riffeuse/.test(d6.getElementById('troc-follow').textContent));
+  d6.getElementById('troc-follow').click(); await sleep(50);
+  d6.getElementById('troc-close').click(); d6.getElementById('tab-corner').click(); await sleep(80);
+  check('Metal Corner : Riffeuse dans « Mes potes », l\'échange dans l\'historique', !d6.getElementById('friends-sec').hidden && /Riffeuse/.test(d6.getElementById('friends').textContent) && !d6.getElementById('history-sec').hidden);
   const st7 = JSON.parse(w6.localStorage.getItem('metalnini-proto-v1'));
   check('après l\'échange : cartes reçues à ranger, Korn Rare partie', st7.toPlace.includes('jinjer|holo') && st7.toPlace.includes('spiritbox|commune') && !st7.owned['korn|rare']);
 
