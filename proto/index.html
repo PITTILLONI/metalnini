@@ -1099,7 +1099,7 @@
 <div class="reveal" id="reveal" hidden aria-live="polite">
   <div class="flames" id="flames-reveal" aria-hidden="true"><i></i><i></i><i></i></div>
   <button type="button" class="skip" id="skip">Tout révéler</button>
-  <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager ma meilleure carte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1"/><path d="M12 14v-11"/><path d="M9 6l3 -3l3 3"/></svg></button>
+  <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager cette carte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1"/><path d="M12 14v-11"/><path d="M9 6l3 -3l3 3"/></svg></button>
   <div id="reveal-one">
     <div class="rev-top"><div class="counter" id="counter"></div><div class="deck" id="deck" aria-label="Cartes du paquet"></div><div class="hint" id="hint">Glisse pour la retourner. Ça mord pas.</div></div>
     <p class="combo" id="combo" aria-live="polite"></p>
@@ -3143,7 +3143,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   });
   // Partager la meilleure carte du paquet : image générée à la volée
   document.getElementById('share').addEventListener('click', function(){
-    var b = current.reduce(function(a, x){ return rank(x.r) > rank(a.r) ? x : a; }, current[0]); if(b) shareCard(b.c, b.r);
+    var b = current[idx] || current[0]; if(b) shareCard(b.c, b.r);   // la carte affichée (choisie dans la rangée du paquet)
   });
   // image 1080 × 1350 générée à la volée, partagée (mobile) ou téléchargée (ordinateur)
   function shareCard(c, r){
