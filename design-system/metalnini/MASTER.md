@@ -5,6 +5,32 @@ Source de vérité pour l'interface (prototype web et future app iOS). Les règl
 ## Principe
 Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d'encre, or, os, rouge sang. Jamais « site web » générique. Les cartes sont les héroïnes ; l'interface s'efface autour.
 
+## Signature Metalnini : « collector arcade » (validée le 2026-09-30)
+Deux couches, jamais mélangées sur un même élément :
+- **Collector (gravure)** pour tout ce qui touche aux cartes : cadres à coins ornés or, sceaux de cire pour les raretés (C, R, H, S, L), cierge qui se consume pour la transformation, noms et titres en **Pirata One**, rubans rouges pour les titres de section, parchemin pour les textes longs (bios, styles).
+- **Arcade** pour la progression et l'action : bandeau de rang (anneau, titre, points en crans), quêtes à jauges segmentées épaisses, boutons en relief (ombre pleine décalée de 5 à 7 px, pas de flou), coffre et butin (rayons, flammes, pastilles « +1 », « +6 XP »).
+- Typo : Pirata One (seule police gothique), Big Shoulders Display pour chiffres, libellés et boutons, Barlow pour le texte courant (remplace Inter).
+- Classes de `proto/index.html` :
+  - `.g-title` : titre d'écran en gothique, avec un ornement de chaque côté.
+  - `.g-sub` : titre de section en gothique.
+  - `.ribbon` : ruban rouge, pour la section principale de l'écran.
+  - `.relief` et `.relief.ink` : boutons en relief, en or ou à l'encre.
+  - `notch(pct, n)` : jauge à crans, arrondie vers le bas.
+  - `.gframe` : cadre à coins gravés.
+  - `.seal` : sceau de rareté.
+  - `.fzv-col` : cierge de transformation.
+  - `showLoot()` : écran du butin (coffre, récompense, pastilles).
+- Écrans passés à la signature : Metal Corner, fiche carte, butin des épreuves. Restent à faire : accueil (paquets), classeurs, échange, blind test, réglages, barre d'onglets.
+- Maquettes de référence : canvas « Metalnini — directions UI », ligne A+C.
+
+### À ne pas faire
+- Pas de carte « SaaS » : fond gris uni, rayon 12 px, filet 1 px, ombre floue, tout aligné au cordeau.
+- Pas de dégradé violet-bleu générique, pas de glassmorphism, pas d'emoji.
+- Pas de barre de progression lisse et fine : toujours segmentée ou matérielle (cierge, jauge à crans).
+- Pas de texte d'interface creux (« Bienvenue ! », « Découvrez… ») : le ton est celui d'un fan de metal.
+- Pas de deuxième police gothique ; pas de Pirata One en texte courant.
+- Pas de décor collector sur les éléments arcade, ni l'inverse (pas de coffre sur une fiche carte, pas de sceau sur une quête).
+
 ## Couleurs (jetons CSS de `proto/index.html`)
 | Rôle | Jeton | Valeur | Contraste sur `--bg` |
 |---|---|---|---|
@@ -18,8 +44,9 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 | Raretés | Commune `#c9c3b8`, Rare `#3b82f6`, Holo `#a78bfa`, Signature `#f5c542`, Légendaire `#ef4444` | toujours doublées d'un libellé (jamais la couleur seule) |
 
 ## Typographie
-- Titres : **Big Shoulders Display** 800, capitales, interligne 0,95.
-- Interface et texte : **Inter** 400 à 700 ; surtitres et libellés en capitales Inter 500-600, espacement 0,12-0,24 em.
+- Titres d'écran, noms de cartes, titres de section : **Pirata One** (bas de casse, jamais en texte courant).
+- Chiffres, libellés, boutons : **Big Shoulders Display** 800-900, capitales, interligne 0,95.
+- Interface et texte : **Barlow** 400 à 700 ; surtitres et libellés en capitales Barlow 500-600, espacement 0,12-0,24 em.
 - Aucun texte sous ~11 px (0,7 rem) ; corps de texte ≥ 14 px ; chiffres en `tabular-nums` (`.num`).
 
 ## Composants
@@ -47,7 +74,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 ## Parcours Révélation et rangement
 - **Révélation** : une carte à la fois ; phrase « combo » en bandeau incliné sur la carte (taille et couleur selon la rareté, ~3 s). La rangée du bas rouvre les cartes déjà vues. À la dernière carte : « Ranger dans le classeur » et partage (pas d'écran de résumé).
 - **Bilan de « Tout ranger »** : une ligne par catégorie (médaillon avec icône, nombre, libellé) avec les miniatures des cartes concernées (6 au plus, puis « +N ») ; les classeurs complétés par leur nom. Chaque classeur complété et chaque maîtrise ont un bouton « Récupérer » (cadeau, nom, pastille or) : le bilan se ferme et la récompense arrive.
-- **Rangement** : chaque carte s'affiche en grand, bonus en bandeau (lettrage Metal Mania) ; consigne sur deux lignes au-dessus ; un toucher range et passe à la suivante. Transformation proposée quand elle devient possible.
+- **Rangement** : chaque carte s'affiche en grand, bonus en bandeau (lettrage Pirata One) ; consigne sur deux lignes au-dessus ; un toucher range et passe à la suivante. Transformation proposée quand elle devient possible.
 
 ## Parcours Metal Corner et échange
 1. **Onglet** : bloc « Échanger » (deux tuiles : « Montrer mon code » en or avec l'icône QR, « Scanner son code » avec l'icône de viseur, dans des médaillons gravés), objectifs (les terminés en tête, cadre or, reflet d'or qui balaie la carte, icône cadeau qui frétille, « Terminé · récompense » et bouton « Récupérer » ; au toucher la carte s'ouvre puis la récompense arrive (paquet, carte révélée ou ticket artiste prioritaire) ; pastille rouge qui pulse sur l'onglet tant qu'il y a une récompense à prendre), progression en deux onglets : « Ton rang » (anneau or vers le prochain titre, icône du titre au centre, trois compteurs illustrés : musiciens 1 pt, classeurs pliés 4 pts, maîtrises 6 pts) et « Titres N/6 » (tous les titres en cartes : débloqués en or, titre actuel encadré, verrouillés en grisé avec leur condition et une jauge ; Metal Corner = titre social).

@@ -264,6 +264,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d6.getElementById('tab-corner').click(); await sleep(20);
   check('objectif terminé : en tête de Metal Corner, pastille rouge sur l\'onglet', !!d6.querySelector('#quest-list .goal.claim') && d6.getElementById('quest-n').classList.contains('claim'));
   d6.querySelector('#quest-list .goal.claim').click(); await sleep(700);
+  check('objectif touché : le coffre du butin s\'ouvre', !d6.getElementById('loot').hidden && /Objectif atteint/.test(d6.getElementById('loot-k').textContent));
+  d6.getElementById('loot-go').click(); await sleep(50);
   check('objectif touché : la récompense se révèle, l\'objectif disparaît', !d6.getElementById('reveal').hidden && /Objectif atteint/.test(d6.getElementById('counter').textContent) && !d6.querySelector('#quest-list .goal.claim'));
   d6.getElementById('reveal').hidden = true;
   d6.getElementById('tr-host').click(); await sleep(50);
@@ -281,7 +283,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   T.their_ok = false; d6.getElementById('trade-pill').click(); await sleep(20);
   check('pastille touchée : retour dans l\'échange', !d6.getElementById('trade').hidden && d6.getElementById('trade-pill').hidden);
   d6.getElementById('trade-min').click(); d6.getElementById('tab-corner').click(); await sleep(20); d6.getElementById('tr-host').click(); await sleep(20);
-  check('échange réduit : « Montrer mon code » y revient au lieu d\'en ouvrir un autre', !d6.getElementById('trade').hidden && /Riffeuse/.test(d6.getElementById('trade-in').textContent));
+  check('échange réduit : « Mon code » y revient au lieu d\'en ouvrir un autre', !d6.getElementById('trade').hidden && /Riffeuse/.test(d6.getElementById('trade-in').textContent));
   d6.getElementById('tr-add').click(); await sleep(20);
   check('doublons : le nombre d\'exemplaires reste visible sous la carte, même avec une étiquette', /×2/.test(d6.querySelector('#tp-body .tr-card[data-m="korn"][data-r="commune"] small').textContent));
   d6.getElementById('tp-dup').click(); await sleep(20);
