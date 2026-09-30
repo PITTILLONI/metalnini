@@ -20,7 +20,14 @@ Deux couches, jamais mélangées sur un même élément :
   - `.seal` : sceau de rareté.
   - `.fzv-col` : cierge de transformation.
   - `showLoot()` : écran du butin (coffre, récompense, pastilles).
-- Écrans passés à la signature : Metal Corner, fiche carte, butin des épreuves. Restent à faire : accueil (paquets), classeurs, échange, blind test, réglages, barre d'onglets.
+- Écrans passés à la signature :
+  - Metal Corner, fiche carte et butin des épreuves.
+  - Accueil (titre et nom du paquet en gothique, compteurs en relief).
+  - Classeurs (puces en relief, noms en gothique, progression à crans).
+  - Échange (blocs en relief, cote en pastille, QR dans un cadre gravé).
+  - Blind test (réponses en relief, progression à crans).
+- Globalement : tous les titres `h1`/`h2` sont en Pirata One ; tous les `.btn` sont en relief (or, `.ghost` à l'encre, `.danger` rouge) ; toutes les `.bar` ont 10 crans, et `crans(pct)` arrondit leur largeur au cran inférieur.
+- Restent à revoir : les cases à cocher natives des réglages, la barre d'onglets (le losange gravé suffit pour l'instant).
 - Maquettes de référence : canvas « Metalnini — directions UI », ligne A+C.
 
 ### À ne pas faire
@@ -50,9 +57,9 @@ Deux couches, jamais mélangées sur un même élément :
 - Aucun texte sous ~11 px (0,7 rem) ; corps de texte ≥ 14 px ; chiffres en `tabular-nums` (`.num`).
 
 ## Composants
-- **Boutons** : un seul système, même hauteur (50 px) et même typo partout (Big Shoulders Display 800, capitales, 0,1 em), coins de 6 px.
-  - Principal `.btn` « encre et or » (décidé le 2026-09-26, l'aplat jaune détonnait avec la DA des cartes) : fond noir d'encre, filet et lettres or, légère lueur dorée. Un seul par écran. `.btn.block` pour la pleine largeur.
-  - Secondaire `.btn.ghost` : fond transparent, filet os fin.
+- **Boutons** : un seul système en relief, même hauteur (52 px) et même typo partout (Big Shoulders Display 900, capitales, 0,1 em), coins de 12 px, ombre pleine décalée de 6 px.
+  - Principal `.btn` : or plein en relief, lettres encre (confirmé le 2026-09-30 avec la maquette A+C ; remplace le bouton « encre et or » du 2026-09-26 : le relief et l'ombre pleine l'intègrent à la signature arcade). Un seul par écran. `.btn.block` pour la pleine largeur.
+  - Secondaire `.btn.ghost` : encre en relief, filet et lettres or.
   - Danger `.btn.danger` : rouge plein, toujours derrière une modale de confirmation.
 - **Icône seule** `.icon-btn` : rond, filet or fin, `aria-label` obligatoire, 44 px minimum.
 - **Bordures** : un seul filet fin (1 px). Pas de double bordure ni de double filet (retour utilisateur du 2026-09-25).

@@ -37,7 +37,7 @@
   button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .wrap{max-width:960px; margin:0 auto; padding:0 16px}
   .eyebrow{font:500 .7rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); margin:0 0 8px}
-  h1,h2{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.01em; line-height:.95; margin:0}
+  h1,h2{font-family:var(--gothic); font-weight:400; text-transform:none; letter-spacing:0; line-height:1; margin:0}   /* titres en gothique (signature collector) */
 
   /* ---------- Tab bar ---------- */
   /* barre d'onglets flottante, boutons en relief */
@@ -80,13 +80,13 @@
   .hud-me .net b{display:inline; color:#4ade80; font-size:.7rem}
   .hud-right{display:flex; align-items:center; gap:8px}
   .hud-stats{display:flex; gap:6px}
-  .hud-stats span, .hud-stats button{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
+  .hud-stats span, .hud-stats button{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:#15110f; border:1px solid #2e251d; box-shadow:0 3px 0 #000; font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
   .hud-stats i{display:flex; color:var(--gold)} .hud-stats button{min-height:32px; cursor:pointer; position:relative} .hud-stats button::before{content:""; position:absolute; inset:-6px}
   /* paquets à ouvrir : un sachet par paquet (5 au plus, puis « +N »), le détail réserve ou cadeau en clair */
   .packs-count{display:flex; align-items:center; justify-content:center; gap:8px; margin:6px 0 0; font:600 .86rem var(--mono); color:var(--text)}
   .packs-count[hidden]{display:none} .packs-count b{color:var(--gold-hi)} .packs-count small{color:var(--muted); font:500 .78rem var(--mono)}
   .packs-count .pk{display:flex; gap:3px; color:var(--gold)} .packs-count .pk svg{width:11px; height:15px}
-  .home-title{font-size:1.9rem; line-height:1.05; margin:24px 0 0; text-align:center}
+  .home-title{font-size:2.2rem; line-height:1; margin:24px 0 0; text-align:center}
   .pack-zone{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:8px 0 16px}
   @media (orientation:landscape) and (max-height:540px){
     .home{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:28px; align-items:start}
@@ -114,7 +114,7 @@
   .pack-car button.on{transform:none; opacity:1}
   .pack-car img{display:block; width:100%; aspect-ratio:.58; object-fit:contain; filter:drop-shadow(0 14px 22px rgba(0,0,0,.65))}
   .pack-info{text-align:center; padding:10px 8px 0; max-width:360px}
-  .pack-info h2{font-size:1.6rem}
+  .pack-info h2{font-size:1.9rem}
   .pack-info p{margin:8px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
   .pack-info .pc-tag{margin-top:4px; font-size:.84rem; min-height:2.8em}   /* deux lignes réservées : le bouton ne bouge pas d'un paquet à l'autre */
   .pc-wait{color:var(--gold) !important; font-weight:600}
@@ -192,7 +192,8 @@
   .trade-pill span{flex:none; color:var(--gold-hi); font-weight:700; text-transform:uppercase; letter-spacing:.08em}
   .trade-in{max-width:520px; margin:0 auto; padding:calc(24px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); text-align:center}
   .trade-in h2{font-size:1.9rem; margin:0 60px 6px} .trade-in > .pf-note{color:var(--muted); max-width:34ch; margin:0 auto 14px}
-  .tr-qr{width:min(64vw, 240px); aspect-ratio:1; margin:6px auto 12px; padding:10px; border-radius:14px; background:var(--text)}
+  .tr-qr{width:min(64vw, 240px); aspect-ratio:1; margin:0 auto; padding:10px; border-radius:6px; background:var(--text)}
+  .tr-qr-f{width:max-content; margin:10px auto 14px}
   .tr-qr svg{display:block; width:100%; height:100%}
   .tr-code{margin:0 0 16px; font:800 2.2rem/1 var(--display); letter-spacing:.2em; color:var(--gold-hi)}
   .tr-wait{margin:16px 0 0; font:600 .84rem var(--mono); color:var(--muted); animation:trwait 1.6s ease-in-out infinite}
@@ -201,8 +202,8 @@
   .tr-cam video{width:100%; height:100%; object-fit:cover; display:block}
   .tr-cam i{position:absolute; inset:14%; border:2px solid var(--gold); border-radius:14px; box-shadow:0 0 0 999px rgba(0,0,0,.35)}
   .tr-join{margin-top:10px; text-align:left} .tr-join .pf-row{align-items:stretch} .tr-join input{flex:1; min-width:0; text-transform:uppercase; letter-spacing:.14em; font-weight:700}
-  .tr-side{margin-top:14px; padding:12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); text-align:left}
-  .tr-h{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px} .tr-h b{font:800 1.1rem var(--display); letter-spacing:.06em; text-transform:uppercase} .tr-h span{font:600 .76rem var(--mono); color:var(--muted)}
+  .tr-side{margin-top:20px; padding:14px; border:1px solid #2e251d; border-radius:14px; background:#15110f; box-shadow:0 5px 0 #000; text-align:left}
+  .tr-h{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px} .tr-h b{font:400 1.45rem/1 var(--gothic)} .tr-h span{padding:4px 8px 3px; border-radius:8px; background:#0d0a08; border:1px solid rgba(235,154,38,.4); font:800 .8rem/1 var(--display); letter-spacing:.06em; color:var(--gold-hi)}
   .tr-cards{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
   .tr-card{position:relative; padding:0; border:0; background:none; cursor:pointer; text-align:center; color:var(--muted)}
   .tr-card img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
@@ -224,18 +225,22 @@
   .quiz[hidden]{display:none} .quiz-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2}
   .quiz-in{max-width:520px; margin:0 auto; padding:calc(28px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align:center; display:flex; flex-direction:column; gap:14px}
   .quiz-in h2{font-size:2.2rem; margin:0 56px} .quiz-in .pf-note{color:var(--muted)} .quiz-in > .eyebrow{margin:0 56px; line-height:1.4}
-  .qz-dots{display:flex; justify-content:center; gap:8px} .qz-dots i{width:10px; height:10px; border-radius:50%; border:1px solid var(--muted)}
-  .qz-dots i.cur{border-color:var(--gold)} .qz-dots i.ok{background:var(--gold); border-color:var(--gold)} .qz-dots i.ko{background:var(--accent); border-color:var(--accent)}
-  .qz-play{display:flex; flex-direction:column; align-items:center; gap:12px; width:190px; height:190px; margin:6px auto; justify-content:center; border-radius:50%; border:1px solid var(--gold); background:radial-gradient(circle, #1d130c, var(--ink)); color:var(--text); font:600 .86rem var(--mono); cursor:pointer; box-shadow:0 0 40px rgba(235,154,38,.15)}
+  /* progression en crans : trouvé en or, raté en rouge, en cours cerclé d'or */
+  .qz-dots{display:flex; justify-content:center; gap:5px} .qz-dots i{width:34px; height:10px; border-radius:3px; background:#2b221c}
+  .qz-dots i.cur{box-shadow:inset 0 0 0 1px var(--gold)} .qz-dots i.ok{background:var(--gold)} .qz-dots i.ko{background:var(--accent)}
+  .qz-play{display:flex; flex-direction:column; align-items:center; gap:12px; width:190px; height:190px; margin:6px auto; justify-content:center; border-radius:50%; border:1px solid var(--gold); background:radial-gradient(circle, #1d130c, var(--ink)); color:var(--text); font:800 1rem var(--display); letter-spacing:.06em; text-transform:uppercase; cursor:pointer; box-shadow:0 7px 0 #000, 0 0 40px rgba(235,154,38,.2)}
   .qz-play span:last-child{max-width:150px}
   .qz-eq{display:flex; align-items:flex-end; gap:5px; height:44px} .qz-eq i{width:8px; height:20%; border-radius:2px; background:var(--gold)}
   .qz-play.on .qz-eq i{animation:qzeq .9s ease-in-out infinite} .qz-play.on .qz-eq i:nth-child(2){animation-delay:-.3s} .qz-play.on .qz-eq i:nth-child(3){animation-delay:-.6s} .qz-play.on .qz-eq i:nth-child(4){animation-delay:-.15s} .qz-play.on .qz-eq i:nth-child(5){animation-delay:-.45s}
   @keyframes qzeq{0%, 100%{height:20%} 50%{height:100%}}
   .qz-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-  .qz-opt{min-height:64px; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); cursor:pointer; text-align:center}
+  .qz-opts{padding-bottom:6px}
+  .qz-opt{min-height:66px; padding:10px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 5px 0 #000; color:var(--text); cursor:pointer; text-align:center; transition:transform .08s ease, box-shadow .08s ease}
+  .qz-opt:not(:disabled):active{transform:translateY(4px); box-shadow:0 1px 0 #000}
   .qz-opt b{display:block; font:700 .9rem/1.2 var(--mono)} .qz-opt small{display:block; margin-top:3px; color:var(--muted); font:500 .72rem var(--mono)}
-  .qz-opt.ok{border-color:var(--gold); background:rgba(235,154,38,.14)} .qz-opt.ko{border-color:var(--accent); background:rgba(178,58,58,.18)} .qz-opt:disabled{cursor:default}
-  .qz-fb{margin:0; font:800 1.3rem var(--display); letter-spacing:.06em; text-transform:uppercase} .qz-fb.ok{color:var(--gold-hi)} .qz-fb.ko{color:var(--accent-text)}
+  .qz-opt.ok{border-color:var(--gold); background:var(--gold); box-shadow:0 5px 0 #8a5510; color:#1a0f05} .qz-opt.ok small{color:#4a2e0c}
+  .qz-opt.ko{border-color:var(--accent); background:var(--accent); box-shadow:0 5px 0 #5a1414; color:#fff} .qz-opt.ko small{color:#f3d3d0} .qz-opt:disabled{cursor:default}
+  .qz-fb{margin:0; font:900 1.4rem/1.1 var(--display); letter-spacing:.06em; text-transform:uppercase} .qz-fb.ok{color:var(--gold-hi)} .qz-fb.ko{color:var(--accent-text)}
   .goal.quest.quizgo{border-color:var(--accent-text); background:rgba(178,58,58,.1)} .goal.quest.quizgo .pc{padding:7px 14px 6px; border-radius:10px; background:var(--accent); box-shadow:0 3px 0 #5a1414; color:#fff; font:900 .85rem var(--display); letter-spacing:.1em; text-transform:uppercase}
   .goal.quest.quizgo small{grid-column:1 / -1; font:500 .74rem var(--mono); color:var(--accent-text)}
   .q-art .q-badge{position:absolute; right:14px; bottom:10px; width:34px; height:34px; padding:6px; border-radius:50%; background:var(--accent); color:#fff; box-shadow:0 4px 12px rgba(0,0,0,.6)}
@@ -316,14 +321,15 @@
   @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
   /* boutons : même hauteur, même typo partout ; or plein (principal), filet (secondaire), rouge plein (danger) */
   /* boutons « encre et or » : noir d'encre, filet et lettres d'or, typo des titres de cartes (le jaune plein détonnait avec la DA) */
-  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:50px; padding:0 22px; border:0; border-radius:6px; cursor:pointer;
-    font:800 1.08rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi); background:linear-gradient(180deg, #1b140e, #100c08);
-    box-shadow:inset 0 0 0 1px var(--gold), 0 0 18px rgba(235,154,38,.16); transition:transform .12s ease, background .15s ease, box-shadow .15s ease}
-  .btn:hover{background:linear-gradient(180deg, #241a11, #140f0a); box-shadow:inset 0 0 0 1px var(--gold-hi), 0 0 24px rgba(235,154,38,.28)} .btn:active{transform:scale(.98)}
+  /* boutons en relief (signature arcade) : or plein, ombre pleine décalée ; s'enfoncent au toucher */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
+    font:900 1.1rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:#1a0f05; background:var(--gold);
+    box-shadow:0 6px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease, background .15s ease}
+  .btn:hover{background:var(--gold-hi)} .btn:active{transform:translateY(4px); box-shadow:0 2px 0 #8a5510}
   .btn:disabled{opacity:.45; cursor:default; transform:none}
-  .btn.ghost{color:var(--text); background:transparent; box-shadow:inset 0 0 0 1px rgba(243,240,234,.22)}
-  .btn.ghost:hover{box-shadow:inset 0 0 0 1px rgba(243,240,234,.45); background:rgba(255,255,255,.03)}
-  .btn.danger{color:#fff; background:var(--accent); box-shadow:none} .btn.danger:hover{background:#c44545; box-shadow:none}
+  .btn.ghost{color:var(--gold-hi); background:#15110f; box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 6px 0 #000}
+  .btn.ghost:hover{background:#1e1812} .btn.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 2px 0 #000}
+  .btn.danger{color:#fff; background:var(--accent); box-shadow:0 6px 0 #5a1414} .btn.danger:hover{background:#c44545} .btn.danger:active{box-shadow:0 2px 0 #5a1414}
   .btn.block{width:100%}
   .modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
   .modal[hidden]{display:none}
@@ -575,10 +581,10 @@
   .icon-btn.sm{width:44px; height:44px}
   .icon-btn.corner{position:absolute; right:0; top:calc(18px + env(safe-area-inset-top))}
   .back-btn{background:none; border:0; min-height:44px; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
-  .kind-chips{display:flex; gap:8px; overflow-x:auto; padding:14px 0 6px; scrollbar-width:none}
+  .kind-chips{display:flex; gap:8px; overflow-x:auto; padding:14px 0 10px; scrollbar-width:none}
   .kind-chips::-webkit-scrollbar{display:none}
-  .kind-chips button{flex:0 0 auto; min-height:44px; padding:0 16px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--muted); font:600 .82rem var(--mono); cursor:pointer}
-  .kind-chips button[aria-selected="true"]{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+  .kind-chips button{flex:0 0 auto; min-height:44px; padding:0 16px; border-radius:12px; border:1px solid #2e251d; background:#15110f; box-shadow:0 3px 0 #000; color:var(--muted); font:800 .92rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
+  .kind-chips button[aria-selected="true"]{background:var(--gold); border-color:var(--gold); box-shadow:0 3px 0 #8a5510; color:#1a0f05}
   .binder-list{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; padding:12px 0 24px}
   @media (min-width:700px){ .binder-list{grid-template-columns:repeat(3, minmax(0,1fr))} }
   .bcard{position:relative; display:block; aspect-ratio:2/3; padding:0; border:0; border-radius:14px; overflow:hidden; cursor:pointer; text-align:center;
@@ -587,9 +593,9 @@
   .bcard .art{position:absolute; inset:0; background:center/cover no-repeat}
   .bcard.has .art{filter:saturate(.9) brightness(.8)}
   .bcard .plate{position:absolute; left:0; right:0; bottom:0; display:flex; flex-direction:column; gap:6px; padding:34px 12px 12px; background:linear-gradient(transparent, rgba(8,6,5,.92) 38%)}
-  .bcard b{font:800 1.2rem/1 var(--display); text-transform:uppercase; color:var(--text)}
+  .bcard b{font:400 1.45rem/1 var(--gothic); color:var(--text)}
   .bcard small{font:500 .74rem var(--mono); color:var(--muted)}
-  .bcard .bar{display:block; flex:none; height:3px; min-height:0; border-radius:2px; background:rgba(255,255,255,.12); overflow:hidden} .bcard .bar i{display:block; height:100%; background:var(--gold)}
+  .bcard .bar{display:block; flex:none; height:8px; min-height:0}
   .bcard .done{position:absolute; top:10px; right:10px; font:700 .7rem var(--mono); color:var(--ink); background:var(--gold); border-radius:999px; padding:3px 8px}
   .bp-head .back-btn{margin:4px 0 0}
   .bp-row{display:flex; align-items:center; justify-content:space-between; gap:10px}
@@ -614,8 +620,8 @@
   .si-tags{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px} .si-tags span{padding:4px 10px; border:1px solid rgba(235,154,38,.4); border-radius:999px; font:600 .72rem var(--mono); color:var(--gold-hi)}
   .si-play{margin:0; font:500 .8rem/1.5 var(--mono); color:var(--text)} .si-play b{display:block; margin-bottom:2px; font:600 .64rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .si-play span{color:var(--muted)}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
-  .bar{flex:1; height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden}
-  .bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); width:0; transition:width .6s ease}
+  .bar{flex:1; height:10px; background:#2b221c; border-radius:3px; overflow:hidden; -webkit-mask:repeating-linear-gradient(90deg, #000 0 calc(10% - 3px), transparent calc(10% - 3px) 10%); mask:repeating-linear-gradient(90deg, #000 0 calc(10% - 3px), transparent calc(10% - 3px) 10%)}
+  .bar i{display:block; height:100%; background:var(--gold); width:0; transition:width .6s ease}
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
   @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
   .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
@@ -2448,6 +2454,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   var ICON_CHEST = '<svg viewBox="0 0 42 38" width="20" height="18" aria-hidden="true"><path d="M3 14h36v20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#5a2e0c"/><path d="M3 14c0-7 6-12 18-12s18 5 18 12z" fill="#8a4b12"/><path d="M3 14h36v5H3z" fill="#f4d58a"/><rect x="17" y="12" width="8" height="10" rx="1" fill="#1a0f05"/></svg>';
   // jauge à crans : n crans, allumés selon le pourcentage (arrondi par défaut : jamais pleine avant 100 %)
+  // largeur d'une barre à 10 crans (.bar) : arrondie au cran inférieur (au moins un cran dès la première carte), pleine seulement à 100 %
+  function crans(pct){ return pct >= 100 ? 100 : pct > 0 ? Math.max(10, Math.min(90, Math.floor(pct / 10) * 10)) : 0; }
   function notch(pct, n){ var on = Math.floor(pct / 100 * n + 1e-9), h = ''; for(var i = 0; i < n; i++) h += '<i' + (i < on ? ' class="on"' : '') + '></i>'; return '<i class="notch" aria-hidden="true">' + h + '</i>'; }
   function renderGoals(){
     var list = goals(), done = claimables(), qz = quizzes(), n = document.getElementById('quest-n');
@@ -2632,7 +2640,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }
     if(t.status === 'open'){
       morph(tradeIn, '<p class="eyebrow">Échange</p><h2>Montre ce code</h2><p class="pf-note">Ton pote le scanne depuis son Metal Corner. Pas à côté de toi ? Envoie-lui le lien.</p>' +
-        '<div class="tr-qr" id="tr-qr" role="img" aria-label="QR code de l\'échange">' + (qrSvg[t.code] || '') + '</div><p class="tr-code num">' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</p>' +
+        '<div class="gframe tr-qr-f"><div class="tr-qr" id="tr-qr" role="img" aria-label="QR code de l\'échange">' + (qrSvg[t.code] || '') + '</div></div><p class="tr-code num">' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</p>' +
         '<button type="button" class="btn ghost block" id="tr-send">Envoyer le lien</button><p class="tr-wait">En attente de ton pote…</p>');
       if(!qrSvg[t.code]) paintQr(t.code);
       document.getElementById('tr-send').onclick = function(){
@@ -3611,7 +3619,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return '<button type="button" class="bcard' + (cover ? ' has' : '') + '" data-b="' + b.k + '" aria-label="' + esc(binderLabel(b)) + ', ' + have.length + ' cartes sur ' + ids.length + '">' +
           '<span class="art" aria-hidden="true"' + (cover ? ' style="background-image:url(' + img(cover.id, cover.r) + ')"' : '') + '></span>' +
           (binderDone(b) ? '<span class="done">Complet ✓</span>' : '') +
-          '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + Math.round(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
+          '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + crans(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
       }).join('');
       [].forEach.call(list.children, function(c){ c.onclick = function(){ openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
       return;
@@ -3638,7 +3646,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
-    document.getElementById('prog-bar').style.width = pct + '%';
+    document.getElementById('prog-bar').style.width = crans(pct) + '%';
     document.getElementById('grid').innerHTML = list.map(function(c){
       var r = placed(c.id);
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + pos[c.id] + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
