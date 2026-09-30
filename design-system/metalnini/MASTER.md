@@ -70,7 +70,7 @@ Deux couches, jamais mélangées sur un même élément :
 - **Icônes** : Tabler Icons (MIT) pour l'interface, copiées en SVG en ligne (aucun chargement externe), trait 1,4-2 px, `currentColor` ; la main « cornes » de Metal Corner est dérivée de `hand-love-you`. Restent maison : le croissant (logo), le sachet de paquet et les glyphes de Safari de la feuille d'installation. Game-icons.net (CC BY 3.0, crédit de l'auteur obligatoire à côté de chaque usage) est réservé aux éléments décoratifs (badges, patchs, titres). Pas d'emoji ni de glyphes Unicode comme icônes.
 
 ## Parcours Classeurs
-1. **Catégories** en puces : Collection, Styles, Instruments, Groupes.
+1. **Catégories** en puces : Styles, Instruments, Groupes (sous-catégories en petites cartes, trois de front). « Collection » n'apparaît qu'à partir de deux collections ; en attendant, « Toutes les cartes » reste la page où l'on range après un tirage (retour vers Styles).
 2. **Cartes de classeur** dans la catégorie (« Collection » : la carte « Toutes les cartes ») : vraie carte au format 2:3, illustrée par la meilleure carte rangée ou le dos Metalnini, nom gravé en bas, « x/N cartes », filet de progression, « Complet ✓ ».
 3. **Page du classeur** : « ← catégorie », titre, progression, fiche du style repliable (« C'est quoi, le style … ? » : époque, présentation, 3 repères en pastilles, « À écouter » avec les morceaux des cartes du classeur ; ouverte à la première visite, repliée ensuite ; une phrase pour les classeurs d'instruments), cases numérotées de 1 à N ; tri et affichage dans une feuille du bas (icône réglages).
 

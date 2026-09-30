@@ -120,8 +120,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   { const w2 = await binderCards(d); const own = state().owned;
     const slip = ['root','jordison'].some(id => Object.keys(own).some(k => k.startsWith(id + '|') && own[k] > 0));
     check('classeur de groupe : nom caché tant qu\'aucune carte n\'est trouvée', slip ? /Slipknot/.test(w2) : !/Slipknot/.test(w2) && /Groupe mystère/.test(w2), w2); }
-  // « Toutes les cartes » : il y reste toujours des cases vides après quelques paquets
-  await openB(d, 'all');
+  // un grand classeur (les guitaristes) : il y reste toujours des cases vides après quelques paquets
+  await openB(d, 'guitaristes');
   const emptyText = [...d.querySelectorAll('#grid .slot:not(.owned)')].map(s => s.textContent).join(' | ');
   const nums = [...d.querySelectorAll('#grid .slot .cap')].map(c => +(c.textContent.match(/^(\d+)/) || [])[1]);
   check('cases numérotées de 1 à N dans le classeur', nums.length > 0 && nums.every((n, i) => n === i + 1), nums.join(' '));
@@ -219,7 +219,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d4.getElementById('skip').click(); await sleep(400);
   check('« Tout révéler » : partage et rangement proposés', !d4.getElementById('share').hidden && !d4.getElementById('to-binder').hidden);
 
-  // 9. Doublons empilés, onglet Toutes les cartes, ouverture spéciale d'une Légendaire
+  // 9. Doublons empilés, catégories sans « Collection », ouverture spéciale d'une Légendaire
   const s6 = { size:5, odds:{commune:0,rare:0,holo:0,signature:0,legendaire:100}, owned:{'korn|rare':3}, opened:0, fresh:{}, binder:'all', sound:false, pending:null, fuseBase:3, mastered:{}, completed:{}, packType:'serie', toPlace:[] };
   const dom5 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w5){
     w5.localStorage.setItem('metalnini-proto-v1', JSON.stringify(s6)); w5.matchMedia = () => ({ matches: false }); w5.scrollTo = () => {};
@@ -228,8 +228,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await sleep(150);
   const d5 = dom5.window.document;
   d5.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  check('catégorie « Collection » en premier', d5.querySelector('#binder-kinds button').getAttribute('data-kind') === 'Collection');
-  await openB(d5, 'all');
+  check('une seule collection : pas de catégorie « Collection », Styles en premier', d5.querySelector('#binder-kinds button').getAttribute('data-kind') === 'Styles' && !d5.querySelector('#binder-kinds [data-kind="Collection"]'));
+  await openB(d5, 'numetal');
   const kslot = d5.querySelector('#grid .slot[data-id="korn"]');
   check('doublons : 3 exemplaires = 2 cartes empilées derrière', kslot && kslot.querySelectorAll('.layers i').length === 2);
   d5.querySelector('.tabbar [data-v="packs"]').click(); await sleep(30);
@@ -388,7 +388,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('qz-next').click(); await sleep(20);
   check('fin du blind test des cris : 1 / 1 et gains à récupérer', /1 \/ 1/.test(d9.getElementById('qz-t').textContent) && /Récupérer mes gains/.test(d9.getElementById('qz-end').textContent));
   d9.getElementById('qz-end').click(); await sleep(50);
-  d9.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30); await openB(d9, 'all');
+  d9.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30); await openB(d9, 'numetal');
   d9.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(40);
   d9.getElementById('d-trade').click(); await sleep(40);
   check('échanger depuis une carte : feuille ouverte, la carte proposée', !d9.getElementById('trade-start').hidden && /Jonathan Davis/.test(d9.getElementById('ts-card').textContent));

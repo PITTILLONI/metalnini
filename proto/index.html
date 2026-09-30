@@ -3641,13 +3641,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
   // classeurs : catégorie (puces) → cartes de classeur → page du classeur ; « Collection » ouvre directement toutes les cartes
   var KINDS = ['Collection', 'Styles', 'Instruments', 'Groupes'];
+  // la catégorie « Collection » n'apparaît qu'à partir de deux collections ; « Toutes les cartes » reste la page de rangement
+  function shownKinds(){ var nc = BINDERS.filter(function(b){ return b.kind === 'Collection'; }).length; return KINDS.filter(function(k){ return k !== 'Collection' || nc > 1; }); }
   function openBinder(k){ var b = binderOf(k); state.binder = b.k; state.binderKind = b.kind; state.binderOpen = true; save(); }
   function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
   function renderBinder(){
     if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
-    var kind = KINDS.indexOf(state.binderKind) === -1 ? 'Collection' : state.binderKind;
+    var shown = shownKinds(), kind = KINDS.indexOf(state.binderKind) === -1 ? shown[0] : state.binderKind;
+    if(shown.indexOf(kind) === -1 && !(state.binderOpen && binderOf(state.binder).kind === kind)) kind = shown[0];
     var kindsEl = document.getElementById('binder-kinds');
-    kindsEl.innerHTML = KINDS.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + k + '</button>'; }).join('');
+    kindsEl.innerHTML = shown.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + k + '</button>'; }).join('');
     [].forEach.call(kindsEl.children, function(btn){ btn.onclick = function(){ state.binderKind = btn.getAttribute('data-kind'); state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); }; });
     var inPage = state.binderOpen && binderOf(state.binder).kind === kind;
     document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage;
@@ -3667,7 +3670,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       [].forEach.call(list.children, function(c){ c.onclick = function(){ openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
       return;
     }
-    document.getElementById('binder-back').textContent = '← ' + kind;
+    document.getElementById('binder-back').textContent = '← ' + (shown.indexOf(kind) === -1 ? shown[0] : kind);
     var b = binderOf(state.binder);
     // emplacements numérotés de 1 à N dans le classeur, dans l'ordre des arcanes, comme les cases d'un album
     var dir = state.sortDir === 'desc' ? -1 : 1, pos = {};
@@ -3745,7 +3748,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('sort-done').addEventListener('click', function(){ sortSheet.hidden = true; });
   sortSheet.addEventListener('click', function(e){ if(e.target === sortSheet) sortSheet.hidden = true; });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sortSheet.hidden) sortSheet.hidden = true; });
-  document.getElementById('binder-back').addEventListener('click', function(){ state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); });
+  document.getElementById('binder-back').addEventListener('click', function(){ state.binderOpen = false; if(shownKinds().indexOf(state.binderKind) === -1) state.binderKind = shownKinds()[0]; save(); renderBinder(); window.scrollTo(0, 0); });
 
   // ---------- Détail ----------
   var sheet = document.getElementById('sheet');
