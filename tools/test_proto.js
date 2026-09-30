@@ -368,13 +368,17 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
     async claimBlindtest(m, sc){ played = {m, sc}; return { kind:'points', points:2 }; }, tradeWatch(){ return () => {}; } }, { get: (o, k) => k in o ? o[k] : async () => (k === 'tradeActive' ? null : k === 'tickets' ? 0 : []) });
   await w9.metalniniOnline(fake9); await sleep(100);
   d9.getElementById('tab-corner').click(); await sleep(30);
-  check('blind test : débloqué par la maîtrise, dans le carrousel', !!d9.querySelector('#quest-list .quizgo[data-quiz="korn"]'));
+  check('blind test : débloqué par la maîtrise, dans le carrousel', [...d9.querySelectorAll('#quest-list .quizgo')].some(b => /Maîtrise de Jonathan Davis/.test(b.textContent)));
   d9.querySelector('#quest-list .quizgo').click(); await sleep(150);
   check('blind test : extrait 1/5, 4 choix', !d9.getElementById('quiz').hidden && /Extrait 1/.test(d9.getElementById('quiz-in').textContent) && d9.querySelectorAll('.qz-opt').length === 4);
   for (let i = 0; i < 5; i++) { d9.querySelector('.qz-opt').click(); await sleep(10); d9.getElementById('qz-next').click(); await sleep(10); }
   check('blind test : score sur 5 à la fin', /\d \/ 5/.test(d9.getElementById('qz-t').textContent));
   d9.getElementById('qz-end').click(); await sleep(50);
   check('blind test : score envoyé une fois, écran fermé, plus proposé', played && played.m === 'korn' && played.sc >= 0 && d9.getElementById('quiz').hidden && !d9.querySelector('#quest-list .quizgo'));
+  d9.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30); await openB(d9, 'all');
+  d9.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(40);
+  d9.getElementById('d-trade').click(); await sleep(40);
+  check('échanger depuis une carte : feuille ouverte, la carte proposée', !d9.getElementById('trade-start').hidden && /Jonathan Davis/.test(d9.getElementById('ts-card').textContent));
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');

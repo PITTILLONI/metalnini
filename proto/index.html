@@ -326,6 +326,12 @@
   .rc-t{font:600 .9rem var(--mono); color:var(--text)} .rc-t b{font:800 1.4rem/1 var(--display); color:var(--gold-hi)}
   .rc-cards{display:flex; gap:4px; align-items:center} .rc-cards img{width:30px; aspect-ratio:2/3; object-fit:cover; border-radius:3px; box-shadow:0 3px 8px rgba(0,0,0,.5)} .rc-cards i{font:700 .72rem var(--mono); color:var(--muted); font-style:normal; margin-left:4px}
   .rc-names{font:500 .78rem var(--mono); color:var(--gold-hi)}
+  #trade-start .bsheet-in{max-height:86dvh; overflow-y:auto} #trade-start .tr-go{margin-top:12px}
+  .ts-card{display:flex; align-items:center; gap:12px; margin:0 0 12px; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:12px; background:rgba(235,154,38,.06)} .ts-card:empty{display:none}
+  .ts-card img{width:44px; aspect-ratio:2/3; object-fit:cover; border-radius:4px} .ts-card b{display:block; font:600 .88rem var(--mono)} .ts-card small{display:block; font:500 .74rem var(--mono); color:var(--muted)}
+  #ts-friends .eyebrow{margin:0 0 8px}
+  .rc-claim{grid-column:1 / -1; display:flex; align-items:center; gap:8px; min-height:44px; margin-top:4px; padding:0 12px; border:1px solid var(--gold); border-radius:999px; background:rgba(235,154,38,.1); color:var(--text); font:600 .8rem var(--mono); cursor:pointer}
+  .rc-claim svg{color:var(--gold-hi)} .rc-claim b{margin-left:auto; font:800 .78rem var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi)} .rc-claim:disabled{opacity:.5}
   /* onboarding : écrans plein cadre, une idée par écran */
   .onb{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(ellipse at 50% 18%, #2a170b 0%, var(--bg) 62%)}
   .onb[hidden]{display:none}
@@ -964,7 +970,7 @@
   <div class="binder-page" id="binder-page">
     <div class="bp-head">
       <button type="button" class="back-btn" id="binder-back"></button>
-      <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></button></div>
+      <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="binder-trade" aria-label="Échanger des cartes avec un pote"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></button><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></button></div>
       <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
       <details class="style-info" id="style-info" hidden><summary id="si-sum"></summary><div id="si-body"></div></details>
     </div>
@@ -1249,6 +1255,16 @@
   <button type="button" class="icon-btn quiz-x" id="quiz-x" aria-label="Quitter le blind test"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <div class="quiz-in" id="quiz-in" aria-live="polite"></div>
 </div>
+<div class="bsheet" id="trade-start" hidden role="dialog" aria-modal="true" aria-labelledby="ts-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="ts-t">Échanger</h2>
+    <div class="ts-card" id="ts-card"></div>
+    <div id="ts-friends"></div>
+    <div class="tr-go"><button type="button" class="tr-tile main" id="ts-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><b>Montrer mon code</b><small>Ton pote le scanne</small></button>
+      <button type="button" class="tr-tile" id="ts-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><b>Scanner son code</b><small>Caméra ou code à taper</small></button></div>
+  </div>
+</div>
 <div class="bsheet" id="mastery-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ms-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1325,6 +1341,7 @@ const api = {
   async requestArtist(a, n, prio){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
   async claimBlindtest(m, score){ return must(await sb.rpc('claim_blindtest', { p_musician: m, p_score: score })); },
+  async claimBlindtestBinder(b, score){ return must(await sb.rpc('claim_blindtest_binder', { p_binder: b, p_score: score })); },
   async presence(sa, pf){ must(await sb.rpc('touch_presence', { p_standalone: sa, p_platform: pf })); },
   async myTrades(){ return must(await sb.rpc('my_trades', { p_limit: 20 })); },
   async friends(){ return must(await sb.rpc('my_friends')); },
@@ -1750,7 +1767,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
-      api.media().then(function(m){ MEDIA = m; paintAvatar(); sendLocalCry(); }).catch(function(){});
+      refreshMedia(function(){ sendLocalCry(); });
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if((state.favBands || []).length && !state.favSent) api.setFavBands(state.favBands).then(function(){ state.favSent = true; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -1787,6 +1804,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // ---------- Profil : photo et cri ----------
   var MEDIA = {avatar:null, cry:null};
+  // photo et cri : liens signés valables une heure ; l'app installée reste ouverte des jours, on les renouvelle avant qu'ils expirent
+  function refreshMedia(then){
+    if(!ONLINE || (MEDIA.at && Date.now() - MEDIA.at < 45 * 6e4)){ if(then) then(); return; }
+    ONLINE.media().then(function(m){ MEDIA = m; MEDIA.at = Date.now(); paintAvatar(); if(!document.getElementById('v-profile').hidden) resetCry(); if(then) then(); }).catch(function(){});
+  }
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) refreshMedia(); });
   function avatarSrc(){ return ONLINE ? MEDIA.avatar : state.avatar; }
   function crySrc(){ return ONLINE ? MEDIA.cry : state.cry; }
   function paintAvatar(){
@@ -1824,7 +1847,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !powerSheet.hidden) powerSheet.hidden = true; });
   // la page profil s'ouvre depuis l'avatar et revient à l'écran d'où l'on vient
   var profileFrom = 'packs';
-  function openProfile(){ pfErr.textContent = ''; paintName(); paintAvatar(); resetCry(); paintShowcase(); profileFrom = !document.getElementById('v-binder').hidden ? 'binder' : 'packs'; go('profile'); }
+  function openProfile(){ pfErr.textContent = ''; refreshMedia(); paintName(); paintAvatar(); resetCry(); paintShowcase(); profileFrom = !document.getElementById('v-binder').hidden ? 'binder' : 'packs'; go('profile'); }
   // ---------- Profil public : la veste à patchs ----------
   // titre gagné : un point par musicien, 4 par classeur complété (un patch), 6 par maîtrise (un pin's)
   var TITLES = [[0, 'Groupie'], [12, 'Roadie'], [30, 'Première partie'], [60, 'Tête d\'affiche'], [100, 'Légende du pit']];
@@ -1873,7 +1896,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div><b style="font-size:1.15rem; line-height:1.15">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>' +
       (d.friend ? '<section class="pub-sec"><p class="eyebrow">Il lui manque, tu l\'as en double</p>' + (d.missing.length ? '<div class="pub-miss">' + d.missing.map(function(k){ return '<img src="' + kImg(k) + '" alt="' + esc(card(k.split('|')[0]).who) + '">'; }).join('') + '</div>' : '<p class="pub-empty">Rien pour l\'instant : tes doublons, il les a déjà.</p>') +
         '<button type="button" class="btn block" id="pub-trade" style="margin-top:14px">Lui proposer un échange</button></section>' : '');
-    var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ try{ new Audio(d.cry).play(); }catch(e){} };
+    var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ var pl = new Audio(d.cry).play(); if(pl) pl.catch(function(){ toast('Lecture impossible : recharge l\'app et réessaie.'); }); };
     var pt = document.getElementById('pub-trade'); if(pt) pt.onclick = function(){ closePub(); inviteFriend(d.friend, pt); };
     [].forEach.call(document.querySelectorAll('.pub-fan button'), function(b){ b.onclick = function(){ if(!d.own) return; closePub(); openDetail(b.getAttribute('data-k').split('|')[0]); }; });
   }
@@ -2217,16 +2240,26 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // chaque maîtrise en débloque un : 5 extraits de musiciens que j'ai déjà (le maîtrisé en premier), 4 choix d'artiste ;
   // récompense selon le score, donnée une seule fois par le serveur
   var quizEl = document.getElementById('quiz'), quizIn = document.getElementById('quiz-in'), quiz = null, quizAudio = null;
-  function quizzes(){ return ONLINE && state.claims ? CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }) : []; }
+  // blind tests débloqués : un par maîtrise (sujet : ce musicien d'abord) et un par classeur complété (sujet : ses musiciens d'abord)
+  function quizzes(){
+    if(!ONLINE || !state.claims) return [];
+    var out = CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }).map(function(c){
+      return {key:'quiz:' + c.id, label:'Maîtrise de ' + c.who, seed:[c], art:'m:' + c.id, claim:function(sc){ return ONLINE.claimBlindtest(c.id, sc); }}; });
+    BINDERS.forEach(function(b){ var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
+      if(ids.length && ids.every(function(id){ return placed(id); }) && !state.claims['quiz:b-' + b.k])
+        out.push({key:'quiz:b-' + b.k, label:'Classeur ' + binderLabel(b), seed:ids.map(card), art:'b:' + b.k, claim:function(sc){ return ONLINE.claimBlindtestBinder(b.k, sc); }}); });
+    return out;
+  }
   function shuffle(a){ for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function quizStop(){ if(quizAudio){ quizAudio.pause(); quizAudio = null; } var p = quizIn.querySelector('.qz-play'); if(p) p.classList.remove('on'); }
-  async function startQuiz(c){
-    quiz = {c:c, qs:[], i:0, score:0, picked:null, loading:true}; quizEl.hidden = false; duck(0); renderQuiz();
-    var mine = [c].concat(shuffle(CARDS.filter(function(x){ return x.id !== c.id && best(x.id) && TRACKS[x.id]; })));
+  async function startQuiz(sub){
+    var c = sub; quiz = {sub:sub, qs:[], i:0, score:0, picked:null, loading:true}; quizEl.hidden = false; duck(0); renderQuiz();
+    var seed = shuffle(sub.seed.filter(function(x){ return TRACKS[x.id]; }));
+    var mine = seed.concat(shuffle(CARDS.filter(function(x){ return seed.indexOf(x) === -1 && best(x.id) && TRACKS[x.id]; })));
     if(mine.length < 5) mine = mine.concat(shuffle(CARDS.filter(function(x){ return TRACKS[x.id] && mine.indexOf(x) === -1; })));
     var found = await Promise.all(mine.slice(0, 9).map(function(x){ return track(x.id).then(function(t){ return t ? {c:x, t:t} : null; }); }));
     found = found.filter(Boolean).slice(0, 5);
-    if(!quiz || quiz.c !== c) return;
+    if(!quiz || quiz.sub !== c) return;
     if(found.length < 5){ quiz.error = true; quiz.loading = false; renderQuiz(); return; }
     quiz.qs = shuffle(found).map(function(q){ return {ans:q.c, t:q.t, opts:shuffle([q.c].concat(shuffle(CARDS.filter(function(y){ return y.id !== q.c.id; })).slice(0, 3)))}; });
     quiz.loading = false; renderQuiz(); quizPlay();
@@ -2239,7 +2272,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function renderQuiz(){
     var z = quiz, EQ = '<span class="qz-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
-    var head = '<p class="eyebrow">Blind test · Maîtrise de ' + esc(z.c.who) + '</p>';
+    var head = '<p class="eyebrow">Blind test · ' + esc(z.sub.label) + '</p>';
     if(z.loading){ quizIn.innerHTML = head + '<h2 id="qz-t">On accorde les guitares…</h2>'; return; }
     if(z.error){ quizIn.innerHTML = head + '<h2 id="qz-t">Les extraits font grève</h2><p class="pf-note">Impossible de charger 5 extraits pour l\'instant. Ton blind test t\'attend, reviens plus tard.</p><button type="button" class="btn block" id="qz-end">Fermer</button>';
       document.getElementById('qz-end').onclick = closeQuiz; return; }
@@ -2249,7 +2282,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       quizIn.innerHTML = head + '<h2 id="qz-t">' + z.score + ' / 5</h2>' + dots + '<p class="pf-note">' + msg + (z.score >= 3 ? ' Une récompense t\'attend.' : ' Pas de récompense cette fois.') + '</p>' +
         '<button type="button" class="btn block" id="qz-end">' + (z.score >= 3 ? 'Récupérer ma récompense' : 'Fermer') + '</button>';
       document.getElementById('qz-end').onclick = function(){ var b = this; b.disabled = true;
-        ONLINE.claimBlindtest(z.c.id, z.score).then(function(res){ state.claims['quiz:' + z.c.id] = true; save(); closeQuiz(); renderCorner(); rewardArrived(res, 'Blind test · ' + z.score + ' / 5'); })
+        z.sub.claim(z.score).then(function(res){ state.claims[z.sub.key] = true; save(); closeQuiz(); renderCorner(); rewardArrived(res, 'Blind test · ' + z.score + ' / 5'); })
           .catch(function(e){ b.disabled = false; toast(esc(e.message)); }); };
       return;
     }
@@ -2300,14 +2333,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var el = document.getElementById('quest-list');
     el.innerHTML = done.map(function(o, i){
       return '<button type="button" class="goal quest claim" data-claim="' + i + '">' + goalArt(o.key, null) + '<span class="q-body"><b>' + esc(o.title) + '</b><span class="pc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/></svg>Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></span></button>'; }).join('') +
-      qz.map(function(c){ return '<button type="button" class="goal quest quizgo" data-quiz="' + c.id + '"><span class="q-art" aria-hidden="true"><img src="' + img(c.id, 'legendaire') + '" alt="" loading="lazy">' + ICON_HEAD + '</span>' +
-        '<span class="q-body"><b>Blind test débloqué</b><span class="pc">Jouer</span><small>Maîtrise de ' + esc(c.who) + ' · 5 extraits, une carte à gagner</small></span></button>'; }).join('') +
+      qz.map(function(q, i){ return '<button type="button" class="goal quest quizgo" data-quiz="' + i + '">' + goalArt(q.art, null).replace('</span>', ICON_HEAD + '</span>') +
+        '<span class="q-body"><b>Blind test débloqué</b><span class="pc">Jouer</span><small>' + esc(q.label) + ' · 5 extraits, une carte à gagner</small></span></button>'; }).join('') +
       (list.length ? list.map(function(g){
       return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
         goalArt(g.key, g.detail) + '<span class="q-body"><b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></span></button>'; }).join('')
       : done.length ? '' : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>');
     [].forEach.call(el.querySelectorAll('[data-claim]'), function(b){ b.onclick = function(){ claimObjective(done[+b.getAttribute('data-claim')], b); }; });
-    [].forEach.call(el.querySelectorAll('[data-quiz]'), function(b){ b.onclick = function(){ startQuiz(card(b.getAttribute('data-quiz'))); }; });
+    [].forEach.call(el.querySelectorAll('[data-quiz]'), function(b){ b.onclick = function(){ startQuiz(qz[+b.getAttribute('data-quiz')]); }; });
     [].forEach.call(el.querySelectorAll('.goal:not(.claim):not(.quizgo)'), function(b){ b.onclick = function(){
       if(b.getAttribute('data-act') === 'profile'){ openProfile(); return; } revealEl.hidden = true; openBinder(b.getAttribute('data-b')); go('binder'); if(b.getAttribute('data-d')) openDetail(b.getAttribute('data-d')); }; });
   }
@@ -2346,7 +2379,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return m ? (m[1] + (m[2] || '')).toUpperCase() : null; }
   function needOnline(){ if(ONLINE) return true; toast('Connecte-toi pour échanger : il faut un compte des deux côtés.'); return false; }
   function coteOf(list){ return list.reduce(function(a, x){ return a + COTE[x.r] * x.n; }, 0); }
-  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); paintPill(); snd(t.status === 'open' ? 'trade-code' : 'trade-join'); }
+  function tradeShow(t){ trade = t; tradeScan = false; tradeEl.hidden = false; tradeWatch(); renderTrade(); paintPill(); givePending(); snd(t.status === 'open' ? 'trade-code' : 'trade-join'); }
   // réduire : l'échange reste ouvert (temps réel compris), une pastille permet d'y revenir depuis n'importe quel écran
   var pillEl = document.getElementById('trade-pill');
   function paintPill(){
@@ -2370,7 +2403,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(t.status === 'done'){ if(!old || old.status !== 'done') (function wait(){ if(tradeEl.hidden && busyScreen()){ setTimeout(wait, 1000); return; } tradeDone(t); })(); return; }
     if(t.status === 'cancelled' && tradeEl.hidden){ snd('trade-cancel'); toast(esc(t.partner || 'Ton pote') + ' a quitté l\'échange. Rien n\'a bougé.'); tradeClose(); return; }
     if(old && old.id === t.id){
-      if(old.status === 'open' && t.status === 'live'){ snd('trade-join'); if(tradeEl.hidden) toast('<b>' + esc(t.partner || 'Ton pote') + '</b> est dans l\'échange. Touche la pastille pour y aller.'); }
+      if(old.status === 'open' && t.status === 'live'){ snd('trade-join'); setTimeout(givePending, 0); if(tradeEl.hidden) toast('<b>' + esc(t.partner || 'Ton pote') + '</b> est dans l\'échange. Touche la pastille pour y aller.'); }
       else if(t.status === 'cancelled' && old.status !== 'cancelled') snd('trade-cancel');
       else if(JSON.stringify(old.get) !== JSON.stringify(t.get) || JSON.stringify(old.their_wants) !== JSON.stringify(t.their_wants)) snd('trade-partner');
       if(t.their_ok && !old.their_ok) snd('trade-ready');
@@ -2378,6 +2411,29 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(tradeEl.hidden) paintPill(); else renderTrade();
   }
   function tradeClose(){ tradeUnwatchAll(); stopScan(); trade = null; tradeScan = false; tradeEl.hidden = true; pickEl.hidden = true; paintPill(); }
+  // échanger depuis une carte ou un classeur : feuille avec les potes et les deux tuiles ; la carte choisie est posée dès que le pote arrive
+  var startEl = document.getElementById('trade-start'), pendingGive = null;
+  function openTradeStart(g){
+    if(!needOnline()) return;
+    if(trade){ tradeResume(); return; }
+    pendingGive = g || null; sheet.hidden = true;
+    document.getElementById('ts-card').innerHTML = g && card(g.m) ? '<img src="' + img(g.m, g.r) + '" alt=""><span><b>' + esc(card(g.m).who) + ' · ' + rarity(g.r).label + '</b><small>posée dès que ton pote rejoint l\'échange</small></span>' : '';
+    var fb = document.getElementById('ts-friends'); fb.innerHTML = '';
+    ONLINE.friends().then(function(list){ friendsList = list || [];
+      fb.innerHTML = friendsList.length ? '<p class="eyebrow">Avec un pote</p>' + friendsList.slice(0, 6).map(function(f, i){ return '<div class="friend">' + avatarHtml(f.username) + '<span><b>' + esc(f.username || 'Pote') + '</b><small>notification, pas de code</small></span><span class="f-acts"><button type="button" data-tsf="' + i + '">Proposer</button></span></div>'; }).join('') + '<p class="eyebrow">Ou sur place</p>' : '';
+      [].forEach.call(fb.querySelectorAll('[data-tsf]'), function(b){ b.onclick = function(){ startEl.hidden = true; inviteFriend(friendsList[+b.getAttribute('data-tsf')], b); }; });
+    }).catch(function(){});
+    startEl.hidden = false;
+  }
+  function givePending(){
+    var g = pendingGive; if(!g || !trade || trade.status !== 'live') return; pendingGive = null;
+    if(state.owned[g.m + '|' + g.r] && !givenOf(g.m, g.r)){ setItem(g.m, g.r, 1); toast(esc(card(g.m).who) + ' · ' + rarity(g.r).label + ' posée dans l\'échange.'); }
+  }
+  document.getElementById('ts-host').addEventListener('click', function(){ startEl.hidden = true; tradeHost(); });
+  document.getElementById('ts-scan').addEventListener('click', function(){ startEl.hidden = true; openScan(); });
+  startEl.addEventListener('click', function(e){ if(e.target === startEl){ startEl.hidden = true; pendingGive = null; } });
+  document.getElementById('binder-trade').addEventListener('click', function(){ openTradeStart(null); });
+
   // un échange déjà ouvert (réduit) : on y revient au lieu d'en créer un autre
   function tradeResume(){ if(!trade) return false; tradeEl.hidden = false; renderTrade(); paintPill(); return true; }
   async function tradeHost(){ if(!needOnline() || tradeBusy || tradeResume()) return; tradeBusy = true;
@@ -2805,6 +2861,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function sndInit(){
     if(sndCtx) { if(sndCtx.state === 'suspended') sndCtx.resume(); return sndCtx; }
     var C = window.AudioContext || window.webkitAudioContext; if(!C) return null;
+    // iPhone (iOS 17+) : jouer comme une app de musique, même avec le bouton silencieux
+    try{ if(navigator.audioSession) navigator.audioSession.type = 'playback'; }catch(e){}
     sndCtx = new C(); sfxBus = sndCtx.createGain(); sfxBus.gain.value = .9; sfxBus.connect(sndCtx.destination);
     musicBus = sndCtx.createGain(); musicBus.gain.value = 0; musicBus.connect(sndCtx.destination);
     return sndCtx;
@@ -3363,14 +3421,21 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       {n:L.fresh.length, one:'nouvelle carte', many:'nouvelles cartes', ico:'<path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6"/>', imgs:kImgs(L.fresh)},
       {n:L.up.length, one:'montée en grade', many:'montées en grade', ico:'<path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/>', imgs:kImgs(L.up)},
       {n:L.dup.length, one:'doublon', many:'doublons', ico:'<path d="M12 4l-8 4l8 4l8 -4l-8 -4"/><path d="M4 12l8 4l8 -4"/><path d="M4 16l8 4l8 -4"/>', imgs:kImgs(L.dup)},
-      {n:L.comps.length, one:'classeur complété', many:'classeurs complétés', ico:'<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', names:L.comps.map(binderLabel)},
-      {n:L.mast.length, one:'maîtrise', many:'maîtrises', ico:'<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', imgs:L.mast.map(function(c){ return img(c.id, 'legendaire'); })}
+      {n:L.comps.length, one:'classeur complété', many:'classeurs complétés', ico:'<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', names:L.comps.map(binderLabel),
+        claims:L.comps.map(function(b){ return {key:'binder:' + b.k, title:'Classeur plié : ' + binderLabel(b)}; })},
+      {n:L.mast.length, one:'maîtrise', many:'maîtrises', ico:'<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', imgs:L.mast.map(function(c){ return img(c.id, 'legendaire'); }),
+        claims:L.mast.map(function(c){ return {key:'mastery:' + c.id, title:'Maîtrise : ' + c.who}; })}
     ].filter(function(x){ return x.n > 0; });
     if(!rows.length) return;
     document.getElementById('recap-rows').innerHTML = rows.map(function(x){
       return '<div class="rc"><span class="rc-ico">' + icon(x.ico, 22) + '</span><span class="rc-t"><b class="num">' + x.n + '</b> ' + (x.n > 1 ? x.many : x.one) + '</span>' +
         (x.imgs ? '<span class="rc-cards">' + x.imgs.slice(0, 6).map(function(u){ return '<img src="' + u + '" alt="" loading="lazy">'; }).join('') + (x.imgs.length > 6 ? '<i>+' + (x.imgs.length - 6) + '</i>' : '') + '</span>'
-          : '<span class="rc-names">' + x.names.map(esc).join(' · ') + '</span>') + '</div>'; }).join('');
+          : '<span class="rc-names">' + x.names.map(esc).join(' · ') + '</span>') +
+        // récompense à prendre tout de suite (en ligne) : le bilan se ferme et elle arrive
+        (x.claims ? x.claims.filter(function(o){ return ONLINE && state.claims && !state.claims[o.key]; }).map(function(o){
+          return '<button type="button" class="rc-claim" data-key="' + o.key + '" data-title="' + esc(o.title) + '">' + icon('<path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/>', 16) + '<span>' + esc(o.title.split(' : ')[1]) + '</span><b>Récupérer</b></button>'; }).join('') : '') + '</div>'; }).join('');
+    [].forEach.call(document.querySelectorAll('#recap-rows .rc-claim'), function(b){ b.onclick = function(){
+      document.getElementById('deal-recap').hidden = true; claimObjective({key:b.getAttribute('data-key'), title:b.getAttribute('data-title')}, b); }; });
     document.getElementById('deal-recap').hidden = false;
   }
   document.getElementById('recap-ok').addEventListener('click', function(){ document.getElementById('deal-recap').hidden = true; if(wantWelcome){ wantWelcome = false; showWelcome(); } });
@@ -3524,10 +3589,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return n ? '<button type="button" data-r="' + x.k + '"><img src="' + img(id, x.k) + '" alt="' + x.label + '" style="outline:2px solid ' + (x.k===r ? x.color : 'transparent') + ';outline-offset:1px"><small>' + x.label + (n>1?' ×'+n:'') + '</small></button>'
                  : '<div><div class="lock">?</div><small>' + x.label + '</small></div>';
       }).join('') + '</div>' +
-      (r ? '<div class="detail-actions"><button type="button" class="btn ghost" id="d-share">Partager</button><button type="button" class="btn danger" id="d-tear">Déchirer</button></div>' : '');
+      (r ? '<div class="detail-actions"><button type="button" class="btn ghost" id="d-share">Partager</button><button type="button" class="btn ghost" id="d-trade">Échanger</button><button type="button" class="btn danger" id="d-tear">Déchirer</button></div>' : '');
     if(r){
       showListen(document.getElementById('d-listen'), id);
       document.getElementById('d-share').onclick = function(){ shareCard(c, r); };
+      document.getElementById('d-trade').onclick = function(){ openTradeStart({m:id, r:r}); };
       document.getElementById('d-tear').onclick = function(){
         var n = state.owned[id+'|'+r] || 0;
         askConfirm({eyebrow:'Déchirer', title:'Déchirer ' + c.who + ' ?', text:'Un exemplaire ' + rarity(r).label + ' part en lambeaux' + (n > 1 ? ' (il t\'en restera ' + (n - 1) + ').' : '. C\'était le dernier : la case redevient vide.') + ' Impossible de revenir en arrière.', yes:'Oui, déchirer', no:'Non, je la garde'},
@@ -3957,7 +4023,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'mastery-sheet', 'troc', 'quiz', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-start', 'trade-pick', 'mastery-sheet', 'troc', 'quiz', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

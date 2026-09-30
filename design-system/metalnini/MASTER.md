@@ -46,7 +46,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 ## Parcours Révélation et rangement
 - **Révélation** : une carte à la fois ; phrase « combo » en bandeau incliné sur la carte (taille et couleur selon la rareté, ~3 s). La rangée du bas rouvre les cartes déjà vues. À la dernière carte : « Ranger dans le classeur » et partage (pas d'écran de résumé).
-- **Bilan de « Tout ranger »** : une ligne par catégorie (médaillon avec icône, nombre, libellé) avec les miniatures des cartes concernées (6 au plus, puis « +N ») ; les classeurs complétés par leur nom.
+- **Bilan de « Tout ranger »** : une ligne par catégorie (médaillon avec icône, nombre, libellé) avec les miniatures des cartes concernées (6 au plus, puis « +N ») ; les classeurs complétés par leur nom. Chaque classeur complété et chaque maîtrise ont un bouton « Récupérer » (cadeau, nom, pastille or) : le bilan se ferme et la récompense arrive.
 - **Rangement** : chaque carte s'affiche en grand, bonus en bandeau (lettrage Metal Mania) ; consigne sur deux lignes au-dessus ; un toucher range et passe à la suivante. Transformation proposée quand elle devient possible.
 
 ## Parcours Metal Corner et échange
@@ -60,7 +60,9 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 6. **Social** (Metal Corner) : « On te propose un échange » (Rejoindre), « Mes potes » (médaillon, nombre d'échanges, Profil, Échanger : proposition par notification), « Tes échanges » (historique : date, cartes données ⇄ reçues). Profil d'un pote = même veste à patchs, calculée sur son classeur, plus « Il lui manque, tu l'as en double » et « Lui proposer un échange ».
 
-7. **Blind test** : chaque maîtrise débloque une carte rouge sang « Blind test débloqué · Jouer » dans le carrousel (casque en médaillon). Écran plein cadre : surtitre « Blind test · Maîtrise de X », « Extrait N / 5 », 5 points (or = trouvé, rouge = raté), disque à égaliseur (toucher = écouter / couper), 4 choix d'artiste en 2 × 2 ; après le choix, bonne réponse en or, mauvaise en rouge, titre du morceau, « Bien vu ! » ou « Raté : c'était X » ; score final « N / 5 » puis récompense (3 = Commune nouvelle, 4 = Rare minimum, 5 = Holo minimum). Joué une fois ; quitter en cours ne le consomme pas.
+7. **Blind test** : chaque maîtrise et chaque classeur complété débloquent une carte rouge sang « Blind test débloqué · Jouer » dans le carrousel (casque en médaillon). Écran plein cadre : surtitre « Blind test · Maîtrise de X », « Extrait N / 5 », 5 points (or = trouvé, rouge = raté), disque à égaliseur (toucher = écouter / couper), 4 choix d'artiste en 2 × 2 ; après le choix, bonne réponse en or, mauvaise en rouge, titre du morceau, « Bien vu ! » ou « Raté : c'était X » ; score final « N / 5 » puis récompense (3 = Commune nouvelle, 4 = Rare minimum, 5 = Holo minimum). Joué une fois ; quitter en cours ne le consomme pas.
+
+8. **Échanger depuis une carte ou un classeur** : bouton « Échanger » dans la fiche carte (entre Partager et Déchirer) et icône d'échange dans l'en-tête d'un classeur ; feuille « Échanger » : la carte proposée (posée dès que le pote rejoint), « Avec un pote » (Proposer = notification), « Ou sur place » (les deux tuiles).
 
 ## Autres écrans
 - **Profil** : page à part (avatar, pseudo, capacité de metaleux en texte, cri). La capacité se modifie dans une feuille du bas : idées proposées ou texte perso (120 caractères).
