@@ -928,7 +928,7 @@
     </section>
     <section class="pf-card pf-cry">
       <p class="eyebrow">Ton cri</p>
-      <p class="pf-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque. Ton premier cri te rapporte une carte cadeau, Rare minimum.</p>
+      <p class="pf-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque. Ton premier cri débloque une carte cadeau dans Metal Corner, et il résonne chez tes potes quand vous échangez.</p>
       <div class="pf-count" id="pf-count" aria-live="assertive"></div>
       <div class="pf-meter" aria-hidden="true"><i id="pf-level"></i></div>
       <div class="pf-row">
@@ -1251,6 +1251,7 @@ const api = {
   async claimPush(){ return must(await sb.rpc('claim_push_reward')); },
   async requestArtist(a, n, prio){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
+  async presence(sa, pf){ must(await sb.rpc('touch_presence', { p_standalone: sa, p_platform: pf })); },
   async myTrades(){ return must(await sb.rpc('my_trades', { p_limit: 20 })); },
   async friends(){ return must(await sb.rpc('my_friends')); },
   async follow(id, on){ must(await sb.rpc('follow', { p_friend: id, p_on: on })); },
@@ -1606,12 +1607,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
+      presence();
       api.tickets().then(function(n){ state.tickets = n; save(); }).catch(function(){});
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
-      api.media().then(function(m){ MEDIA = m; paintAvatar(); }).catch(function(){});
+      api.media().then(function(m){ MEDIA = m; paintAvatar(); sendLocalCry(); }).catch(function(){});
       api.power().then(function(v){ state.power = v; save(); }).catch(function(){});
       if((state.favBands || []).length && !state.favSent) api.setFavBands(state.favBands).then(function(){ state.favSent = true; save(); }).catch(function(){});
       if(location.hash && /access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
@@ -3442,10 +3444,26 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       input.disabled = list.length >= 5; input.placeholder = list.length >= 5 ? 'Cinq, c\'est complet' : 'ex. Gojira';
     }
     document.getElementById('fav-form').onsubmit = function(e){ e.preventDefault(); add(); paint(); input.focus(); };
-    function done(keep){ if(keep) add(); state.favBands = keep ? list : []; state.favSent = false; save(); onbPack(styles); }
+    function done(keep){ if(keep) add(); state.favBands = keep ? list : []; state.favSent = false; save(); onbCry(styles); }
     document.getElementById('onb-pack').onclick = function(){ done(true); };
     document.getElementById('onb-skip').onclick = function(){ done(false); };
     paint();
+  }
+  // cri : le même enregistreur que le profil, prêté à l'onboarding le temps de l'étape (gardé sur l'appareil, envoyé à la connexion)
+  function onbCry(styles){
+    var box = document.querySelector('.pf-cry'), home = box.parentNode, next = box.nextSibling;
+    onbShow('<h2>Pousse ton cri</h2><p>Pas envie maintenant ? Il t\'attendra dans ton profil.</p>' +
+      '<div id="onb-cry"></div><button type="button" class="btn block" id="onb-pack">Composer mon paquet</button><button type="button" class="link" id="onb-skip">Plus tard</button>');
+    document.getElementById('onb-cry').appendChild(box); document.getElementById('onb-cry').appendChild(pfErr);
+    function leave(){ stopRec(); home.insertBefore(box, next); home.insertBefore(pfErr, box.nextSibling); onbPack(styles); }
+    document.getElementById('onb-pack').onclick = function(){ if(recBlob) saveBtn.click(); leave(); };
+    document.getElementById('onb-skip').onclick = function(){ recBlob = null; resetCry(); leave(); };
+  }
+  // cri enregistré avant le compte : envoyé au serveur à la première connexion
+  function sendLocalCry(){
+    if(!ONLINE || !state.cry || MEDIA.cry) return;
+    fetch(state.cry).then(function(r){ return r.blob(); }).then(function(b){ return ONLINE.uploadMedia('cry', b, /mp4/.test(b.type) ? 'm4a' : /ogg/.test(b.type) ? 'ogg' : 'webm'); })
+      .then(function(url){ MEDIA.cry = url; delete state.cry; save(); renderGoals(); }).catch(function(){});
   }
   // paquet de bienvenue tiré par le serveur avant le compte (jeton), révélé comme un vrai paquet
   async function onbPack(styles){
@@ -3553,6 +3571,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   document.addEventListener('visibilitychange', updCheck);
   setInterval(updCheck, 6e5); setTimeout(updCheck, 4000);
+
+  // présence : chaque ouverture (et retour au premier plan) signale la visite, l'app installée et l'appareil, pour l'admin
+  function presence(){ if(!ONLINE) return; ONLINE.presence(standalone(), IOS ? 'iphone' : /Android/i.test(navigator.userAgent) ? 'android' : 'ordinateur').catch(function(){}); }
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) presence(); });
 
   // ---------- Installation et notifications ----------
   var VAPID = 'BFwwKTN8wXhWSicqw57pygCIoAgPGq8yUNVFf7ct8vPJbSWwZmciOGCFguIH5Bv_HqzIylv25ULgm3dlh8g4EEo';

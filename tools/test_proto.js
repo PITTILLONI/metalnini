@@ -253,7 +253,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async tradeInvites(){ return []; }, async friends(){ return pals; }, async myTrades(){ return T.status === 'done' ? [{id:'t1', done_at:'2026-09-30T10:00:00Z', partner:'Riffeuse', gave:T.give, got:T.get}] : []; }, async follow(id){ pals = [{friend_id:id, username:'Riffeuse', trades:1, last_trade:'2026-09-30T10:00:00Z'}]; }, async mediaUrl(){ return 'data:audio/wav;base64,'; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async presence(){}, async tradeInvites(){ return []; }, async friends(){ return pals; }, async myTrades(){ return T.status === 'done' ? [{id:'t1', done_at:'2026-09-30T10:00:00Z', partner:'Riffeuse', gave:T.give, got:T.get}] : []; }, async follow(id){ pals = [{friend_id:id, username:'Riffeuse', trades:1, last_trade:'2026-09-30T10:00:00Z'}]; }, async mediaUrl(){ return 'data:audio/wav;base64,'; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -330,6 +330,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   ['Gojira', 'gojira', 'Ghost'].forEach(v => { d7.getElementById('fav-in').value = v; d7.getElementById('fav-form').dispatchEvent(new w7.Event('submit', { cancelable: true })); });
   check('groupes favoris : ajoutés en pastilles, sans doublon', d7.querySelectorAll('.fav-chip').length === 2);
   d7.getElementById('fav-in').value = 'Mastodon'; d7.getElementById('onb-pack').click(); await sleep(50);
+  check('onboarding : étape du cri, avec l\'enregistreur du profil', !!d7.querySelector('#onb-cry .pf-cry #pf-rec') && /Pousse ton cri/.test(d7.getElementById('onb').textContent));
+  d7.getElementById('onb-skip').click(); await sleep(50);
+  check('cri passé : l\'enregistreur retourne dans le profil', !!d7.querySelector('#v-profile .pf-cry'));
   const st8 = JSON.parse(w7.localStorage.getItem('metalnini-proto-v1'));
   check('groupes favoris : gardés (même le dernier tapé), puis le paquet de bienvenue', st8.favBands.join() === 'Gojira,Ghost,Mastodon' && !st8.favSent && !!asked);
 

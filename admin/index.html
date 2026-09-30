@@ -289,9 +289,11 @@ async function dash(el){
 async function players(el){
   const list = await sb.rpc('admin_list_players').then(must);
   el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
-    <tr><th>Pseudo</th><th>Compte</th><th>Créé</th><th>Dernière connexion</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
+    <tr><th>Pseudo</th><th>Compte</th><th>Dernière visite</th><th>App</th><th>Notifs</th><th>Créé</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
     ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b>${p.cry_path ? ' <span class="pill" title="A enregistré un cri">cri</span>' : ''}</td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
-      <td>${fmt(p.created_at)}</td><td>${fmt(p.last_sign_in_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
+      <td title="Dernière connexion par mot de passe : ${fmt(p.last_sign_in_at)}">${fmt(p.last_seen_at || p.last_sign_in_at)}${p.last_platform ? ' <span class="muted">· ' + p.last_platform + '</span>' : ''}</td>
+      <td>${p.installed_at ? '<span class="ok" title="Depuis le ' + fmt(p.installed_at) + '">installée</span>' : '<span class="muted">navigateur</span>'}</td><td>${p.push ? '<span class="ok">oui</span>' : '<span class="muted">—</span>'}</td>
+      <td>${fmt(p.created_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
       <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
     </table></div></div><div id="player-detail"></div>`;
   el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => player(list.find(p => p.id === tr.dataset.id)));

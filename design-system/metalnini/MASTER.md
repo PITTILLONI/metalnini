@@ -88,7 +88,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 ## Contenu
 - **E-mail de confirmation** : encadré or « Rien dans ta boîte ? » (Spam, Promotions, « Pas un spam ») sur l'écran d'attente.
-- **Onboarding** : après les univers, « Tes groupes du moment ? » (5 au plus, pastilles, « Passer »), envoyés au serveur à la création du compte.
+- **Onboarding** : après les univers, « Tes groupes du moment ? » (5 au plus, pastilles, « Passer »), puis « Pousse ton cri » (l'enregistreur du profil, prêté le temps de l'étape, « Plus tard »), puis le paquet de bienvenue. Groupes et cri partent au serveur à la création du compte.
 - Ton rock'n'roll (guide dans `concept.html`, Ligne édito) : clair d'abord, une vanne par écran.
 - Carte non trouvée : ni nom, ni groupe, ni titre ; classeur de groupe « Groupe mystère » tant qu'aucune carte du groupe n'est trouvée.
 
