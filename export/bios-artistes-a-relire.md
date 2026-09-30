@@ -91,3 +91,29 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 **bennington** — Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l'un des disques de nu metal les plus vendus. Sa voix, qui passe d'un chant fragile à des cris déchirants, porte Numb (2003) ; il est mort en 2017.
 
 **prince** — Chanteur, guitariste et multi-instrumentiste de Minneapolis. L'album Purple Rain (1984), bande originale du film du même nom, contient l'un des solos de guitare les plus célèbres du rock ; il est mort en 2016.
+
+
+# Fiches des styles (page d'un classeur) — à relire
+
+**metalcore** (Années 1990 à aujourd'hui) — Né aux États-Unis dans les années 1990, le metalcore croise l'énergie du hardcore punk et les riffs du metal. On le reconnaît à ses breakdowns, ces passages ralentis et écrasants, et à l'alternance de cris et de refrains chantés. Repères : Breakdowns, Cris et chant clair, Guitares accordées bas.
+
+**hardcore** (Années 1980 à aujourd'hui) — Ce classeur réunit le hardcore, né de la scène punk américaine au début des années 1980, et les formes extrêmes du metal comme le death metal et le deathcore. Tempos brutaux, voix gutturales ou hurlées, et des passages taillés pour le pit. Repères : Growl et cris, Breakdowns, Double pédale.
+
+**numetal** (Milieu des années 1990 aux années 2000) — Apparu en Californie au milieu des années 1990, le nu metal mélange des riffs lourds et simples, des rythmiques groove et des influences hip-hop : rap, platines, samples. Il a dominé le début des années 2000 avec Korn, Linkin Park et System of a Down. Repères : Riffs groove, Rap et chant, Platines et samples.
+
+**poppunk** (Années 1990 et 2000) — Le pop punk garde la vitesse et les trois accords du punk, et y ajoute des mélodies accrocheuses et des refrains à chanter en chœur. Il explose dans les années 1990 avec Green Day et Blink-182, puis revient en force avec l'emo des années 2000. Repères : Tempo rapide, Refrains en chœur, Textes adolescents.
+
+**legendes** (Années 1960 à 1990) — Les pionniers et les monstres sacrés du rock, ceux qui ont inventé les codes que tout le monde reprend encore. Guitar heroes, voix hors normes et morceaux devenus des hymnes de stade. Repères : Guitar heroes, Hymnes, Pionniers.
+
+**heavy** (Fin des années 1960 aux années 1980) — Né en Angleterre à la fin des années 1960 avec Black Sabbath, le heavy metal pose les bases de tout le metal : riffs puissants, solos de guitare et voix aiguës. La nouvelle vague britannique, Iron Maiden en tête, l'a propulsé dans les années 1980. Repères : Riffs et solos, Voix aiguë, Cuir et clous.
+
+**thrash** (Années 1980) — Apparu au début des années 1980 en Californie et à New York, le thrash accélère le heavy metal avec l'énergie du punk : tempos très rapides, riffs serrés joués au médiator en aller-retour et solos techniques. Metallica, Megadeth, Slayer et Anthrax en sont les « quatre grands ». Repères : Tempo très rapide, Riffs serrés, Solos techniques.
+
+**grunge** (Fin des années 1980 et années 1990) — Né à Seattle à la fin des années 1980, le grunge mêle la lourdeur du metal, la rugosité du punk et des mélodies sombres. Guitares saturées, couplets calmes et refrains qui explosent : Nirvana l'a porté dans le monde entier en 1991. Repères : Son saturé, Calme puis explosion, Scène de Seattle.
+
+**batteurs** — Ils tiennent le tempo et donnent la puissance : double pédale, blast beats, breaks. Sans eux, pas de pit. Repères : Tempo, Double pédale, Breaks.
+
+**guitaristes** — Riffs, solos et sons de légende : la guitare électrique est le cœur du rock et du metal. Repères : Riffs, Solos, Distorsion.
+
+**bassistes** — Ils relient la batterie et les guitares, et donnent au son son épaisseur. Certains, comme Lemmy, en font un instrument de premier plan. Repères : Groove, Épaisseur, Lignes de basse.
+

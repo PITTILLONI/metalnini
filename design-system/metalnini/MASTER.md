@@ -38,7 +38,7 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 ## Parcours Classeurs
 1. **Catégories** en puces : Collection, Styles, Instruments, Groupes.
 2. **Cartes de classeur** dans la catégorie (« Collection » : la carte « Toutes les cartes ») : vraie carte au format 2:3, illustrée par la meilleure carte rangée ou le dos Metalnini, nom gravé en bas, « x/N cartes », filet de progression, « Complet ✓ ».
-3. **Page du classeur** : « ← catégorie », titre, progression, cases numérotées de 1 à N ; tri et affichage dans une feuille du bas (icône réglages).
+3. **Page du classeur** : « ← catégorie », titre, progression, fiche du style repliable (« C'est quoi, le style … ? » : époque, présentation, 3 repères en pastilles, « À écouter » avec les morceaux des cartes du classeur ; ouverte à la première visite, repliée ensuite ; une phrase pour les classeurs d'instruments), cases numérotées de 1 à N ; tri et affichage dans une feuille du bas (icône réglages).
 
 ## Parcours Paquets (deux temps)
 1. **Choisir** : HUD, objectifs (masqués sur écran bas), « Choisis ton paquet du jour », carrousel (flèches sur ordinateur), nom du paquet du centre, format (1 gros de 5 cartes ou 2 petits de 2 cartes aux meilleures chances ; 2 points par jour, gros = 2, petit = 1). Toucher le paquet du centre le sélectionne (médaillon d'encre cerclé d'or avec un check au trait, à cheval sur le haut du sachet, halo or doux) ; « Ta sélection » montre une case (gros) ou deux (petits), chaque paquet avec ✕ pour le retirer ; changer de format garde le choix. Bouton « Ouvrir » dès qu'une case est remplie. Paquet du jour utilisé : « Le merch est fermé » et le temps restant.

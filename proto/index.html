@@ -586,6 +586,15 @@
   .opts{display:flex; gap:8px} .opts button{flex:1; min-height:48px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); font:600 .84rem var(--mono); cursor:pointer}
   .opts button[aria-checked="true"]{border-color:var(--gold); background:rgba(235,154,38,.12); color:var(--gold-hi)}
   #sort-done{margin-top:18px}
+  /* fiche du style : repliable, époque, présentation, repères, morceaux à écouter */
+  .style-info{margin:12px 0 4px; padding:0 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .style-info[hidden]{display:none}
+  .style-info summary{min-height:48px; display:flex; align-items:center; gap:8px; list-style:none; cursor:pointer; font:600 .86rem var(--mono); color:var(--gold-hi)}
+  .style-info summary::-webkit-details-marker{display:none} .style-info summary::after{content:""; margin-left:auto; width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); transition:transform .2s ease}
+  .style-info[open] summary::after{transform:rotate(-135deg)} .style-info > div{padding:0 0 14px}
+  .si-era{margin:0 0 6px; font:600 .66rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)}
+  .si-txt{margin:0 0 10px; font-size:.9rem; line-height:1.5; color:var(--text)}
+  .si-tags{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px} .si-tags span{padding:4px 10px; border:1px solid rgba(235,154,38,.4); border-radius:999px; font:600 .72rem var(--mono); color:var(--gold-hi)}
+  .si-play{margin:0; font:500 .8rem/1.5 var(--mono); color:var(--text)} .si-play b{display:block; margin-bottom:2px; font:600 .64rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .si-play span{color:var(--muted)}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
   .bar{flex:1; height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden}
   .bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); width:0; transition:width .6s ease}
@@ -957,6 +966,7 @@
       <button type="button" class="back-btn" id="binder-back"></button>
       <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></button></div>
       <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
+      <details class="style-info" id="style-info" hidden><summary id="si-sum"></summary><div id="si-body"></div></details>
     </div>
   <div class="grid" id="grid"></div>
   <div class="matrix" id="matrix" hidden></div>
@@ -1674,6 +1684,21 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     hardcore:'Pour ceux qui trouvent le metalcore trop poli.', numetal:'Baggys, dreadlocks et platines : les années 2000 n\'ont jamais fini.',
     poppunk:'Trois accords, un skate et des refrains à hurler en voiture.', legendes:'Ceux sans qui personne ici n\'aurait touché une guitare.',
     heavy:'Cuir, clous et voix qui montent jusqu\'au plafond.', thrash:'Plus vite, plus fort, et on reprend du début.', grunge:'Chemises à carreaux et larsen de Seattle.'};
+  // fiches des styles (et des instruments) : comprendre la musique d'un classeur. era = époque, tags = repères pour le reconnaître,
+  // play = cartes du classeur dont le morceau illustre le style
+  var STYLE_INFO = {
+    metalcore:{era:'Années 1990 à aujourd\'hui', txt:'Né aux États-Unis dans les années 1990, le metalcore croise l\'énergie du hardcore punk et les riffs du metal. On le reconnaît à ses breakdowns, ces passages ralentis et écrasants, et à l\'alternance de cris et de refrains chantés.', tags:['Breakdowns', 'Cris et chant clair', 'Guitares accordées bas'], play:['spiritbox', 'jinjer', 'landmvrks']},
+    hardcore:{era:'Années 1980 à aujourd\'hui', txt:'Ce classeur réunit le hardcore, né de la scène punk américaine au début des années 1980, et les formes extrêmes du metal comme le death metal et le deathcore. Tempos brutaux, voix gutturales ou hurlées, et des passages taillés pour le pit.', tags:['Growl et cris', 'Breakdowns', 'Double pédale'], play:['knocked-loose', 'ramos', 'duplantier']},
+    numetal:{era:'Milieu des années 1990 aux années 2000', txt:'Apparu en Californie au milieu des années 1990, le nu metal mélange des riffs lourds et simples, des rythmiques groove et des influences hip-hop : rap, platines, samples. Il a dominé le début des années 2000 avec Korn, Linkin Park et System of a Down.', tags:['Riffs groove', 'Rap et chant', 'Platines et samples'], play:['korn', 'bennington', 'tankian']},
+    poppunk:{era:'Années 1990 et 2000', txt:'Le pop punk garde la vitesse et les trois accords du punk, et y ajoute des mélodies accrocheuses et des refrains à chanter en chœur. Il explose dans les années 1990 avec Green Day et Blink-182, puis revient en force avec l\'emo des années 2000.', tags:['Tempo rapide', 'Refrains en chœur', 'Textes adolescents'], play:['blink182', 'hayley', 'armstrong']},
+    legendes:{era:'Années 1960 à 1990', txt:'Les pionniers et les monstres sacrés du rock, ceux qui ont inventé les codes que tout le monde reprend encore. Guitar heroes, voix hors normes et morceaux devenus des hymnes de stade.', tags:['Guitar heroes', 'Hymnes', 'Pionniers'], play:['hendrix', 'mercury', 'angus']},
+    heavy:{era:'Fin des années 1960 aux années 1980', txt:'Né en Angleterre à la fin des années 1960 avec Black Sabbath, le heavy metal pose les bases de tout le metal : riffs puissants, solos de guitare et voix aiguës. La nouvelle vague britannique, Iron Maiden en tête, l\'a propulsé dans les années 1980.', tags:['Riffs et solos', 'Voix aiguë', 'Cuir et clous'], play:['ozzy', 'dickinson', 'halford']},
+    thrash:{era:'Années 1980', txt:'Apparu au début des années 1980 en Californie et à New York, le thrash accélère le heavy metal avec l\'énergie du punk : tempos très rapides, riffs serrés joués au médiator en aller-retour et solos techniques. Metallica, Megadeth, Slayer et Anthrax en sont les « quatre grands ».', tags:['Tempo très rapide', 'Riffs serrés', 'Solos techniques'], play:['hetfield', 'araya', 'mustaine']},
+    grunge:{era:'Fin des années 1980 et années 1990', txt:'Né à Seattle à la fin des années 1980, le grunge mêle la lourdeur du metal, la rugosité du punk et des mélodies sombres. Guitares saturées, couplets calmes et refrains qui explosent : Nirvana l\'a porté dans le monde entier en 1991.', tags:['Son saturé', 'Calme puis explosion', 'Scène de Seattle'], play:['cobain', 'cornell', 'staley']},
+    batteurs:{txt:'Ils tiennent le tempo et donnent la puissance : double pédale, blast beats, breaks. Sans eux, pas de pit.', tags:['Tempo', 'Double pédale', 'Breaks']},
+    guitaristes:{txt:'Riffs, solos et sons de légende : la guitare électrique est le cœur du rock et du metal.', tags:['Riffs', 'Solos', 'Distorsion']},
+    bassistes:{txt:'Ils relient la batterie et les guitares, et donnent au son son épaisseur. Certains, comme Lemmy, en font un instrument de premier plan.', tags:['Groove', 'Épaisseur', 'Lignes de basse']}
+  };
   var PACKS = [{k:'serie', label:'Mosh Pack', short:'Tous les styles', desc:'Tous les styles dans le même pit : les cartes sont tirées parmi les ' + CARDS.length + ' musiciens.'}].concat(BINDERS.filter(function(b){ return b.kind === 'Styles'; }).map(function(b){ return {k:b.k, label:b.label, short:b.ids.length + ' musiciens', desc:'Uniquement les ' + b.ids.length + ' musiciens du classeur ' + b.label + ' : idéal pour le compléter.'}; }))
     .filter(function(p){ return !window.METALNINI_PACKS || window.METALNINI_PACKS[p.k] || p.k === 'serie'; });
   function packPool(k){ var b = k === 'serie' ? null : binderOf(k); var ids = b ? b.ids : CARDS.map(function(c){ return c.id; }); return ids.filter(function(id){ return card(id); }); }
@@ -3409,6 +3434,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     list.forEach(function(c, i){ pos[c.id] = i + 1; }); if(dir < 0) list.reverse();
     var have = list.filter(function(c){ return placed(c.id); }).length;
     document.getElementById('binder-title').textContent = binderLabel(b);
+    // fiche du style : ouverte à la première visite du classeur, repliée ensuite (on la rouvre d'un toucher)
+    var si = STYLE_INFO[b.k], box = document.getElementById('style-info');
+    box.hidden = !si;
+    if(si){
+      document.getElementById('si-sum').textContent = b.kind === 'Styles' ? 'C\'est quoi, le style ' + binderLabel(b).toLowerCase() + ' ?' : 'Le rôle des ' + binderLabel(b).replace(/^Les /, '').toLowerCase();
+      document.getElementById('si-body').innerHTML = (si.era ? '<p class="si-era">' + esc(si.era) + '</p>' : '') + '<p class="si-txt">' + esc(si.txt) + '</p>' +
+        '<div class="si-tags">' + si.tags.map(function(t){ return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' +
+        (si.play ? '<p class="si-play"><b>À écouter</b> ' + si.play.filter(function(id){ return card(id); }).map(function(id){ var c = card(id); return esc(c.title) + ' <span>(' + esc(c.band) + ')</span>'; }).join(' · ') + '</p>' : '');
+      state.stylesSeen = state.stylesSeen || {}; if(box.dataset.k !== b.k){ box.open = !state.stylesSeen[b.k]; box.dataset.k = b.k; }
+      if(!state.stylesSeen[b.k]){ state.stylesSeen[b.k] = true; save(); }
+    }
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
