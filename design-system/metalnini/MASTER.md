@@ -22,7 +22,7 @@ Deux couches, jamais mélangées sur un même élément :
   - `showLoot()` : écran du butin (coffre, récompense, pastilles).
 - Écrans passés à la signature :
   - Metal Corner, fiche carte et butin des épreuves.
-  - Accueil (rang en gothique et crans sous le pseudo, pastille « en ligne » sur l'avatar, compteurs en relief, titre et nom du paquet en gothique, halo de rayons derrière le paquet, billet d'installation, points du carrousel en crans ; le choix du format reste sans cadre, à la demande de l'utilisateur).
+  - Accueil (rang en gothique et crans sous le pseudo, pastille « en ligne » sur l'avatar, compteurs en relief, titre et nom du paquet en gothique, halo de rayons derrière le paquet, billet d'installation, points du carrousel en crans ; choix du format en interrupteur en relief à deux positions, le curseur or glisse sur Standard ou Mini — choisi le 2026-09-30).
   - Classeurs (puces en relief, noms en gothique, progression à crans).
   - Échange (blocs en relief, cote en pastille, QR dans un cadre gravé).
   - Blind test (réponses en relief, progression à crans).

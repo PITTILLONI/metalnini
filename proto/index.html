@@ -128,18 +128,22 @@
   .pc-wait{color:var(--gold) !important; font-weight:600}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
-  /* format du paquet : picto de sachet et contenu, sans cadre ; le choix actif passe en or et grossit */
-  .formats{display:flex; justify-content:center; gap:12px; margin:12px auto 0}
-  .formats button{width:96px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px 7px; border:0; border-radius:10px; background:none; color:var(--muted); cursor:pointer; text-align:center; transition:color .15s ease, transform .15s ease}
-  .formats .fi{display:flex; align-items:flex-end; justify-content:center; gap:3px; height:28px}
+  /* format du paquet : interrupteur en relief à deux positions, le curseur or glisse sur le format choisi */
+  .formats{position:relative; display:grid; grid-template-columns:1fr 1fr; width:min(100%, 340px); margin:14px auto 0; padding:4px; border:1px solid #2e251d; border-radius:14px; background:#15110f; box-shadow:0 4px 0 #000}
+  .formats::before{content:""; position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 4px); border-radius:10px; background:var(--gold); box-shadow:0 3px 0 #8a5510; transition:transform .28s cubic-bezier(.3,1.4,.5,1)}
+  .formats[data-sel="small"]::before{transform:translateX(100%)}
+  .formats button{position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:9px; min-height:54px; padding:6px 8px; border:0; border-radius:10px; background:none; color:var(--muted); cursor:pointer; text-align:left; transition:color .2s ease}
+  .formats .fi{display:flex; align-items:flex-end; justify-content:center; height:28px}
   .formats .fi svg{height:100%; width:auto} .formats .fi-n{font:800 12px var(--display); fill:currentColor}   /* Standard : grand sachet « 5 » ; Mini : petit sachet « 2 » et étincelle (meilleures chances) */
-  .formats b{display:block; font:800 .95rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase} .formats small{display:block; margin-top:2px; font:600 .64rem/1.25 var(--mono)}
-  .formats button[aria-checked="true"]{color:var(--gold-hi); transform:scale(1.08)} .formats button:active{transform:scale(.97)}
-  .formats button:disabled{opacity:.4; cursor:default}
+  .formats b{display:block; font:900 1rem/1 var(--display); letter-spacing:.08em; text-transform:uppercase} .formats small{display:block; margin-top:2px; font:600 .7rem/1.2 var(--mono)}
+  .formats button[aria-checked="true"]{color:#1a0f05}
+  .formats button:disabled{cursor:default} .formats:has(button:disabled){opacity:.5}
+  @media (prefers-reduced-motion: reduce){ .formats::before{transition:none} }
   .small-go{max-width:420px; margin-top:10px}
   /* mode petits paquets : la description cède la place au bouton d'ouverture */
   /* écrans bas (iPhone compact, barres de Safari) : on resserre pour que tout tienne sans défiler */
   @media (max-height:720px){
+    .formats{margin-top:10px} .formats button{min-height:46px}
     .home .hud{padding-bottom:6px}
     .home-title{font-size:1.45rem; margin-top:12px}
     .choose{padding:0 0 8px} .pack-car{padding:10px 0 12px} .pack-info{min-height:0; padding-top:8px} .pack-info h2{font-size:1.45rem} .pack-info p{font-size:.84rem}
@@ -981,7 +985,7 @@
   <p class="packs-count" id="packs-count" hidden></p>
   <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
     <button type="button" role="radio" data-f="big"><span class="fi"><svg viewBox="0 0 24 32" width="22" height="30" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="21.5" text-anchor="middle" class="fi-n">5</text></svg></span><span><b>Standard</b><small>5 cartes</small></span></button>
-    <button type="button" role="radio" data-f="small"><span class="fi"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><g transform="translate(0 7) scale(.78)"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="21.5" text-anchor="middle" class="fi-n">2</text></g><path d="M26 1.5l1.2 3.3 3.3 1.2-3.3 1.2L26 10.5l-1.2-3.3L21.5 6l3.3-1.2z" fill="currentColor"/></svg></span><span><b>Mini</b><small>2 cartes<br>+ de chances</small></span></button>
+    <button type="button" role="radio" data-f="small"><span class="fi"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><g transform="translate(0 7) scale(.78)"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="21.5" text-anchor="middle" class="fi-n">2</text></g><path d="M26 1.5l1.2 3.3 3.3 1.2-3.3 1.2L26 10.5l-1.2-3.3L21.5 6l3.3-1.2z" fill="currentColor"/></svg></span><span><b>Mini</b><small>2 cartes · + de chances</small></span></button>
   </div>
   <p class="small-hint" id="fmt-lock" hidden></p>
   <div class="choose">
@@ -2210,6 +2214,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         state.pending = null; state.pendingType = null; state.pendingFormat = null; save();
         renderFormats(); paintCarousel(); renderStats(); toast('Paquet mis de côté. Ses cartes t\'attendent dans le classeur, à ranger.');
       }; }
+    document.getElementById('formats').setAttribute('data-sel', locked ? state.pendingFormat || f : f);
     [].forEach.call(document.querySelectorAll('#formats [data-f]'), function(b){
       var k = b.getAttribute('data-f');
       b.setAttribute('aria-checked', String(k === (locked ? state.pendingFormat || f : f)));
