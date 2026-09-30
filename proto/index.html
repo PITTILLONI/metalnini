@@ -64,8 +64,8 @@
   .hud-me .net b{display:inline; color:#4ade80; font-size:.7rem}
   .hud-right{display:flex; align-items:center; gap:8px}
   .hud-stats{display:flex; gap:6px}
-  .hud-stats span{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
-  .hud-stats i{display:flex; color:var(--gold)}
+  .hud-stats span, .hud-stats button{display:flex; align-items:center; gap:5px; padding:6px 9px; border-radius:10px; background:rgba(0,0,0,.45); border:1px solid var(--border); font:700 .78rem/1 var(--display); letter-spacing:.03em; color:var(--text); white-space:nowrap}
+  .hud-stats i{display:flex; color:var(--gold)} .hud-stats button{min-height:32px; cursor:pointer; position:relative} .hud-stats button::before{content:""; position:absolute; inset:-6px}
   .bonus-line{margin:6px 0 0; text-align:center; font:600 .84rem var(--mono); color:var(--gold-hi)}
   .home-title{font-size:1.9rem; line-height:1.05; margin:24px 0 0; text-align:center}
   .pack-zone{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:8px 0 16px}
@@ -179,6 +179,16 @@
   .tp-tabs button{min-height:44px; border:0; border-radius:9px; background:none; color:var(--muted); font:800 .95rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
   .tp-tabs button[aria-selected="true"]{background:var(--surface-2); color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.45)}
   #tp-note{color:var(--muted); margin:0 0 4px}
+  #mastery-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} #mastery-sheet .pf-note{color:var(--muted)} #mastery-sheet .eyebrow{margin:14px 0 8px}
+  .ms-crowned{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
+  .ms-crowned button{position:relative; padding:0; border:0; background:none; cursor:pointer; color:var(--text); font:600 .66rem/1.2 var(--mono); text-align:center}
+  .ms-crowned img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; box-shadow:0 0 0 1px var(--gold)}
+  .ms-crowned svg{position:absolute; top:-7px; left:50%; margin-left:-11px; color:var(--gold-hi); filter:drop-shadow(0 2px 3px rgba(0,0,0,.7))}
+  .ms-crowned small{display:block; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ms-row{display:grid; grid-template-columns:38px 1fr auto; align-items:center; gap:12px; width:100%; min-height:56px; padding:8px 10px; margin:0 0 8px; border:1px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text); text-align:left; cursor:pointer}
+  .ms-row img{width:38px; aspect-ratio:2/3; object-fit:cover; border-radius:4px}
+  .ms-row b{display:block; font:600 .88rem/1.25 var(--mono)} .ms-pips{display:flex; gap:4px; margin-top:5px} .ms-pips i{width:14px; height:6px; border-radius:2px; background:rgba(255,255,255,.1)}
+  .ms-row .num{font:700 .8rem var(--mono); color:var(--gold)}
   .tp-dup{min-height:44px; margin:4px 0 0; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--muted); font:600 .8rem var(--mono); cursor:pointer}
   .tp-dup[aria-pressed="true"]{border-color:var(--gold); color:var(--gold-hi); background:rgba(235,154,38,.08)}
   .tr-card .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .6rem/16px var(--mono); text-transform:uppercase; text-align:center}
@@ -1116,6 +1126,15 @@
   <div class="trade-in" id="trade-in"></div>
 </div>
 <button type="button" class="trade-pill" id="trade-pill" hidden></button>
+<div class="bsheet" id="mastery-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ms-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="ms-t">Tes maîtrises</h2>
+    <p class="pf-note">Les 5 raretés d'un même musicien, toutes rangées : la couronne, une récompense et un pin's sur ton profil.</p>
+    <div id="ms-body"></div>
+    <button type="button" class="btn block" id="ms-ok">Fermer</button>
+  </div>
+</div>
 <div class="bsheet" id="trade-pick" hidden role="dialog" aria-modal="true" aria-labelledby="tp-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1949,18 +1968,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     list.sort(function(x, y){ return (x.miss.length - y.miss.length) || ((y.b.kind === 'Styles') - (x.b.kind === 'Styles')); });
     // une transformation possible passe en tête des objectifs
     var tf = CARDS.map(function(c){ var f = fusable(c.id); return f ? {c:c, f:f} : null; }).filter(Boolean)[0];
-    var binders = list.map(function(g){ return {pct:Math.round((g.ids.length - g.miss.length) / g.ids.length * 100), binder:g.b.k,
+    var binders = list.map(function(g){ return {key:'b:' + g.b.k, pct:Math.round((g.ids.length - g.miss.length) / g.ids.length * 100), binder:g.b.k,
       title:'Plus que ' + g.miss.length + ' carte' + (g.miss.length > 1 ? 's' : '') + ' et ' + binderLabel(g.b) + ' est plié'}; });
     // objectifs hors collection : profil et partage
     var side = [];
     var top = CARDS.map(function(c){ return {c:c, r:best(c.id)}; }).filter(function(x){ return x.r; }).sort(function(a, b){ return rank(b.r) - rank(a.r); })[0];
-    if(top && !state.shared) side.push({pct:0, detail:top.c.id, binder:'all', title:'Partage ta plus belle carte'});
-    if(!crySrc()) side.push({pct:0, act:'profile', title:'Enregistre ton cri : une carte cadeau à la clé'});
-    if(!avatarSrc()) side.push({pct:0, act:'profile', title:'Mets ta tête sur ton profil'});
+    if(top && !state.shared) side.push({key:'share', pct:0, detail:top.c.id, binder:'all', title:'Partage ta plus belle carte'});
+    if(!crySrc()) side.push({key:'cry', pct:0, act:'profile', title:'Enregistre ton cri : une carte cadeau à la clé'});
+    if(!avatarSrc()) side.push({key:'avatar', pct:0, act:'profile', title:'Mets ta tête sur ton profil'});
     var m = null; CARDS.forEach(function(c){ var n = RARITIES.filter(function(x){ return state.owned[c.id+'|'+x.k]; }).length; if(n >= 1 && n < 5 && (!m || n > m.n)) m = {c:c, n:n}; });
-    var mastery = m ? [{pct:m.n * 20, binder:styleOf(m.c.id), title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5'}] : [];
+    var mastery = m ? [{key:'m:' + m.c.id, pct:m.n * 20, binder:styleOf(m.c.id), title:'Maîtrise de ' + m.c.who + ' : ' + m.n + '/5'}] : [];
     // ordre : transformation possible, classeur le plus proche, un objectif de profil, puis le reste ; 5 au plus
-    var out = tf ? [{pct:100, detail:tf.c.id, binder:styleOf(tf.c.id), title:'Transformation possible : ' + tf.c.who + ', ' + rarity(tf.f).label + ' → ' + RARITIES[rank(tf.f) + 1].label}] : [];
+    var out = tf ? [{key:'f:' + tf.c.id + '|' + tf.f, pct:100, detail:tf.c.id, binder:styleOf(tf.c.id), title:'Transformation possible : ' + tf.c.who + ', ' + rarity(tf.f).label + ' → ' + RARITIES[rank(tf.f) + 1].label}] : [];
     out = out.concat(binders.slice(0, 1), side.slice(0, 1), binders.slice(1, 2), mastery, side.slice(1), binders.slice(2));
     return out.slice(0, 5);
   }
@@ -1990,9 +2009,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // objectifs : dans l'onglet Metal Corner, les terminés (à toucher) en tête ; pastille de l'onglet = récompenses à récupérer, sinon objectifs en cours
   function renderGoals(){
-    var list = goals(), done = claimables(), n = document.getElementById('quest-n'), c = done.length || list.length;
+    var list = goals(), done = claimables(), n = document.getElementById('quest-n');
+    // pastille de l'onglet : seulement les récompenses à prendre et les nouveaux objectifs (jamais vus) ; ouvrir l'onglet les marque comme vus
+    if(!state.goalsSeen){ state.goalsSeen = {}; list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
+    if(!document.getElementById('v-corner').hidden){ list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
+    var fresh = list.filter(function(g){ return !state.goalsSeen[g.key]; }).length, c = done.length + fresh;
     n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!done.length);
-    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (done.length ? ', ' + done.length + ' récompense' + (done.length > 1 ? 's' : '') + ' à récupérer' : list.length ? ', ' + list.length + ' objectif' + (list.length > 1 ? 's' : '') : ''));
+    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (done.length ? ', ' + done.length + ' récompense' + (done.length > 1 ? 's' : '') + ' à récupérer' : '') + (fresh ? ', ' + fresh + ' nouvel' + (fresh > 1 ? 's' : '') + ' objectif' + (fresh > 1 ? 's' : '') : ''));
     var el = document.getElementById('quest-list');
     el.innerHTML = done.map(function(o, i){
       return '<button type="button" class="goal quest claim" data-claim="' + i + '"><b>' + esc(o.title) + '</b><span class="pc">Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></button>'; }).join('') +
@@ -2295,6 +2318,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       function(){ var id = trade.id; tradeClose(); ONLINE.tradeCancel(id).catch(function(){}); });
   });
 
+  // maîtrises : couronnées d'abord, puis celles en route (raretés rangées, les plus avancées en tête) ; toucher ouvre la fiche
+  var masteryEl = document.getElementById('mastery-sheet');
+  function renderMasteries(){
+    var crown = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg>';
+    var rows = CARDS.map(function(c){ return {c:c, got:RARITIES.filter(function(r){ var k = c.id + '|' + r.k; return state.owned[k] && (state.toPlace || []).indexOf(k) === -1; })}; });
+    var done = rows.filter(function(x){ return x.got.length === 5; }), way = rows.filter(function(x){ return x.got.length && x.got.length < 5; }).sort(function(a, b){ return b.got.length - a.got.length; });
+    document.getElementById('ms-body').innerHTML =
+      '<p class="eyebrow">Couronnés · ' + done.length + '</p>' + (done.length ? '<div class="ms-crowned">' + done.map(function(x){
+        return '<button type="button" data-d="' + x.c.id + '" aria-label="' + esc(x.c.who) + ', maîtrisé">' + crown + '<img src="' + img(x.c.id, 'legendaire') + '" alt="" loading="lazy"><small>' + esc(x.c.who) + '</small></button>'; }).join('') + '</div>'
+        : '<p class="corner-empty">Aucune couronne pour l\'instant. Réunis les 5 raretés d\'un musicien.</p>') +
+      (way.length ? '<p class="eyebrow">En route</p>' + way.map(function(x){ var best = x.got[x.got.length - 1];
+        return '<button type="button" class="ms-row" data-d="' + x.c.id + '"><img src="' + img(x.c.id, best.k) + '" alt="" loading="lazy"><span><b>' + esc(x.c.who) + '</b><span class="ms-pips" aria-hidden="true">' +
+          RARITIES.map(function(r){ return '<i' + (x.got.indexOf(r) !== -1 ? ' style="background:' + r.color + '"' : '') + '></i>'; }).join('') + '</span></span><span class="num">' + x.got.length + '/5</span></button>'; }).join('') : '');
+    [].forEach.call(masteryEl.querySelectorAll('[data-d]'), function(b){ b.onclick = function(){ masteryEl.hidden = true; openDetail(b.getAttribute('data-d')); }; });
+  }
+  document.getElementById('stats-row').addEventListener('click', function(e){ if(e.target.closest('#mastery-open')){ renderMasteries(); masteryEl.hidden = false; masteryEl.querySelector('.bsheet-in').scrollTop = 0; } });
+  document.getElementById('ms-ok').addEventListener('click', function(){ masteryEl.hidden = true; });
+  masteryEl.addEventListener('click', function(e){ if(e.target === masteryEl) masteryEl.hidden = true; });
+
   // progression : titre du profil et titre social « Metal Corner » (premier échange conclu)
   function renderCorner(){
     renderGoals();
@@ -2354,7 +2396,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var nm = CARDS.filter(function(c){ return mastered(c.id); }).length;
     document.getElementById('stats-row').innerHTML =
       '<span class="num" title="Musiciens trouvés" aria-label="' + ownedCount() + ' musiciens sur ' + CARDS.length + '"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 5a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2l0 -14"/></svg></i>' + ownedCount() + '/' + CARDS.length + '</span>' +
-      '<span class="num" title="Musiciens maîtrisés" aria-label="' + nm + ' maîtrises"><i><svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/></svg></i>' + nm + '</span>';
+      '<button type="button" class="num" id="mastery-open" aria-label="' + nm + ' maîtrise' + (nm > 1 ? 's' : '') + ', voir le détail"><i><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg></i>' + nm + '</button>';
   }
 
   // ---------- Effets : vibration, lumière ----------
@@ -3482,7 +3524,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'mastery-sheet', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

@@ -202,7 +202,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const d4 = dom4.window.document;
   check('sélecteur : 3 paquets proposés', d4.querySelectorAll('#pack-picker button').length === 3);
   d4.getElementById('tab-corner').click(); await sleep(20);
-  check('Metal Corner : onglet ouvert, objectifs listés, leur nombre en pastille', !d4.getElementById('v-corner').hidden && !d4.getElementById('quest-n').hidden && d4.querySelectorAll('#quest-list .goal').length === +d4.getElementById('quest-n').textContent, d4.getElementById('quest-list').textContent);
+  check('Metal Corner : objectifs listés ; déjà vus, ils ne font pas de pastille', !d4.getElementById('v-corner').hidden && d4.querySelectorAll('#quest-list .goal').length > 0 && d4.getElementById('quest-n').hidden, d4.getElementById('quest-list').textContent);
   d4.getElementById('tr-host').click(); await sleep(20);
   check('échange hors ligne : il faut un compte, rien ne s\'ouvre', d4.getElementById('trade').hidden && /Connecte-toi/.test((d4.querySelector('.toast') || {}).textContent || ''));
   d4.querySelector('#quest-list .goal').click(); await sleep(20);

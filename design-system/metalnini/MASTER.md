@@ -31,7 +31,8 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 - **Bordures** : un seul filet fin (1 px). Pas de double bordure ni de double filet (retour utilisateur du 2026-09-25).
 - **Surfaces** (tuiles, objectifs, modales) : `--surface`, filet `--border`, rayon 12-14 px, sans ombre intérieure.
 - **Objectifs** : une ligne par objectif (texte, pourcentage, filet de progression de 3 px), listés dans l'onglet Metal Corner ; chacun mène là où il se joue.
-- **Barre d'onglets** : 3 entrées (Paquets, Classeur, Metal Corner), fond encre, filet or fin, icônes SVG maison ; Réglages en haut à droite. Le nombre d'objectifs s'affiche en pastille or sur l'onglet Metal Corner.
+- **Barre d'onglets** : 3 entrées (Paquets, Classeur, Metal Corner), fond encre, filet or fin ; Réglages en haut à droite. Pastille sur Metal Corner seulement pour une récompense à récupérer (rouge, pulse) ou un nouvel objectif jamais vu (or) ; ouvrir l'onglet marque les objectifs comme vus.
+- **En-tête** : musiciens trouvés (« 5/45 ») et maîtrises (couronne Tabler) ; toucher la couronne ouvre la feuille « Tes maîtrises » (couronnés, puis en route avec un repère par rareté ; toucher ouvre la fiche).
 - **Icônes** : Tabler Icons (MIT) pour l'interface, copiées en SVG en ligne (aucun chargement externe), trait 1,4-2 px, `currentColor` ; la main « cornes » de Metal Corner est dérivée de `hand-love-you`. Restent maison : le croissant (logo), le sachet de paquet et les glyphes de Safari de la feuille d'installation. Game-icons.net (CC BY 3.0, crédit de l'auteur obligatoire à côté de chaque usage) est réservé aux éléments décoratifs (badges, patchs, titres). Pas d'emoji ni de glyphes Unicode comme icônes.
 
 ## Parcours Classeurs
