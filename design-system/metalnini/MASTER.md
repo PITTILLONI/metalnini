@@ -21,7 +21,7 @@ Deux couches, jamais mélangées sur un même élément :
   - `.fzv-col` : cierge de transformation.
   - `showLoot()` : écran du butin (coffre, récompense, pastilles).
 - Écrans passés à la signature :
-  - Metal Corner, fiche carte et butin des épreuves.
+  - Metal Corner (progression : chemin vertical des titres, trait or jusqu'au titre actuel, « encore N points » sur le suivant, titre social Metal Corner à part, puis « Gagne des points »), fiche carte (maîtrise et sceaux sous la carte ; le nom se touche et déplie bio, coup spécial et fiche), butin des épreuves.
   - Accueil (rang en gothique et crans sous le pseudo, pastille « en ligne » sur l'avatar, compteurs en relief, titre et nom du paquet en gothique, halo de rayons derrière le paquet, billet d'installation, points du carrousel en crans ; choix du format en interrupteur en relief à deux positions, le curseur or glisse sur Standard ou Mini — choisi le 2026-09-30).
   - Classeurs (puces en relief, noms en gothique, progression à crans).
   - Échange (blocs en relief, cote en pastille, QR dans un cadre gravé).

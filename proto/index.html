@@ -51,6 +51,8 @@
   .tabbar button[aria-selected="true"] .ico{color:var(--gold); transform:translateY(-2px); filter:drop-shadow(0 0 8px rgba(235,154,38,.55))}
   .tabbar button[aria-selected="true"]::after{content:""; position:absolute; left:50%; bottom:-3px; width:5px; height:5px; background:var(--gold); transform:translateX(-50%) rotate(45deg)}
   .view[hidden], [hidden]{display:none !important}
+  /* chaque onglet occupe au moins tout l'écran : sur iPhone (app installée), une page plus courte que l'écran fait remonter la barre d'onglets fixée en bas */
+  main.view{min-height:calc(100dvh - 84px - var(--safe-b))}
   button{-webkit-tap-highlight-color:transparent} button:not(.btn):not(.pack):active{opacity:.72}
   :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px; border-radius:6px}
   .num{font-variant-numeric:tabular-nums}
@@ -186,15 +188,24 @@
   .tr-ico{flex:none; display:grid; place-items:center}
   .corner-empty{margin:0; color:var(--muted); font-size:.92rem}
   /* progression : trois compteurs en relief, puis les titres (débloqués en or, verrouillés en grisé avec leur condition et leurs crans) */
-  .rank-stats{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:14px}
+  .rank-stats{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding-bottom:4px}
   .rank-stats div{display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000; text-align:center}
   .rank-stats svg{color:var(--gold)} .rank-stats b{font:800 1.5rem/1 var(--display); color:var(--text)} .rank-stats span{font:600 .72rem var(--mono); color:var(--muted)} .rank-stats small{font:700 .68rem var(--mono); color:var(--gold-hi)}
-  .titles{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-  .ttl{display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 10px 12px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000; text-align:center; color:var(--muted)}
-  .ttl-ico{width:52px; height:52px; display:grid; place-items:center; border-radius:50%; border:1px dashed rgba(243,240,234,.25); color:rgba(243,240,234,.35)}
-  .ttl b{font:400 1.2rem/1.05 var(--gothic)} .ttl small{font:500 .72rem var(--mono)}
-  .ttl.on{color:var(--text)} .ttl.on .ttl-ico{border:1px solid var(--gold); color:var(--gold-hi); background:radial-gradient(circle, rgba(235,154,38,.18), var(--ink))}
-  .ttl.cur{border-color:var(--gold); box-shadow:0 4px 0 #000, 0 0 18px rgba(235,154,38,.2)} .ttl.cur small{color:var(--gold-hi)} .ttl .notch{align-self:stretch; margin-top:6px} .ttl .notch i{height:7px}
+  /* chemin des titres : un trait qui se remplit d'or jusqu'au titre actuel (et en partie vers le suivant) ; le titre social à part */
+  .road{list-style:none; margin:0 0 14px; padding:0}
+  .road li{position:relative; display:flex; align-items:center; gap:14px; padding:0 0 30px}
+  .road li:last-child{padding-bottom:0}
+  .road li::before{content:""; position:absolute; left:24px; top:56px; width:4px; height:calc(100% - 60px); border-radius:2px; background:#2b221c}
+  .road li:last-child::before{display:none} .road li.done::before{background:var(--gold)} .road li.cur::before{background:linear-gradient(var(--gold) var(--p), #2b221c var(--p))}
+  .st-node{position:relative; z-index:1; flex:none; width:52px; height:52px; display:grid; place-items:center; border-radius:50%; border:1px dashed rgba(243,240,234,.25); background:var(--bg); color:rgba(243,240,234,.35)}
+  .road li.done .st-node{border:2px solid var(--gold); color:var(--gold-hi); background:radial-gradient(circle, rgba(235,154,38,.18), var(--ink))}
+  .road li.next .st-node{border-color:var(--gold); color:var(--gold-hi)}
+  .road li.cur .st-node{border:0; background:var(--gold); color:#1a0f05; box-shadow:0 4px 0 #8a5510, 0 0 22px rgba(235,154,38,.45)}
+  .st-t b{display:block; font:400 1.3rem/1.05 var(--gothic); color:var(--muted)} .st-t small{display:block; margin-top:3px; font:600 .78rem var(--mono); color:var(--muted)}
+  .road li.done .st-t b, .road li.cur .st-t b{color:var(--text)} .road li.cur .st-t small, .road li.next .st-t small{color:var(--gold-hi)}
+  .road-bonus{display:flex; align-items:center; gap:12px; margin:0 0 22px; padding:10px 12px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000}
+  .road-bonus .st-node{width:44px; height:44px} .road-bonus.on .st-node{border:2px solid var(--gold); color:var(--gold-hi)}
+  .road-bonus .st-t b{font-size:1.15rem} .road-bonus.on .st-t b{color:var(--text)}
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
@@ -790,7 +801,12 @@
   .seal.off{cursor:default} .seal.off i{background:none; border:1px dashed color-mix(in srgb, var(--sc) 55%, transparent); color:color-mix(in srgb, var(--sc) 55%, transparent); box-shadow:none}
   .seal small{font:600 .66rem var(--mono); letter-spacing:.04em; text-transform:uppercase} .seal{position:relative}
   .seal em{position:absolute; top:-4px; right:-2px; min-width:22px; height:22px; padding:0 5px; border-radius:11px; background:var(--ink); border:1px solid var(--gold); font:800 .72rem/20px var(--display); font-style:normal; color:var(--gold-hi)}
-  .artist{margin:0 0 18px} .artist .g-sub{text-align:center}
+  .d-art summary{list-style:none; cursor:pointer; text-align:center} .d-art summary::-webkit-details-marker{display:none}
+  .d-art .sub{margin:4px 0 8px}
+  .d-more{display:inline-flex; align-items:center; gap:4px; min-height:32px; padding:0 12px; border:1px solid rgba(235,154,38,.45); border-radius:999px; font:800 .78rem var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi)}
+  .d-more svg{transition:transform .2s ease} .d-art[open] .d-more svg{transform:rotate(180deg)}
+  .d-art[open] > .artist{animation:dfin .25s ease both}
+  .d-art{margin:0 0 18px} .artist{margin:18px 0 0}
   .artist .bio{margin:0 0 16px; font-size:.95rem; line-height:1.55; color:#d8cfbf}
   .move-in{display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center; margin:0 0 16px; padding:12px; border:1px solid rgba(235,154,38,.6); border-radius:12px; background:#1a120b; box-shadow:0 4px 0 #000}
   .mv-ico{width:44px; height:44px; display:grid; place-items:center; border-radius:12px; background:var(--gold); color:#1a0f05; box-shadow:0 3px 0 #8a5510}
@@ -2925,16 +2941,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       '<span class="c-hud-t"><span><b>' + esc(t.label) + '</b><small class="num">' + (nx ? sc + ' / ' + (sc + nx.left) + ' pts' : sc + ' pts') + '</small></span>' + notch(pct, Math.max(2, Math.min(10, span))) + '</span>';
     hud.setAttribute('aria-label', 'Ton rang : ' + t.label + ', ' + sc + ' point' + (sc > 1 ? 's' : '') + (nx ? ', ' + nx.label + ' dans ' + nx.left + ' point' + (nx.left > 1 ? 's' : '') : '') + '. Voir ta progression');
     hud.onclick = function(){ document.getElementById('prog-sec').scrollIntoView({behavior:reduce ? 'auto' : 'smooth', block:'start'}); };
-    var items = TITLES.map(function(x, i){ var on = sc >= x[0]; return {name:x[1], ico:TITLE_ICONS[i], on:on, cur:i === ti, cond:i ? 'Dès ' + x[0] + ' points' : 'Ton premier titre', pct:on ? 100 : Math.round(sc / x[0] * 100)}; })
-      .concat([{name:'Metal Corner', ico:HORNS_ICON, on:!!tr, cond:tr ? tr + ' échange' + (tr > 1 ? 's' : '') : 'Au premier échange', pct:tr ? 100 : 0, social:true}]);
+    var road = TITLES.map(function(x, i){
+      var st = i < ti ? 'done' : i === ti ? 'cur' : i === ti + 1 ? 'next' : 'lock';
+      var sub = st === 'cur' ? 'Ton titre actuel · ' + sc + ' point' + (sc > 1 ? 's' : '') : st === 'done' ? 'Débloqué' : st === 'next' ? 'Encore ' + nx.left + ' point' + (nx.left > 1 ? 's' : '') + ' · dès ' + x[0] : 'Dès ' + x[0] + ' points';
+      return '<li class="' + st + '"' + (st === 'cur' ? ' style="--p:' + pct + '%"' : '') + '><span class="st-node">' + icon(TITLE_ICONS[i], st === 'cur' ? 26 : 22) + '</span><span class="st-t"><b>' + esc(x[1]) + '</b><small>' + sub + '</small></span></li>'; }).join('');
     document.getElementById('corner-prog').innerHTML =
-      '<div class="rank-stats">' +
-        '<div>' + icon('<path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/>', 22) + '<b class="num">' + p.stats.cards + '</b><span>musiciens</span><small>1 pt</small></div>' +
-        '<div>' + icon('<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', 22) + '<b class="num">' + binders + '</b><span>classeurs pliés</span><small>4 pts</small></div>' +
-        '<div>' + icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 22) + '<b class="num">' + p.pins.length + '</b><span>maîtrises</span><small>6 pts</small></div></div>' +
-      '<p class="eyebrow">Titres · <span class="num">' + unlocked + '/' + (TITLES.length + 1) + '</span></p><div class="titles">' + items.map(function(x){
-        return '<div class="ttl' + (x.on ? ' on' : '') + (x.cur ? ' cur' : '') + '"><span class="ttl-ico">' + icon(x.ico, 26) + '</span><b>' + esc(x.name) + '</b><small>' + (x.cur ? 'Titre actuel' : x.on ? (x.social ? 'Titre social · ' + x.cond : 'Débloqué') : x.cond) + '</small>' +
-          (x.on ? '' : notch(x.pct, 6)) + '</div>'; }).join('') + '</div>';
+      '<p class="eyebrow">Tes titres · <span class="num">' + unlocked + '/' + (TITLES.length + 1) + '</span></p><ol class="road">' + road + '</ol>' +
+      '<div class="road-bonus' + (tr ? ' on' : '') + '"><span class="st-node">' + icon(HORNS_ICON, 22) + '</span><span class="st-t"><b>Metal Corner</b><small>Titre bonus · ' + (tr ? tr + ' échange' + (tr > 1 ? 's' : '') : 'au premier échange') + '</small></span></div>' +
+      '<p class="eyebrow">Gagne des points</p><div class="rank-stats">' +
+        '<div>' + icon('<path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/>', 22) + '<b class="num">' + p.stats.cards + '</b><span>musiciens</span><small>1 pt chacun</small></div>' +
+        '<div>' + icon('<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', 22) + '<b class="num">' + binders + '</b><span>classeurs pliés</span><small>4 pts chacun</small></div>' +
+        '<div>' + icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 22) + '<b class="num">' + p.pins.length + '</b><span>maîtrises</span><small>6 pts chacune</small></div></div>';
   }
   function commitPack(){
     if(ONLINE){
@@ -3746,8 +3763,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       }).join('') + '</div>' +
       '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? rarity(r).label + ' · Arcane ' + esc(c.num) : 'Pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
-      (r ? '<h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
-           '<div class="listen" id="d-listen" hidden></div>' + artistBlock(c)
+      // le nom se touche : il déplie la présentation de l'artiste (bio, coup spécial, fiche)
+      (r ? '<details class="d-art"><summary><h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
+             '<span class="d-more">Bio et coup spécial' + icon('<path d="M6 9l6 6l6 -6"/>', 16) + '</span></summary>' + artistBlock(c) + '</details>' +
+           '<div class="listen" id="d-listen" hidden></div>'
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
       (r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
     if(r){
@@ -3794,7 +3813,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // l'artiste : présentation, coup spécial, fiche (arcane, instrument, style, classeurs où il se range)
   function artistBlock(c){
     var bs = BINDERS.filter(function(b){ return b.kind !== 'Collection' && (b.ids || []).indexOf(c.id) !== -1; }).map(binderLabel);
-    return '<section class="artist"><h3 class="g-sub">L\'artiste</h3>' + ((BIOS_LONG[c.id] || BIOS[c.id]) ? '<p class="bio">' + esc(BIOS_LONG[c.id] || BIOS[c.id]) + '</p>' : '') +
+    return '<section class="artist" aria-label="L\'artiste">' + ((BIOS_LONG[c.id] || BIOS[c.id]) ? '<p class="bio">' + esc(BIOS_LONG[c.id] || BIOS[c.id]) + '</p>' : '') +
       (MOVES[c.id] ? '<div class="move-in"><span class="mv-ico">' + icon('<path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/>', 22) + '</span><span><small>Coup spécial</small><b>' + esc(MOVES[c.id][0]) + '</b><p>' + esc(MOVES[c.id][1]) + '</p></span></div>' : '') +
       '<dl class="facts"><div><dt>Arcane</dt><dd>' + esc(c.num) + ' · ' + esc(c.title) + '</dd></div><div><dt>Instrument</dt><dd>' + esc(c.inst) + '</dd></div>' +
         '<div><dt>Style</dt><dd>' + esc(c.genre) + '</dd></div><div><dt>Classeurs</dt><dd>' + (bs.length ? bs.map(esc).join(', ') : '—') + '</dd></div></dl></section>';
