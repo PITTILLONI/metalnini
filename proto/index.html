@@ -139,7 +139,9 @@
   .open-head h1{font-size:2rem}
   .home .open-head .pack-desc{display:block; margin:6px auto 0}
   .quest-n{position:absolute; top:0; left:calc(50% + 6px); min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--gold); color:var(--ink); font:800 .7rem/18px var(--mono); text-align:center}
-  .quest-list{display:flex; flex-direction:column; gap:10px}
+  /* objectifs en carrousel : une carte par objectif, illustrée (éventail du classeur, carte du musicien, icône gravée), les récompenses en tête */
+  .quest-list{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 -16px; padding:2px 16px 12px; scroll-padding:0 16px}
+  .quest-list::-webkit-scrollbar{display:none} .quest-list .corner-empty{padding:0 2px}
   /* ---------- Metal Corner : échange, objectifs, progression ---------- */
   .corner-sub{margin:4px 0 0; color:var(--muted); font-size:.9rem}
   .corner-sec{margin:22px 0 0} .corner-sec h2{font-size:1.45rem; margin:0 0 6px}
@@ -230,8 +232,14 @@
   .tr-wants{display:block; width:100%; margin:10px 0 0; min-height:44px; padding:8px 12px; border:1px solid rgba(235,154,38,.5); border-radius:10px; background:rgba(235,154,38,.08); color:var(--text); font:600 .84rem var(--mono); text-align:left; cursor:pointer}
   .tr-wants b{color:var(--gold-hi)}
 
-  .goal.quest{position:relative; width:100%; display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 10px; min-height:52px; padding:9px 14px;
-    background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:left; cursor:pointer; max-width:none}
+  .goal.quest{position:relative; flex:0 0 min(72vw, 270px); display:flex; flex-direction:column; padding:0; scroll-snap-align:start; overflow:hidden;
+    background:var(--surface); border:1px solid var(--border); border-radius:14px; text-align:left; cursor:pointer}
+  .q-art{position:relative; height:128px; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at 50% 65%, #2a170b, #0d0a08 75%); border-bottom:1px solid var(--border)}
+  .q-art img{height:106px; aspect-ratio:2/3; object-fit:cover; border-radius:6px; box-shadow:0 10px 20px rgba(0,0,0,.65)}
+  .q-art.fan img{position:absolute; top:11px; left:50%} .q-art.fan img:nth-child(1){transform:translateX(-112%) rotate(-10deg)} .q-art.fan img:nth-child(2){transform:translateX(-50%); z-index:1} .q-art.fan img:nth-child(3){transform:translateX(12%) rotate(10deg)}
+  .q-art.fan.two img:nth-child(1){transform:translateX(-88%) rotate(-8deg)} .q-art.fan.two img:nth-child(2){transform:translateX(-12%) rotate(8deg)}
+  .q-art img.miss{filter:grayscale(1) brightness(.55)} .q-art > svg{width:58px; height:58px; color:var(--gold)}
+  .q-body{flex:1; display:grid; grid-template-columns:1fr auto; align-items:center; align-content:start; gap:6px 10px; padding:10px 14px 12px}
   .goal.quest b{font:600 .86rem/1.3 var(--mono); letter-spacing:0; text-transform:none; color:var(--text)}
   .goal.quest .pc{font:600 .78rem var(--mono); color:var(--gold); font-variant-numeric:tabular-nums}
   .goal.quest.claim{border-color:var(--gold); background:rgba(235,154,38,.1); box-shadow:0 0 18px rgba(235,154,38,.18)}
@@ -2072,6 +2080,22 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }).catch(function(e){ btn.disabled = false; btn.classList.remove('opening'); snd('nope'); toast(esc(e.message)); });
   }
   // objectifs : dans l'onglet Metal Corner, les terminés (à toucher) en tête ; pastille de l'onglet = récompenses à récupérer, sinon objectifs en cours
+  // illustration d'un objectif : éventail de 3 cartes du classeur (dos grisé pour celles qui manquent), carte du musicien, ou icône gravée
+  var ICON_MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5a3 3 0 0 1 3 -3a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3a3 3 0 0 1 -3 -3l0 -5"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M8 21l8 0"/><path d="M12 17l0 4"/></svg>';
+  var ICON_USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg>';
+  function goalArt(key, detail){
+    var k = String(key || ''), id = detail || k.split(':')[1] || k.split(':')[0];
+    if(/^(b|binder):/.test(k)){
+      var b = BINDERS.filter(function(x){ return x.k === k.split(':')[1]; })[0], ids = ((b && b.ids) || CARDS.map(function(c){ return c.id; })).filter(function(x){ return card(x); });
+      var pick = ids.slice().sort(function(x, y){ return (!!placed(y) - !!placed(x)) || rank(best(y) || 'commune') - rank(best(x) || 'commune'); }).slice(0, 3);
+      return '<span class="q-art fan' + (pick.length === 2 ? ' two' : '') + '" aria-hidden="true">' + pick.map(function(x){ var r = placed(x); return r ? '<img src="' + img(x, r) + '" alt="" loading="lazy">' : '<img class="miss" src="cards/back.jpg" alt="" loading="lazy">'; }).join('') + '</span>';
+    }
+    if(k === 'cry') return '<span class="q-art" aria-hidden="true">' + ICON_MIC + '</span>';
+    if(k === 'avatar') return '<span class="q-art" aria-hidden="true">' + ICON_USER + '</span>';
+    if(/^(m|mastery|f):/.test(k)) id = k.split(':')[1].split('|')[0];
+    if(k === 'share' && !detail){ var top = ownedKeys().sort(byRarity)[0]; id = top && top.split('|')[0]; }
+    return card(id) ? '<span class="q-art" aria-hidden="true"><img src="' + img(id, best(id) || 'commune') + '" alt="" loading="lazy"></span>' : '<span class="q-art" aria-hidden="true">' + ICON_MIC + '</span>';
+  }
   function renderGoals(){
     var list = goals(), done = claimables(), n = document.getElementById('quest-n');
     // pastille de l'onglet : seulement les récompenses à prendre et les nouveaux objectifs (jamais vus) ; ouvrir l'onglet les marque comme vus
@@ -2082,10 +2106,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (done.length ? ', ' + done.length + ' récompense' + (done.length > 1 ? 's' : '') + ' à récupérer' : '') + (fresh ? ', ' + fresh + ' nouvel' + (fresh > 1 ? 's' : '') + ' objectif' + (fresh > 1 ? 's' : '') : ''));
     var el = document.getElementById('quest-list');
     el.innerHTML = done.map(function(o, i){
-      return '<button type="button" class="goal quest claim" data-claim="' + i + '"><b>' + esc(o.title) + '</b><span class="pc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/></svg>Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></button>'; }).join('') +
+      return '<button type="button" class="goal quest claim" data-claim="' + i + '">' + goalArt(o.key, null) + '<span class="q-body"><b>' + esc(o.title) + '</b><span class="pc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/></svg>Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></span></button>'; }).join('') +
       (list.length ? list.map(function(g){
       return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
-        '<b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></button>'; }).join('')
+        goalArt(g.key, g.detail) + '<span class="q-body"><b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></span></button>'; }).join('')
       : done.length ? '' : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>');
     [].forEach.call(el.querySelectorAll('[data-claim]'), function(b){ b.onclick = function(){ claimObjective(done[+b.getAttribute('data-claim')], b); }; });
     [].forEach.call(el.querySelectorAll('.goal:not(.claim)'), function(b){ b.onclick = function(){
