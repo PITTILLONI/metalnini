@@ -154,7 +154,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d2.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
   await openB(d2, 'numetal');
   d2.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(30);
-  const fb = d2.querySelector('#detail .fuse button[data-from="commune"]');
+  const fb = d2.querySelector('#detail .fzv.ready[data-from="commune"]');
   check('transformation proposée avec 3 doublons Commune (1er palier)', !!fb);
   if (fb) { fb.click(); await sleep(30); }
   check('transformer : on demande d\'abord (on peut garder ses doublons)', !d2.getElementById('confirm').hidden && /Garder mes doublons/.test(d2.getElementById('confirm-no').textContent) && JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1')).owned['korn|commune'] > 1);

@@ -679,19 +679,26 @@
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
   .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
 
-  /* transformations : une jauge de crans par palier (un cran = un doublon), prête = cadre et crans à la couleur de la rareté visée, puis le bouton */
-  .fuse{margin-top:18px; display:flex; flex-direction:column; gap:10px} .fuse .eyebrow{margin:0} .fuse .note{margin:0}
-  .fz{padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface-2)}
-  .fz.ready{border-color:var(--fc)}
-  .fz-h{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; font:800 1.05rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase}
-  .fz-h .num{font:600 .8rem var(--mono); letter-spacing:0; color:var(--muted)} .fz.ready .fz-h .num{color:var(--fc)}
-  .fz-g{display:flex; gap:3px} .fz-g i{flex:1; height:10px; border-radius:2px; background:rgba(255,255,255,.09)} .fz-g i.on{background:var(--fc)}
-  .fz.ready .fz-g i{animation:fzpulse 1.6s ease-in-out infinite}
+  /* fiche : carte et, sur le côté, les jauges de transformation verticales (un cran par doublon ; pleine = brille, se touche) */
+  .dt-top{margin:44px 0 14px} .dt-top .pcard, .dt-top > .detail-img{margin:0 auto}
+  .dt-top.side{display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:14px; align-items:center} .dt-top.side .pcard{width:100%; max-width:250px}
+  .fzv-col{display:flex; flex-direction:column; align-items:center; gap:6px} .fzv-cap{margin:0; font:600 .6rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .fzv-row{display:flex; gap:6px}
+  .fzv{display:flex; flex-direction:column; align-items:center; gap:5px; width:36px; min-height:44px; padding:0; border:0; background:none; color:var(--muted); cursor:pointer}
+  .fzv small{height:58px; writing-mode:vertical-rl; transform:rotate(180deg); font:700 .6rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--fc)}
+  .fzv-bar{display:flex; flex-direction:column-reverse; gap:2px; width:16px; height:170px; padding:2px; border-radius:4px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px var(--border)}
+  .fzv-bar i{flex:1; border-radius:1px; background:rgba(255,255,255,.08)} .fzv-bar i.on{background:var(--fc)}
+  .fzv b{font:700 .66rem var(--mono)} .fzv.ready b{color:var(--fc)}
+  .fzv.ready .fzv-bar{box-shadow:inset 0 0 0 1px var(--fc), 0 0 16px var(--fc)} .fzv.ready .fzv-bar i{animation:fzpulse 1.6s ease-in-out infinite}
   @keyframes fzpulse{50%{opacity:.6}}
-  .fz small{display:block; margin-top:8px; font:500 .76rem var(--mono); color:var(--muted)} .fz .btn{margin-top:10px}
-  .mastery{margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid rgba(235,154,38,.35); background:rgba(235,154,38,.08); font-size:.86rem}
-  .move{margin:0 0 18px; padding:12px 14px; border:1px solid rgba(235,154,38,.35); border-radius:12px; background:rgba(235,154,38,.06)}
-  .move .eyebrow{margin:0 0 6px} .move b{display:block; font:800 1.3rem/1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .move p:last-child{margin:6px 0 0; font-size:.88rem; color:var(--muted)}
+  .mst{display:flex; align-items:center; gap:10px; margin:6px 0 14px} .mst-l{display:inline-flex; align-items:center; gap:4px; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .mst-pips{flex:1; display:flex; gap:4px} .mst-pips i{flex:1; height:8px; border-radius:2px; background:rgba(255,255,255,.08)} .mst b{font:700 .8rem var(--mono); color:var(--muted)}
+  .mst.done .mst-l, .mst.done b{color:var(--gold-hi)}
+  .artist{margin:0 0 18px; padding:14px; border:1px solid var(--border); border-radius:14px; background:var(--bg)} .artist .eyebrow{margin:0 0 8px}
+  .artist .bio{margin:0 0 12px; font-size:.92rem; line-height:1.5; color:var(--text)}
+  .move-in{margin:0 0 14px; padding:12px 14px; border:1px solid rgba(235,154,38,.35); border-radius:12px; background:rgba(235,154,38,.06)}
+  .move-in small{display:block; font:600 .66rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)} .move-in b{display:block; margin:4px 0; font:800 1.3rem/1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .move-in p{margin:0; font-size:.88rem; color:var(--muted)}
+  .facts{display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; margin:0} .facts dt{font:600 .62rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .facts dd{margin:2px 0 0; font:600 .84rem/1.3 var(--mono); color:var(--text)}
   .detail-actions{display:flex; gap:10px; margin-top:16px} .detail-actions .btn{flex:1}
   .tearfx i{position:fixed; background-size:cover; background-position:center; border-radius:10px; will-change:transform}
   .tearfx .l{clip-path:polygon(0 0, 52% 0, 46% 18%, 55% 34%, 45% 52%, 54% 70%, 47% 86%, 52% 100%, 0 100%); animation:tearl 1s cubic-bezier(.5,0,.8,.4) forwards}
@@ -3420,23 +3427,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div>' :
+    var side = r ? fuseSide(id) : '', head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
-    document.getElementById('detail').innerHTML = head +
+    document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
       '<p class="eyebrow">' + (r ? rarity(r).label : 'Pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
-      (r ? '<h2>' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + '</p>' +
-           '<div class="chips"><span>' + esc(c.inst) + '</span><span>' + esc(c.genre) + '</span><span>' + total(id) + ' exemplaire' + (total(id)>1?'s':'') + '</span></div>' +
-           '<div class="listen" id="d-listen" hidden></div>' +
-           (MOVES[id] ? '<div class="move"><p class="eyebrow">Coup spécial</p><b>' + esc(MOVES[id][0]) + '</b><p>' + esc(MOVES[id][1]) + '</p></div>' : '')
+      (r ? '<h2>' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' + masteryGauge(id) +
+           '<div class="listen" id="d-listen" hidden></div>' + artistBlock(c)
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
       '<p class="note" style="margin:0 0 8px">Raretés obtenues</p><div class="variants">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0;
         return n ? '<button type="button" data-r="' + x.k + '"><img src="' + img(id, x.k) + '" alt="' + x.label + '" style="outline:2px solid ' + (x.k===r ? x.color : 'transparent') + ';outline-offset:1px"><small>' + x.label + (n>1?' ×'+n:'') + '</small></button>'
                  : '<div><div class="lock">?</div><small>' + x.label + '</small></div>';
-      }).join('') + '</div>' + fuseBlock(id) +
-      (mastered(id) ? '<div class="mastery">★ <b>Maîtrise</b> : tu possèdes les 5 raretés de ' + esc(c.who) + '.</div>'
-                    : (r ? '<p class="note" style="margin-top:12px">Maîtrise : ' + RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }).length + '/5 raretés. Réunis-les toutes pour le badge.</p>' : '')) +
+      }).join('') + '</div>' +
       (r ? '<div class="detail-actions"><button type="button" class="btn ghost" id="d-share">Partager</button><button type="button" class="btn danger" id="d-tear">Déchirer</button></div>' : '');
     if(r){
       showListen(document.getElementById('d-listen'), id);
@@ -3447,7 +3450,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           function(){ tearCard(id, r); });
       };
     }
-    [].forEach.call(document.querySelectorAll('#detail .fuse button[data-from]'), function(b){ b.addEventListener('click', function(){ askFuse(id, b.getAttribute('data-from')); }); });
+    [].forEach.call(document.querySelectorAll('#detail .fzv'), function(b){ b.addEventListener('click', function(){ var f = b.getAttribute('data-from');
+      if(b.classList.contains('ready')) askFuse(id, f); else toast('Encore ' + b.getAttribute('data-left') + ' doublon' + (+b.getAttribute('data-left') > 1 ? 's' : '') + ' ' + rarity(f).label + ' pour transformer.'); }); });
     [].forEach.call(document.querySelectorAll('#detail .variants button'), function(b){ b.addEventListener('click', function(){ openDetail(id, b.getAttribute('data-r')); }); });
     sheet.hidden = false;
     var pc = document.getElementById('pcard');
@@ -3462,18 +3466,30 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function fuseCost(r){ return (ONLINE && FUSE_COSTS && FUSE_COSTS[r]) || (state.fuseBase || 3) * Math.pow(2, rank(r)); }
   // première rareté transformable d'un musicien (on garde toujours un exemplaire), sinon null
   function fusable(id){ for(var i = 0; i < RARITIES.length - 1; i++){ var x = RARITIES[i].k; if((state.owned[id+'|'+x] || 0) - 1 >= fuseCost(x)) return x; } return null; }
-  function fuseBlock(id){
-    var rows = RARITIES.slice(0, -1).map(function(x, i){
-      var n = state.owned[id+'|'+x.k] || 0; if(!n) return '';
+  // transformations : une jauge verticale par palier à côté de la carte (un cran par doublon) ; pleine, elle brille et se touche
+  function fuseSide(id){
+    var g = RARITIES.slice(0, -1).map(function(x, i){
+      var n = state.owned[id+'|'+x.k] || 0; if(n < 2) return '';
       var dup = n - 1, next = RARITIES[i+1], cost = fuseCost(x.k), ok = dup >= cost, fill = Math.min(dup, cost), ticks = '';
       for(var t = 0; t < cost; t++) ticks += '<i' + (t < fill ? ' class="on"' : '') + '></i>';
-      return '<div class="fz' + (ok ? ' ready' : '') + '" style="--fc:' + next.color + '">' +
-        '<div class="fz-h"><span><span style="color:' + x.color + '">' + x.label + '</span> → <span style="color:' + next.color + '">' + next.label + '</span></span><span class="num">' + fill + '/' + cost + '</span></div>' +
-        '<div class="fz-g" role="img" aria-label="' + fill + ' doublons ' + x.label + ' sur ' + cost + '">' + ticks + '</div>' +
-        (ok ? '<button type="button" class="btn block" data-from="' + x.k + '">Transformer en ' + next.label + '</button>'
-            : '<small>Encore ' + (cost - dup) + ' doublon' + (cost - dup > 1 ? 's' : '') + ' ' + x.label + '</small>') + '</div>';
+      return '<button type="button" class="fzv' + (ok ? ' ready' : '') + '" data-from="' + x.k + '" data-left="' + (cost - dup) + '" style="--fc:' + next.color + '" aria-label="' + (ok ? 'Transformer ' + cost + ' ' + x.label + ' en 1 ' + next.label : fill + ' doublons ' + x.label + ' sur ' + cost + ' pour 1 ' + next.label) + '">' +
+        '<small>' + next.label + '</small><span class="fzv-bar" aria-hidden="true">' + ticks + '</span><b class="num">' + fill + '/' + cost + '</b></button>';
     }).join('');
-    return rows ? '<div class="fuse"><p class="eyebrow">Transformations</p>' + rows + '<p class="note">Tu gardes toujours un exemplaire. Chaque palier coûte deux fois plus que le précédent.</p></div>' : '';
+    return g ? '<div class="fzv-col"><p class="fzv-cap">Transfo</p><div class="fzv-row">' + g + '</div></div>' : '';
+  }
+  // maîtrise : 5 segments aux couleurs des raretés obtenues, couronne quand tout est réuni
+  function masteryGauge(id){
+    var got = RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }), done = got.length === 5;
+    return '<div class="mst' + (done ? ' done' : '') + '" aria-label="Maîtrise ' + got.length + ' sur 5"><span class="mst-l">' + (done ? icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 16) + ' ' : '') + 'Maîtrise</span>' +
+      '<span class="mst-pips" aria-hidden="true">' + RARITIES.map(function(x){ return '<i' + (state.owned[id+'|'+x.k] ? ' style="background:' + x.color + '"' : '') + '></i>'; }).join('') + '</span><b class="num">' + got.length + '/5</b></div>';
+  }
+  // l'artiste : présentation, coup spécial, fiche (arcane, instrument, style, classeurs où il se range)
+  function artistBlock(c){
+    var bs = BINDERS.filter(function(b){ return b.kind !== 'Collection' && (b.ids || []).indexOf(c.id) !== -1; }).map(binderLabel);
+    return '<section class="artist"><p class="eyebrow">L\'artiste</p>' + (BIOS[c.id] ? '<p class="bio">' + esc(BIOS[c.id]) + '</p>' : '') +
+      (MOVES[c.id] ? '<div class="move-in"><small>Coup spécial</small><b>' + esc(MOVES[c.id][0]) + '</b><p>' + esc(MOVES[c.id][1]) + '</p></div>' : '') +
+      '<dl class="facts"><div><dt>Arcane</dt><dd>' + esc(c.num) + ' · ' + esc(c.title) + '</dd></div><div><dt>Instrument</dt><dd>' + esc(c.inst) + '</dd></div>' +
+        '<div><dt>Style</dt><dd>' + esc(c.genre) + '</dd></div><div><dt>Classeurs</dt><dd>' + (bs.length ? bs.map(esc).join(', ') : '—') + '</dd></div></dl></section>';
   }
   // transformer reste un choix : confirmation (on peut garder ses doublons), puis la forge
   function askFuse(id, from){
