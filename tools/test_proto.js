@@ -156,7 +156,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d2.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(30);
   const fb = d2.querySelector('#detail .fuse button[data-from="commune"]');
   check('transformation proposée avec 3 doublons Commune (1er palier)', !!fb);
-  if (fb) { fb.click(); await sleep(50); }
+  if (fb) { fb.click(); await sleep(30); }
+  check('transformer : on demande d\'abord (on peut garder ses doublons)', !d2.getElementById('confirm').hidden && /Garder mes doublons/.test(d2.getElementById('confirm-no').textContent) && JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1')).owned['korn|commune'] > 1);
+  d2.getElementById('confirm-yes').click(); await sleep(50);
   const st2 = JSON.parse(dom2.window.localStorage.getItem('metalnini-proto-v1')).owned;
   check('fusion : 1 Commune gardée + 1 Rare obtenue', st2['korn|commune'] === 1 && st2['korn|rare'] === 1, JSON.stringify(st2));
   check('fusion : reveal de la nouvelle carte', !d2.getElementById('reveal').hidden);
@@ -250,7 +252,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async cryUrl(){ return 'data:audio/wav;base64,'; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async cryUrl(){ return 'data:audio/wav;base64,'; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -260,7 +262,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await w6.metalniniOnline(fake); await sleep(100);
   d6.getElementById('tab-corner').click(); await sleep(20);
   check('objectif terminé : en tête de Metal Corner, pastille rouge sur l\'onglet', !!d6.querySelector('#quest-list .goal.claim') && d6.getElementById('quest-n').classList.contains('claim'));
-  d6.querySelector('#quest-list .goal.claim').click(); await sleep(100);
+  d6.querySelector('#quest-list .goal.claim').click(); await sleep(700);
   check('objectif touché : la récompense se révèle, l\'objectif disparaît', !d6.getElementById('reveal').hidden && /Objectif atteint/.test(d6.getElementById('counter').textContent) && !d6.querySelector('#quest-list .goal.claim'));
   d6.getElementById('reveal').hidden = true;
   d6.getElementById('tr-host').click(); await sleep(50);

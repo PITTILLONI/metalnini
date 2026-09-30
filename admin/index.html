@@ -542,11 +542,11 @@ async function requests(){
   if(r.error){ box.textContent = 'Indisponible (migration 0019 à appliquer ?) : ' + r.error.message; return; }
   const key = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
   const groups = Object.values(r.data.reduce((g, x) => { const k = key(x.artist); (g[k] = g[k] || { name: x.artist, rows: [] }).rows.push(x); return g; }, {}))
-    .sort((a, b) => b.rows.length - a.rows.length);
+    .sort((a, b) => (b.rows.some(x => x.priority) - a.rows.some(x => x.priority)) || b.rows.length - a.rows.length);   // tickets prioritaires en tête
   if(!groups.length){ box.textContent = 'Aucune demande en attente.'; return; }
   box.className = '';
   box.innerHTML = `<div class="table-wrap"><table><tr><th>Artiste</th><th>Demandes</th><th>Dernière</th><th>Messages</th><th></th></tr>
-    ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td><td>${fmt(g.rows[0].created_at)}</td>
+    ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''}</td><td>${g.rows.length}</td><td>${fmt(g.rows[0].created_at)}</td>
       <td class="muted" style="font-size:.85rem">${g.rows.filter(x => x.note).slice(0, 3).map(x => '« ' + esc(x.note) + ' »').join('<br>') || '—'}</td>
       <td><button class="ghost" data-req="${i}">Traitée</button></td></tr>`).join('')}</table></div>`;
   box.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
