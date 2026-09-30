@@ -75,7 +75,7 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
   - la barre d'onglets reste en place sur Classeur, dans l'app installée ;
   - le joueur peut écouter son propre cri.
 - **À relire** : `export/bios-artistes-a-relire.md` (45 bios et 11 textes de style).
-- **Ajouter des artistes** : si le solde Krea le permet ; marche à suivre dans `CLAUDE.md`.
+- **Ajouter des artistes** : marche à suivre dans `CLAUDE.md`. Axl Rose est commencé : la carte de base est faite, il reste ses 5 raretés à générer après recharge du solde API Krea.
 - **Réglages** : remplacer les cases à cocher natives par des interrupteurs dans la DA.
 - **Sons** : intégrer les fichiers de l'ami musicien au fur et à mesure (cocher « Fait » dans la fiche).
 - **App iOS** : inscription par e-mail (ou Sign in with Apple), puis TestFlight après l'inscription Apple Developer.
