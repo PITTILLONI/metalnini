@@ -114,12 +114,22 @@
     <p id="verify-msg" class="msg"></p>
   </section>
 
+  <!-- ============ INVITÉ : CHOISIR SON MOT DE PASSE ============ -->
+  <section id="v-invite" class="card" hidden style="max-width:440px">
+    <h2>Bienvenue dans l'équipe</h2>
+    <p class="muted">Tu as été nommé admin de Metalnini. Choisis ton mot de passe ; juste après, tu activeras la double authentification.</p>
+    <form id="invite-form" method="post" action="#" novalidate>
+    <label for="inv-pw1">Mot de passe (12 caractères minimum)</label><input id="inv-pw1" type="password" autocomplete="new-password">
+    <label for="inv-pw2">Confirmer</label><input id="inv-pw2" type="password" autocomplete="new-password">
+    <div class="row" style="margin-top:14px"><button id="btn-invite" type="submit" class="fit">Continuer</button></div>
+    </form>
+    <p id="invite-msg" class="msg"></p>
+  </section>
+
   <!-- ============ COMPTE SANS DROIT ADMIN ============ -->
   <section id="v-noadmin" class="card" hidden style="max-width:620px">
     <h2>Compte sans droit admin</h2>
-    <p class="muted">Ce compte est connecté avec la double authentification, mais il n'est pas encore déclaré admin. Identifiant du compte à déclarer :</p>
-    <p><code id="my-id"></code></p>
-    <p class="muted" style="font-size:.85rem">Déclaration (une fois, côté base) : <code>insert into public.admins (user_id) values ('…');</code></p>
+    <p class="muted">Ce compte est bien connecté, mais il n'est pas admin. Demande au Propriétaire de t'inviter depuis l'onglet Admins, avec l'adresse <b id="my-mail"></b>.</p>
     <button id="btn-recheck" class="ghost">Vérifier à nouveau</button>
   </section>
 
@@ -131,6 +141,7 @@
       <button data-t="packs">Paquets & probabilités</button>
       <button data-t="catalog">Catalogue</button>
       <button data-t="log">Journal</button>
+      <button data-t="team">Admins</button>
       <button data-t="account">Mon compte</button>
     </nav>
     <section data-p="dash"></section>
@@ -138,6 +149,7 @@
     <section data-p="packs" hidden></section>
     <section data-p="catalog" hidden></section>
     <section data-p="log" hidden></section>
+    <section data-p="team" hidden></section>
     <section data-p="account" hidden></section>
   </main>
   <footer class="muted" style="font-size:.78rem; padding:30px 0 50px">Toutes les actions passent par des fonctions serveur qui vérifient le rôle admin et la double authentification, et sont inscrites au journal.</footer>
@@ -146,13 +158,15 @@
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
+// lien d'invitation (type=invite) : l'invité choisit d'abord son mot de passe
+let invited = /type=invite/.test(location.hash);
 const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
 const RARITIES = ['commune','rare','holo','signature','legendaire'];
 const RLABEL = {commune:'Commune', rare:'Rare', holo:'Holo', signature:'Signature', legendaire:'Légendaire'};
 const FUSE_TIERS = RARITIES.slice(0, -1);   // paliers de transformation : chaque rareté sauf Légendaire
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const views = ['v-login','v-mfa-enroll','v-mfa-verify','v-noadmin','v-app'];
+const views = ['v-login','v-invite','v-mfa-enroll','v-mfa-verify','v-noadmin','v-app'];
 function show(v){ views.forEach(x => $(x).hidden = x !== v); }
 function say(el, text, ok){ el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
 const fmt = d => d ? new Date(d).toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'}) : '—';
@@ -164,6 +178,7 @@ async function route(){
   if(!session){ $('who').textContent = ''; show('v-login'); return; }
   $('who').innerHTML = esc(session.user.email || 'compte') + ' · <a href="#" id="logout" style="color:var(--gold)">déconnexion</a>';
   $('logout').onclick = async e => { e.preventDefault(); await sb.auth.signOut(); route(); };
+  if(invited){ show('v-invite'); $('inv-pw1').focus(); return; }
   const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
   if(aal.currentLevel !== 'aal2'){
     const { data: f } = await sb.auth.mfa.listFactors();
@@ -172,7 +187,7 @@ async function route(){
     return;
   }
   const { data: isAdmin } = await sb.rpc('is_admin');
-  if(!isAdmin){ $('my-id').textContent = session.user.id; show('v-noadmin'); return; }
+  if(!isAdmin){ $('my-mail').textContent = session.user.email || ''; show('v-noadmin'); return; }
   show('v-app'); await loadCatalog(); openTab('dash');
 }
 
@@ -214,6 +229,15 @@ $('btn-verify').onclick = async () => {
   route();
 };
 $('btn-recheck').onclick = route;
+$('invite-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const a = $('inv-pw1').value, b = $('inv-pw2').value;
+  if(a.length < 12) return say($('invite-msg'), '12 caractères minimum.');
+  if(a !== b) return say($('invite-msg'), 'Les deux mots de passe ne correspondent pas.');
+  const { error } = await sb.auth.updateUser({ password: a });
+  if(error) return say($('invite-msg'), error.message);
+  invited = false; history.replaceState(null, '', location.pathname); route();
+});
 $('code-enroll').addEventListener('keydown', e => { if(e.key === 'Enter') $('btn-enroll').click(); });
 
 // ---------------------------------------------------------------- onglets
@@ -223,7 +247,7 @@ async function openTab(t){
   tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.t === t)));
   document.querySelectorAll('[data-p]').forEach(p => p.hidden = p.dataset.p !== t);
   const el = document.querySelector(`[data-p="${t}"]`); el.innerHTML = '<p class="muted">Chargement…</p>';
-  try { await ({dash, players, packs, catalogTab, log, account})[t === 'catalog' ? 'catalogTab' : t](el); }
+  try { await ({dash, players, packs, catalogTab, log, team, account})[t === 'catalog' ? 'catalogTab' : t](el); }
   catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; }
 }
 async function loadCatalog(){
@@ -542,6 +566,50 @@ async function favBands(){
     ${r.data.map(x => `<tr><td><b>${esc(x.band)}</b></td><td>${x.fans}</td><td class="muted">${x.in_catalog ? 'déjà dedans' : '—'}</td></tr>`).join('')}</table></div>`;
 }
 
+// ---------------------------------------------------------------- équipe d'admin
+// tout admin voit l'équipe ; seul le Propriétaire invite, retire et change les rôles (vérifié côté serveur, journalisé)
+async function team(el){
+  const [{ data: list, error }, { data: owner }] = await Promise.all([sb.rpc('admin_list_admins'), sb.rpc('is_owner')]);
+  if(error) throw error;
+  const ROLE = {owner:'Propriétaire', admin:'Admin'};
+  el.innerHTML = `
+    <div class="card"><h3>L'équipe</h3><p class="muted" style="font-size:.85rem">Propriétaire : tout, y compris nommer et retirer des admins. Admin : tout le reste (joueurs, cadeaux, catalogue, paquets, journal).</p>
+    ${owner ? '<label for="team-why">Motif pour retirer un admin ou changer son rôle (obligatoire, inscrit au journal)</label><input id="team-why" placeholder="ex. fin de la mission de modération">' : ''}
+    <div class="table-wrap"><table><tr><th>Admin</th><th>Rôle</th><th>Double authentification</th><th>Dernière connexion</th><th>Depuis</th>${owner ? '<th></th>' : ''}</tr>
+    ${list.map(a => `<tr data-u="${a.user_id}"><td><b>${esc(a.email)}</b>${a.me ? ' <span class="muted">(toi)</span>' : ''}</td>
+      <td>${owner && !a.me ? `<select data-role><option value="admin"${a.role === 'admin' ? ' selected' : ''}>Admin</option><option value="owner"${a.role === 'owner' ? ' selected' : ''}>Propriétaire</option></select>` : ROLE[a.role]}</td>
+      <td>${a.mfa ? '<span class="ok">active</span>' : '<span class="muted">pas encore (invitation en attente ?)</span>'}</td><td>${fmt(a.last_sign_in_at)}</td><td>${fmt(a.created_at)}</td>
+      ${owner ? `<td>${a.me ? '' : '<button class="ghost fit" data-revoke>Retirer</button>'}<span class="msg"></span></td>` : ''}</tr>`).join('')}</table></div></div>
+    ${owner ? `<div class="card" style="max-width:520px"><h3>Nommer un admin</h3>
+      <p class="muted" style="font-size:.85rem">Compte Metalnini existant : nommé tout de suite. Sinon, il reçoit un e-mail d'invitation pour choisir son mot de passe ; à sa première connexion, il active la double authentification.</p>
+      <label for="adm-mail">E-mail</label><input id="adm-mail" type="email" autocomplete="off" spellcheck="false">
+      <label for="adm-why">Motif (journal)</label><input id="adm-why" maxlength="200" placeholder="ex. aide à la modération">
+      <div class="row" style="margin-top:12px"><button id="adm-go" class="fit">Nommer admin</button></div><p id="adm-msg" class="msg"></p></div>` : ''}`;
+  if(!owner) return;
+  // motif commun aux retraits et changements de rôle
+  const why = tr => { const r = $('team-why').value.trim(); if(!r){ say(tr.querySelector('.msg'), 'Indique d\'abord un motif.'); $('team-why').focus(); } return r; };
+  el.querySelectorAll('[data-revoke]').forEach(b => b.onclick = async () => {
+    const tr = b.closest('tr'), r = why(tr); if(!r) return;
+    const { error: e } = await sb.rpc('admin_revoke', { p_user: tr.dataset.u, p_reason: r });
+    if(e) say(tr.querySelector('.msg'), e.message); else team(el);
+  });
+  el.querySelectorAll('[data-role]').forEach(sel => sel.onchange = async () => {
+    const tr = sel.closest('tr'), r = why(tr); if(!r){ sel.value = sel.value === 'owner' ? 'admin' : 'owner'; return; }
+    const { error: e } = await sb.rpc('admin_set_role', { p_user: tr.dataset.u, p_role: sel.value, p_reason: r });
+    if(e){ say(tr.querySelector('.msg'), e.message); } else team(el);
+  });
+  $('adm-go').onclick = async () => {
+    const email = $('adm-mail').value.trim(), reason = $('adm-why').value.trim();
+    if(!reason) return say($('adm-msg'), 'Motif obligatoire.');
+    $('adm-go').disabled = true;
+    const { data, error: e } = await sb.functions.invoke('admin-invite', { body: { email, reason } });
+    $('adm-go').disabled = false;
+    if(e){ let m = e.message; try { m = (await e.context.json()).error || m; } catch(_){} return say($('adm-msg'), m); }
+    say($('adm-msg'), data.invited ? 'Invitation envoyée à ' + email + '. Il apparaît dans l\'équipe dès maintenant.' : email + ' est admin. À sa prochaine connexion à l\'admin, il activera la double authentification.', true);
+    $('adm-mail').value = ''; $('adm-why').value = ''; setTimeout(() => team(el), 1200);
+  };
+}
+
 // ---------------------------------------------------------------- journal
 async function log(el){
   const rows = await sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(200).then(must);
@@ -556,7 +624,7 @@ async function log(el){
 async function account(el){
   const { data: { user } } = await sb.auth.getUser();
   const { data: f } = await sb.auth.mfa.listFactors();
-  const { data: adm } = await sb.from('admins').select('created_at').eq('user_id', user.id).maybeSingle();
+  const { data: adm } = await sb.from('admins').select('created_at, role').eq('user_id', user.id).maybeSingle();
   const { data: prof } = await sb.from('profiles').select('username').eq('id', user.id).maybeSingle();
   const factors = (f.totp || []);
   el.innerHTML = `
@@ -567,7 +635,7 @@ async function account(el){
       <tr><th>Compte créé</th><td>${fmt(user.created_at)}</td></tr>
       <tr><th>Dernière connexion</th><td>${fmt(user.last_sign_in_at)}</td></tr>
       <tr><th>E-mail confirmé</th><td>${user.email_confirmed_at ? '<span class="ok">oui</span>, le ' + fmt(user.email_confirmed_at) : '<span class="err">non</span>'}</td></tr>
-      <tr><th>Admin depuis</th><td>${adm ? fmt(adm.created_at) : '—'}</td></tr>
+      <tr><th>Admin depuis</th><td>${adm ? fmt(adm.created_at) + ' · ' + (adm.role === 'owner' ? 'Propriétaire' : 'Admin') : '—'}</td></tr>
       <tr><th>Double authentification</th><td>${factors.map(x => `<span class="ok">active</span> · ${esc(x.friendly_name || 'application')} · depuis le ${fmt(x.created_at)}`).join('<br>') || '<span class="err">aucune</span>'}</td></tr>
     </table></div></div>
 
