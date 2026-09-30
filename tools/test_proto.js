@@ -253,7 +253,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
-    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async presence(){}, async tradeInvites(){ return []; }, async friends(){ return pals; }, async myTrades(){ return T.status === 'done' ? [{id:'t1', done_at:'2026-09-30T10:00:00Z', partner:'Riffeuse', gave:T.give, got:T.get}] : []; }, async follow(id){ pals = [{friend_id:id, username:'Riffeuse', trades:1, last_trade:'2026-09-30T10:00:00Z'}]; }, async mediaUrl(){ return 'data:audio/wav;base64,'; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
+    async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async presence(){}, async cryQuiz(){ return []; }, async cryStatus(){ return null; }, async newCryBonus(){ return null; }, async tradeInvites(){ return []; }, async friends(){ return pals; }, async myTrades(){ return T.status === 'done' ? [{id:'t1', done_at:'2026-09-30T10:00:00Z', partner:'Riffeuse', gave:T.give, got:T.get}] : []; }, async follow(id){ pals = [{friend_id:id, username:'Riffeuse', trades:1, last_trade:'2026-09-30T10:00:00Z'}]; }, async mediaUrl(){ return 'data:audio/wav;base64,'; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
     async tradeWant(id, m, r, on){ T.my_wants = T.my_wants.filter(x => !(x.m === m && x.r === r)); if(on) T.my_wants.push({m, r}); return snap(); },
@@ -361,20 +361,31 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
     w9.fetch = async () => ({ json: async () => ({ results: [{ previewUrl: 'data:audio/wav;base64,', trackName: 'Morceau', trackViewUrl: '#' }] }) });
     w9.addEventListener('error', e => errors.push(e.message)); } });
   await sleep(150);
-  const w9 = dom9.window, d9 = w9.document; let played = null;
+  const w9 = dom9.window, d9 = w9.document; let played = null, guessed = null;
   const inv9 = Object.keys(own9).map(k => ({ musician_id:k.split('|')[0], rarity:k.split('|')[1], copies:1, placed:true }));
   const fake9 = new Proxy({ async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv9; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
     async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 0; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; }, async claims(){ return ['mastery:korn']; },
-    async claimBlindtest(m, sc){ played = {m, sc}; return { kind:'points', points:2 }; }, tradeWatch(){ return () => {}; } }, { get: (o, k) => k in o ? o[k] : async () => (k === 'tradeActive' ? null : k === 'tickets' ? 0 : []) });
+    async claimBlindtest(m, sc){ played = {m, sc}; return { kind:'points', points:2 }; }, tradeWatch(){ return () => {}; },
+    async cryQuiz(){ return guessed ? [] : [{ friend_id:'f1', cry_path:'f1/cri.webm', choices:[{id:'f2', name:'Bob'}, {id:'f1', name:'Riffeuse'}, {id:'f3', name:'Zed'}] }]; },
+    async mediaUrl(){ return 'data:audio/wav;base64,'; }, async cryGuess(f, pick){ guessed = {f, pick}; return f === pick ? { correct:true, reward:{ kind:'points', points:2 } } : { correct:false }; } }, { get: (o, k) => k in o ? o[k] : async () => (k === 'tradeActive' ? null : k === 'tickets' ? 0 : []) });
   await w9.metalniniOnline(fake9); await sleep(100);
   d9.getElementById('tab-corner').click(); await sleep(30);
   check('blind test : débloqué par la maîtrise, dans le carrousel', [...d9.querySelectorAll('#quest-list .quizgo')].some(b => /Maîtrise de Jonathan Davis/.test(b.textContent)));
-  d9.querySelector('#quest-list .quizgo').click(); await sleep(150);
+  [...d9.querySelectorAll('#quest-list .quizgo')].find(b => /Maîtrise de Jonathan Davis/.test(b.textContent)).click(); await sleep(150);
   check('blind test : extrait 1/5, 4 choix', !d9.getElementById('quiz').hidden && /Extrait 1/.test(d9.getElementById('quiz-in').textContent) && d9.querySelectorAll('.qz-opt').length === 4);
   for (let i = 0; i < 5; i++) { d9.querySelector('.qz-opt').click(); await sleep(10); d9.getElementById('qz-next').click(); await sleep(10); }
   check('blind test : score sur 5 à la fin', /\d \/ 5/.test(d9.getElementById('qz-t').textContent));
   d9.getElementById('qz-end').click(); await sleep(50);
-  check('blind test : score envoyé une fois, écran fermé, plus proposé', played && played.m === 'korn' && played.sc >= 0 && d9.getElementById('quiz').hidden && !d9.querySelector('#quest-list .quizgo'));
+  check('blind test : score envoyé une fois, écran fermé, plus proposé', played && played.m === 'korn' && played.sc >= 0 && d9.getElementById('quiz').hidden && ![...d9.querySelectorAll('#quest-list .quizgo')].some(b => /Maîtrise de Jonathan/.test(b.textContent)));
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
+  const cryCard = [...d9.querySelectorAll('#quest-list .quizgo')].find(b => /Qui a poussé ce cri/.test(b.textContent));
+  check('blind test des cris : proposé dans le carrousel', !!cryCard);
+  if (cryCard) { cryCard.click(); await sleep(100); }
+  const good = [...d9.querySelectorAll('.qz-opt')].find(b => /Riffeuse/.test(b.textContent)); if (good) { good.click(); await sleep(50); }
+  check('cri démasqué : la réponse part au serveur, « Bien vu »', guessed && guessed.pick === 'f1' && /Bien vu/.test(d9.getElementById('quiz-in').textContent));
+  d9.getElementById('qz-next').click(); await sleep(20);
+  check('fin du blind test des cris : 1 / 1 et gains à récupérer', /1 \/ 1/.test(d9.getElementById('qz-t').textContent) && /Récupérer mes gains/.test(d9.getElementById('qz-end').textContent));
+  d9.getElementById('qz-end').click(); await sleep(50);
   d9.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30); await openB(d9, 'all');
   d9.querySelector('#grid .slot[data-id="korn"]').click(); await sleep(40);
   d9.getElementById('d-trade').click(); await sleep(40);

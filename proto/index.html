@@ -414,6 +414,7 @@
   .pub-next{margin:4px 0 0; font:500 .76rem var(--mono); color:var(--muted)}
   .pub-quote{margin:14px auto 0; max-width:340px; font-size:1rem; line-height:1.45; font-style:italic; color:var(--text)}
   .pub-cry{margin-top:14px}
+  .pf-unmask{margin:0 0 10px; padding:10px 12px; border:1px solid var(--accent); border-radius:10px; background:rgba(178,58,58,.12); font-size:.86rem; line-height:1.45; color:var(--text)} .pf-unmask b{color:var(--accent-text)}
   .pub-sec{margin-top:28px; text-align:left}
   .pub-sec > .eyebrow{margin:0 0 10px}
   .pub-fan{position:relative; height:clamp(200px, 62vw, 280px); margin:8px auto 0}
@@ -1003,6 +1004,7 @@
     </section>
     <section class="pf-card pf-cry">
       <p class="eyebrow">Ton cri</p>
+      <p class="pf-unmask" id="pf-unmask" hidden></p>
       <p class="pf-note">Ton plus beau growl, 6 secondes max. Personne ne juge. Enfin, presque. Ton premier cri débloque une carte cadeau dans Metal Corner, et il résonne chez tes potes quand vous échangez.</p>
       <div class="pf-count" id="pf-count" aria-live="assertive"></div>
       <div class="pf-meter" aria-hidden="true"><i id="pf-level"></i></div>
@@ -1341,6 +1343,10 @@ const api = {
   async requestArtist(a, n, prio){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
   async claimBlindtest(m, score){ return must(await sb.rpc('claim_blindtest', { p_musician: m, p_score: score })); },
+  async cryQuiz(){ return must(await sb.rpc('cry_quiz')); },
+  async cryGuess(f, pick){ return must(await sb.rpc('cry_guess', { p_friend: f, p_pick: pick })); },
+  async cryStatus(){ return must(await sb.rpc('my_cry_status')); },
+  async newCryBonus(){ return must(await sb.rpc('claim_new_cry_bonus')); },
   async claimBlindtestBinder(b, score){ return must(await sb.rpc('claim_blindtest_binder', { p_binder: b, p_score: score })); },
   async presence(sa, pf){ must(await sb.rpc('touch_presence', { p_standalone: sa, p_platform: pf })); },
   async myTrades(){ return must(await sb.rpc('my_trades', { p_limit: 20 })); },
@@ -1804,6 +1810,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // ---------- Profil : photo et cri ----------
   var MEDIA = {avatar:null, cry:null};
+  // cri démasqué par un pote : l'enregistrer à nouveau pour redevenir mystère (petit bonus)
+  function paintUnmask(){ var el = document.getElementById('pf-unmask'); el.hidden = true; if(!ONLINE) return;
+    ONLINE.cryStatus().then(function(who){ el.hidden = !who; if(who) el.innerHTML = '<b>Démasqué !</b> ' + esc(who) + ' a reconnu ton cri. Pousse-en un nouveau pour redevenir mystère : un bonus t\'attend.'; }).catch(function(){}); }
   // photo et cri : liens signés valables une heure ; l'app installée reste ouverte des jours, on les renouvelle avant qu'ils expirent
   function refreshMedia(then){
     if(!ONLINE || (MEDIA.at && Date.now() - MEDIA.at < 45 * 6e4)){ if(then) then(); return; }
@@ -1847,7 +1856,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !powerSheet.hidden) powerSheet.hidden = true; });
   // la page profil s'ouvre depuis l'avatar et revient à l'écran d'où l'on vient
   var profileFrom = 'packs';
-  function openProfile(){ pfErr.textContent = ''; refreshMedia(); paintName(); paintAvatar(); resetCry(); paintShowcase(); profileFrom = !document.getElementById('v-binder').hidden ? 'binder' : 'packs'; go('profile'); }
+  function openProfile(){ pfErr.textContent = ''; refreshMedia(); paintUnmask(); paintName(); paintAvatar(); resetCry(); paintShowcase(); profileFrom = !document.getElementById('v-binder').hidden ? 'binder' : 'packs'; go('profile'); }
   // ---------- Profil public : la veste à patchs ----------
   // titre gagné : un point par musicien, 4 par classeur complété (un patch), 6 par maîtrise (un pin's)
   var TITLES = [[0, 'Groupie'], [12, 'Roadie'], [30, 'Première partie'], [60, 'Tête d\'affiche'], [100, 'Légende du pit']];
@@ -1996,6 +2005,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(ONLINE){ MEDIA.cry = await ONLINE.uploadMedia('cry', recBlob, ext); }
       else { state.cry = await new Promise(function(ok){ var fr = new FileReader(); fr.onload = function(){ ok(fr.result); }; fr.readAsDataURL(recBlob); }); save(); }
       recBlob = null; resetCry(); renderGoals(); toast(ONLINE ? 'Cri enregistré. Ta récompense t\'attend dans Metal Corner.' : 'Cri enregistré. Les voisins s\'en souviendront.');
+      if(ONLINE) ONLINE.newCryBonus().then(function(res){ if(res){ paintUnmask(); setTimeout(function(){ rewardArrived(res, 'Nouveau cri mystère'); }, 1200); } }).catch(function(){});
     }catch(e){ pfErr.textContent = e.message; }
     saveBtn.disabled = false;
   });
@@ -2241,10 +2251,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // récompense selon le score, donnée une seule fois par le serveur
   var quizEl = document.getElementById('quiz'), quizIn = document.getElementById('quiz-in'), quiz = null, quizAudio = null;
   // blind tests débloqués : un par maîtrise (sujet : ce musicien d'abord) et un par classeur complété (sujet : ses musiciens d'abord)
+  var cryPool = [];
   function quizzes(){
     if(!ONLINE || !state.claims) return [];
-    var out = CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }).map(function(c){
-      return {key:'quiz:' + c.id, label:'Maîtrise de ' + c.who, seed:[c], art:'m:' + c.id, claim:function(sc){ return ONLINE.claimBlindtest(c.id, sc); }}; });
+    var out = (cryPool.length ? [{key:'cry', label:'Les cris de tes potes', cry:true, rows:cryPool, art:'cry'}] : []).concat(CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }).map(function(c){
+      return {key:'quiz:' + c.id, label:'Maîtrise de ' + c.who, seed:[c], art:'m:' + c.id, claim:function(sc){ return ONLINE.claimBlindtest(c.id, sc); }}; }));
     BINDERS.forEach(function(b){ var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
       if(ids.length && ids.every(function(id){ return placed(id); }) && !state.claims['quiz:b-' + b.k])
         out.push({key:'quiz:b-' + b.k, label:'Classeur ' + binderLabel(b), seed:ids.map(card), art:'b:' + b.k, claim:function(sc){ return ONLINE.claimBlindtestBinder(b.k, sc); }}); });
@@ -2254,6 +2265,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function quizStop(){ if(quizAudio){ quizAudio.pause(); quizAudio = null; } var p = quizIn.querySelector('.qz-play'); if(p) p.classList.remove('on'); }
   async function startQuiz(sub){
     var c = sub; quiz = {sub:sub, qs:[], i:0, score:0, picked:null, loading:true}; quizEl.hidden = false; duck(0); renderQuiz();
+    if(sub.cry){
+      var rows = await Promise.all(sub.rows.map(function(r){ return ONLINE.mediaUrl('cries', r.cry_path).then(function(u){
+        var opts = (r.choices || []).map(function(o){ return {who:o.name || 'Anonyme', band:'', id:o.id}; }), ans = opts.filter(function(o){ return o.id === r.friend_id; })[0];
+        return u && ans && opts.length > 1 ? {ans:ans, opts:opts, t:{url:u, name:'Le cri de ' + ans.who}} : null; }).catch(function(){ return null; }); }));
+      if(!quiz || quiz.sub !== c) return;
+      quiz.qs = rows.filter(Boolean); quiz.loading = false;
+      if(!quiz.qs.length){ quiz.error = true; renderQuiz(); return; }
+      renderQuiz(); quizPlay(); return;
+    }
     var seed = shuffle(sub.seed.filter(function(x){ return TRACKS[x.id]; }));
     var mine = seed.concat(shuffle(CARDS.filter(function(x){ return seed.indexOf(x) === -1 && best(x.id) && TRACKS[x.id]; })));
     if(mine.length < 5) mine = mine.concat(shuffle(CARDS.filter(function(x){ return TRACKS[x.id] && mine.indexOf(x) === -1; })));
@@ -2277,7 +2297,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(z.error){ quizIn.innerHTML = head + '<h2 id="qz-t">Les extraits font grève</h2><p class="pf-note">Impossible de charger 5 extraits pour l\'instant. Ton blind test t\'attend, reviens plus tard.</p><button type="button" class="btn block" id="qz-end">Fermer</button>';
       document.getElementById('qz-end').onclick = closeQuiz; return; }
     var dots = '<div class="qz-dots" aria-hidden="true">' + z.qs.map(function(q, k){ return '<i class="' + (q.ok === true ? 'ok' : q.ok === false ? 'ko' : k === z.i ? 'cur' : '') + '"></i>'; }).join('') + '</div>';
-    if(z.i >= z.qs.length){
+    var N = z.qs.length, unit = z.sub.cry ? 'Cri' : 'Extrait';
+    if(z.i >= N && z.sub.cry){
+      // cris : chaque cri trouvé a déjà été compté par le serveur ; on récupère les gains d'un coup
+      var gains = z.qs.filter(function(q){ return q.res && q.res.reward; }).map(function(q){ return q.res.reward; });
+      quizIn.innerHTML = head + '<h2 id="qz-t">' + z.score + ' / ' + N + '</h2>' + dots + '<p class="pf-note">' + (z.score ? 'Chaque cri démasqué te rapporte un bonus, et ton pote devra en pousser un nouveau.' : 'Aucun cri reconnu. Ils savent se cacher.') + '</p>' +
+        '<button type="button" class="btn block" id="qz-end">' + (gains.length ? 'Récupérer mes gains' : 'Fermer') + '</button>';
+      document.getElementById('qz-end').onclick = function(){ closeQuiz(); renderCorner(); cryGains(gains); };
+      return;
+    }
+    if(z.i >= N){
       var msg = z.score === 5 ? 'Oreille absolue. Le pit s\'incline.' : z.score === 4 ? 'Presque parfait. Respect.' : z.score === 3 ? 'Pas mal du tout.' : 'Il va falloir réviser tes classiques.';
       quizIn.innerHTML = head + '<h2 id="qz-t">' + z.score + ' / 5</h2>' + dots + '<p class="pf-note">' + msg + (z.score >= 3 ? ' Une récompense t\'attend.' : ' Pas de récompense cette fois.') + '</p>' +
         '<button type="button" class="btn block" id="qz-end">' + (z.score >= 3 ? 'Récupérer ma récompense' : 'Fermer') + '</button>';
@@ -2287,18 +2316,31 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       return;
     }
     var q = z.qs[z.i], done = q.ok !== undefined;
-    quizIn.innerHTML = head + '<h2 id="qz-t">Extrait ' + (z.i + 1) + ' / 5</h2>' + dots +
-      '<button type="button" class="qz-play' + (quizAudio && !quizAudio.paused ? ' on' : '') + '" id="qz-play">' + EQ + '<span>' + (done ? esc(q.t.name) : 'Qui joue ?') + '</span></button>' +
+    quizIn.innerHTML = head + '<h2 id="qz-t">' + unit + ' ' + (z.i + 1) + ' / ' + N + '</h2>' + dots +
+      '<button type="button" class="qz-play' + (quizAudio && !quizAudio.paused ? ' on' : '') + '" id="qz-play">' + EQ + '<span>' + (done ? esc(q.t.name) : z.sub.cry ? 'Qui hurle ?' : 'Qui joue ?') + '</span></button>' +
       '<div class="qz-opts">' + q.opts.map(function(o, k){ var cls = done ? (o === q.ans ? ' ok' : k === z.picked ? ' ko' : '') : '';
         return '<button type="button" class="qz-opt' + cls + '" data-o="' + k + '"' + (done ? ' disabled' : '') + '><b>' + esc(o.who) + '</b><small>' + esc(o.band) + '</small></button>'; }).join('') + '</div>' +
-      (done ? '<p class="qz-fb ' + (q.ok ? 'ok' : 'ko') + '">' + (q.ok ? 'Bien vu !' : 'Raté : c\'était ' + esc(q.ans.who) + '.') + '</p><button type="button" class="btn block" id="qz-next">' + (z.i === 4 ? 'Voir mon score' : 'Extrait suivant') + '</button>' : '');
+      (done ? '<p class="qz-fb ' + (q.ok ? 'ok' : 'ko') + '">' + (q.ok ? 'Bien vu !' : 'Raté : c\'était ' + esc(q.ans.who) + '.') + '</p><button type="button" class="btn block" id="qz-next">' + (z.i === N - 1 ? 'Voir mon score' : unit + ' suivant') + '</button>' : '');
     document.getElementById('qz-play').onclick = function(){ if(quizAudio && !quizAudio.paused) quizStop(); else quizPlay(); };
     [].forEach.call(quizIn.querySelectorAll('.qz-opt:not(:disabled)'), function(b){ b.onclick = function(){
       z.picked = +b.getAttribute('data-o'); q.ok = q.opts[z.picked] === q.ans; if(q.ok) z.score++;
+      if(z.sub.cry) ONLINE.cryGuess(q.ans.id, q.opts[z.picked].id).then(function(res){ q.res = res; }).catch(function(e){ toast(esc(e.message)); });
       snd(q.ok ? 'select' : 'nope'); buzz(q.ok ? [20] : [40, 60, 40]); renderQuiz(); }; });
     var nx = document.getElementById('qz-next'); if(nx) nx.onclick = function(){ z.i++; z.picked = null; quizStop(); renderQuiz(); if(z.i < z.qs.length) quizPlay(); };
   }
   function closeQuiz(){ quizStop(); quiz = null; quizEl.hidden = true; duck(1); }
+  // gains des cris : cartes révélées ensemble, paquets et tickets en message
+  async function cryGains(list){
+    var cards = list.filter(function(r){ return r.kind === 'card'; }), pts = list.filter(function(r){ return r.kind === 'points'; }).length, tk = list.filter(function(r){ return r.kind === 'ticket'; }).length;
+    if(pts){ refreshDaily(); toast('<b>' + pts + ' paquet' + (pts > 1 ? 's' : '') + ' au choix</b> ajouté' + (pts > 1 ? 's' : '') + ' à tes cartes du jour.'); }
+    if(tk){ state.tickets = (state.tickets || 0) + tk; save(); setTimeout(function(){ toast('<b>Ticket artiste prioritaire</b> · Ta prochaine demande passe en tête.'); }, pts ? 3800 : 0); }
+    if(!cards.length) return;
+    try{ applyInventory(await ONLINE.inventory()); }catch(e){}
+    renderStats(); current = cards.filter(function(r){ return card(r.m); }).map(function(r){ if(r.new) state.fresh[r.m] = true; return {c:card(r.m), r:r.r, isNew:r.new}; }); save();
+    if(!current.length) return; idx = 0; seenUpTo = -1; snd('gift');
+    revealEl.hidden = false; document.getElementById('skip').hidden = current.length < 2; showCard();
+    setTimeout(function(){ document.getElementById('counter').textContent = 'Blind test des cris'; }, 0);
+  }
   document.getElementById('quiz-x').addEventListener('click', function(){
     if(!quiz || quiz.i >= quiz.qs.length || quiz.error){ closeQuiz(); return; }
     askConfirm({eyebrow:'Blind test', title:'Quitter le blind test ?', text:'Rien n\'est perdu : il t\'attend dans Metal Corner, tu le rejoueras depuis le début.', yes:'Quitter', no:'Continuer'}, closeQuiz);
@@ -2334,7 +2376,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     el.innerHTML = done.map(function(o, i){
       return '<button type="button" class="goal quest claim" data-claim="' + i + '">' + goalArt(o.key, null) + '<span class="q-body"><b>' + esc(o.title) + '</b><span class="pc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/></svg>Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></span></button>'; }).join('') +
       qz.map(function(q, i){ return '<button type="button" class="goal quest quizgo" data-quiz="' + i + '">' + goalArt(q.art, null).replace('</span>', ICON_HEAD + '</span>') +
-        '<span class="q-body"><b>Blind test débloqué</b><span class="pc">Jouer</span><small>' + esc(q.label) + ' · 5 extraits, une carte à gagner</small></span></button>'; }).join('') +
+        '<span class="q-body"><b>' + (q.cry ? 'Qui a poussé ce cri ?' : 'Blind test débloqué') + '</b><span class="pc">Jouer</span><small>' + esc(q.label) + (q.cry ? ' · ' + q.rows.length + ' cri' + (q.rows.length > 1 ? 's' : '') + ' à démasquer' : ' · 5 extraits, une carte à gagner') + '</small></span></button>'; }).join('') +
       (list.length ? list.map(function(g){
       return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
         goalArt(g.key, g.detail) + '<span class="q-body"><b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></span></button>'; }).join('')
@@ -2673,6 +2715,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.tradeInvites().then(function(list){ invitesList = list || []; paintInvites(); }).catch(function(){});
     ONLINE.friends().then(function(list){ friendsList = list || []; friendIds = {}; friendsList.forEach(function(f){ friendIds[f.friend_id] = true; }); paintFriends(); }).catch(function(){});
     ONLINE.myTrades().then(paintHistory).catch(function(){});
+    ONLINE.cryQuiz().then(function(rows){ var n = cryPool.length; cryPool = rows || []; if(n !== cryPool.length) renderGoals(); }).catch(function(){});
   }
   function avatarHtml(name, url){ return '<span class="f-av"' + (url ? ' style="background-image:url(\'' + esc(url) + '\')"' : '') + '>' + (url ? '' : esc((name || '?').charAt(0).toUpperCase())) + '</span>'; }
   function paintInvites(){
