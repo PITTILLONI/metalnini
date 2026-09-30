@@ -593,10 +593,17 @@
   .back-btn{background:none; border:0; min-height:44px; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
   .kind-chips{display:flex; gap:8px; overflow-x:auto; padding:14px 0 10px; scrollbar-width:none}
   .kind-chips::-webkit-scrollbar{display:none}
-  .kind-chips button{flex:0 0 auto; min-height:44px; padding:0 16px; border-radius:12px; border:1px solid #2e251d; background:#15110f; box-shadow:0 3px 0 #000; color:var(--muted); font:800 .92rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
+  @media (max-width:370px){ .kind-chips{gap:5px} .kind-chips button{padding:0 7px; font-size:.82rem} }
+  .kind-chips button{flex:1 0 auto; min-height:44px; padding:0 10px; border-radius:12px; border:1px solid #2e251d; background:#15110f; box-shadow:0 3px 0 #000; color:var(--muted); font:800 .88rem var(--display); letter-spacing:.04em; text-transform:uppercase; cursor:pointer}
   .kind-chips button[aria-selected="true"]{background:var(--gold); border-color:var(--gold); box-shadow:0 3px 0 #8a5510; color:#1a0f05}
   .binder-list{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; padding:12px 0 24px}
   @media (min-width:700px){ .binder-list{grid-template-columns:repeat(3, minmax(0,1fr))} }
+  /* styles, instruments, groupes : sous-catégories en cartes plus petites, trois de front */
+  .binder-list.sub{grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px}
+  @media (min-width:700px){ .binder-list.sub{grid-template-columns:repeat(5, minmax(0,1fr))} }
+  .binder-list.sub .bcard{border-radius:10px} .binder-list.sub .plate{gap:4px; padding:26px 7px 8px}
+  .binder-list.sub .bcard b{font-size:1.02rem; line-height:1.02} .binder-list.sub .bcard small{font-size:.66rem} .binder-list.sub .bcard .bar{height:5px}
+  .binder-list.sub .bcard .done{top:6px; right:6px; padding:2px 6px; font-size:.6rem}
   .bcard{position:relative; display:block; aspect-ratio:2/3; padding:0; border:0; border-radius:14px; overflow:hidden; cursor:pointer; text-align:center;
     background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 12px 28px rgba(0,0,0,.6), inset 0 0 0 1px rgba(235,154,38,.35); transition:transform .15s ease}
   .bcard:active{transform:scale(.97)}
@@ -768,10 +775,10 @@
   .fzv-bar::after{content:""; position:absolute; inset:0; background:repeating-linear-gradient(to top, transparent 0 calc(100% / var(--n) - 1px), rgba(12,11,10,.45) calc(100% / var(--n) - 1px) calc(100% / var(--n)))}
   .fzv b{font:900 1rem/1 var(--display); color:var(--text)} .fzv small{font:900 .72rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase; color:var(--fc)}
   /* maîtrise : un sceau de cire par rareté ; possédé, il se touche et montre la carte ; la rareté affichée est cerclée d'or */
-  .mst{display:flex; flex-direction:column; align-items:center; gap:2px; margin:0 0 12px; text-align:center}
+  .mst{display:flex; flex-direction:column; align-items:center; gap:2px; margin:0 0 10px; text-align:center}
   .mst-l{display:inline-flex; align-items:center; gap:6px; font:600 .72rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .mst-l b{color:var(--text)}
   .mst small{font:500 .74rem var(--mono); color:var(--muted)} .mst.done .mst-l, .mst.done .mst-l b{color:var(--gold-hi)}
-  .seals{display:flex; justify-content:center; gap:10px; margin:0 0 6px}
+  .seals{display:flex; justify-content:center; gap:10px; margin:0 0 22px}
   .seal{display:flex; flex-direction:column; align-items:center; gap:4px; min-width:48px; padding:0; border:0; background:none; color:var(--muted); cursor:pointer}
   .seal i{width:46px; height:46px; display:grid; place-items:center; border-radius:50%; font:400 1.25rem/1 var(--gothic); font-style:normal; color:color-mix(in srgb, var(--sc) 30%, #000);
     background:radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--sc) 55%, #fff), color-mix(in srgb, var(--sc) 75%, #000)); box-shadow:inset 0 -3px 0 rgba(0,0,0,.3), 0 3px 6px rgba(0,0,0,.5)}
@@ -3624,7 +3631,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage;
     document.getElementById('save-banner').hidden = !(state.welcome && !ONLINE); document.getElementById('binder-page').hidden = !inPage;
     if(!inPage){
-      var list = document.getElementById('binder-list');
+      var list = document.getElementById('binder-list'); list.classList.toggle('sub', kind !== 'Collection');
       // un classeur dont aucune carte n'est encore prête n'apparaît pas
       list.innerHTML = BINDERS.filter(function(b){ return b.kind === kind && b.ids.some(function(id){ return card(id); }); }).map(function(b){
         var ids = b.ids.filter(function(id){ return card(id); }), have = ids.filter(function(id){ return placed(id); });
@@ -3726,16 +3733,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var side = r ? fuseSide(id, r) : '', head = r ? '<div class="gframe"><div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
-      '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? rarity(r).label + ' · Arcane ' + esc(c.num) : 'Pas encore obtenue') + '</p>' +
-      // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
-      (r ? '<h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
-           '<div class="listen" id="d-listen" hidden></div>' + artistBlock(c)
-         : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
+      // maîtrise et sceaux juste sous la carte
       (r ? masteryHead(id) : '<p class="mst"><span class="mst-l">Raretés obtenues</span></p>') + '<div class="seals">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0, l = '<i>' + x.label.charAt(0) + '</i>';
         return n ? '<button type="button" class="seal' + (x.k === r ? ' cur' : '') + '" data-r="' + x.k + '" style="--sc:' + x.color + '" aria-label="' + x.label + ', ' + n + ' exemplaire' + (n > 1 ? 's' : '') + (x.k === r ? ', affichée' : '') + '">' + l + (n > 1 ? '<em class="num">×' + n + '</em>' : '') + '<small>' + x.label + '</small></button>'
                  : '<span class="seal off" style="--sc:' + x.color + '" aria-label="' + x.label + ', pas encore obtenue">' + l + '<small>' + x.label + '</small></span>';
       }).join('') + '</div>' +
+      '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? rarity(r).label + ' · Arcane ' + esc(c.num) : 'Pas encore obtenue') + '</p>' +
+      // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
+      (r ? '<h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
+           '<div class="listen" id="d-listen" hidden></div>' + artistBlock(c)
+         : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
       (r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
     if(r){
       showListen(document.getElementById('d-listen'), id);
