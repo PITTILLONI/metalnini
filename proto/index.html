@@ -691,12 +691,12 @@
   .fzv b{font:700 .66rem var(--mono)} .fzv.ready b{color:var(--fc)}
   .fzv.ready .fzv-bar{box-shadow:inset 0 0 0 1px var(--fc), 0 0 16px var(--fc)} .fzv.ready .fzv-bar i{animation:fzpulse 1.6s ease-in-out infinite}
   @keyframes fzpulse{50%{opacity:.6}}
-  .mst{display:flex; align-items:center; gap:10px; margin:6px 0 14px} .mst-l{display:inline-flex; align-items:center; gap:4px; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
-  .mst-pips{flex:1; display:flex; gap:4px} .mst-pips i{flex:1; height:8px; border-radius:2px; background:rgba(255,255,255,.08)} .mst b{font:700 .8rem var(--mono); color:var(--muted)}
+  .mst{display:flex; align-items:baseline; gap:8px; margin:0 0 8px} .mst small{margin-left:auto; font:500 .7rem var(--mono); color:var(--muted)} .mst-l{display:inline-flex; align-items:center; gap:4px; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .mst b{font:700 .8rem var(--mono); color:var(--muted)}
   .mst.done .mst-l, .mst.done b{color:var(--gold-hi)}
   .artist{margin:0 0 18px; padding:14px; border:1px solid var(--border); border-radius:14px; background:var(--bg)} .artist .eyebrow{margin:0 0 8px}
   .artist .bio{margin:0 0 12px; font-size:.92rem; line-height:1.5; color:var(--text)}
-  .move-in{margin:0 0 14px; padding:12px 14px; border:1px solid rgba(235,154,38,.35); border-radius:12px; background:rgba(235,154,38,.06)}
+  .move-in{display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start; margin:0 0 14px} .mv-ico{color:var(--gold-hi); margin-top:2px}
   .move-in small{display:block; font:600 .66rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)} .move-in b{display:block; margin:4px 0; font:800 1.3rem/1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .move-in p{margin:0; font-size:.88rem; color:var(--muted)}
   .facts{display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; margin:0} .facts dt{font:600 .62rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .facts dd{margin:2px 0 0; font:600 .84rem/1.3 var(--mono); color:var(--text)}
   .detail-actions{display:flex; gap:10px; margin-top:16px} .detail-actions .btn{flex:1}
@@ -1550,6 +1550,54 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'gerard-way':'Chanteur de My Chemical Romance, groupe du New Jersey, figure de l\'emo des années 2000.',
     bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus.',
     prince:'Chanteur, guitariste et multi-instrumentiste de Minneapolis ; l\'album Purple Rain (1984) accompagne le film du même nom.'
+  };
+  // présentations détaillées (fiche carte, section « L'artiste ») ; la courte BIOS reste pour la révélation
+  var BIOS_LONG = {
+    'knocked-loose':'Chanteur de Knocked Loose, groupe de hardcore formé en 2013 dans le comté d\'Oldham, au Kentucky. Son cri aigu et rageur est la signature du groupe. L\'EP A Tear in the Fabric of Life (2021) puis l\'album You Won\'t Go Before You\'re Supposed To (2024) en ont fait une tête d\'affiche du hardcore actuel.',
+    'isaac-hale':'Guitariste de Knocked Loose depuis la formation du groupe en 2013 au Kentucky, il assure aussi une partie des voix. Ses riffs épais et ses breakdowns sont au cœur du son du groupe.',
+    jinjer:'Chanteuse de Jinjer, groupe de metal progressif formé en 2008 à Horlivka, en Ukraine. Elle passe en un instant d\'un chant clair aux accents soul à un growl caverneux, ce qui a rendu Pisces (2016) viral.',
+    spiritbox:'Chanteuse de Spiritbox, qu\'elle fonde en 2017 à Victoria, au Canada, avec le guitariste Mike Stringer. Holy Roller (2020) puis l\'album Eternal Blue (2021) ont fait du groupe l\'une des révélations du metalcore.',
+    landmvrks:'Chanteur de Landmvrks, groupe de metalcore marseillais parmi les plus en vue de la scène française. Il alterne cris et chant clair, et l\'album Lost in the Waves (2021) a fait connaître le groupe à l\'international.',
+    ramos:'Chanteur de Lorna Shore depuis 2021, groupe de deathcore du New Jersey. Sa performance sur To the Hellfire, sortie la même année, a fait exploser le groupe grâce à ses cris gutturaux et ses pig squeals.',
+    heriot:'Chanteuse et guitariste de Heriot, groupe de metalcore formé à Swindon, en Angleterre. Son growl et son chant clair portent l\'album Devoured by the Mouth of Hell (2024).',
+    duplantier:'Batteur de Gojira, qu\'il fonde en 1996 à Ondres, dans les Landes, avec son frère Joe. Sa double pédale et ses rythmes syncopés sont une référence du metal moderne ; le groupe a joué à la cérémonie d\'ouverture des Jeux olympiques de Paris en 2024.',
+    blink182:'Batteur de Blink-182 depuis 1998, il joue sur Enema of the State (1999), qui contient All the Small Things. Réputé pour sa vitesse et son jeu teinté de hip-hop, il est aussi un producteur très demandé.',
+    hoppus:'Bassiste et chanteur, il cofonde Blink-182 en 1992 à Poway, en Californie, avec Tom DeLonge. Sa voix nasillarde et ses lignes de basse directes sont indissociables du pop punk de la fin des années 1990.',
+    hendrix:'Guitariste et chanteur né à Seattle, révélé à Londres en 1966 avec le Jimi Hendrix Experience. Il réinvente la guitare électrique avec la distorsion, le larsen et la pédale wah-wah, avant de disparaître en 1970, à 27 ans.',
+    slash:'Guitariste de Guns N\' Roses, groupe de hard rock formé à Los Angeles en 1985. Son haut-de-forme, sa Les Paul et les riffs de Sweet Child O\' Mine et Welcome to the Jungle en font une icône ; Appetite for Destruction (1987) est l\'un des premiers albums les plus vendus de l\'histoire.',
+    frusciante:'Guitariste des Red Hot Chili Peppers, qu\'il rejoint en 1988, à 18 ans. Il signe les guitares de Blood Sugar Sex Magik (1991), avec Under the Bridge, puis de Californication (1999) après son retour dans le groupe.',
+    korn:'Chanteur de Korn, groupe formé en 1993 à Bakersfield, en Californie, et pionnier du nu metal. Ses textes sur les blessures de l\'enfance et sa voix qui passe du murmure au cri ont marqué une génération ; Freak on a Leash (1998) est l\'un de ses titres les plus connus.',
+    poppy:'Chanteuse américaine révélée vers 2014 par des vidéos YouTube étranges et minimalistes. Elle passe de la pop au metal avec l\'album I Disagree (2020), dont le titre Bloodmoney est nommé aux Grammy Awards.',
+    zack:'Chanteur de Rage Against the Machine, groupe formé à Los Angeles en 1991. Son flow rap et ses textes politiques, sur les riffs de Tom Morello, font de Killing in the Name et Bulls on Parade des hymnes.',
+    root:'Guitariste de Slipknot depuis 1999, sous le numéro 4 et derrière son masque. Il a aussi joué dans Stone Sour avec Corey Taylor ; Duality (2004) est l\'un des titres phares du groupe.',
+    jordison:'Batteur de Slipknot de 1995 à 2013, sous le numéro 1. Sa vitesse et sa précision en font l\'un des batteurs de metal les plus admirés ; il est mort en 2021.',
+    dickinson:'Chanteur d\'Iron Maiden de 1981 à 1993, puis de nouveau depuis 1999, surnommé la « sirène antiaérienne » pour sa voix puissante. Également pilote de ligne, il a piloté l\'avion de tournée du groupe, l\'Ed Force One.',
+    halford:'Chanteur de Judas Priest, groupe de heavy metal formé à Birmingham en 1969. Surnommé le « Metal God », il popularise le look cuir et clous du metal ; Breaking the Law (1980) est l\'un des classiques du groupe.',
+    ozzy:'Chanteur de Black Sabbath, formé à Birmingham en 1968 et souvent présenté comme l\'inventeur du heavy metal. Il mène ensuite une carrière solo à succès, avec Crazy Train, et devient une star de la télévision avec The Osbournes ; il est mort en juillet 2025.',
+    lemmy:'Bassiste et chanteur, il fonde Motörhead en 1975 après avoir quitté Hawkwind. Sa voix rocailleuse et sa basse jouée comme une guitare rythmique ont influencé le thrash comme le punk ; il est mort en 2015.',
+    hetfield:'Chanteur et guitariste rythmique de Metallica, qu\'il cofonde en 1981 à Los Angeles avec Lars Ulrich. Sa main droite est la référence du riff thrash ; Master of Puppets (1986) est souvent cité parmi les meilleurs albums du genre.',
+    mustaine:'Guitariste et chanteur, renvoyé de Metallica en 1983, il fonde la même année Megadeth, l\'un des « quatre grands » du thrash. Symphony of Destruction (1992) est l\'un de ses plus grands succès.',
+    araya:'Bassiste et chanteur de Slayer, groupe de thrash formé en 1981 à Huntington Park, en Californie. Son cri sur Angel of Death et l\'album Reign in Blood (1986), qui contient Raining Blood, sont des monuments du genre.',
+    'scott-ian':'Guitariste rythmique et cofondateur d\'Anthrax, groupe de thrash formé à New York en 1981, l\'un des « quatre grands ». Il a aussi cofondé le groupe de crossover Stormtroopers of Death.',
+    cobain:'Chanteur et guitariste de Nirvana, formé à Aberdeen, dans l\'État de Washington, en 1987. L\'album Nevermind (1991) et Smells Like Teen Spirit portent le grunge dans le monde entier ; il est mort en 1994.',
+    cornell:'Chanteur de Soundgarden, pionnier du grunge de Seattle, puis d\'Audioslave. Sa voix à la tessiture immense porte Black Hole Sun (1994) ; il est mort en 2017.',
+    staley:'Chanteur d\'Alice in Chains, groupe de Seattle formé en 1987. Ses harmonies vocales sombres avec Jerry Cantrell sont la marque du groupe, comme sur Man in the Box (1990) ; il est mort en 2002.',
+    grohl:'Batteur de Nirvana de 1990 à 1994, il fonde ensuite les Foo Fighters, dont il est le chanteur et guitariste. Everlong (1997) est l\'un des titres phares du groupe.',
+    keenan:'Chanteur de Tool, groupe de metal progressif formé à Los Angeles en 1990, mais aussi d\'A Perfect Circle et de Puscifer. Il est également vigneron en Arizona.',
+    'white-gluz':'Chanteuse canadienne, elle rejoint en 2014 Arch Enemy, groupe suédois de death metal mélodique, après avoir fondé The Agonist à Montréal. Elle alterne growl puissant et chant clair, et milite pour la cause animale.',
+    corpsegrinder:'Chanteur de Cannibal Corpse depuis 1995, groupe de death metal formé à Buffalo en 1988. Son growl caverneux et son headbang en hélice sont légendaires ; le groupe joue Hammer Smashed Face dans le film Ace Ventura (1994).',
+    tankian:'Chanteur de System of a Down, groupe de Los Angeles formé en 1994 par des membres issus de la diaspora arménienne. Ses envolées vocales théâtrales et engagées portent l\'album Toxicity (2001).',
+    sykes:'Chanteur de Bring Me the Horizon, formé à Sheffield en 2004. Le groupe passe du deathcore au rock alternatif et électronique ; Throne (2015) est l\'un de ses titres les plus connus.',
+    hayley:'Chanteuse de Paramore, groupe formé en 2004 à Franklin, dans le Tennessee. Misery Business (2007) fait d\'elle une icône du pop punk ; elle mène aussi une carrière solo.',
+    armstrong:'Chanteur et guitariste de Green Day, groupe punk formé en 1987 dans la baie de San Francisco. Dookie (1994) puis l\'opéra rock American Idiot (2004), avec Boulevard of Broken Dreams, en font l\'un des groupes punk les plus vendus.',
+    angus:'Guitariste soliste d\'AC/DC, groupe fondé en 1973 à Sydney avec son frère Malcolm. Son uniforme d\'écolier et son duck walk sont légendaires ; Highway to Hell (1979) est l\'un des classiques du groupe.',
+    dio:'Chanteur de Rainbow, puis de Black Sabbath de 1979 à 1982, avant de fonder Dio. Il popularise le signe des cornes dans le metal ; Holy Diver (1983) est un classique. Il est mort en 2010.',
+    doro:'Chanteuse allemande, révélée dans les années 1980 avec Warlock, groupe de heavy metal de Düsseldorf. Surnommée la « Metal Queen », elle mène depuis une longue carrière solo.',
+    hammett:'Guitariste soliste de Metallica depuis 1983, où il remplace Dave Mustaine. Élève de Joe Satriani, il signe les solos d\'Enter Sandman (1991) ; c\'est aussi un grand collectionneur d\'objets de films d\'horreur.',
+    mercury:'Chanteur et pianiste de Queen, groupe formé à Londres en 1970. Sa voix et sa présence scénique, de Bohemian Rhapsody (1975) au Live Aid de 1985, en font l\'un des plus grands chanteurs du rock ; il est mort en 1991.',
+    'gerard-way':'Chanteur de My Chemical Romance, formé dans le New Jersey en 2001. L\'album The Black Parade (2006) et son hymne Welcome to the Black Parade marquent l\'emo des années 2000 ; il est aussi auteur de bandes dessinées, dont The Umbrella Academy.',
+    bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus. Sa voix, qui passe d\'un chant fragile à des cris déchirants, porte Numb (2003) ; il est mort en 2017.',
+    prince:'Chanteur, guitariste et multi-instrumentiste de Minneapolis. L\'album Purple Rain (1984), bande originale du film du même nom, contient l\'un des solos de guitare les plus célèbres du rock ; il est mort en 2016.'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
   var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1632526090, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'zack':171209471, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':272252873, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1160082180, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478};
@@ -3427,15 +3475,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var side = r ? fuseSide(id) : '', head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div>' :
+    var side = r ? fuseSide(id, r) : '', head = r ? '<div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
       '<p class="eyebrow">' + (r ? rarity(r).label : 'Pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
-      (r ? '<h2>' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' + masteryGauge(id) +
+      (r ? '<h2>' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
            '<div class="listen" id="d-listen" hidden></div>' + artistBlock(c)
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
-      '<p class="note" style="margin:0 0 8px">Raretés obtenues</p><div class="variants">' + RARITIES.map(function(x){
+      (r ? masteryHead(id) : '<p class="note" style="margin:0 0 8px">Raretés obtenues</p>') + '<div class="variants">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0;
         return n ? '<button type="button" data-r="' + x.k + '"><img src="' + img(id, x.k) + '" alt="' + x.label + '" style="outline:2px solid ' + (x.k===r ? x.color : 'transparent') + ';outline-offset:1px"><small>' + x.label + (n>1?' ×'+n:'') + '</small></button>'
                  : '<div><div class="lock">?</div><small>' + x.label + '</small></div>';
@@ -3466,28 +3514,26 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function fuseCost(r){ return (ONLINE && FUSE_COSTS && FUSE_COSTS[r]) || (state.fuseBase || 3) * Math.pow(2, rank(r)); }
   // première rareté transformable d'un musicien (on garde toujours un exemplaire), sinon null
   function fusable(id){ for(var i = 0; i < RARITIES.length - 1; i++){ var x = RARITIES[i].k; if((state.owned[id+'|'+x] || 0) - 1 >= fuseCost(x)) return x; } return null; }
-  // transformations : une jauge verticale par palier à côté de la carte (un cran par doublon) ; pleine, elle brille et se touche
-  function fuseSide(id){
-    var g = RARITIES.slice(0, -1).map(function(x, i){
-      var n = state.owned[id+'|'+x.k] || 0; if(n < 2) return '';
-      var dup = n - 1, next = RARITIES[i+1], cost = fuseCost(x.k), ok = dup >= cost, fill = Math.min(dup, cost), ticks = '';
-      for(var t = 0; t < cost; t++) ticks += '<i' + (t < fill ? ' class="on"' : '') + '></i>';
-      return '<button type="button" class="fzv' + (ok ? ' ready' : '') + '" data-from="' + x.k + '" data-left="' + (cost - dup) + '" style="--fc:' + next.color + '" aria-label="' + (ok ? 'Transformer ' + cost + ' ' + x.label + ' en 1 ' + next.label : fill + ' doublons ' + x.label + ' sur ' + cost + ' pour 1 ' + next.label) + '">' +
-        '<small>' + next.label + '</small><span class="fzv-bar" aria-hidden="true">' + ticks + '</span><b class="num">' + fill + '/' + cost + '</b></button>';
-    }).join('');
-    return g ? '<div class="fzv-col"><p class="fzv-cap">Transfo</p><div class="fzv-row">' + g + '</div></div>' : '';
+  // transformation de la rareté affichée vers la suivante : une jauge verticale à côté de la carte (un cran par doublon) ;
+  // toucher une autre rareté dans « Maîtrise » change la carte et la jauge ; pleine, elle brille et se touche
+  function fuseSide(id, r){
+    var i = rank(r); if(i < 0 || i >= RARITIES.length - 1) return '';
+    var x = RARITIES[i], n = state.owned[id+'|'+x.k] || 0; if(!n) return '';
+    var dup = n - 1, next = RARITIES[i+1], cost = fuseCost(x.k), ok = dup >= cost, fill = Math.min(dup, cost), ticks = '';
+    for(var t = 0; t < cost; t++) ticks += '<i' + (t < fill ? ' class="on"' : '') + '></i>';
+    return '<div class="fzv-col"><p class="fzv-cap">Transfo</p><div class="fzv-row"><button type="button" class="fzv' + (ok ? ' ready' : '') + '" data-from="' + x.k + '" data-left="' + (cost - dup) + '" style="--fc:' + next.color + '" aria-label="' + (ok ? 'Transformer ' + cost + ' ' + x.label + ' en 1 ' + next.label : fill + ' doublons ' + x.label + ' sur ' + cost + ' pour 1 ' + next.label) + '">' +
+      '<small>' + next.label + '</small><span class="fzv-bar" aria-hidden="true">' + ticks + '</span><b class="num">' + fill + '/' + cost + '</b></button></div></div>';
   }
-  // maîtrise : 5 segments aux couleurs des raretés obtenues, couronne quand tout est réuni
-  function masteryGauge(id){
-    var got = RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }), done = got.length === 5;
-    return '<div class="mst' + (done ? ' done' : '') + '" aria-label="Maîtrise ' + got.length + ' sur 5"><span class="mst-l">' + (done ? icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 16) + ' ' : '') + 'Maîtrise</span>' +
-      '<span class="mst-pips" aria-hidden="true">' + RARITIES.map(function(x){ return '<i' + (state.owned[id+'|'+x.k] ? ' style="background:' + x.color + '"' : '') + '></i>'; }).join('') + '</span><b class="num">' + got.length + '/5</b></div>';
+  // maîtrise : en-tête du bloc des raretés (les 5 raretés, possédées ou non), couronne quand tout est réuni
+  function masteryHead(id){
+    var n = RARITIES.filter(function(x){ return state.owned[id+'|'+x.k]; }).length, done = n === 5;
+    return '<p class="mst' + (done ? ' done' : '') + '"><span class="mst-l">' + (done ? icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 16) + ' ' : '') + 'Maîtrise</span><b class="num">' + n + '/5</b><small>' + (done ? 'Les 5 raretés réunies' : 'Touche une rareté pour la voir') + '</small></p>';
   }
   // l'artiste : présentation, coup spécial, fiche (arcane, instrument, style, classeurs où il se range)
   function artistBlock(c){
     var bs = BINDERS.filter(function(b){ return b.kind !== 'Collection' && (b.ids || []).indexOf(c.id) !== -1; }).map(binderLabel);
-    return '<section class="artist"><p class="eyebrow">L\'artiste</p>' + (BIOS[c.id] ? '<p class="bio">' + esc(BIOS[c.id]) + '</p>' : '') +
-      (MOVES[c.id] ? '<div class="move-in"><small>Coup spécial</small><b>' + esc(MOVES[c.id][0]) + '</b><p>' + esc(MOVES[c.id][1]) + '</p></div>' : '') +
+    return '<section class="artist"><p class="eyebrow">L\'artiste</p>' + ((BIOS_LONG[c.id] || BIOS[c.id]) ? '<p class="bio">' + esc(BIOS_LONG[c.id] || BIOS[c.id]) + '</p>' : '') +
+      (MOVES[c.id] ? '<div class="move-in"><span class="mv-ico">' + icon('<path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/>', 22) + '</span><span><small>Coup spécial</small><b>' + esc(MOVES[c.id][0]) + '</b><p>' + esc(MOVES[c.id][1]) + '</p></span></div>' : '') +
       '<dl class="facts"><div><dt>Arcane</dt><dd>' + esc(c.num) + ' · ' + esc(c.title) + '</dd></div><div><dt>Instrument</dt><dd>' + esc(c.inst) + '</dd></div>' +
         '<div><dt>Style</dt><dd>' + esc(c.genre) + '</dd></div><div><dt>Classeurs</dt><dd>' + (bs.length ? bs.map(esc).join(', ') : '—') + '</dd></div></dl></section>';
   }
