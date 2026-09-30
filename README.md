@@ -8,14 +8,15 @@ Ce dépôt sert à la fois de page de pitch (`index.html`, publiée via GitHub P
 
 | Quoi | Lien | Accès |
 |---|---|---|
-| **Prototype jouable** (ouverture de paquets + classeur) | https://pittilloni.github.io/metalnini/proto/ | Libre, marche sur téléphone (ajout à l'écran d'accueil possible) |
-| **Galerie des cartes** (18 musiciens et leurs raretés) | https://pittilloni.github.io/metalnini/export/metalnini-cartes.html | Libre, à partager |
+| **Prototype jouable** (paquets, classeurs, Metal Corner, échanges) | https://pittilloni.github.io/metalnini/proto/ | Libre, marche sur téléphone (ajout à l'écran d'accueil possible) |
+| **Galerie des cartes** (45 musiciens et leurs raretés) | https://pittilloni.github.io/metalnini/export/metalnini-cartes.html | Libre, à partager |
 | **Document concept** (Concept, Direction artistique, Architecture, Roadmap) | https://pittilloni.github.io/metalnini/concept.html | Mot de passe |
 | Direction artistique des cartes | https://pittilloni.github.io/metalnini/concept.html#da-exemples-crea | Mot de passe |
 | Roadmap, architecture et phases | https://pittilloni.github.io/metalnini/concept.html#roadmap-architecture | Mot de passe |
 | **User flows** détaillés | https://pittilloni.github.io/metalnini/flows.html | Mot de passe |
 | **Page de pitch** (pour les proches) | https://pittilloni.github.io/metalnini/ | Mot de passe |
 | **Espace admin** (catalogue, paquets et probabilités, joueurs, statistiques, journal) | https://pittilloni.github.io/metalnini/admin/ | Compte admin + double authentification |
+| Maquettes des directions d'interface (canvas) | https://claude.ai/artifact/14q1ykMpYActHdFWuuSt1W | Privé, compte claude.ai du propriétaire |
 | Dépôt GitHub | https://github.com/PITTILLONI/metalnini | Public |
 
 Le mot de passe n'est qu'un filtre de politesse : le dépôt est public, tout son contenu est lisible sur GitHub.
@@ -34,6 +35,10 @@ Le mot de passe n'est qu'un filtre de politesse : le dépôt est public, tout so
 - **Architecture** — navigation, inventaire des écrans, parcours clés, boucles de rétention, budget de notifications, anti-patterns.
 - **Roadmap** — tout ce qui est volontairement écarté du MVP, et la stratégie droits à l'image pour l'ouverture publique.
 
+**[design-system/metalnini/MASTER.md](design-system/metalnini/MASTER.md)** — le système de design de l'interface : jetons, typo, composants, signature « collector arcade », liste « À ne pas faire », parcours écran par écran.
+
+**[tools/capture/](tools/capture/README.md)** — captures du prototype à taille téléphone, avec une fausse API en ligne.
+
 **[flows.html](flows.html)** — les user flows détaillés (A→H) : étapes, embranchements, états limites et décisions encore à trancher, plus les règles transverses, les boucles de rétention et la carte des animations. C'est le document de référence pour passer au wireframing.
 
 Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboard/` et `assets/da/creas/`, sous les noms indiqués sur chaque case : elles s'affichent automatiquement.
@@ -42,30 +47,40 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 
 ## Où en est-on
 
-- Concept et architecture posés, considérés comme une base solide amenée à mûrir.
-- Page de pitch en ligne pour recueillir les retours de proches, avec formulaire de réponse (texte + vocal).
-- **User flows détaillés** (`flows.html`) : les 8 parcours clés sont écrits étape par étape, avec leurs embranchements, leurs états limites et les décisions non tranchées identifiées.
-- **Trois décisions structurantes actées** : l'échange ne se fait qu'en présentiel (via un check-in concert ou un radar de proximité Bluetooth, jamais à distance) ; la détection/preuve de concert se fait par billet importé (électronique ou physique) plutôt que par croisement artistes suivis + agenda externe ; une couche **Missions** traverse désormais toutes les autres boucles pour donner une direction visible à l'utilisateur.
-- **Architecture des boucles de rétention** posée (`flows.html` + `concept.html`, onglet Architecture) : 5 boucles à cadences différentes (pack quotidien, classeurs/guilde hebdo, actu artiste, concert, échange), plus un budget de notifications explicite pour éviter que leur cumul ne devienne du spam.
-- **Carte des animations** posée (`concept.html`, onglet Direction artistique + `flows.html`) : tous les moments clés classés en 3 niveaux — séquences majeures en state machine Rive (reveal, évolution, récompense, échange en direct, mission complétée), confirmations courtes (scan de billet, barre XP, carte bonus, highlight collection, radar, cri signature), micro-interactions standard. Rive retenu comme outil, compétence déjà acquise.
-- Aucun écran n'a encore été maquetté.
-- **Stratégie droits à l'image posée** (`concept.html`, onglet Roadmap) : plutôt que viser l'accord de tous les groupes avant d'ouvrir, le plan réduit la ressemblance des portraits par défaut (socle Sleeplot, pas Landmvrks photo-guidé), puis vise un catalogue de lancement construit autour de quelques têtes d'affiche reconnues (le jeu perd son sens sans pointures du metal/rock), atteintes via les canaux professionnels plutôt qu'en démarchage direct. Les vrais noms ne bougent pas dans ce plan. Reste un vrai avis d'avocat à obtenir avant toute ouverture publique, même limitée.
-- **Direction artistique des cartes relancée** (2026-09-23) : moodboard Krea, référence principale « The Priest » (gravure gothique), recette validée (Nano Banana Pro + photo de l'artiste + référence de style), déclinaison des 5 raretés testée sur Knocked Loose, cartes Jinjer et Spiritbox. Coûts suivis dans l'onglet Direction artistique de `concept.html` (section « Coûts de génération ») : 0,15 $ par image, environ 0,75 $ par artiste décliné sur 5 raretés.
+État au 2026-09-30. Le détail technique à jour est dans `CLAUDE.md`, section « Où en est le projet ».
 
-- **Timeline de la roadmap** (2026-09-25) : frise des 8 phases avec ce qui est fait et ce qui reste, en tête de l'onglet Roadmap de `concept.html` (phase 0 en cours, phases 1 et 2 validées sur le prototype web, à porter en natif).
+- **Prototype jouable en ligne** : https://pittilloni.github.io/metalnini/proto/, installable sur l'écran d'accueil, avec comptes, tirage côté serveur et mise à jour automatique.
+  - Paquets du jour (Standard 5 cartes, Mini 2 cartes).
+  - Révélation et rangement dans les classeurs (styles, instruments, groupes).
+  - Fiche de chaque carte : maîtrise des 5 raretés, transformation des doublons, bio, coup spécial, extrait audio.
+- **Metal Corner** :
+  - échanges entre potes, par QR code, lien ou code, à distance autorisé ;
+  - potes suivis et historique des échanges ;
+  - objectifs à récompenses variées : paquet, carte, ticket artiste prioritaire ;
+  - blind tests (par maîtrise, par classeur, et sur les cris des potes) ;
+  - chemin des titres.
+- **Interface** : signature « collector arcade », validée le 2026-09-30.
+  - Côté cartes : gothique, cadres gravés, sceaux et cierge.
+  - Côté jeu : boutons en relief, jauges à crans, coffre du butin.
+  - Référence : `design-system/metalnini/MASTER.md`.
+- **Admin** (https://pittilloni.github.io/metalnini/admin/) : joueurs, échanges, demandes d'artistes, groupes favoris, équipe d'admins (rôles Propriétaire et Admin, invitation par e-mail).
+- **Catalogue** : 45 musiciens × 5 raretés, générés avec Krea (Nano Banana Pro, style « The Priest »), pour un usage strictement perso (décision du 2026-09-23).
+- **Sons** : 46 sons spécifiés (`sons.html`, PDF dans `export/`), en préparation par un ami musicien ; le moteur les joue dès qu'ils sont déposés dans `proto/sounds/`.
+- **App iOS native** (`ios/`, SwiftUI) : logique de jeu testée, en retard sur le prototype web.
+- **Documents de conception** : concept, architecture et roadmap dans `concept.html`, parcours dans `flows.html`. Certaines décisions d'origine ont évolué avec le prototype, par exemple l'échange à distance, désormais autorisé.
 
 ## Prochaines étapes possibles
 
-- **Backlog : carte en fond d'écran** (idée du 2026-09-25). Depuis la fiche d'une carte possédée, générer une image au format téléphone (9:19,5, marges pour l'horloge et les widgets de l'écran verrouillé) et la proposer au téléchargement ou au partage ; sur iOS natif, ouvrir directement la feuille de partage pour « Utiliser comme fond d'écran ». Même réserve que le partage : usage perso des visuels d'artistes.
-- **Backlog : « Blind test des growls »** (idée du 2026-09-25). Une fonctionnalité où le joueur doit reconnaître des growls et cris célèbres (quel chanteur, quel morceau), avec récompense en cartes ou en progression. Prérequis : les extraits de morceaux connus sont protégés, même très courts ; il faut soit des licences (labels, éditeurs), soit des réinterprétations enregistrées pour l'occasion, soit des extraits fournis par les artistes eux-mêmes. À caler avec la stratégie droits de l'onglet Roadmap de `concept.html`.
-- **À changer avant d'ouvrir à plus de monde : l'expéditeur des e-mails** (décision du 2026-09-24). Les e-mails de compte (confirmation, mot de passe oublié) partent pour l'instant de l'adresse Gmail perso du créateur via le SMTP de Gmail (limite d'environ 500 e-mails par jour). À remplacer par un domaine dédié (ex. `metalnini.fr`, environ 10 € par an) vérifié dans Resend, dont le SMTP est déjà configuré dans Supabase et la clé rangée dans le Trousseau (`resend-api-key`).
-- **App iOS : passer à l'inscription par e-mail** (ou Sign in with Apple) : les comptes anonymes sont désactivés côté serveur depuis le 2026-09-24, une nouvelle installation passe donc en mode hors ligne.
-- **Phase 0 démarrée (2026-09-24)** : app iOS native (`ios/`, SwiftUI, iOS 17, logique de jeu testée dans `MetalniniKit`) et back-end Supabase (`backend/`, schéma v1, droits d'accès, tirage serveur). Reste à créer le projet Supabase, y appliquer la migration, puis brancher l'app dessus.
-- **Architecture actée (2026-09-24)** : iOS natif (SwiftUI) d'abord, Android ensuite, back-end managé, espace admin web séparé ; 8 phases détaillées dans l'onglet Roadmap de `concept.html`, en commençant par la phase 0 (fondations).
-- **Feature 1 à développer : ouverture de paquet + visualisation du classeur** (décision du 2026-09-23, détail dans l'onglet Roadmap de `concept.html`). Avant de coder : trancher taille de paquet, probabilités par rareté, statut de la carte « de base », composition des deux classeurs de test et stack du prototype.
-- Compléter le catalogue de test : 10 à 12 artistes déclinés sur les 5 raretés (18 musiciens générés et déclinés, 90 cartes jouables : cible dépassée).
-- Trancher les décisions listées en fin de `flows.html` — en priorité : le trou laissé dans un classeur par une carte qui évolue, le sort des doublons non échangés, et binder unique vs classeurs par sous-genre.
-- Spécifier les state machines Rive des 5 séquences majeures identifiées (niveau 1 de la carte des animations) une fois le gabarit de carte stabilisé.
-- Wireframer en basse fidélité les écrans de la feature 1 (Flow B et Collection), puis ceux du Flow A.
-- Recueillir et synthétiser les retours des proches sur la page de pitch.
-- Identifier une première liste de têtes d'affiche "ancres" et de leurs contacts professionnels (label, management) pour amorcer la stratégie droits à l'image posée dans l'onglet Roadmap de `concept.html`.
+- **À confirmer sur iPhone** :
+  - la barre d'onglets reste en place sur Classeur, dans l'app installée ;
+  - le joueur peut écouter son propre cri.
+- **À relire** : `export/bios-artistes-a-relire.md` (45 bios et 11 textes de style).
+- **Ajouter des artistes** : si le solde Krea le permet ; marche à suivre dans `CLAUDE.md`.
+- **Réglages** : remplacer les cases à cocher natives par des interrupteurs dans la DA.
+- **Sons** : intégrer les fichiers de l'ami musicien au fur et à mesure (cocher « Fait » dans la fiche).
+- **App iOS** : inscription par e-mail (ou Sign in with Apple), puis TestFlight après l'inscription Apple Developer.
+- **Avant d'ouvrir à plus de monde** : expéditeur d'e-mails dédié. Les e-mails partent aujourd'hui du Gmail perso, avec une limite d'environ 500 par jour.
+- **Paquets dédiés aux nouveaux styles.**
+- **Backlog** :
+  - carte en fond d'écran de téléphone ;
+  - « Blind test des growls », sous réserve de licences.
