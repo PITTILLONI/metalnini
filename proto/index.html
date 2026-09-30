@@ -146,11 +146,31 @@
   .corner-sub{margin:4px 0 0; color:var(--muted); font-size:.9rem}
   .corner-sec{margin:22px 0 0} .corner-sec h2{font-size:1.45rem; margin:0 0 6px}
   .trade-box{padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface)}
-  .trade-box .pf-note{color:var(--muted)} .tr-go{display:flex; flex-direction:column; gap:10px; margin-top:14px}
+  .trade-box .pf-note{color:var(--muted)}
+  /* deux tuiles d'échange : icône gravée dans un médaillon, titre, phrase courte ; « Montrer mon code » en or */
+  .tr-go{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
+  .tr-tile{display:flex; flex-direction:column; align-items:center; gap:6px; padding:16px 10px 14px; border:1px solid var(--border); border-radius:14px; background:var(--bg); color:var(--text); cursor:pointer; text-align:center; transition:transform .12s ease}
+  .tr-tile:active{transform:scale(.97)} .tr-tile.main{border-color:var(--gold); background:radial-gradient(circle at 50% 30%, rgba(235,154,38,.14), var(--bg) 70%)}
+  .tr-ico{width:68px; height:68px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(235,154,38,.5); color:var(--gold-hi); background:var(--ink)}
+  .tr-tile:not(.main) .tr-ico{border-color:rgba(243,240,234,.25); color:var(--text)}
+  .tr-tile b{font:800 1.05rem/1.05 var(--display); letter-spacing:.06em; text-transform:uppercase} .tr-tile small{font:500 .74rem var(--mono); color:var(--muted)}
   .corner-empty{margin:0; color:var(--muted); font-size:.92rem}
-  .prog{display:grid; grid-template-columns:1fr auto; align-items:center; gap:6px 10px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
-  .prog + .prog{margin-top:10px} .prog b{font:800 1.15rem/1.1 var(--display); letter-spacing:.04em; text-transform:uppercase} .prog small{grid-column:1 / -1; color:var(--muted); font-size:.84rem}
-  .prog .on{color:var(--gold-hi)}
+  /* progression : rang (anneau vers le prochain titre, icône du titre au centre) et titres (débloqués en or, verrouillés en grisé avec leur condition) */
+  .prog-tabs{margin-bottom:12px}
+  .rank{display:flex; align-items:center; gap:16px; padding:14px; border:1px solid var(--border); border-radius:14px; background:var(--surface)}
+  .rank-ring{position:relative; flex:none; width:112px; height:112px} .rank-ring > svg{width:100%; height:100%; transform:rotate(-90deg)}
+  .rank-ring circle{fill:none; stroke:rgba(255,255,255,.08); stroke-width:7} .rank-ring circle.fg{stroke:var(--gold); stroke-linecap:round; transition:stroke-dasharray .6s ease}
+  .rank-ring span{position:absolute; inset:14px; display:grid; place-items:center; border-radius:50%; background:var(--ink); color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.4)}
+  .rank-txt b{display:block; margin:2px 0 4px; font:800 1.9rem/1 var(--display); letter-spacing:.03em; text-transform:uppercase; color:var(--gold-hi)} .rank-txt small{display:block; color:var(--muted); font:500 .78rem/1.35 var(--mono)}
+  .rank-stats{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:10px}
+  .rank-stats div{display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px; border:1px solid var(--border); border-radius:12px; background:var(--surface); text-align:center}
+  .rank-stats svg{color:var(--gold)} .rank-stats b{font:800 1.5rem/1 var(--display); color:var(--text)} .rank-stats span{font:600 .7rem var(--mono); color:var(--muted)} .rank-stats small{font:700 .64rem var(--mono); color:var(--gold-hi)}
+  .titles{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .ttl{display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 8px 12px; border:1px solid var(--border); border-radius:12px; background:var(--surface); text-align:center; color:var(--muted)}
+  .ttl-ico{width:52px; height:52px; display:grid; place-items:center; border-radius:50%; border:1px dashed rgba(243,240,234,.25); color:rgba(243,240,234,.35)}
+  .ttl b{font:800 1rem/1.1 var(--display); letter-spacing:.05em; text-transform:uppercase} .ttl small{font:500 .7rem var(--mono)}
+  .ttl.on{color:var(--text)} .ttl.on .ttl-ico{border:1px solid var(--gold); color:var(--gold-hi); background:radial-gradient(circle, rgba(235,154,38,.18), var(--ink))}
+  .ttl.cur{border-color:var(--gold); box-shadow:0 0 18px rgba(235,154,38,.15)} .ttl.cur small{color:var(--gold-hi)} .ttl .qbar{width:70%; margin-top:4px}
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
@@ -274,8 +294,8 @@
   @keyframes claimopen{35%{transform:scale(1.04)} 100%{transform:scale(.96); opacity:.35}}
   .quest-n.claim{background:var(--accent); color:#fff; animation:claimpulse 1.8s ease-in-out infinite}
   @keyframes claimpulse{50%{transform:scale(1.15)}}
-  .goal .qbar, .prog .qbar{grid-column:1 / -1; display:block; height:3px; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden}
-  .goal .qbar i, .prog .qbar i{display:block; height:100%; background:var(--gold)}
+  .goal .qbar, .ttl .qbar{grid-column:1 / -1; display:block; height:3px; border-radius:2px; background:rgba(255,255,255,.08); overflow:hidden}
+  .goal .qbar i, .ttl .qbar i{display:block; height:100%; background:var(--gold)}
   .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
   .pack{width:min(62vw,240px); aspect-ratio:2/3; border-radius:16px; border:0; cursor:pointer; position:relative; overflow:hidden;
         background:linear-gradient(160deg,#2a0f0f,#0c0b0a 60%), #111; box-shadow:0 18px 50px rgba(0,0,0,.6), inset 0 0 0 1px rgba(235,154,38,.35);
@@ -300,9 +320,12 @@
     border:1px solid rgba(235,154,38,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
   .modal-in h2{font-size:1.6rem; margin:2px 0 8px} .modal-in p{color:var(--muted); font-size:.92rem; margin:0 0 16px}
   .modal-actions{display:flex; flex-direction:column; gap:10px}
-  .recap{width:fit-content; margin:4px auto 18px; text-align:left}
-  .recap p{display:flex; align-items:baseline; justify-content:flex-start; gap:10px; margin:0 0 6px !important; font:600 1.05rem var(--mono); color:var(--text) !important}
-  .recap b{font:800 2.2rem/1 var(--display); color:var(--gold-hi); min-width:.75em; text-align:left}
+  .recap{margin:4px 0 18px; text-align:left; display:flex; flex-direction:column; gap:10px}
+  .rc{display:grid; grid-template-columns:40px 1fr; align-items:center; gap:4px 12px; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--bg)}
+  .rc-ico{grid-row:span 2; width:40px; height:40px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(235,154,38,.5); color:var(--gold-hi); background:var(--ink)}
+  .rc-t{font:600 .9rem var(--mono); color:var(--text)} .rc-t b{font:800 1.4rem/1 var(--display); color:var(--gold-hi)}
+  .rc-cards{display:flex; gap:4px; align-items:center} .rc-cards img{width:30px; aspect-ratio:2/3; object-fit:cover; border-radius:3px; box-shadow:0 3px 8px rgba(0,0,0,.5)} .rc-cards i{font:700 .72rem var(--mono); color:var(--muted); font-style:normal; margin-left:4px}
+  .rc-names{font:500 .78rem var(--mono); color:var(--gold-hi)}
   /* onboarding : écrans plein cadre, une idée par écran */
   .onb{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(ellipse at 50% 18%, #2a170b 0%, var(--bg) 62%)}
   .onb[hidden]{display:none}
@@ -902,7 +925,8 @@
     <p class="eyebrow">Échanger</p>
     <h2>Troque tes cartes avec un pote</h2>
     <p class="pf-note">Chacun pose ses cartes, vous validez tous les deux, c'est plié. Côte à côte ou à distance.</p>
-    <div class="tr-go"><button type="button" class="btn block" id="tr-host">Montrer mon code</button><button type="button" class="btn ghost block" id="tr-scan">Scanner son code</button></div>
+    <div class="tr-go"><button type="button" class="tr-tile main" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><b>Montrer mon code</b><small>Ton pote le scanne</small></button>
+      <button type="button" class="tr-tile" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><b>Scanner son code</b><small>Caméra ou code à taper</small></button></div>
   </section>
   <section class="corner-sec" id="invites-sec" hidden><p class="eyebrow">On te propose un échange</p><div id="invites"></div></section>
   <section class="corner-sec" id="friends-sec" hidden><p class="eyebrow">Mes potes</p><div id="friends"></div></section>
@@ -2588,15 +2612,38 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   masteryEl.addEventListener('click', function(e){ if(e.target === masteryEl) masteryEl.hidden = true; });
 
   // progression : titre du profil et titre social « Metal Corner » (premier échange conclu)
+  // progression : onglet « Ton rang » (anneau vers le prochain titre, ce qui rapporte des points) et onglet « Titres » (tous, débloqués ou non)
+  var TITLE_ICONS = [
+    '<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>',
+    '<path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4"/><path d="M14.5 5.5l4 4"/><path d="M12 8l-5 -5l-4 4l5 5"/><path d="M7 8l-1.5 1.5"/><path d="M16 12l5 5l-4 4l-5 -5"/><path d="M16 17l-1.5 1.5"/>',
+    '<path d="M15 12.9a5 5 0 1 0 -3.902 -3.9"/><path d="M15 12.9l-3.902 -3.899l-7.513 8.584a2 2 0 1 0 2.827 2.83l8.588 -7.515"/>',
+    '<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"/>',
+    '<path d="M12 10.941c2.333 -3.308 .167 -7.823 -1 -8.941c0 3.395 -2.235 5.299 -3.667 6.706c-1.43 1.408 -2.333 3.294 -2.333 5.588c0 3.704 3.134 6.706 7 6.706c3.866 0 7 -3.002 7 -6.706c0 -1.712 -1.232 -4.403 -2.333 -5.588c-2.084 3.353 -3.257 3.353 -4.667 2.235"/>'];
+  var HORNS_ICON = '<path d="M11 11.5v-1a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 12v-6.5a1.5 1.5 0 0 1 3 0v10.5a6 6 0 0 1 -6 6h-2a4 4 0 0 1 -4 -4v-5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M8 16.5c1.6 -1.6 3.8 -2.1 6.2 -1.5"/>';
+  function icon(paths, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 24) + '" height="' + (w || 24) + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>'; }
   function renderCorner(){
     renderGoals();
-    var t = titleOf(myProfile().score), tr = state.trades || 0, nx = t.next, cur = TITLES.filter(function(x){ return x[1] === t.label; })[0][0];
-    var pct = nx ? Math.round((1 - nx.left / (nx.left + myProfile().score - cur)) * 100) : 100;
+    var p = myProfile(), sc = p.score, t = titleOf(sc), tr = state.trades || 0, nx = t.next, ti = TITLES.map(function(x){ return x[1]; }).indexOf(t.label), cur = TITLES[ti][0];
+    var pct = nx ? Math.round((sc - cur) / (sc - cur + nx.left) * 100) : 100, binders = p.patches.filter(function(x){ return x.done; }).length;
+    var unlocked = TITLES.filter(function(x){ return sc >= x[0]; }).length + (tr ? 1 : 0), tab = state.progTab === 'titles' ? 'titles' : 'rank';
+    var C = 2 * Math.PI * 52, body;
+    if(tab === 'rank'){
+      body = '<div class="rank"><div class="rank-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52"/><circle cx="60" cy="60" r="52" class="fg" style="stroke-dasharray:' + (C * pct / 100).toFixed(1) + ' ' + C.toFixed(1) + '"/></svg>' +
+          '<span>' + icon(TITLE_ICONS[ti], 40) + '</span></div><div class="rank-txt"><small>Ton rang</small><b>' + esc(t.label) + '</b><small>' + (nx ? 'Prochain : ' + esc(nx.label) + ' · encore ' + nx.left + ' point' + (nx.left > 1 ? 's' : '') : 'Tu es au sommet. Garde la couronne.') + '</small></div></div>' +
+        '<div class="rank-stats">' +
+          '<div>' + icon('<path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/>', 22) + '<b class="num">' + p.stats.cards + '</b><span>musiciens</span><small>1 pt</small></div>' +
+          '<div>' + icon('<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', 22) + '<b class="num">' + binders + '</b><span>classeurs pliés</span><small>4 pts</small></div>' +
+          '<div>' + icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 22) + '<b class="num">' + p.pins.length + '</b><span>maîtrises</span><small>6 pts</small></div></div>';
+    } else {
+      var items = TITLES.map(function(x, i){ var on = sc >= x[0]; return {name:x[1], ico:TITLE_ICONS[i], on:on, cur:i === ti, cond:i ? 'Dès ' + x[0] + ' points' : 'Ton premier titre', pct:on ? 100 : Math.round(sc / x[0] * 100)}; })
+        .concat([{name:'Metal Corner', ico:HORNS_ICON, on:!!tr, cond:tr ? tr + ' échange' + (tr > 1 ? 's' : '') : 'Au premier échange', pct:tr ? 100 : 0, social:true}]);
+      body = '<div class="titles">' + items.map(function(x){
+        return '<div class="ttl' + (x.on ? ' on' : '') + (x.cur ? ' cur' : '') + '"><span class="ttl-ico">' + icon(x.ico, 26) + '</span><b>' + esc(x.name) + '</b><small>' + (x.cur ? 'Titre actuel' : x.on ? (x.social ? 'Titre social · ' + x.cond : 'Débloqué') : x.cond) + '</small>' +
+          (x.on ? '' : '<i class="qbar"><i style="width:' + x.pct + '%"></i></i>') + '</div>'; }).join('') + '</div>';
+    }
     document.getElementById('corner-prog').innerHTML =
-      '<div class="prog"><b class="on">' + esc(t.label) + '</b><span class="num">' + (nx ? pct + ' %' : 'Max') + '</span>' +
-        '<i class="qbar"><i style="width:' + pct + '%"></i></i><small>' + (nx ? 'Prochain titre : ' + esc(nx.label) + '. Classeurs complétés et maîtrises comptent double.' : 'Tu es au sommet. Garde la couronne.') + '</small></div>' +
-      '<div class="prog"><b' + (tr ? ' class="on"' : '') + '>Metal Corner</b><span class="num">' + tr + ' échange' + (tr > 1 ? 's' : '') + '</span>' +
-        '<small>' + (tr ? 'Titre débloqué. Chaque nouveau fan croisé t\'offre une carte bonus.' : 'Ton premier échange débloque le titre, et une carte bonus par nouveau fan.') + '</small></div>';
+      '<div class="tp-tabs prog-tabs" role="tablist" aria-label="Progression"><button type="button" role="tab" data-pt="rank" aria-selected="' + (tab === 'rank') + '">Ton rang</button><button type="button" role="tab" data-pt="titles" aria-selected="' + (tab === 'titles') + '">Titres <span class="num">' + unlocked + '/' + (TITLES.length + 1) + '</span></button></div>' + body;
+    [].forEach.call(document.querySelectorAll('#corner-prog [data-pt]'), function(b){ b.onclick = function(){ state.progTab = b.getAttribute('data-pt'); save(); renderCorner(); }; });
   }
   function commitPack(){
     if(ONLINE){
@@ -3110,7 +3157,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       setTimeout(function(){
         fl.remove(); finishPlace(k);
         var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]'), up = !!before && rank(r) > rank(before);
-        if(dealing){ if(!before) dealLog.fresh++; else if(up) dealLog.up++; else dealLog.dup++; }
+        if(dealing){ (!before ? dealLog.fresh : up ? dealLog.up : dealLog.dup).push(k); }
         if(s2 && !before){ s2.classList.add('landed'); SFX.land(); }
         else if(s2){
           var shown = up ? r : before;
@@ -3125,7 +3172,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           var ev = up ? [{t:rarity(r).label + ' !', s:card(id).who + ' monte en grade', c:COLORS[r]}] : [];
           comps.forEach(function(bb){ ev.push({t:'Classeur complété', s:bb.label + ' · Ta récompense t\'attend dans Metal Corner', c:COLORS.signature, sfx:'complete'}); });
           mast.forEach(function(c){ ev.push({t:'Maîtrise', s:c.who + ' · 5 raretés. Récompense dans Metal Corner.', c:COLORS.signature, sfx:'mastery'}); });
-          dealLog.comps += comps.length; dealLog.mast += mast.length;
+          dealLog.comps = dealLog.comps.concat(comps); dealLog.mast = dealLog.mast.concat(mast);
           dealFx(ev, function(){ setTimeout(done, 120); }); return;
         }
         comps.forEach(function(bb, i){ setTimeout(function(){ SFX.complete(); toast('<b>Classeur complété</b> · ' + esc(bb.label) + '<br>Plié. Ta récompense t\'attend dans Metal Corner.'); }, 300 + i*1300); });
@@ -3229,16 +3276,26 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     el.onclick = next; t = setTimeout(next, reduce ? 2200 : 1600);
   }
   // fin de « Tout ranger » : le bilan en grand
+  // bilan : une ligne par catégorie (icône, nombre, libellé) et les miniatures des cartes concernées (6 au plus, puis « +N »)
   function showRecap(){
-    var L = dealLog, rows = [[L.fresh, 'nouvelle carte', 'nouvelles cartes'], [L.up, 'montée en grade', 'montées en grade'], [L.dup, 'doublon', 'doublons'],
-      [L.comps, 'classeur complété', 'classeurs complétés'], [L.mast, 'maîtrise', 'maîtrises']].filter(function(x){ return x[0] > 0; });
+    var L = dealLog, kImgs = function(keys){ return keys.map(function(k){ var p = k.split('|'); return img(p[0], p[1]); }); };
+    var rows = [
+      {n:L.fresh.length, one:'nouvelle carte', many:'nouvelles cartes', ico:'<path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6"/>', imgs:kImgs(L.fresh)},
+      {n:L.up.length, one:'montée en grade', many:'montées en grade', ico:'<path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/>', imgs:kImgs(L.up)},
+      {n:L.dup.length, one:'doublon', many:'doublons', ico:'<path d="M12 4l-8 4l8 4l8 -4l-8 -4"/><path d="M4 12l8 4l8 -4"/><path d="M4 16l8 4l8 -4"/>', imgs:kImgs(L.dup)},
+      {n:L.comps.length, one:'classeur complété', many:'classeurs complétés', ico:'<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', names:L.comps.map(binderLabel)},
+      {n:L.mast.length, one:'maîtrise', many:'maîtrises', ico:'<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', imgs:L.mast.map(function(c){ return img(c.id, 'legendaire'); })}
+    ].filter(function(x){ return x.n > 0; });
     if(!rows.length) return;
-    document.getElementById('recap-rows').innerHTML = rows.map(function(x){ return '<p><b>' + x[0] + '</b>' + (x[0] > 1 ? x[2] : x[1]) + '</p>'; }).join('');
+    document.getElementById('recap-rows').innerHTML = rows.map(function(x){
+      return '<div class="rc"><span class="rc-ico">' + icon(x.ico, 22) + '</span><span class="rc-t"><b class="num">' + x.n + '</b> ' + (x.n > 1 ? x.many : x.one) + '</span>' +
+        (x.imgs ? '<span class="rc-cards">' + x.imgs.slice(0, 6).map(function(u){ return '<img src="' + u + '" alt="" loading="lazy">'; }).join('') + (x.imgs.length > 6 ? '<i>+' + (x.imgs.length - 6) + '</i>' : '') + '</span>'
+          : '<span class="rc-names">' + x.names.map(esc).join(' · ') + '</span>') + '</div>'; }).join('');
     document.getElementById('deal-recap').hidden = false;
   }
   document.getElementById('recap-ok').addEventListener('click', function(){ document.getElementById('deal-recap').hidden = true; if(wantWelcome){ wantWelcome = false; showWelcome(); } });
   document.getElementById('tray-all').addEventListener('click', function(){
-    if(dealing || placing) return; dealing = true; buzz([10]); dealLog = {fresh:0, up:0, dup:0, comps:0, mast:0};
+    if(dealing || placing) return; dealing = true; buzz([10]); dealLog = {fresh:[], up:[], dup:[], comps:[], mast:[]};
     (function one(){ var tp = state.toPlace || []; if(!tp.length){ dealing = false; showRecap(); return; } var first = document.querySelector('#tray-cards button'); placeCard(tp[0], first, one); })();
   });
   function mastered(id){ var tp = state.toPlace || []; return RARITIES.every(function(r){ var k = id+'|'+r.k; return state.owned[k] && tp.indexOf(k) === -1; }); }
