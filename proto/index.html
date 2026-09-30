@@ -187,6 +187,26 @@
   .tp-tabs button{min-height:44px; border:0; border-radius:9px; background:none; color:var(--muted); font:800 .95rem var(--display); letter-spacing:.08em; text-transform:uppercase; cursor:pointer}
   .tp-tabs button[aria-selected="true"]{background:var(--surface-2); color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.45)}
   #tp-note{color:var(--muted); margin:0 0 4px}
+  /* blind test : écran plein cadre, égaliseur qui danse pendant l'extrait, 4 choix, réponse montrée ; carte d'accès rouge sang dans le carrousel */
+  .quiz{position:fixed; inset:0; z-index:74; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(ellipse at 50% 20%, #2a0e0e 0%, var(--bg) 70%)}
+  .quiz[hidden]{display:none} .quiz-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2}
+  .quiz-in{max-width:520px; margin:0 auto; padding:calc(28px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align:center; display:flex; flex-direction:column; gap:14px}
+  .quiz-in h2{font-size:2.2rem; margin:0 56px} .quiz-in .pf-note{color:var(--muted)} .quiz-in > .eyebrow{margin:0 56px; line-height:1.4}
+  .qz-dots{display:flex; justify-content:center; gap:8px} .qz-dots i{width:10px; height:10px; border-radius:50%; border:1px solid var(--muted)}
+  .qz-dots i.cur{border-color:var(--gold)} .qz-dots i.ok{background:var(--gold); border-color:var(--gold)} .qz-dots i.ko{background:var(--accent); border-color:var(--accent)}
+  .qz-play{display:flex; flex-direction:column; align-items:center; gap:12px; width:190px; height:190px; margin:6px auto; justify-content:center; border-radius:50%; border:1px solid var(--gold); background:radial-gradient(circle, #1d130c, var(--ink)); color:var(--text); font:600 .86rem var(--mono); cursor:pointer; box-shadow:0 0 40px rgba(235,154,38,.15)}
+  .qz-play span:last-child{max-width:150px}
+  .qz-eq{display:flex; align-items:flex-end; gap:5px; height:44px} .qz-eq i{width:8px; height:20%; border-radius:2px; background:var(--gold)}
+  .qz-play.on .qz-eq i{animation:qzeq .9s ease-in-out infinite} .qz-play.on .qz-eq i:nth-child(2){animation-delay:-.3s} .qz-play.on .qz-eq i:nth-child(3){animation-delay:-.6s} .qz-play.on .qz-eq i:nth-child(4){animation-delay:-.15s} .qz-play.on .qz-eq i:nth-child(5){animation-delay:-.45s}
+  @keyframes qzeq{0%, 100%{height:20%} 50%{height:100%}}
+  .qz-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .qz-opt{min-height:64px; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); cursor:pointer; text-align:center}
+  .qz-opt b{display:block; font:700 .9rem/1.2 var(--mono)} .qz-opt small{display:block; margin-top:3px; color:var(--muted); font:500 .72rem var(--mono)}
+  .qz-opt.ok{border-color:var(--gold); background:rgba(235,154,38,.14)} .qz-opt.ko{border-color:var(--accent); background:rgba(178,58,58,.18)} .qz-opt:disabled{cursor:default}
+  .qz-fb{margin:0; font:800 1.3rem var(--display); letter-spacing:.06em; text-transform:uppercase} .qz-fb.ok{color:var(--gold-hi)} .qz-fb.ko{color:var(--accent-text)}
+  .goal.quest.quizgo{border-color:var(--accent-text); background:rgba(178,58,58,.1)} .goal.quest.quizgo .pc{padding:6px 14px; border-radius:999px; background:var(--accent); color:#fff; font:800 .8rem var(--display); letter-spacing:.1em; text-transform:uppercase}
+  .goal.quest.quizgo small{grid-column:1 / -1; font:500 .74rem var(--mono); color:var(--accent-text)}
+  .q-art .q-badge{position:absolute; right:14px; bottom:10px; width:34px; height:34px; padding:6px; border-radius:50%; background:var(--accent); color:#fff; box-shadow:0 4px 12px rgba(0,0,0,.6)}
   /* troc : ce que je donne part vers le pote, ce que je reçois arrive ; pas de révélation carte par carte */
   .troc{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(ellipse at 50% 30%, #1d130c 0%, var(--bg) 70%)}
   .troc[hidden]{display:none}
@@ -1184,6 +1204,10 @@
     <button type="button" class="link" id="troc-close">Fermer</button>
   </div>
 </div>
+<div class="quiz" id="quiz" hidden role="dialog" aria-modal="true" aria-labelledby="qz-t">
+  <button type="button" class="icon-btn quiz-x" id="quiz-x" aria-label="Quitter le blind test"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="quiz-in" id="quiz-in" aria-live="polite"></div>
+</div>
 <div class="bsheet" id="mastery-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ms-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1259,6 +1283,7 @@ const api = {
   async claimPush(){ return must(await sb.rpc('claim_push_reward')); },
   async requestArtist(a, n, prio){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
+  async claimBlindtest(m, score){ return must(await sb.rpc('claim_blindtest', { p_musician: m, p_score: score })); },
   async presence(sa, pf){ must(await sb.rpc('touch_presence', { p_standalone: sa, p_platform: pf })); },
   async myTrades(){ return must(await sb.rpc('my_trades', { p_limit: 20 })); },
   async friends(){ return must(await sb.rpc('my_friends')); },
@@ -2068,20 +2093,84 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function claimObjective(o, btn){
     btn.disabled = true; btn.classList.add('opening');
     ONLINE.claimObjective(o.key).then(async function(res){ await new Promise(function(ok){ setTimeout(ok, reduce ? 0 : 520); });
-      state.claims[o.key] = true; save(); renderCorner();
-      if(res.kind === 'points'){ snd('reward'); refreshDaily(); toast('<b>Récompense</b> · 1 paquet au choix ajouté à tes cartes du jour.'); return; }
-      if(res.kind === 'ticket'){ snd('reward'); state.tickets = (state.tickets || 0) + 1; save(); toast('<b>Ticket artiste prioritaire</b> · Ta prochaine demande d\'artiste passe en tête chez le Grand Architecte.'); return; }
-      try{ applyInventory(await ONLINE.inventory()); }catch(e){}
-      renderStats(); if(!card(res.m)) return;
-      if(res.new) state.fresh[res.m] = true; save();
-      current = [{c:card(res.m), r:res.r, isNew:res.new}]; idx = 0; seenUpTo = -1; snd('gift');
-      revealEl.hidden = false; document.getElementById('skip').hidden = true; showCard();
-      setTimeout(function(){ document.getElementById('counter').textContent = 'Objectif atteint · ' + o.title; }, 0);
+      state.claims[o.key] = true; save(); renderCorner(); rewardArrived(res, 'Objectif atteint · ' + o.title);
     }).catch(function(e){ btn.disabled = false; btn.classList.remove('opening'); snd('nope'); toast(esc(e.message)); });
   }
+  // récompense reçue (objectif, blind test) : paquet, ticket artiste prioritaire, ou carte révélée comme au sortir d'un paquet
+  async function rewardArrived(res, label){
+    if(res.kind === 'points'){ snd('reward'); refreshDaily(); toast('<b>Récompense</b> · 1 paquet au choix ajouté à tes cartes du jour.'); return; }
+    if(res.kind === 'ticket'){ snd('reward'); state.tickets = (state.tickets || 0) + 1; save(); toast('<b>Ticket artiste prioritaire</b> · Ta prochaine demande d\'artiste passe en tête chez le Grand Architecte.'); return; }
+    if(res.kind !== 'card') return;
+    try{ applyInventory(await ONLINE.inventory()); }catch(e){}
+    renderStats(); if(!card(res.m)) return;
+    if(res.new) state.fresh[res.m] = true; save();
+    current = [{c:card(res.m), r:res.r, isNew:res.new}]; idx = 0; seenUpTo = -1; snd('gift');
+    revealEl.hidden = false; document.getElementById('skip').hidden = true; showCard();
+    setTimeout(function(){ document.getElementById('counter').textContent = label; }, 0);
+  }
+
+  // ---------- Blind test ----------
+  // chaque maîtrise en débloque un : 5 extraits de musiciens que j'ai déjà (le maîtrisé en premier), 4 choix d'artiste ;
+  // récompense selon le score, donnée une seule fois par le serveur
+  var quizEl = document.getElementById('quiz'), quizIn = document.getElementById('quiz-in'), quiz = null, quizAudio = null;
+  function quizzes(){ return ONLINE && state.claims ? CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }) : []; }
+  function shuffle(a){ for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function quizStop(){ if(quizAudio){ quizAudio.pause(); quizAudio = null; } var p = quizIn.querySelector('.qz-play'); if(p) p.classList.remove('on'); }
+  async function startQuiz(c){
+    quiz = {c:c, qs:[], i:0, score:0, picked:null, loading:true}; quizEl.hidden = false; duck(0); renderQuiz();
+    var mine = [c].concat(shuffle(CARDS.filter(function(x){ return x.id !== c.id && best(x.id) && TRACKS[x.id]; })));
+    if(mine.length < 5) mine = mine.concat(shuffle(CARDS.filter(function(x){ return TRACKS[x.id] && mine.indexOf(x) === -1; })));
+    var found = await Promise.all(mine.slice(0, 9).map(function(x){ return track(x.id).then(function(t){ return t ? {c:x, t:t} : null; }); }));
+    found = found.filter(Boolean).slice(0, 5);
+    if(!quiz || quiz.c !== c) return;
+    if(found.length < 5){ quiz.error = true; quiz.loading = false; renderQuiz(); return; }
+    quiz.qs = shuffle(found).map(function(q){ return {ans:q.c, t:q.t, opts:shuffle([q.c].concat(shuffle(CARDS.filter(function(y){ return y.id !== q.c.id; })).slice(0, 3)))}; });
+    quiz.loading = false; renderQuiz(); quizPlay();
+  }
+  function quizPlay(){
+    var q = quiz && quiz.qs[quiz.i]; if(!q) return;
+    quizStop(); quizAudio = new Audio(q.t.url); var a = quizAudio, p = quizIn.querySelector('.qz-play');
+    a.onended = function(){ if(quizAudio === a) quizStop(); };
+    var pl = a.play(); if(pl) pl.then(function(){ if(p && quizAudio === a) p.classList.add('on'); }).catch(function(){});
+  }
+  function renderQuiz(){
+    var z = quiz, EQ = '<span class="qz-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
+    var head = '<p class="eyebrow">Blind test · Maîtrise de ' + esc(z.c.who) + '</p>';
+    if(z.loading){ quizIn.innerHTML = head + '<h2 id="qz-t">On accorde les guitares…</h2>'; return; }
+    if(z.error){ quizIn.innerHTML = head + '<h2 id="qz-t">Les extraits font grève</h2><p class="pf-note">Impossible de charger 5 extraits pour l\'instant. Ton blind test t\'attend, reviens plus tard.</p><button type="button" class="btn block" id="qz-end">Fermer</button>';
+      document.getElementById('qz-end').onclick = closeQuiz; return; }
+    var dots = '<div class="qz-dots" aria-hidden="true">' + z.qs.map(function(q, k){ return '<i class="' + (q.ok === true ? 'ok' : q.ok === false ? 'ko' : k === z.i ? 'cur' : '') + '"></i>'; }).join('') + '</div>';
+    if(z.i >= z.qs.length){
+      var msg = z.score === 5 ? 'Oreille absolue. Le pit s\'incline.' : z.score === 4 ? 'Presque parfait. Respect.' : z.score === 3 ? 'Pas mal du tout.' : 'Il va falloir réviser tes classiques.';
+      quizIn.innerHTML = head + '<h2 id="qz-t">' + z.score + ' / 5</h2>' + dots + '<p class="pf-note">' + msg + (z.score >= 3 ? ' Une récompense t\'attend.' : ' Pas de récompense cette fois.') + '</p>' +
+        '<button type="button" class="btn block" id="qz-end">' + (z.score >= 3 ? 'Récupérer ma récompense' : 'Fermer') + '</button>';
+      document.getElementById('qz-end').onclick = function(){ var b = this; b.disabled = true;
+        ONLINE.claimBlindtest(z.c.id, z.score).then(function(res){ state.claims['quiz:' + z.c.id] = true; save(); closeQuiz(); renderCorner(); rewardArrived(res, 'Blind test · ' + z.score + ' / 5'); })
+          .catch(function(e){ b.disabled = false; toast(esc(e.message)); }); };
+      return;
+    }
+    var q = z.qs[z.i], done = q.ok !== undefined;
+    quizIn.innerHTML = head + '<h2 id="qz-t">Extrait ' + (z.i + 1) + ' / 5</h2>' + dots +
+      '<button type="button" class="qz-play' + (quizAudio && !quizAudio.paused ? ' on' : '') + '" id="qz-play">' + EQ + '<span>' + (done ? esc(q.t.name) : 'Qui joue ?') + '</span></button>' +
+      '<div class="qz-opts">' + q.opts.map(function(o, k){ var cls = done ? (o === q.ans ? ' ok' : k === z.picked ? ' ko' : '') : '';
+        return '<button type="button" class="qz-opt' + cls + '" data-o="' + k + '"' + (done ? ' disabled' : '') + '><b>' + esc(o.who) + '</b><small>' + esc(o.band) + '</small></button>'; }).join('') + '</div>' +
+      (done ? '<p class="qz-fb ' + (q.ok ? 'ok' : 'ko') + '">' + (q.ok ? 'Bien vu !' : 'Raté : c\'était ' + esc(q.ans.who) + '.') + '</p><button type="button" class="btn block" id="qz-next">' + (z.i === 4 ? 'Voir mon score' : 'Extrait suivant') + '</button>' : '');
+    document.getElementById('qz-play').onclick = function(){ if(quizAudio && !quizAudio.paused) quizStop(); else quizPlay(); };
+    [].forEach.call(quizIn.querySelectorAll('.qz-opt:not(:disabled)'), function(b){ b.onclick = function(){
+      z.picked = +b.getAttribute('data-o'); q.ok = q.opts[z.picked] === q.ans; if(q.ok) z.score++;
+      snd(q.ok ? 'select' : 'nope'); buzz(q.ok ? [20] : [40, 60, 40]); renderQuiz(); }; });
+    var nx = document.getElementById('qz-next'); if(nx) nx.onclick = function(){ z.i++; z.picked = null; quizStop(); renderQuiz(); if(z.i < z.qs.length) quizPlay(); };
+  }
+  function closeQuiz(){ quizStop(); quiz = null; quizEl.hidden = true; duck(1); }
+  document.getElementById('quiz-x').addEventListener('click', function(){
+    if(!quiz || quiz.i >= quiz.qs.length || quiz.error){ closeQuiz(); return; }
+    askConfirm({eyebrow:'Blind test', title:'Quitter le blind test ?', text:'Rien n\'est perdu : il t\'attend dans Metal Corner, tu le rejoueras depuis le début.', yes:'Quitter', no:'Continuer'}, closeQuiz);
+  });
+
   // objectifs : dans l'onglet Metal Corner, les terminés (à toucher) en tête ; pastille de l'onglet = récompenses à récupérer, sinon objectifs en cours
   // illustration d'un objectif : éventail de 3 cartes du classeur (dos grisé pour celles qui manquent), carte du musicien, ou icône gravée
   var ICON_MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5a3 3 0 0 1 3 -3a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3a3 3 0 0 1 -3 -3l0 -5"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M8 21l8 0"/><path d="M12 17l0 4"/></svg>';
+  var ICON_HEAD = '<svg class="q-badge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2l0 -3"/><path d="M15 15a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2l0 -3"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg>';
   var ICON_USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg>';
   function goalArt(key, detail){
     var k = String(key || ''), id = detail || k.split(':')[1] || k.split(':')[0];
@@ -2097,22 +2186,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return card(id) ? '<span class="q-art" aria-hidden="true"><img src="' + img(id, best(id) || 'commune') + '" alt="" loading="lazy"></span>' : '<span class="q-art" aria-hidden="true">' + ICON_MIC + '</span>';
   }
   function renderGoals(){
-    var list = goals(), done = claimables(), n = document.getElementById('quest-n');
+    var list = goals(), done = claimables(), qz = quizzes(), n = document.getElementById('quest-n');
     // pastille de l'onglet : seulement les récompenses à prendre et les nouveaux objectifs (jamais vus) ; ouvrir l'onglet les marque comme vus
     if(!state.goalsSeen){ state.goalsSeen = {}; list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
     if(!document.getElementById('v-corner').hidden){ list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
-    var fresh = list.filter(function(g){ return !state.goalsSeen[g.key]; }).length, c = done.length + fresh;
-    n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!done.length);
+    var fresh = list.filter(function(g){ return !state.goalsSeen[g.key]; }).length, c = done.length + qz.length + fresh;
+    n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!(done.length + qz.length));
     document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (done.length ? ', ' + done.length + ' récompense' + (done.length > 1 ? 's' : '') + ' à récupérer' : '') + (fresh ? ', ' + fresh + ' nouvel' + (fresh > 1 ? 's' : '') + ' objectif' + (fresh > 1 ? 's' : '') : ''));
     var el = document.getElementById('quest-list');
     el.innerHTML = done.map(function(o, i){
       return '<button type="button" class="goal quest claim" data-claim="' + i + '">' + goalArt(o.key, null) + '<span class="q-body"><b>' + esc(o.title) + '</b><span class="pc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/></svg>Récupérer</span><small>Terminé · ' + esc(o.gift) + '</small></span></button>'; }).join('') +
+      qz.map(function(c){ return '<button type="button" class="goal quest quizgo" data-quiz="' + c.id + '"><span class="q-art" aria-hidden="true"><img src="' + img(c.id, 'legendaire') + '" alt="" loading="lazy">' + ICON_HEAD + '</span>' +
+        '<span class="q-body"><b>Blind test débloqué</b><span class="pc">Jouer</span><small>Maîtrise de ' + esc(c.who) + ' · 5 extraits, une carte à gagner</small></span></button>'; }).join('') +
       (list.length ? list.map(function(g){
       return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
         goalArt(g.key, g.detail) + '<span class="q-body"><b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span><i class="qbar"><i style="width:' + g.pct + '%"></i></i></span></button>'; }).join('')
       : done.length ? '' : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>');
     [].forEach.call(el.querySelectorAll('[data-claim]'), function(b){ b.onclick = function(){ claimObjective(done[+b.getAttribute('data-claim')], b); }; });
-    [].forEach.call(el.querySelectorAll('.goal:not(.claim)'), function(b){ b.onclick = function(){
+    [].forEach.call(el.querySelectorAll('[data-quiz]'), function(b){ b.onclick = function(){ startQuiz(card(b.getAttribute('data-quiz'))); }; });
+    [].forEach.call(el.querySelectorAll('.goal:not(.claim):not(.quizgo)'), function(b){ b.onclick = function(){
       if(b.getAttribute('data-act') === 'profile'){ openProfile(); return; } revealEl.hidden = true; openBinder(b.getAttribute('data-b')); go('binder'); if(b.getAttribute('data-d')) openDetail(b.getAttribute('data-d')); }; });
   }
   // mise à jour ciblée : applique un nouveau HTML sans recréer ce qui n'a pas changé (les images restent en place, rien ne saute).
@@ -3071,7 +3163,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // cadeau de bienvenue : un moment fort juste après le premier rangement, pour refaire la boucle ouverture → rangement
   // même fenêtre pour les cadeaux de l'admin (« Le Grand Architecte »), montrés une fois chacun
   var placedSome = false, wlGift = null, giftSeen = {};   // wlGift : cadeaux affichés {ids, pts}, acquittés à la fermeture ; giftSeen : déjà montrés (le serveur peut répondre avant l'acquittement)
-  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden || !document.getElementById('trade').hidden || !document.getElementById('troc').hidden; }
+  function busyScreen(){ return !revealEl.hidden || !document.getElementById('dupfx').hidden || !document.getElementById('welcome').hidden || !document.getElementById('deal-recap').hidden || !document.getElementById('dealfx').hidden || !document.getElementById('onb').hidden || !document.getElementById('auth').hidden || !document.getElementById('trade').hidden || !document.getElementById('troc').hidden || !document.getElementById('quiz').hidden; }
   function showWl(e, t, p, src, go){
     document.getElementById('wl-e').textContent = e; document.getElementById('wl-t').textContent = t; document.getElementById('wl-p').textContent = p;
     document.getElementById('wl-go').textContent = go || 'Ouvrir mon cadeau';
@@ -3710,7 +3802,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'mastery-sheet', 'troc', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-pick', 'mastery-sheet', 'troc', 'quiz', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;

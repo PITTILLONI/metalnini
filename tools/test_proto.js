@@ -352,6 +352,30 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d8.getElementById('reveal').hidden = true; await sleep(3200);
   check('mise à jour : rechargement annoncé une fois au calme', [...d8.querySelectorAll('.toast')].some(t => /Nouvelle version/.test(t.textContent)));
 
+  // 13. Blind test : débloqué par une maîtrise, 5 extraits, 4 choix, score puis récompense (une fois)
+  const own9 = {}; ['commune','rare','holo','signature','legendaire'].forEach(r => own9['korn|' + r] = 1); ['jinjer','spiritbox','hendrix','slash','hayley'].forEach(id => own9[id + '|commune'] = 1);
+  const dom9 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/', beforeParse(w9){
+    w9.localStorage.setItem('metalnini-proto-v1', JSON.stringify({ onbSeen:true, owned:own9, toPlace:[], instAsk:{n:3,t:0} })); w9.matchMedia = () => ({ matches: false }); w9.scrollTo = () => {};
+    w9.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w9.HTMLElement.prototype.setPointerCapture = () => {}; w9.HTMLElement.prototype.scrollIntoView = () => {};
+    w9.HTMLMediaElement.prototype.play = () => Promise.resolve(); w9.HTMLMediaElement.prototype.pause = () => {};
+    w9.fetch = async () => ({ json: async () => ({ results: [{ previewUrl: 'data:audio/wav;base64,', trackName: 'Morceau', trackViewUrl: '#' }] }) });
+    w9.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const w9 = dom9.window, d9 = w9.document; let played = null;
+  const inv9 = Object.keys(own9).map(k => ({ musician_id:k.split('|')[0], rarity:k.split('|')[1], copies:1, placed:true }));
+  const fake9 = new Proxy({ async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv9; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
+    async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 0; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; }, async claims(){ return ['mastery:korn']; },
+    async claimBlindtest(m, sc){ played = {m, sc}; return { kind:'points', points:2 }; }, tradeWatch(){ return () => {}; } }, { get: (o, k) => k in o ? o[k] : async () => (k === 'tradeActive' ? null : k === 'tickets' ? 0 : []) });
+  await w9.metalniniOnline(fake9); await sleep(100);
+  d9.getElementById('tab-corner').click(); await sleep(30);
+  check('blind test : débloqué par la maîtrise, dans le carrousel', !!d9.querySelector('#quest-list .quizgo[data-quiz="korn"]'));
+  d9.querySelector('#quest-list .quizgo').click(); await sleep(150);
+  check('blind test : extrait 1/5, 4 choix', !d9.getElementById('quiz').hidden && /Extrait 1/.test(d9.getElementById('quiz-in').textContent) && d9.querySelectorAll('.qz-opt').length === 4);
+  for (let i = 0; i < 5; i++) { d9.querySelector('.qz-opt').click(); await sleep(10); d9.getElementById('qz-next').click(); await sleep(10); }
+  check('blind test : score sur 5 à la fin', /\d \/ 5/.test(d9.getElementById('qz-t').textContent));
+  d9.getElementById('qz-end').click(); await sleep(50);
+  check('blind test : score envoyé une fois, écran fermé, plus proposé', played && played.m === 'korn' && played.sc >= 0 && d9.getElementById('quiz').hidden && !d9.querySelector('#quest-list .quizgo'));
+
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
   process.exit(0);

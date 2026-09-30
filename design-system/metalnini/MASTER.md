@@ -59,6 +59,8 @@ Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d
 
 6. **Social** (Metal Corner) : « On te propose un échange » (Rejoindre), « Mes potes » (médaillon, nombre d'échanges, Profil, Échanger : proposition par notification), « Tes échanges » (historique : date, cartes données ⇄ reçues). Profil d'un pote = même veste à patchs, calculée sur son classeur, plus « Il lui manque, tu l'as en double » et « Lui proposer un échange ».
 
+7. **Blind test** : chaque maîtrise débloque une carte rouge sang « Blind test débloqué · Jouer » dans le carrousel (casque en médaillon). Écran plein cadre : surtitre « Blind test · Maîtrise de X », « Extrait N / 5 », 5 points (or = trouvé, rouge = raté), disque à égaliseur (toucher = écouter / couper), 4 choix d'artiste en 2 × 2 ; après le choix, bonne réponse en or, mauvaise en rouge, titre du morceau, « Bien vu ! » ou « Raté : c'était X » ; score final « N / 5 » puis récompense (3 = Commune nouvelle, 4 = Rare minimum, 5 = Holo minimum). Joué une fois ; quitter en cours ne le consomme pas.
+
 ## Autres écrans
 - **Profil** : page à part (avatar, pseudo, capacité de metaleux en texte, cri). La capacité se modifie dans une feuille du bas : idées proposées ou texte perso (120 caractères).
 - **Format du paquet** : deux choix compacts (~96 px) centrés, sans cadre ni fond (picto et texte seuls, décidé le 2026-09-28), un seul paquet par jour : Standard · 5 cartes (grand sachet marqué « 5 ») ou Mini · 2 cartes, + de chances (petit sachet marqué « 2 » avec une étincelle) ; picto en haut, nom en Big Shoulders ; choisi = lettres or et légèrement grossi (×1,08), l'autre en os discret.
