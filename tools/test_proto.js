@@ -439,6 +439,24 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const prove9 = d9.querySelector('.tl-acts[data-id="g2"] [data-act="prove"]');
   check('défis : choisi, puis bouton de preuve le jour du concert', picked === 'c1' && d9.getElementById('df-sheet').hidden && prove9 && /Filmer · Circle pit/.test(prove9.textContent));
 
+  // 16. Bandes : monter une bande depuis un talon (code, pote à inviter), rejoindre par lien
+  let invited = null, joined = null;
+  const band9 = { id:'b1', code:'ABC234', artist:'Gojira', played_on:iso9, members:[{ id:'u1', name:'moi', me:true, host:true, done:[] }] };
+  fake9.bandCreate = async c => { gigs9.find(g => g.id === c).band_id = 'b1'; return band9; };
+  fake9.bandState = async () => band9;
+  fake9.friends = async () => [{ friend_id:'f1', username:'Riffeuse' }];
+  fake9.bandInvite = async (b, f) => { invited = f; };
+  fake9.bandJoin = async code => { joined = code; return { ...band9, members:[...band9.members, { id:'h2', name:'Bob', host:true, done:[] }] }; };
+  d9.querySelector('.tl-acts[data-id="g2"] [data-act="band"]').click(); await sleep(60);
+  check('bandes : bande montée, code affiché', !d9.getElementById('band-sheet').hidden && /ABC 234/.test(d9.getElementById('band-in').textContent));
+  d9.querySelector('#band-in [data-f]').click(); await sleep(20);
+  check('bandes : pote invité', invited === 'f1');
+  d9.getElementById('band-close').click();
+  d9.getElementById('band-open').click(); await sleep(10);
+  d9.getElementById('band-code-in').value = 'https://x/proto/?bande=XYZ789';
+  d9.getElementById('band-join').dispatchEvent(new w9.Event('submit', { cancelable:true })); await sleep(60);
+  check('bandes : rejointe par lien ou code', joined === 'XYZ789' && d9.getElementById('band-sheet').hidden);
+
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
   process.exit(0);

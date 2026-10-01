@@ -504,7 +504,14 @@
   .df-opt b{display:block; font:400 1.2rem/1.1 var(--gothic)} .df-opt small{display:block; margin-top:3px; font:500 .78rem/1.35 var(--mono); color:var(--muted)}
   .df-opt em{flex:none; display:grid; justify-items:end; font:600 .64rem var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
   .df-opt em .num{font:800 1.4rem var(--display); letter-spacing:0; color:var(--gold-hi)}
-  #gigs .btn.block{margin-top:4px} .gig-empty{margin:14px 0 0}
+  #gigs > .pf-row{margin-top:4px}
+  .df.band{border-color:rgba(235,154,38,.45); color:var(--gold-hi)}
+  .band-inv{display:grid; gap:8px; margin-top:12px} .band-inv p{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:10px; background:var(--surface); font:500 .86rem/1.4 var(--mono)}
+  .band-ms{list-style:none; margin:12px 0 4px; padding:0; display:grid; gap:8px}
+  .band-ms li{padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg)} .band-ms b{font:400 1.15rem var(--gothic)}
+  .band-ms small{margin-left:8px; font:600 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)} .band-ms span{display:block; margin-top:4px; font:600 .74rem var(--mono); color:var(--gold-hi)}
+  .band-fr{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 4px} #band-sheet .bsheet-in{max-height:88dvh; overflow-y:auto} #band-sheet .eyebrow{margin:16px 0 6px}
+  .band-leave{display:block; min-height:44px; margin:10px auto 0; padding:0 12px; background:none; border:0; color:var(--accent-text); font:600 .8rem var(--mono); text-decoration:underline; text-underline-offset:3px; cursor:pointer} #band-close{margin-top:10px} .gig-empty{margin:14px 0 0}
   #gig-sheet .bsheet-in{max-height:92dvh; overflow-y:auto} #gig-sheet .pf-row{margin-top:12px} #gig-date{color-scheme:dark}
   .gig-read{margin:8px 0 0; min-height:1.2em; font:500 .82rem var(--mono); color:var(--gold-hi)}
   .gig-place{align-items:flex-end} .gig-place > div{flex:1; min-width:0}
@@ -1215,6 +1222,15 @@
   </div>
 </div>
 <input type="file" id="df-file" hidden>
+<div class="bsheet" id="band-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="band-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="band-t">Ta bande</h2>
+    <p class="pf-note" id="band-for"></p>
+    <div id="band-in"></div>
+    <button type="button" class="btn ghost block" id="band-close">Fermer</button>
+  </div>
+</div>
 <div class="bsheet" id="gig-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="gig-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1560,7 +1576,7 @@ const api = {
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
   // concerts : le fichier du billet ne quitte pas le téléphone ; photo souvenir dans le dossier du joueur (bucket « concerts »)
-  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, concert_challenges(title, points, proof))').order('played_on', { ascending: false })); },
+  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, band_id, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').order('played_on', { ascending: false })); },
   async challenges(){ return must(await sb.from('concert_challenges').select('id, title, hint, proof, points, band_only').eq('active', true).order('sort')); },
   async pickChallenge(c, ch){ must(await sb.rpc('pick_challenge', { p_concert: c, p_challenge: ch })); },
   async unpickChallenge(c, ch){ must(await sb.rpc('unpick_challenge', { p_concert: c, p_challenge: ch })); },
@@ -1572,6 +1588,13 @@ const api = {
     return must(await sb.rpc('complete_challenge', { p_concert: c, p_challenge: ch, p_path: path, p_kind: kind, p_public: !!pub }));
   },
   async claimConcert(id){ return must(await sb.rpc('claim_concert', { p_concert: id })); },
+  // bandes : le même concert à plusieurs (code, invitation d'un pote, bonus quand toute la bande a relevé un défi)
+  async bandCreate(concert){ return must(await sb.rpc('band_create', { p_concert: concert })); },
+  async bandState(band){ return must(await sb.rpc('band_state', { p_band: band })); },
+  async bandJoin(code){ return must(await sb.rpc('band_join', { p_code: code })); },
+  async bandInvite(band, friend){ must(await sb.rpc('band_invite', { p_band: band, p_friend: friend })); },
+  async bandLeave(concert){ must(await sb.rpc('band_leave', { p_concert: concert })); },
+  async bandInvites(){ return must(await sb.rpc('my_band_invites')); },
   async addConcert(c){ return must(await sb.rpc('add_concert', { p_artist: c.artist, p_musician: c.musician || null, p_date: c.date, p_venue: c.venue || null, p_city: c.city || null })); },
   async concertPhoto(id, blob, pub){
     const { data: { user } } = await sb.auth.getUser(), path = user.id + '/concert-' + Date.now() + '.jpg';
@@ -2054,6 +2077,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.tickets().then(function(n){ state.tickets = n; save(); }).catch(function(){});
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
+      if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ go('corner'); bandJoin(bd); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -2720,7 +2744,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var trade = null, tradeScan = false, tradeBusy = false, tradeUnwatch = null, tradePoll = null, scanStop = null;
   // lien d'invitation (?troc=CODE) : ouvert avant la connexion, il est rejoint dès que le joueur est en ligne
   var pendingTroc = (/[?&]troc=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;
-  if(pendingTroc) history.replaceState(null, '', location.pathname + location.hash);
+  var pendingBand = (/[?&]bande=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien d'une bande de concert, rejointe une fois en ligne
+  if(pendingTroc || pendingBand) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
   function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
@@ -3087,8 +3112,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // défis relevés d'un concert : les miens (lignes concert_picks) ou ceux d'un pote (déjà filtrés par le serveur)
   function gigDone(c){ if(c.picks) return c.picks;
     return (c.concert_picks || []).filter(function(p){ return p.done_at && !p.cancelled && p.concert_challenges; })
-      .map(function(p){ return {title:p.concert_challenges.title, points:p.concert_challenges.points + (p.picked_early ? 1 : 0)}; }); }
-  // points de rang des concerts : 3 par concert passé, plus les défis relevés (1 de plus si choisis à l'avance)
+      .map(function(p){ return {title:p.concert_challenges.title, band:p.band_bonus, points:p.concert_challenges.points + (p.picked_early ? 1 : 0) + (p.band_bonus ? 2 : 0)}; }); }
+  // points de rang des concerts : 3 par concert passé, plus les défis relevés (1 de plus si choisis à l'avance, 2 de plus si toute la bande l'a relevé)
   function gigPoints(list){ return (list || []).filter(gigPast).reduce(function(s, c){ return s + 3 + gigDone(c).reduce(function(t, x){ return t + x.points; }, 0); }, 0); }
   var GIG_TITLES = [[1, 'Premier pogo'], [5, 'Habitué du pit'], [10, 'Bête de scène'], [25, 'Vétéran des barrières']];
   var TICKET_ICON = '<path d="M15 5l0 2"/><path d="M15 11l0 2"/><path d="M15 17l0 2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"/>';
@@ -3110,6 +3135,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!ONLINE) return Promise.resolve();
     return Promise.resolve().then(function(){ return ONLINE.concerts(); }).then(function(rows){
       gigs = rows || [];
+      return Promise.resolve().then(function(){ return ONLINE.bandInvites(); }).then(function(l){ bandInvites = l || []; }, function(){ bandInvites = []; });
+    }).then(function(){
       return Promise.all(gigs.filter(function(c){ return c.photo_path && !gigPhotoUrl[c.photo_path]; }).map(function(c){
         return ONLINE.mediaUrl('concerts', c.photo_path).then(function(u){ gigPhotoUrl[c.photo_path] = u; }).catch(function(){}); }));
     }).then(function(){ if(!document.getElementById('v-corner').hidden) renderCorner(); else renderGigs(); }).catch(function(){});
@@ -3118,12 +3145,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function gigActs(c){
     var picks = c.concert_picks || [], open = gigOpen(c), live = open && gigPast(c), out = '';
     picks.forEach(function(p){ var ch = p.concert_challenges || {};
-      if(p.done_at) out += '<span class="df ' + (p.cancelled ? 'off' : 'done') + '">' + (p.cancelled ? 'Annulé · ' : '✓ ') + esc(ch.title) + '</span>';
+      if(p.done_at) out += '<span class="df ' + (p.cancelled ? 'off' : 'done') + '">' + (p.cancelled ? 'Annulé · ' : '✓ ') + esc(ch.title) + (p.band_bonus && !p.cancelled ? ' · bande' : '') + '</span>';
       else if(live) out += '<button type="button" class="df go" data-act="prove" data-ch="' + esc(p.challenge_id) + '">' + (ch.proof === 'video' ? 'Filmer' : 'Photo') + ' · ' + esc(ch.title) + '</button>';
       else if(open) out += '<button type="button" class="df" data-act="unpick" data-ch="' + esc(p.challenge_id) + '" aria-label="Retirer le défi ' + esc(ch.title) + '">' + esc(ch.title) + TL_X + '</button>';
       else out += '<span class="df off">' + esc(ch.title) + ' · raté</span>';
     });
     if(open && picks.length < 3) out += '<button type="button" class="df add" data-act="pick">+ Défi</button>';
+    if(c.band_id) out += '<button type="button" class="df band" data-act="band">Ta bande</button>';
+    else if(open) out += '<button type="button" class="df add" data-act="band">+ Bande</button>';
     if(gigPast(c) && !c.claimed) out += '<button type="button" class="df claim" data-act="claim">Valider le talon</button>';
     return out ? '<div class="tl-acts" data-id="' + esc(c.id) + '">' + out + '</div>' : '';
   }
@@ -3131,10 +3160,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var box = document.getElementById('gigs');
     if(!ONLINE){ box.innerHTML = '<p class="corner-lead">Note les concerts que tu as vus : crée ton compte pour garder tes talons.</p>'; return; }
     var list = gigs || [];
-    box.innerHTML = '<button type="button" class="btn block" id="gig-open">J\'y étais</button>' + (list.length
+    box.innerHTML = '<div class="pf-row"><button type="button" class="btn" id="gig-open">J\'y étais</button><button type="button" class="btn ghost" id="band-open">Code de bande</button></div>' +
+      (bandInvites.length ? '<div class="band-inv">' + bandInvites.map(function(i){ var d = gigDate(i.played_on);
+        return '<p><span><b>' + esc(i.from_name) + '</b> t\'invite dans sa bande pour <b>' + esc(i.artist) + '</b> · ' + d.day + ' ' + esc(d.month) + '</span><button type="button" class="df go" data-code="' + esc(i.code) + '">Rejoindre</button></p>'; }).join('') + '</div>' : '') + (list.length
       ? '<div class="talons">' + list.map(function(c){ return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + gigActs(c) + '</div>'; }).join('') + '</div>'
       : '<p class="corner-lead gig-empty">Ton premier talon t\'attend : importe un billet, ou note le concert à la main.</p>');
     document.getElementById('gig-open').onclick = openGig;
+    document.getElementById('band-open').onclick = function(){ openJoin(''); };
+    [].forEach.call(box.querySelectorAll('.band-inv [data-code]'), function(b){ b.onclick = function(){ b.disabled = true; bandJoin(b.getAttribute('data-code')); }; });
     [].forEach.call(box.querySelectorAll('.tl-x'), function(b){ b.onclick = function(){
       var id = b.closest('.talon').getAttribute('data-id');
       if(!confirm('Retirer ce concert de ta liste ?')) return;
@@ -3146,18 +3179,68 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       else if(act === 'unpick') ONLINE.unpickChallenge(id, ch).then(loadGigs, function(e){ toast(esc(e.message)); });
       else if(act === 'prove') proveDefi(c, ch);
       else if(act === 'claim') claimGig(c, b);
+      else if(act === 'band') openBand(c);
     }; });
   }
-  // défis de concert : liste de l'admin (les défis « en bande » arrivent avec les bandes)
+  // défis de concert : liste de l'admin (ceux « en bande » seulement dans une bande)
   var defis = null, dfSheet = document.getElementById('df-sheet');
+  // ---------- Bandes : le même concert à plusieurs ----------
+  var bandSheet = document.getElementById('band-sheet'), bandInvites = [];
+  function bandLink(code){ return location.origin + location.pathname + '?bande=' + code; }
+  function bandCode(txt){ var m = /[?&]bande=([A-Za-z0-9]{6})/.exec(txt) || /^\s*([A-Za-z0-9]{3})[\s-]?([A-Za-z0-9]{3})\s*$/.exec(txt);
+    return m ? (m[1] + (m[2] || '')).toUpperCase() : null; }
+  async function openBand(c){
+    try{ var b = c.band_id ? await ONLINE.bandState(c.band_id) : await ONLINE.bandCreate(c.id); }catch(e){ toast(esc(e.message)); return; }
+    if(!c.band_id){ c.band_id = b.id; renderGigs(); }
+    await renderBand(b, c); bandSheet.hidden = false;
+  }
+  // membres et leurs défis relevés, code et lien, potes à inviter, sortie
+  async function renderBand(b, c){
+    var d = gigDate(b.played_on), alone = b.members.length < 2, inBand = b.members.map(function(m){ return m.id; }), friends = [];
+    try{ friends = ((await ONLINE.friends()) || []).filter(function(f){ return inBand.indexOf(f.friend_id) === -1; }); }catch(e){}
+    document.getElementById('band-t').textContent = 'Ta bande';
+    document.getElementById('band-for').textContent = b.artist + ' · ' + d.day + ' ' + d.month + ' ' + d.year + (alone ? ' · à deux au moins, les défis en bande s\'ouvrent' : '');
+    document.getElementById('band-in').innerHTML = '<ul class="band-ms">' + b.members.map(function(m){
+        return '<li><b>' + esc(m.name) + '</b>' + (m.me ? '<small>toi</small>' : m.host ? '<small>a monté la bande</small>' : '') +
+          (m.done.length ? '<span>' + m.done.map(function(t){ return '✓ ' + esc(t); }).join(' · ') + '</span>' : '') + '</li>'; }).join('') + '</ul>' +
+      '<p class="eyebrow">Le code de la bande</p><p class="tr-code num">' + esc(b.code.slice(0, 3) + ' ' + b.code.slice(3)) + '</p>' +
+      '<button type="button" class="btn block" id="band-share">Envoyer le lien</button>' +
+      (friends.length ? '<p class="eyebrow">Inviter un pote</p><div class="band-fr">' + friends.map(function(f){ return '<button type="button" class="df" data-f="' + esc(f.friend_id) + '">' + esc(f.username || 'Pote') + '</button>'; }).join('') + '</div>' : '') +
+      '<button type="button" class="band-leave" id="band-leave">Quitter la bande</button>';
+    document.getElementById('band-share').onclick = function(){ var url = bandLink(b.code), txt = 'Rejoins ma bande pour ' + b.artist + ' sur Metalnini. Code : ' + b.code;
+      if(navigator.share) navigator.share({title:'Metalnini', text:txt, url:url}).catch(function(){});
+      else (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Envoie-le à ta bande.'); }, function(){ toast('Code à donner : ' + esc(b.code)); }); };
+    [].forEach.call(document.querySelectorAll('#band-in [data-f]'), function(btn){ btn.onclick = function(){ btn.disabled = true;
+      ONLINE.bandInvite(b.id, btn.getAttribute('data-f')).then(function(){ btn.textContent = '✓ ' + btn.textContent; toast('Invitation envoyée.'); }, function(e){ btn.disabled = false; toast(esc(e.message)); }); }; });
+    document.getElementById('band-leave').onclick = function(){ if(!confirm('Quitter la bande ? Le bonus de bande de tes défis disparaît.')) return;
+      ONLINE.bandLeave(c.id).then(function(){ bandSheet.hidden = true; toast('Tu as quitté la bande.'); return loadGigs(); }, function(e){ toast(esc(e.message)); }); };
+  }
+  function openJoin(code){
+    document.getElementById('band-t').textContent = 'Rejoindre une bande';
+    document.getElementById('band-for').textContent = 'Le code que t\'a donné ta bande, ou son lien : le concert s\'ajoute à tes talons.';
+    document.getElementById('band-in').innerHTML = '<form class="tr-join" id="band-join"><div class="pf-row"><input class="as-in" id="band-code-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="ABC 234" aria-label="Code de la bande"><button type="submit" class="btn">Rejoindre</button></div></form>';
+    document.getElementById('band-code-in').value = code || '';
+    document.getElementById('band-join').onsubmit = function(e){ e.preventDefault(); bandJoin(document.getElementById('band-code-in').value); };
+    bandSheet.hidden = false;
+  }
+  function bandJoin(txt){
+    var code = bandCode(txt || ''); if(!code){ toast('Le code d\'une bande a 6 caractères.'); return; }
+    if(!ONLINE){ toast('Connecte-toi pour rejoindre une bande.'); return; }
+    ONLINE.bandJoin(code).then(function(b){ bandSheet.hidden = true; snd('trade-join');
+      var host = b.members.filter(function(m){ return m.host && !m.me; })[0];
+      toast('Tu rejoins la bande' + (host ? ' de <b>' + esc(host.name) + '</b>' : '') + ' pour ' + esc(b.artist) + '.'); return loadGigs(); },
+      function(e){ toast(esc(e.message)); renderGigs(); });
+  }
+  document.getElementById('band-close').onclick = function(){ bandSheet.hidden = true; };
+  bandSheet.addEventListener('click', function(e){ if(e.target === bandSheet) bandSheet.hidden = true; });
   async function openDefis(c){
     try{ defis = defis || await ONLINE.challenges(); }catch(e){ toast(esc(e.message)); return; }
     var taken = (c.concert_picks || []).map(function(p){ return p.challenge_id; }), early = !gigPast(c);
-    var list = defis.filter(function(d){ return !d.band_only && taken.indexOf(d.id) === -1; });
+    var list = defis.filter(function(d){ return (!d.band_only || c.band_id) && taken.indexOf(d.id) === -1; });
     document.getElementById('df-for').textContent = c.artist + (early ? ' · choisi à l\'avance : un point de plus' : ' · preuve à envoyer dans les 2 jours');
     document.getElementById('df-list').innerHTML = list.length ? list.map(function(d){
       return '<button type="button" class="df-opt" data-d="' + esc(d.id) + '"><span><b>' + esc(d.title) + '</b>' + (d.hint ? '<small>' + esc(d.hint) + '</small>' : '') + '</span>' +
-        '<em><span class="num">+' + (d.points + (early ? 1 : 0)) + '</span>' + (d.proof === 'video' ? 'Vidéo 10 s' : 'Photo') + '</em></button>'; }).join('')
+        '<em><span class="num">+' + (d.points + (early ? 1 : 0)) + '</span>' + (d.band_only ? 'En bande · ' : '') + (d.proof === 'video' ? 'Vidéo 10 s' : 'Photo') + '</em></button>'; }).join('')
       : '<p class="pub-empty">Tous les défis sont déjà pris pour ce concert.</p>';
     [].forEach.call(document.querySelectorAll('#df-list .df-opt'), function(b){ b.onclick = function(){ b.disabled = true;
       ONLINE.pickChallenge(c.id, b.getAttribute('data-d')).then(function(){ dfSheet.hidden = true; toast(early ? 'Défi choisi. Rendez-vous au concert.' : 'Défi choisi. Envoie ta preuve depuis le talon.'); return loadGigs(); },

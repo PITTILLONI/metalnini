@@ -27,3 +27,8 @@ __fake.concertPhoto = async function(){ return 'u1/p.jpg'; }; __fake.deleteConce
 __fake.friendConcerts = async function(){ return []; };
 var __media = __fake.mediaUrl; __fake.mediaUrl = async function(b, p){ return b === 'concerts' ? 'cards/korn-holo.jpg' : __media ? __media(b, p) : null; };
 __fake.cryQuiz = async function(){ return []; };
+// bandes : une invitation en attente, la bande du concert du jour (2 membres), deux potes à inviter
+__gigs[0].band_id = 'b1'; __gigs[0].concert_picks[1].band_bonus = true;
+__fake.bandInvites = async function(){ return [{code:'XYZ789', artist:'Ghost', played_on:'2027-03-02', from_name:'Riffeuse'}]; };
+__fake.bandState = async function(){ return {id:'b1', code:'ABC234', artist:'Spiritbox', played_on:__gigs[0].played_on, members:[{id:'u1', name:'Antoine', me:true, host:true, done:['Photo du pit']}, {id:'f1', name:'Riffeuse', done:['Photo du pit', 'Circle pit']}]}; };
+__fake.friends = async function(){ return [{friend_id:'f1', username:'Riffeuse'}, {friend_id:'f2', username:'Bob le Slammeur'}, {friend_id:'f3', username:'Doom'}]; };
