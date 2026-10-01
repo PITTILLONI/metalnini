@@ -11,3 +11,12 @@ __fake.tradeConfirm = async function(){ __T.status = 'done'; __T.bonus = {m:'het
 __fake.tradeInvites = async function(){ return []; }; __fake.friends = async function(){ return []; }; __fake.myTrades = async function(){ return []; }; __fake.mediaUrl = async function(){ return null; };
 __fake.presence = async function(){};
 __fake.claimBlindtest = async function(){ return {kind:'points', points:2}; };
+// concerts : deux talons (un passé avec photo, un à venir), ajout en mémoire
+window.__gigs = [{id:'g1', artist:'Gojira', musician_id:null, played_on:'2026-06-21', venue:'Hellfest', city:'Clisson', photo_path:'u1/concert-1.jpg', photo_public:true},
+  {id:'g2', artist:'Spiritbox', musician_id:'spiritbox', played_on:'2027-02-14', venue:'Zénith', city:'Paris', photo_path:null, photo_public:false}];
+__fake.concerts = async function(){ return __gigs.slice(); };
+__fake.addConcert = async function(c){ var id = 'g' + (__gigs.length + 1); __gigs.unshift({id:id, artist:c.artist, musician_id:c.musician, played_on:c.date, venue:c.venue, city:c.city, photo_path:null, photo_public:false}); return id; };
+__fake.concertPhoto = async function(){ return 'u1/p.jpg'; }; __fake.deleteConcert = async function(id){ __gigs = __gigs.filter(function(c){ return c.id !== id; }); };
+__fake.friendConcerts = async function(){ return []; };
+var __media = __fake.mediaUrl; __fake.mediaUrl = async function(b, p){ return b === 'concerts' ? 'cards/korn-holo.jpg' : __media ? __media(b, p) : null; };
+__fake.cryQuiz = async function(){ return []; };

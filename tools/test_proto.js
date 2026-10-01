@@ -404,6 +404,22 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('d-trade').click(); await sleep(40);
   check('échanger depuis une carte : feuille ouverte, la carte proposée', !d9.getElementById('trade-start').hidden && /Jonathan Davis/.test(d9.getElementById('ts-card').textContent));
 
+  // 14. Concerts : « J'y étais » enregistre un concert (musicien du jeu reconnu), talon dans Metal Corner et sur le profil
+  let added = null; const gigs9 = [];
+  fake9.concerts = async () => gigs9.slice();
+  fake9.addConcert = async c => { added = c; gigs9.unshift({ id:'g1', artist:c.artist, musician_id:c.musician, played_on:c.date, venue:c.venue, city:c.city, photo_path:null, photo_public:false }); return 'g1'; };
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(60);
+  check('concerts : bouton « J\'y étais » dans Metal Corner', !!d9.getElementById('gig-open'));
+  d9.getElementById('gig-open').click(); await sleep(10);
+  check('concerts : feuille ouverte, artistes du jeu proposés', !d9.getElementById('gig-sheet').hidden && d9.querySelectorAll('#gig-artists option').length > 10);
+  d9.getElementById('gig-send').click(); await sleep(10);
+  check('concerts : artiste et date exigés', /artiste/.test(d9.getElementById('gig-err').textContent) && !added);
+  d9.getElementById('gig-artist').value = 'Korn'; d9.getElementById('gig-date').value = '2026-06-20'; d9.getElementById('gig-venue').value = 'Hellfest';
+  d9.getElementById('gig-send').click(); await sleep(80);
+  check('concerts : enregistré avec le musicien du jeu, talon affiché', added && added.musician === 'korn' && added.date === '2026-06-20' && d9.getElementById('gig-sheet').hidden && /Korn/.test(d9.querySelector('#gigs .talon').textContent));
+  d9.getElementById('pf-pub-open').click(); await sleep(20);
+  check('concerts : talon sur le profil public', /Les talons · 1 concert/.test(d9.getElementById('pub-in').textContent));
+
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
   process.exit(0);

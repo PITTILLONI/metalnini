@@ -476,6 +476,25 @@
   .pub-stats div{padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
   .pub-stats b{display:block; font:800 1.7rem/1 var(--display); color:var(--gold-hi); font-variant-numeric:tabular-nums}
   .pub-stats span{display:block; margin-top:4px; font:500 .74rem var(--mono); color:var(--muted)}
+  /* concerts : talons de billet (filet or, souche datée séparée par une perforation) */
+  .talons{display:grid; gap:10px; margin-top:12px}
+  .talon{position:relative; display:flex; align-items:stretch; min-height:84px; background:var(--surface); border:1px solid rgba(235,154,38,.45); border-radius:10px; overflow:hidden; text-align:left}
+  .talon.soon{border-style:dashed; border-color:var(--border)}
+  .tl-ph{width:76px; flex:none; object-fit:cover; border-right:1px solid var(--border)}
+  .tl-main{flex:1; min-width:0; padding:12px 44px 12px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px}
+  .tl-main small{font:600 .62rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)} .talon.soon .tl-main small{color:var(--muted)}
+  .tl-main b{font:400 1.35rem/1.05 var(--gothic); color:var(--text); overflow-wrap:anywhere}
+  .tl-main span{font:500 .8rem var(--mono); color:var(--muted)}
+  .tl-stub{flex:none; width:68px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:2px dashed rgba(235,154,38,.45); background:var(--surface-2); color:var(--gold-hi)}
+  .tl-stub b{font:800 1.7rem/1 var(--display)} .tl-stub span{font:700 .78rem var(--display); letter-spacing:.12em; text-transform:uppercase} .tl-stub small{font:600 .66rem var(--mono); color:var(--muted)}
+  .tl-x{position:absolute; top:0; right:68px; width:44px; height:44px; display:grid; place-items:center; background:none; border:0; color:var(--muted); cursor:pointer}
+  .tl-x:hover{color:var(--text)}
+  #gigs .btn.block{margin-top:4px} .gig-empty{margin:14px 0 0}
+  #gig-sheet .bsheet-in{max-height:92dvh; overflow-y:auto} #gig-sheet .pf-row{margin-top:12px} #gig-date{color-scheme:dark}
+  .gig-read{margin:8px 0 0; min-height:1.2em; font:500 .82rem var(--mono); color:var(--gold-hi)}
+  .gig-place{align-items:flex-end} .gig-place > div{flex:1; min-width:0}
+  .gig-photo{width:100%; min-height:96px; display:grid; place-items:center; border:1px dashed var(--border); border-radius:10px; background:var(--bg) center/cover no-repeat; color:var(--muted); font:600 .84rem var(--mono); cursor:pointer}
+  .gig-photo.has{min-height:180px; border-style:solid; color:var(--text)} .gig-photo.has span{padding:6px 12px; border-radius:999px; background:rgba(5,4,4,.7)}
   .pub-empty{font:500 .84rem var(--mono); color:var(--muted); margin:0}
   .pf-card{padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); margin-bottom:12px}
   .pf-card-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
@@ -1050,6 +1069,7 @@
   <section class="corner-sec" id="invites-sec" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
   <section class="corner-sec" id="friends-sec" hidden><h2 class="g-sub">Mes potes</h2><div id="friends"></div></section>
   <section class="corner-sec"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
+  <section class="corner-sec" id="gigs-sec"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
   <section class="corner-sec" id="prog-sec"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
   <section class="corner-sec" id="history-sec" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
 </main>
@@ -1168,6 +1188,28 @@
     <label class="as-prio" id="as-prio" hidden><input type="checkbox" id="as-prio-in"> <span>Utiliser un ticket artiste prioritaire <b id="as-prio-n"></b></span></label>
     <p class="err" id="as-err"></p>
     <div class="pf-row"><button type="button" class="btn ghost" id="as-cancel">Annuler</button><button type="button" class="btn" id="as-send">Envoyer</button></div>
+  </div>
+</div>
+<div class="bsheet" id="gig-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="gig-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="gig-t">J'y étais</h2>
+    <p class="pf-note">Ton billet reste sur ton téléphone : on n'en garde que l'artiste, la date et la salle.</p>
+    <div class="pf-row gig-src"><button type="button" class="btn ghost" id="gig-file-b">Importer</button><button type="button" class="btn ghost" id="gig-cam-b">Photographier</button></div>
+    <input type="file" id="gig-file" accept="application/pdf,image/*" hidden><input type="file" id="gig-cam" accept="image/*" capture="environment" hidden>
+    <p class="gig-read" id="gig-read" aria-live="polite"></p>
+    <label class="pf-label" for="gig-artist">Artiste ou groupe</label>
+    <input id="gig-artist" class="as-in" maxlength="80" autocomplete="off" list="gig-artists" placeholder="ex. Gojira"><datalist id="gig-artists"></datalist>
+    <label class="pf-label" for="gig-date">Date</label>
+    <input id="gig-date" class="as-in" type="date">
+    <div class="pf-row gig-place"><div><label class="pf-label" for="gig-venue">Salle</label><input id="gig-venue" class="as-in" maxlength="80" autocomplete="off" placeholder="ex. Zénith"></div>
+      <div><label class="pf-label" for="gig-city">Ville</label><input id="gig-city" class="as-in" maxlength="60" autocomplete="off" placeholder="ex. Paris"></div></div>
+    <label class="pf-label" for="gig-photo-b">Photo souvenir (facultatif)</label>
+    <button type="button" class="gig-photo" id="gig-photo-b"><span>Ajouter une photo du concert</span></button>
+    <input type="file" id="gig-photo" accept="image/*" hidden>
+    <label class="as-prio" id="gig-pub-l" hidden><input type="checkbox" id="gig-pub"> <span>Montrer la photo à mes potes</span></label>
+    <p class="err" id="gig-err"></p>
+    <div class="pf-row"><button type="button" class="btn ghost" id="gig-cancel">Annuler</button><button type="button" class="btn" id="gig-send">Enregistrer</button></div>
   </div>
 </div>
 
@@ -1492,6 +1534,17 @@ const api = {
     if(old) await sb.storage.from(bucket).remove([old]);
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
+  // concerts : le fichier du billet ne quitte pas le téléphone ; photo souvenir dans le dossier du joueur (bucket « concerts »)
+  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public').order('played_on', { ascending: false })); },
+  async addConcert(c){ return must(await sb.rpc('add_concert', { p_artist: c.artist, p_musician: c.musician || null, p_date: c.date, p_venue: c.venue || null, p_city: c.city || null })); },
+  async concertPhoto(id, blob, pub){
+    const { data: { user } } = await sb.auth.getUser(), path = user.id + '/concert-' + Date.now() + '.jpg';
+    must(await sb.storage.from('concerts').upload(path, blob, { contentType: 'image/jpeg', upsert: false }));
+    must(await sb.rpc('set_concert_photo', { p_id: id, p_path: path, p_public: !!pub }));
+    return path;
+  },
+  async deleteConcert(id){ const p = must(await sb.rpc('delete_concert', { p_id: id })); if(p) await sb.storage.from('concerts').remove([p]); },
+  async friendConcerts(f){ return must(await sb.rpc('friend_concerts', { p_friend: f })); },
   async username(){ const rows = must(await sb.from('profiles').select('username').limit(1)); return rows[0] ? rows[0].username : null; },
   async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
   async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed')); },
@@ -1998,6 +2051,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       patches:binders.map(function(b){ var cov = b.ids.map(function(id){ var r = placed(id); return r ? id + '|' + r : null; }).filter(Boolean).sort(byRarity)[0];
         return {label:binderLabel(b), done:binderDone(b), cover:cov}; }),
       pins:pins.map(function(c){ return c.id + '|legendaire'; }),
+      concerts:(gigs || []).filter(gigPast).map(function(c){ return Object.assign({photo:c.photo_public ? gigPhotoUrl[c.photo_path] : null}, c); }),
       stats:{cards:mus.length, total:CARDS.length, legend:keys.filter(function(k){ return /\|legendaire$/.test(k); }).length, packs:state.opened || 0, fav:fav && fav.n ? fav.c.who : '—'}};
   }
   function kImg(k){ var p = k.split('|'); return img(p[0], p[1]); }
@@ -2016,6 +2070,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return '<div class="patch' + (x.done ? '' : ' off') + '"><i' + (x.done && x.cover ? ' style="background-image:url(' + kImg(x.cover) + ')"' : '') + '></i><small>' + esc(x.label) + '</small></div>'; }).join('') + '</div></section>' +
       '<section class="pub-sec"><p class="eyebrow">Les pin\'s de maîtrise</p>' + (d.pins.length ? '<div class="pub-pins">' + d.pins.map(function(k){ var p = k.split('|');
         return '<i class="pin" role="img" aria-label="Maîtrise de ' + esc(card(p[0]).who) + '" style="background-image:url(' + kImg(k) + ')"></i>'; }).join('') + '</div>' : '<p class="pub-empty">Les 5 raretés d\'un même musicien : le premier pin\'s.</p>') + '</section>' +
+      (d.concerts.length ? '<section class="pub-sec"><p class="eyebrow">Les talons · ' + d.concerts.length + ' concert' + (d.concerts.length > 1 ? 's' : '') + '</p><div class="talons">' +
+        d.concerts.map(function(c){ return talonHtml(c, c.photo); }).join('') + '</div></section>' : '') +
       '<section class="pub-sec"><p class="eyebrow">La setlist</p><div class="pub-stats">' +
         '<div><b>' + d.stats.cards + '<small style="font-size:.55em; color:var(--muted)">/' + d.stats.total + '</small></b><span>musiciens</span></div>' +
         '<div><b>' + d.stats.legend + '</b><span>Légendaire' + (d.stats.legend > 1 ? 's' : '') + '</span></div>' +
@@ -2897,9 +2953,137 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       d.cry = await ONLINE.mediaUrl('cries', f.cry_path).catch(function(){ return null; });
       // ce qui lui manque et que j'ai en double : de quoi lui proposer un échange
       d.missing = ownedKeys().filter(function(k){ return state.owned[k] > 1 && !Object.keys(owned).some(function(x){ return x.split('|')[0] === k.split('|')[0]; }); }).sort(byRarity).slice(0, 8);
+      d.concerts = await ONLINE.friendConcerts(f.friend_id).then(function(rows){ return Promise.all(rows.filter(gigPast).map(function(c){
+        return (c.photo_path ? ONLINE.mediaUrl('concerts', c.photo_path).catch(function(){ return null; }) : Promise.resolve(null)).then(function(u){ c.photo = u; return c; }); })); }).catch(function(){ return []; });
       d.friend = f; openPub(d);
     }catch(e){ toast(esc(e.message)); }
   }
+
+  // ---------- Concerts : « J'y étais » ----------
+  // mes concerts, gardés en mémoire (liens des photos signés à la demande) ; le billet est lu sur le téléphone puis oublié
+  var gigs = null, gigPhotoUrl = {}, gigBlob = null, PDF_LIB = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+  var MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+    MONTHS_EN = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+  var VENUE_RE = /(zénith|zenith|olympia|ar[eé]na|stade|stadium|palais|salle|hall|club|th[eé][aâ]tre|theatre|festival|hellfest|bercy|bataclan|cigale|trabendo|élysée|elysee|docks|aéronef|transbordeur|rockhal|ancienne belgique|forest national|wacken)/i;
+  var TL_X = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>';
+  function today(){ var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function gigPast(c){ return c.played_on <= today(); }
+  function gigDate(iso){ var d = new Date(iso + 'T12:00:00'); return {day:d.getDate(), month:d.toLocaleDateString('fr-FR', {month:'short'}).replace('.', ''), year:d.getFullYear()}; }
+  // talon : artiste, salle et ville, souche datée ; la photo souvenir à gauche ; own : bouton pour le retirer
+  function talonHtml(c, photo, own){
+    var d = gigDate(c.played_on), where = [c.venue, c.city].filter(Boolean).join(' · '), past = gigPast(c);
+    return '<article class="talon' + (past ? '' : ' soon') + '"' + (own ? ' data-id="' + esc(c.id) + '"' : '') + '>' +
+      (photo ? '<img class="tl-ph" src="' + esc(photo) + '" alt="Photo du concert de ' + esc(c.artist) + '" loading="lazy">' : '') +
+      '<div class="tl-main"><small>' + (past ? 'J\'y étais' : 'À venir') + '</small><b>' + esc(c.artist) + '</b>' + (where ? '<span>' + esc(where) + '</span>' : '') + '</div>' +
+      '<div class="tl-stub" role="img" aria-label="' + d.day + ' ' + esc(d.month) + ' ' + d.year + '"><b class="num">' + d.day + '</b><span>' + esc(d.month) + '</span><small class="num">' + d.year + '</small></div>' +
+      (own ? '<button type="button" class="tl-x" aria-label="Retirer le concert de ' + esc(c.artist) + '">' + TL_X + '</button>' : '') + '</article>';
+  }
+  function loadGigs(){
+    if(!ONLINE) return Promise.resolve();
+    return Promise.resolve().then(function(){ return ONLINE.concerts(); }).then(function(rows){
+      gigs = rows || [];
+      return Promise.all(gigs.filter(function(c){ return c.photo_path && !gigPhotoUrl[c.photo_path]; }).map(function(c){
+        return ONLINE.mediaUrl('concerts', c.photo_path).then(function(u){ gigPhotoUrl[c.photo_path] = u; }).catch(function(){}); }));
+    }).then(renderGigs).catch(function(){});
+  }
+  function renderGigs(){
+    var box = document.getElementById('gigs');
+    if(!ONLINE){ box.innerHTML = '<p class="corner-lead">Note les concerts que tu as vus : crée ton compte pour garder tes talons.</p>'; return; }
+    var list = gigs || [];
+    box.innerHTML = '<button type="button" class="btn block" id="gig-open">J\'y étais</button>' + (list.length
+      ? '<div class="talons">' + list.map(function(c){ return talonHtml(c, gigPhotoUrl[c.photo_path], true); }).join('') + '</div>'
+      : '<p class="corner-lead gig-empty">Ton premier talon t\'attend : importe un billet, ou note le concert à la main.</p>');
+    document.getElementById('gig-open').onclick = openGig;
+    [].forEach.call(box.querySelectorAll('.tl-x'), function(b){ b.onclick = function(){
+      var id = b.closest('.talon').getAttribute('data-id');
+      if(!confirm('Retirer ce concert de ta liste ?')) return;
+      ONLINE.deleteConcert(id).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderGigs(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); });
+    }; });
+  }
+  var gigSheet = document.getElementById('gig-sheet'), gigErr = document.getElementById('gig-err');
+  function gigEl(id){ return document.getElementById(id); }
+  // noms proposés : groupes et musiciens du jeu, puis les groupes favoris du joueur
+  function gigNames(){ var seen = {}, out = [];
+    CARDS.map(function(c){ return c.band; }).concat(CARDS.map(function(c){ return c.who; }), state.favBands || []).forEach(function(n){ var k = n.toLowerCase(); if(!seen[k]){ seen[k] = true; out.push(n); } });
+    return out; }
+  // musicien du jeu qui correspond : son nom, ou un groupe qui n'a qu'un musicien dans le jeu
+  function gigMusician(a){ a = a.trim().toLowerCase();
+    var byName = CARDS.filter(function(c){ return c.who.toLowerCase() === a; }); if(byName.length) return byName[0].id;
+    var byBand = CARDS.filter(function(c){ return c.band.toLowerCase() === a; }); return byBand.length === 1 ? byBand[0].id : null; }
+  function openGig(){
+    ['gig-artist', 'gig-venue', 'gig-city', 'gig-date'].forEach(function(i){ gigEl(i).value = ''; });
+    gigEl('gig-date').max = new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10);
+    gigEl('gig-artists').innerHTML = gigNames().map(function(n){ return '<option value="' + esc(n) + '">'; }).join('');
+    gigEl('gig-read').textContent = ''; gigErr.textContent = ''; gigBlob = null; setGigPhoto(null);
+    gigSheet.hidden = false;
+  }
+  function closeGig(){ gigSheet.hidden = true; }
+  function monthIdx(s){ s = s.toLowerCase(); var i = MONTHS.indexOf(s); return (i === -1 ? MONTHS_EN.indexOf(s) : i) + 1; }
+  // lecture d'un billet : artiste du jeu, date du concert (la plus tardive : la date d'achat vient avant) et salle
+  function guessTicket(text){
+    var low = text.toLowerCase(), g = {}, max = new Date(Date.now() + 365 * 864e5), dates = [], m, re, mo = MONTHS.concat(MONTHS_EN).join('|');
+    gigNames().forEach(function(n){ if(n.length > 2 && low.indexOf(n.toLowerCase()) !== -1 && (!g.artist || n.length > g.artist.length)) g.artist = n; });
+    function add(y, mon, d){ y = +y; if(y < 100) y += 2000; var dt = new Date(Date.UTC(y, mon - 1, +d)); if(mon >= 1 && dt.getUTCMonth() === mon - 1 && y >= 1960 && dt <= max) dates.push(dt.toISOString().slice(0, 10)); }
+    re = /\b(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4}|\d{2})\b/g; while((m = re.exec(text))) add(m[3], +m[2], m[1]);
+    re = /\b(\d{4})-(\d{2})-(\d{2})\b/g; while((m = re.exec(text))) add(m[1], +m[2], m[3]);
+    re = new RegExp('(\\d{1,2})(?:er)?\\s+(' + mo + ')\\.?\\s+(\\d{4})', 'g'); while((m = re.exec(low))) add(m[3], monthIdx(m[2]), m[1]);
+    re = new RegExp('(' + mo + ')\\s+(\\d{1,2}),?\\s+(\\d{4})', 'g'); while((m = re.exec(low))) add(m[3], monthIdx(m[1]), m[2]);
+    g.date = dates.sort().pop() || null;
+    g.venue = text.split('\n').map(function(l){ return l.trim(); }).filter(function(l){ return l.length >= 4 && l.length <= 80 && VENUE_RE.test(l); })[0] || null;
+    return g;
+  }
+  function readTicket(f){
+    var out = gigEl('gig-read');
+    if(f.type !== 'application/pdf'){ out.textContent = 'Billet gardé sur ton téléphone. Remplis les infos ci-dessous.'; return; }
+    out.textContent = 'Lecture du billet…';
+    loadLib(PDF_LIB, 'pdfjsLib').then(function(pdfjs){
+      pdfjs.GlobalWorkerOptions.workerSrc = PDF_LIB.replace('pdf.min.js', 'pdf.worker.min.js');
+      return f.arrayBuffer().then(function(b){ return pdfjs.getDocument({data:b}).promise; });
+    }).then(function(doc){
+      var pages = []; for(var i = 1; i <= Math.min(2, doc.numPages); i++) pages.push(doc.getPage(i).then(function(p){ return p.getTextContent(); }));
+      return Promise.all(pages);
+    }).then(function(contents){
+      var g = guessTicket(contents.map(function(c){ return c.items.map(function(it){ return it.str + (it.hasEOL ? '\n' : ' '); }).join(''); }).join('\n')), found = [];
+      if(g.artist && !gigEl('gig-artist').value){ gigEl('gig-artist').value = g.artist; found.push('l\'artiste'); }
+      if(g.date){ gigEl('gig-date').value = g.date; found.push('la date'); }
+      if(g.venue && !gigEl('gig-venue').value){ gigEl('gig-venue').value = g.venue; found.push('la salle'); }
+      out.textContent = found.length ? 'Trouvé sur le billet : ' + found.join(', ') + '. Vérifie avant d\'enregistrer.' : 'Rien de lisible sur ce billet. Remplis les infos à la main.';
+    }).catch(function(){ out.textContent = 'Billet illisible ici. Remplis les infos à la main.'; });
+  }
+  gigEl('gig-file-b').onclick = function(){ gigEl('gig-file').click(); };
+  gigEl('gig-cam-b').onclick = function(){ gigEl('gig-cam').click(); };
+  ['gig-file', 'gig-cam'].forEach(function(i){ var inp = gigEl(i); inp.onchange = function(){ var f = inp.files[0]; inp.value = ''; if(f) readTicket(f); }; });
+  // photo souvenir réduite sur le téléphone (1600 px au plus, JPEG) avant l'envoi
+  function shrinkPhoto(f, max){ return new Promise(function(ok, ko){
+    var im = new Image(), u = URL.createObjectURL(f);
+    im.onload = function(){ var k = Math.min(1, max / Math.max(im.width, im.height)), cv = document.createElement('canvas');
+      cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k); cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(u); cv.toBlob(function(b){ if(b) ok(b); else ko(); }, 'image/jpeg', .82); };
+    im.onerror = function(){ URL.revokeObjectURL(u); ko(); }; im.src = u; }); }
+  function setGigPhoto(url){
+    var b = gigEl('gig-photo-b'); b.style.backgroundImage = url ? 'url(' + url + ')' : ''; b.classList.toggle('has', !!url);
+    b.querySelector('span').textContent = url ? 'Changer de photo' : 'Ajouter une photo du concert';
+    gigEl('gig-pub-l').hidden = !url; if(!url) gigEl('gig-pub').checked = false;
+  }
+  gigEl('gig-photo-b').onclick = function(){ gigEl('gig-photo').click(); };
+  gigEl('gig-photo').onchange = function(){ var f = this.files[0]; this.value = ''; if(!f) return;
+    shrinkPhoto(f, 1600).then(function(b){ gigBlob = b; setGigPhoto(URL.createObjectURL(b)); }, function(){ gigErr.textContent = 'Photo illisible. Essaie avec une autre.'; }); };
+  gigEl('gig-send').onclick = async function(){
+    var btn = this, a = gigEl('gig-artist').value.trim(), dt = gigEl('gig-date').value;
+    if(a.length < 2){ gigErr.textContent = 'Le nom de l\'artiste : deux caractères minimum.'; return; }
+    if(!dt){ gigErr.textContent = 'Il manque la date du concert.'; return; }
+    btn.disabled = true; gigErr.textContent = '';
+    try{
+      var id = await ONLINE.addConcert({artist:a, musician:gigMusician(a), date:dt, venue:gigEl('gig-venue').value.trim(), city:gigEl('gig-city').value.trim()});
+      if(gigBlob) await ONLINE.concertPhoto(id, gigBlob, gigEl('gig-pub').checked).catch(function(){ toast('Concert noté, mais la photo n\'est pas passée.'); });
+      closeGig(); toast(dt > today() ? 'Concert noté. Il comptera une fois passé.' : 'Talon ajouté. Les oreilles sifflent encore ?');
+      await loadGigs();
+    }catch(e){ gigErr.textContent = e.message; }
+    btn.disabled = false;
+  };
+  gigEl('gig-cancel').onclick = closeGig;
+  gigSheet.addEventListener('click', function(e){ if(e.target === gigSheet) closeGig(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !gigSheet.hidden) closeGig(); });
 
   document.getElementById('tr-host').addEventListener('click', tradeHost);
   document.getElementById('tr-scan').addEventListener('click', openScan);
@@ -2939,7 +3123,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var HORNS_ICON = '<path d="M11 11.5v-1a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 12v-6.5a1.5 1.5 0 0 1 3 0v10.5a6 6 0 0 1 -6 6h-2a4 4 0 0 1 -4 -4v-5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M8 16.5c1.6 -1.6 3.8 -2.1 6.2 -1.5"/>';
   function icon(paths, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 24) + '" height="' + (w || 24) + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>'; }
   function renderCorner(){
-    renderGoals();
+    renderGoals(); renderGigs();
     var p = myProfile(), sc = p.score, t = titleOf(sc), tr = state.trades || 0, nx = t.next, ti = TITLES.map(function(x){ return x[1]; }).indexOf(t.label), cur = TITLES[ti][0];
     var span = nx ? sc - cur + nx.left : 1, pct = nx ? Math.round((sc - cur) / span * 100) : 100, binders = p.patches.filter(function(x){ return x.done; }).length;
     var unlocked = TITLES.filter(function(x){ return sc >= x[0]; }).length + (tr ? 1 : 0), C = 2 * Math.PI * 22;
@@ -2989,7 +3173,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['packs','binder','corner','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
     if(v === 'binder') renderBinder(); else if(listenEl && listenEl.id === 'si-listen') stopListen();   // l'extrait du style s'arrête quand on quitte les classeurs
-    if(v === 'corner'){ renderCorner(); renderSocial(); if(ONLINE) ONLINE.tradeCount().then(function(n){ state.trades = n; save(); renderCorner(); }).catch(function(){}); }
+    if(v === 'corner'){ renderCorner(); renderSocial(); if(ONLINE && !gigs) loadGigs(); if(ONLINE) ONLINE.tradeCount().then(function(n){ state.trades = n; save(); renderCorner(); }).catch(function(){}); }
     if(v === 'packs' && state.welcome && !ONLINE){ onbSave(); }
     if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
