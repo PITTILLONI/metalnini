@@ -228,7 +228,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   await sleep(150);
   const d5 = dom5.window.document;
   d5.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
-  check('une seule collection : pas de catégorie « Collection », Styles en premier', d5.querySelector('#binder-kinds button').getAttribute('data-kind') === 'Styles' && !d5.querySelector('#binder-kinds [data-kind="Collection"]'));
+  d5.querySelector('#binder-kinds button').click(); await sleep(15);
+  check('une seule collection : puce « Toutes » en premier, qui ouvre directement toutes les cartes', d5.querySelector('#binder-kinds button').textContent === 'Toutes' && !d5.getElementById('binder-page').hidden && /Toutes les cartes/.test(d5.getElementById('binder-title').textContent) && d5.getElementById('binder-back').hidden);
   await openB(d5, 'numetal');
   const kslot = d5.querySelector('#grid .slot[data-id="korn"]');
   check('doublons : 3 exemplaires = 2 cartes empilées derrière', kslot && kslot.querySelectorAll('.layers i').length === 2);
@@ -379,6 +380,16 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('blind test : score sur 5 à la fin', /\d \/ 5/.test(d9.getElementById('qz-t').textContent));
   d9.getElementById('qz-end').click(); await sleep(50);
   check('blind test : score envoyé une fois, écran fermé, plus proposé', played && played.m === 'korn' && played.sc >= 0 && d9.getElementById('quiz').hidden && ![...d9.querySelectorAll('#quest-list .quizgo')].some(b => /Maîtrise de Jonathan/.test(b.textContent)));
+  // extrait du style : toucher un style lance son hymne ; il s'arrête quand on quitte les classeurs
+  let styleSrc = null; const play9 = w9.HTMLMediaElement.prototype.play;
+  w9.HTMLMediaElement.prototype.play = function(){ if (/^data:audio/.test(this.src)) styleSrc = this.src; return Promise.resolve(); };
+  d9.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
+  await openB(d9, 'numetal'); await sleep(40);
+  const sl9 = d9.getElementById('si-listen'), lp9 = () => sl9.querySelector('.lp');
+  check('extrait du style : lancé au toucher du style, avec son lecteur', !sl9.hidden && sl9.getAttribute('data-id') === 'korn' && !!styleSrc && lp9() && lp9().getAttribute('aria-pressed') === 'true');
+  d9.querySelector('.tabbar [data-v="packs"]').click(); await sleep(20);
+  check('extrait du style : arrêté en quittant les classeurs', lp9() && lp9().getAttribute('aria-pressed') === 'false');
+  w9.HTMLMediaElement.prototype.play = play9;
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
   const cryCard = [...d9.querySelectorAll('#quest-list .quizgo')].find(b => /Qui a poussé ce cri/.test(b.textContent));
   check('blind test des cris : proposé dans le carrousel', !!cryCard);

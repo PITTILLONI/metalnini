@@ -1070,6 +1070,7 @@
       <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="binder-trade" aria-label="Échanger des cartes avec un pote"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></button><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></button></div>
       <div class="progress"><span id="prog-txt"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct"></span></div>
       <details class="style-info" id="style-info" hidden><summary id="si-sum"></summary><div id="si-body"></div></details>
+      <div class="listen si-listen" id="si-listen" hidden></div>
     </div>
   <div class="grid" id="grid"></div>
   <div class="matrix" id="matrix" hidden></div>
@@ -1769,7 +1770,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(audio){ audio.pause(); audio = null; if(typeof duck === 'function') duck(revealEl && !revealEl.hidden ? .35 : 1); }
     if(listenEl){ var b = listenEl.querySelector('.lp'); if(b){ b.style.setProperty('--pg', 0); b.setAttribute('aria-pressed', 'false'); b.firstChild.outerHTML = PLAY; } listenEl = null; }
   }
-  // remplit un conteneur .listen pour une carte ; il reste masqué si aucun extrait n'est trouvé ; auto : lecture lancée tout de suite (réglage « Extrait auto »)
+  // remplit un conteneur .listen pour une carte ; il reste masqué si aucun extrait n'est trouvé ;
+  // auto : lecture lancée tout de suite (réglage « Extrait auto »), 'tap' : lancée parce que le joueur vient de toucher un style
   function showListen(el, id, auto){
     stopListen(); el.hidden = true; el.innerHTML = ''; el.setAttribute('data-id', id);
     track(id).then(function(t){
@@ -1787,7 +1789,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         if(audio && listenEl === el){ var on = audio.paused; on ? audio.play() : audio.pause(); b.firstChild.outerHTML = on ? PAUSE : PLAY; b.setAttribute('aria-pressed', on); return; }
         start();
       };
-      if(auto && state.autoplay !== false) start();
+      if(auto === 'tap' || (auto && state.autoplay !== false)) start();
     });
   }
   function hideListen(el){ stopListen(); el.hidden = true; el.innerHTML = ''; el.removeAttribute('data-id'); }
@@ -2986,7 +2988,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function go(v){
     ['packs','binder','corner','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
-    if(v === 'binder') renderBinder();
+    if(v === 'binder') renderBinder(); else if(listenEl && listenEl.id === 'si-listen') stopListen();   // l'extrait du style s'arrête quand on quitte les classeurs
     if(v === 'corner'){ renderCorner(); renderSocial(); if(ONLINE) ONLINE.tradeCount().then(function(n){ state.trades = n; save(); renderCorner(); }).catch(function(){}); }
     if(v === 'packs' && state.welcome && !ONLINE){ onbSave(); }
     if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
@@ -3654,21 +3656,29 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function total(id){ var n=0; RARITIES.forEach(function(r){ n += state.owned[id+'|'+r.k] || 0; }); return n; }
   // classeurs : catégorie (puces) → cartes de classeur → page du classeur ; « Collection » ouvre directement toutes les cartes
   var KINDS = ['Collection', 'Styles', 'Instruments', 'Groupes'];
-  // la catégorie « Collection » n'apparaît qu'à partir de deux collections ; « Toutes les cartes » reste la page de rangement
-  function shownKinds(){ var nc = BINDERS.filter(function(b){ return b.kind === 'Collection'; }).length; return KINDS.filter(function(k){ return k !== 'Collection' || nc > 1; }); }
+  // tant qu'il n'y a qu'une collection, sa puce s'appelle « Toutes » et ouvre directement « Toutes les cartes » (la page de rangement)
+  function soloCollection(){ var c = BINDERS.filter(function(b){ return b.kind === 'Collection'; }); return c.length === 1 ? c[0] : null; }
+  function kindLabel(k){ return k === 'Collection' && soloCollection() ? 'Toutes' : k; }
+  // extrait du style : l'hymne du style (premier morceau « À écouter »), lancé quand on touche le classeur du style
+  var styleTap = false;
+  function styleTrack(k){ var si = STYLE_INFO[k]; return si && si.play ? si.play.filter(function(id){ return TRACKS[id]; })[0] || null : null; }
   function openBinder(k){ var b = binderOf(k); state.binder = b.k; state.binderKind = b.kind; state.binderOpen = true; save(); }
   function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
   function renderBinder(){
     if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
-    var shown = shownKinds(), kind = KINDS.indexOf(state.binderKind) === -1 ? shown[0] : state.binderKind;
-    if(shown.indexOf(kind) === -1 && !(state.binderOpen && binderOf(state.binder).kind === kind)) kind = shown[0];
+    var kind = KINDS.indexOf(state.binderKind) === -1 ? KINDS[0] : state.binderKind, solo = kind === 'Collection' && soloCollection();
+    if(solo){ state.binderOpen = true; state.binder = solo.k; }
     var kindsEl = document.getElementById('binder-kinds');
-    kindsEl.innerHTML = shown.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + k + '</button>'; }).join('');
+    kindsEl.innerHTML = KINDS.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + kindLabel(k) + '</button>'; }).join('');
     [].forEach.call(kindsEl.children, function(btn){ btn.onclick = function(){ state.binderKind = btn.getAttribute('data-kind'); state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); }; });
     var inPage = state.binderOpen && binderOf(state.binder).kind === kind;
     document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage;
     document.getElementById('save-banner').hidden = !(state.welcome && !ONLINE); document.getElementById('binder-page').hidden = !inPage;
+    var sl = document.getElementById('si-listen');
     if(!inPage){
+      if(sl.hasAttribute('data-id')) hideListen(sl);
+      // extraits des styles préchargés : au toucher, la lecture part tout de suite (le navigateur l'autorise encore)
+      if(kind === 'Styles') BINDERS.forEach(function(b){ var t = b.kind === 'Styles' && styleTrack(b.k); if(t) track(t); });
       var list = document.getElementById('binder-list'); list.classList.toggle('sub', kind !== 'Collection');
       // un classeur dont aucune carte n'est encore prête n'apparaît pas
       list.innerHTML = BINDERS.filter(function(b){ return b.kind === kind && b.ids.some(function(id){ return card(id); }); }).map(function(b){
@@ -3680,10 +3690,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           (binderDone(b) ? '<span class="done">Complet ✓</span>' : '') +
           '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + crans(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
       }).join('');
-      [].forEach.call(list.children, function(c){ c.onclick = function(){ openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
+      [].forEach.call(list.children, function(c){ c.onclick = function(){ styleTap = true; openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
       return;
     }
-    document.getElementById('binder-back').textContent = '← ' + (shown.indexOf(kind) === -1 ? shown[0] : kind);
+    var back = document.getElementById('binder-back'); back.textContent = '← ' + kindLabel(kind); back.hidden = !!solo;
     var b = binderOf(state.binder);
     // emplacements numérotés de 1 à N dans le classeur, dans l'ordre des arcanes, comme les cases d'un album
     var dir = state.sortDir === 'desc' ? -1 : 1, pos = {};
@@ -3702,6 +3712,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       state.stylesSeen = state.stylesSeen || {}; if(box.dataset.k !== b.k){ box.open = !state.stylesSeen[b.k]; box.dataset.k = b.k; }
       if(!state.stylesSeen[b.k]){ state.stylesSeen[b.k] = true; save(); }
     }
+    // le lecteur reste en place quand la page se redessine ; relancé seulement quand on vient de toucher le style
+    var st = b.kind === 'Styles' ? styleTrack(b.k) : null;
+    if(!st){ if(sl.hasAttribute('data-id')) hideListen(sl); }
+    else if(styleTap || sl.getAttribute('data-id') !== st) showListen(sl, st, styleTap ? 'tap' : false);
+    styleTap = false;
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
@@ -3761,7 +3776,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('sort-done').addEventListener('click', function(){ sortSheet.hidden = true; });
   sortSheet.addEventListener('click', function(e){ if(e.target === sortSheet) sortSheet.hidden = true; });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sortSheet.hidden) sortSheet.hidden = true; });
-  document.getElementById('binder-back').addEventListener('click', function(){ state.binderOpen = false; if(shownKinds().indexOf(state.binderKind) === -1) state.binderKind = shownKinds()[0]; save(); renderBinder(); window.scrollTo(0, 0); });
+  document.getElementById('binder-back').addEventListener('click', function(){ state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); });
 
   // ---------- Détail ----------
   var sheet = document.getElementById('sheet');
