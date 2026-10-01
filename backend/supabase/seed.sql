@@ -47,7 +47,7 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('gerard-way', 'Gerard Way', 'My Chemical Romance', 'Welcome to the Black Parade', 'XLVI', array['chant']::text[], 'Emo'),
   ('bennington', 'Chester Bennington', 'Linkin Park', 'Numb', 'XLVII', array['chant']::text[], 'Nu metal'),
   ('prince', 'Prince', 'Prince', 'Purple Rain', 'XLVIII', array['chant', 'guitare']::text[], 'Funk rock'),
-  ('axl', 'Axl Rose', 'Guns N'' Roses', 'Paradise City', 'XLIX', array['chant']::text[], 'Hard rock')
+  ('morello', 'Tom Morello', 'Rage Against the Machine', 'Killing in the Name', 'L', array['guitare']::text[], 'Rap metal')
 on conflict (id) do nothing;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -276,11 +276,11 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('prince', 'holo', 'cards/prince-holo.jpg'),
   ('prince', 'signature', 'cards/prince-signature.jpg'),
   ('prince', 'legendaire', 'cards/prince-legendaire.jpg'),
-  ('axl', 'commune', 'cards/axl-commune.jpg'),
-  ('axl', 'rare', 'cards/axl-rare.jpg'),
-  ('axl', 'holo', 'cards/axl-holo.jpg'),
-  ('axl', 'signature', 'cards/axl-signature.jpg'),
-  ('axl', 'legendaire', 'cards/axl-legendaire.jpg')
+  ('morello', 'commune', 'cards/morello-commune.jpg'),
+  ('morello', 'rare', 'cards/morello-rare.jpg'),
+  ('morello', 'holo', 'cards/morello-holo.jpg'),
+  ('morello', 'signature', 'cards/morello-signature.jpg'),
+  ('morello', 'legendaire', 'cards/morello-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -299,7 +299,7 @@ insert into public.binders (id, kind, label, sort) values
   ('g-kl', 'band', 'Knocked Loose', 12),
   ('g-blink', 'band', 'Blink-182', 13),
   ('g-slipknot', 'band', 'Slipknot', 14),
-  ('g-gnr', 'band', 'Guns N'' Roses', 15)
+  ('g-ratm', 'band', 'Rage Against the Machine', 15)
 on conflict (id) do nothing;
 
 insert into public.binder_members (binder_id, musician_id) values
@@ -348,7 +348,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'gerard-way'),
   ('all', 'bennington'),
   ('all', 'prince'),
-  ('all', 'axl'),
+  ('all', 'morello'),
   ('metalcore', 'spiritbox'),
   ('metalcore', 'jinjer'),
   ('metalcore', 'landmvrks'),
@@ -367,6 +367,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('numetal', 'poppy'),
   ('numetal', 'tankian'),
   ('numetal', 'bennington'),
+  ('numetal', 'morello'),
   ('poppunk', 'blink182'),
   ('poppunk', 'hoppus'),
   ('poppunk', 'hayley'),
@@ -378,7 +379,6 @@ insert into public.binder_members (binder_id, musician_id) values
   ('legendes', 'angus'),
   ('legendes', 'mercury'),
   ('legendes', 'prince'),
-  ('legendes', 'axl'),
   ('heavy', 'dickinson'),
   ('heavy', 'halford'),
   ('heavy', 'ozzy'),
@@ -408,6 +408,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('guitaristes', 'angus'),
   ('guitaristes', 'hammett'),
   ('guitaristes', 'prince'),
+  ('guitaristes', 'morello'),
   ('bassistes', 'hoppus'),
   ('bassistes', 'lemmy'),
   ('bassistes', 'araya'),
@@ -417,8 +418,8 @@ insert into public.binder_members (binder_id, musician_id) values
   ('g-blink', 'hoppus'),
   ('g-slipknot', 'root'),
   ('g-slipknot', 'jordison'),
-  ('g-gnr', 'slash'),
-  ('g-gnr', 'axl')
+  ('g-ratm', 'zack'),
+  ('g-ratm', 'morello')
 on conflict do nothing;
 
 insert into public.pack_types (id, label, size, binder_id) values

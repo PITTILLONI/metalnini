@@ -92,7 +92,8 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 
 **prince** — Chanteur, guitariste et multi-instrumentiste de Minneapolis. L'album Purple Rain (1984), bande originale du film du même nom, contient l'un des solos de guitare les plus célèbres du rock ; il est mort en 2016.
 
-**axl** — Chanteur de Guns N' Roses, groupe de hard rock formé à Los Angeles en 1985. Sa voix éraillée qui monte dans les aigus, son bandana et sa danse de serpent marquent Appetite for Destruction (1987), d'où viennent Welcome to the Jungle et Paradise City ; en 2016, il retrouve Slash et Duff McKagan pour la tournée Not in This Lifetime.
+
+**morello** — Guitariste de Rage Against the Machine, groupe de rap metal formé à Los Angeles en 1991, puis d'Audioslave avec Chris Cornell. Diplômé de Harvard, il tire de sa guitare des sons de platines et de sirènes avec ses pédales et son interrupteur ; ses guitares portent des slogans militants, comme « Arm the Homeless ».
 
 
 # Fiches des styles (page d'un classeur) — à relire

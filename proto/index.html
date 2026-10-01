@@ -1533,19 +1533,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
     {k:'metalcore', kind:'Styles', label:'Metalcore', ids:['spiritbox','jinjer','landmvrks','heriot','sykes']},
     {k:'hardcore',  kind:'Styles', label:'Hardcore & extrême', ids:['knocked-loose','isaac-hale','ramos','duplantier','white-gluz','corpsegrinder']},
-    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy','tankian','bennington']},
+    {k:'numetal',   kind:'Styles', label:'Nu metal & alternatif', ids:['korn','root','jordison','zack','poppy','tankian','bennington','morello']},
     {k:'poppunk',   kind:'Styles', label:'Pop punk', ids:['blink182','hoppus','hayley','armstrong','gerard-way']},
-    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante','angus','mercury','prince','axl']},
+    {k:'legendes',  kind:'Styles', label:'Légendes du rock', ids:['hendrix','slash','frusciante','angus','mercury','prince']},
     {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro']},
     {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett']},
     {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','keenan']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison']},
-    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince']},
+    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince','morello']},
     {k:'bassistes', kind:'Instruments', label:'Les bassistes', ids:['hoppus','lemmy','araya']},
     {k:'g-kl',      kind:'Groupes', label:'Knocked Loose', ids:['knocked-loose','isaac-hale']},
     {k:'g-blink',   kind:'Groupes', label:'Blink-182', ids:['blink182','hoppus']},
     {k:'g-slipknot', kind:'Groupes', label:'Slipknot', ids:['root','jordison']},
-    {k:'g-gnr',     kind:'Groupes', label:"Guns N' Roses", ids:['slash','axl']}
+    {k:'g-ratm',    kind:'Groupes', label:'Rage Against the Machine', ids:['zack','morello']}
   ];
   // un classeur de groupe garde son nom secret tant qu'aucune carte du groupe n'a été trouvée
   function binderLabel(b){ return b.kind === 'Groupes' && !b.ids.some(function(id){ return best(id); }) ? 'Groupe mystère' : b.label; }
@@ -1598,7 +1598,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['gerard-way','Gerard Way','My Chemical Romance','Welcome to the Black Parade','XLVI','Chant','Emo'],
     ['bennington','Chester Bennington','Linkin Park','Numb','XLVII','Chant','Nu metal'],
     ['prince','Prince','Prince','Purple Rain','XLVIII','Chant, guitare','Funk rock'],
-    ['axl','Axl Rose',"Guns N' Roses",'Paradise City','XLIX','Chant','Hard rock']
+    ['morello','Tom Morello','Rage Against the Machine','Killing in the Name','L','Guitare','Rap metal']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -1649,7 +1649,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'gerard-way':['Umbrella Academy', 'Il a écrit la BD The Umbrella Academy, adaptée en série.'],
     bennington:['Pilote de relève', 'De 2013 à 2015, il remplace Scott Weiland au chant de Stone Temple Pilots.'],
     prince:['Homme-orchestre', 'Sur son premier album, For You (1978), il joue lui-même tous les instruments.'],
-    axl:['Intérim chez AC/DC', 'En 2016, il remplace Brian Johnson au chant d\'AC/DC pour finir la tournée Rock or Bust.']
+    morello:['Scratch sans platines', 'Le solo de Bulls on Parade imite un DJ qui scratche : il frotte les cordes sur les micros en jouant de l\'interrupteur.']
   };
   // présentation courte de l'artiste ou du groupe (faits établis), affichée à la révélation
   var BIOS = {
@@ -1698,7 +1698,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'gerard-way':'Chanteur de My Chemical Romance, groupe du New Jersey, figure de l\'emo des années 2000.',
     bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus.',
     prince:'Chanteur, guitariste et multi-instrumentiste de Minneapolis ; l\'album Purple Rain (1984) accompagne le film du même nom.',
-    axl:'Chanteur de Guns N\' Roses, groupe de hard rock de Los Angeles formé en 1985.'
+    morello:'Guitariste de Rage Against the Machine, groupe de rap metal de Los Angeles formé en 1991.'
   };
   // présentations détaillées (fiche carte, section « L'artiste ») ; la courte BIOS reste pour la révélation
   var BIOS_LONG = {
@@ -1747,10 +1747,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'gerard-way':'Chanteur de My Chemical Romance, formé dans le New Jersey en 2001. L\'album The Black Parade (2006) et son hymne Welcome to the Black Parade marquent l\'emo des années 2000 ; il est aussi auteur de bandes dessinées, dont The Umbrella Academy.',
     bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus. Sa voix, qui passe d\'un chant fragile à des cris déchirants, porte Numb (2003) ; il est mort en 2017.',
     prince:'Chanteur, guitariste et multi-instrumentiste de Minneapolis. L\'album Purple Rain (1984), bande originale du film du même nom, contient l\'un des solos de guitare les plus célèbres du rock ; il est mort en 2016.',
-    axl:'Chanteur de Guns N\' Roses, groupe de hard rock formé à Los Angeles en 1985. Sa voix éraillée qui monte dans les aigus, son bandana et sa danse de serpent marquent Appetite for Destruction (1987), d\'où viennent Welcome to the Jungle et Paradise City ; en 2016, il retrouve Slash et Duff McKagan pour la tournée Not in This Lifetime.'
+    morello:'Guitariste de Rage Against the Machine, groupe de rap metal formé à Los Angeles en 1991, puis d\'Audioslave avec Chris Cornell. Diplômé de Harvard, il tire de sa guitare des sons de platines et de sirènes avec ses pédales et son interrupteur ; ses guitares portent des slogans militants, comme « Arm the Homeless ».'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
-  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1632526090, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'axl':1377826748, 'zack':171209471, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':272252873, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1160082180, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478};
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1632526090, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, 'zack':171209471, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':272252873, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1160082180, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478};
   var tracks = {}, audio = null, listenEl = null;
   function track(id){
     if(!TRACKS[id] || !window.fetch) return Promise.resolve(null);

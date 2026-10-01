@@ -50,26 +50,26 @@ public enum Catalog {
         .init(id: "gerard-way", name: "Gerard Way", band: "My Chemical Romance", arcanaTitle: "Welcome to the Black Parade", arcanaNumber: "XLVI", instruments: [.chant], subgenre: "Emo"),
         .init(id: "bennington", name: "Chester Bennington", band: "Linkin Park", arcanaTitle: "Numb", arcanaNumber: "XLVII", instruments: [.chant], subgenre: "Nu metal"),
         .init(id: "prince", name: "Prince", band: "Prince", arcanaTitle: "Purple Rain", arcanaNumber: "XLVIII", instruments: [.chant, .guitare], subgenre: "Funk rock"),
-        .init(id: "axl", name: "Axl Rose", band: "Guns N' Roses", arcanaTitle: "Paradise City", arcanaNumber: "XLIX", instruments: [.chant], subgenre: "Hard rock"),
+        .init(id: "morello", name: "Tom Morello", band: "Rage Against the Machine", arcanaTitle: "Killing in the Name", arcanaNumber: "L", instruments: [.guitare], subgenre: "Rap metal"),
     ]
 
     public static let binders: [Binder] = [
         .init(id: "all", kind: .collection, label: "Toutes les cartes", musicianIDs: musicians.map(\.id)),
         .init(id: "metalcore", kind: .style, label: "Metalcore", musicianIDs: ["spiritbox", "jinjer", "landmvrks", "heriot", "sykes"]),
         .init(id: "hardcore", kind: .style, label: "Hardcore & extrême", musicianIDs: ["knocked-loose", "isaac-hale", "ramos", "duplantier", "white-gluz", "corpsegrinder"]),
-        .init(id: "numetal", kind: .style, label: "Nu metal & alternatif", musicianIDs: ["korn", "root", "jordison", "zack", "poppy", "tankian", "bennington"]),
+        .init(id: "numetal", kind: .style, label: "Nu metal & alternatif", musicianIDs: ["korn", "root", "jordison", "zack", "poppy", "tankian", "bennington", "morello"]),
         .init(id: "poppunk", kind: .style, label: "Pop punk", musicianIDs: ["blink182", "hoppus", "hayley", "armstrong", "gerard-way"]),
-        .init(id: "legendes", kind: .style, label: "Légendes du rock", musicianIDs: ["hendrix", "slash", "frusciante", "angus", "mercury", "prince", "axl"]),
+        .init(id: "legendes", kind: .style, label: "Légendes du rock", musicianIDs: ["hendrix", "slash", "frusciante", "angus", "mercury", "prince"]),
         .init(id: "heavy", kind: .style, label: "Heavy metal", musicianIDs: ["dickinson", "halford", "ozzy", "lemmy", "dio", "doro"]),
         .init(id: "thrash", kind: .style, label: "Thrash", musicianIDs: ["hetfield", "mustaine", "araya", "scott-ian", "hammett"]),
         .init(id: "grunge", kind: .style, label: "Grunge & alternatif", musicianIDs: ["cobain", "cornell", "staley", "grohl", "keenan"]),
         .init(id: "batteurs", kind: .instrument, label: "Les batteurs", musicianIDs: ["blink182", "duplantier", "jordison"]),
-        .init(id: "guitaristes", kind: .instrument, label: "Les guitaristes", musicianIDs: ["isaac-hale", "hendrix", "slash", "frusciante", "root", "mustaine", "scott-ian", "angus", "hammett", "prince"]),
+        .init(id: "guitaristes", kind: .instrument, label: "Les guitaristes", musicianIDs: ["isaac-hale", "hendrix", "slash", "frusciante", "root", "mustaine", "scott-ian", "angus", "hammett", "prince", "morello"]),
         .init(id: "bassistes", kind: .instrument, label: "Les bassistes", musicianIDs: ["hoppus", "lemmy", "araya"]),
         .init(id: "g-kl", kind: .band, label: "Knocked Loose", musicianIDs: ["knocked-loose", "isaac-hale"]),
         .init(id: "g-blink", kind: .band, label: "Blink-182", musicianIDs: ["blink182", "hoppus"]),
         .init(id: "g-slipknot", kind: .band, label: "Slipknot", musicianIDs: ["root", "jordison"]),
-        .init(id: "g-gnr", kind: .band, label: "Guns N' Roses", musicianIDs: ["slash", "axl"]),
+        .init(id: "g-ratm", kind: .band, label: "Rage Against the Machine", musicianIDs: ["zack", "morello"]),
     ]
 
     public static let packTypes: [PackType] = [
