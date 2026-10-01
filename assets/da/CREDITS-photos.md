@@ -38,3 +38,18 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | bennington | [Linkin_Park-Rock_im_Park_2014-_by_2eight_3SC0327.jpg](https://commons.wikimedia.org/wiki/File:Linkin_Park-Rock_im_Park_2014-_by_2eight_3SC0327.jpg) | Stefan Brending (2eight) | CC BY-SA 3.0 |
 | prince | [Prince_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Prince_(cropped).jpg) | Levi Seacer | CC BY-SA 4.0 |
 | morello | [Tom_Morello_-_MuseBristol_050619-17_(48035846733)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Tom_Morello_-_MuseBristol_050619-17_(48035846733)_(cropped).jpg) | Raph_PH | CC BY 4.0 |
+| lars | [Lars_Ulrich_by_Gage_Skidmore.jpg](https://commons.wikimedia.org/wiki/File:Lars_Ulrich_by_Gage_Skidmore.jpg) | Gage Skidmore | CC BY-SA 3.0 |
+| burton | [Metallica_1983_press_photo_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Metallica_1983_press_photo_(cropped).jpg) | Distributed by Megaforce Records | Public domain |
+| lombardo | [DC2018.jpg](https://commons.wikimedia.org/wiki/File:DC2018.jpg) | Venamoris | CC BY-SA 4.0 |
+| harris | [Steve_Harris_–_Iron_Maiden_–_Tons_of_Rock_2026.jpg](https://commons.wikimedia.org/wiki/File:Steve_Harris_%E2%80%93_Iron_Maiden_%E2%80%93_Tons_of_Rock_2026.jpg) | Birgit Fostervold | CC BY-SA 4.0 |
+| iommi | [Tony-Iommi_2009-06-11_Chicago_photoby_Adam-Bielawski.jpg](https://commons.wikimedia.org/wiki/File:Tony-Iommi_2009-06-11_Chicago_photoby_Adam-Bielawski.jpg) | Photobra (Adam Bielawski) | CC BY-SA 3.0 |
+| may | [TaylorHawkTributeWemb030922_(208_copped).jpg](https://commons.wikimedia.org/wiki/File:TaylorHawkTributeWemb030922_(208_copped).jpg) | Raph_PH | CC BY 2.0 |
+| page | [Jimmy_Page_at_the_Echo_music_award_2013.jpg](https://commons.wikimedia.org/wiki/File:Jimmy_Page_at_the_Echo_music_award_2013.jpg) | Avda | CC BY-SA 3.0 |
+| plant | [Robert_Plant_(2022)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Robert_Plant_(2022)_(cropped).jpg) | Raph_PH | CC BY 2.0 |
+| bonham | [John_Bonham_1975.jpg](https://commons.wikimedia.org/wiki/File:John_Bonham_1975.jpg) | Dina Regine | CC BY-SA 2.0 |
+| flea | [2016_Red_Hot_Chili_Peppers_-_Michael_Flea_Balzary_(cropped).jpg](https://commons.wikimedia.org/wiki/File:2016_Red_Hot_Chili_Peppers_-_Michael_Flea_Balzary_(cropped).jpg) | Stefan Brending (2eight) | CC BY-SA 3.0 |
+| corey | [20180602_Nürnberg_Rock_im_Park_Stone_Sour_0270_(cropped).jpg](https://commons.wikimedia.org/wiki/File:20180602_N%C3%BCrnberg_Rock_im_Park_Stone_Sour_0270_(cropped).jpg) | Markus Felix | PushingPixels | CC BY-SA 4.0 |
+| shinoda | [Mike_Shinoda_2011_(suran2007)_-_Flickr.jpg](https://commons.wikimedia.org/wiki/File:Mike_Shinoda_2011_(suran2007)_-_Flickr.jpg) | suran2007 | CC BY 2.0 |
+| malakian | [Daron_Malakian_live_2026.png](https://commons.wikimedia.org/wiki/File:Daron_Malakian_live_2026.png) | Californipedia | CC0 |
+| joe-duplantier | [2017_RiP_-_Gojira_-_Joe_Duplantier_-_by_2eight_-_8SC9257.jpg](https://commons.wikimedia.org/wiki/File:2017_RiP_-_Gojira_-_Joe_Duplantier_-_by_2eight_-_8SC9257.jpg) | Stefan Brending (2eight) | CC BY-SA 4.0 |
+| amy-lee | [Amy_Lee_of_Evanescence_@_Maquinária_Festival_03.jpg](https://commons.wikimedia.org/wiki/File:Amy_Lee_of_Evanescence_@_Maquin%C3%A1ria_Festival_03.jpg) | Silvio Tanaka from Sao Paulo, Brazil | CC BY 2.0 |

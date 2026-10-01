@@ -83,4 +83,5 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 - **Paquets dédiés aux nouveaux styles.**
 - **Backlog** :
   - carte en fond d'écran de téléphone ;
-  - « Blind test des growls », sous réserve de licences.
+  - « Blind test des growls », sous réserve de licences ;
+  - jeu autour des danses de concert (pogo, slam, crowd killing, circle pit, wall of death…), idée du propriétaire du 2026-10-01, à cadrer.

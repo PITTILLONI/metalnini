@@ -22,19 +22,25 @@ def api_key():
 
 
 def call(method, path, key, body=None):
-    req = urllib.request.Request(
-        API + path, method=method,
-        data=json.dumps(body).encode() if body is not None else None,
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return json.load(r)
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode(errors="replace")[:300]
-        if e.code == 402:
-            sys.exit("Solde API Krea insuffisant (HTTP 402) : recharger le compte.")
-        sys.exit(f"Erreur Krea HTTP {e.code} sur {path} : {detail}")
+    # HTTP 429 : trop de générations en même temps chez Krea (4 au plus) ; on attend qu'une place se libère
+    for attempt in range(40):
+        req = urllib.request.Request(
+            API + path, method=method,
+            data=json.dumps(body).encode() if body is not None else None,
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode(errors="replace")[:300]
+            if e.code == 429:
+                time.sleep(30)
+                continue
+            if e.code == 402:
+                sys.exit("Solde API Krea insuffisant (HTTP 402) : recharger le compte.")
+            sys.exit(f"Erreur Krea HTTP {e.code} sur {path} : {detail}")
+    sys.exit(f"Krea toujours saturé (HTTP 429) après 20 minutes d'attente sur {path}.")
 
 
 def main():

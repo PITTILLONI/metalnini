@@ -95,18 +95,48 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 
 **morello** — Guitariste de Rage Against the Machine, groupe de rap metal formé à Los Angeles en 1991, puis d'Audioslave avec Chris Cornell. Diplômé de Harvard, il tire de sa guitare des sons de platines et de sirènes avec ses pédales et son interrupteur ; ses guitares portent des slogans militants, comme « Arm the Homeless ».
 
+**lars** — Batteur et cofondateur de Metallica, groupe de thrash formé à Los Angeles en 1981. Né au Danemark, il a monté le groupe avec James Hetfield grâce à une petite annonce ; il co-écrit l'essentiel des morceaux, de Master of Puppets (1986) à One (1988).
+
+**burton** — Bassiste de Metallica de 1982 à 1986. Formé au classique, il jouait de la basse comme d'une guitare solo, avec distorsion et pédale wah-wah ; il a marqué Ride the Lightning (1984) et Master of Puppets (1986), dont l'instrumental Orion. Il est mort en 1986 dans l'accident du bus de tournée du groupe.
+
+**lombardo** — Batteur de Slayer, groupe de thrash formé à Huntington Park, en Californie, en 1981. Sa double pédale rapide et précise sur Reign in Blood (1986) a servi de modèle à des générations de batteurs de metal extrême ; il a aussi joué avec Testament, Suicidal Tendencies et Mr. Bungle.
+
+**harris** — Bassiste, fondateur et principal compositeur d'Iron Maiden, groupe de heavy metal formé dans l'est de Londres en 1975. Sa basse au galop, jouée aux doigts, est la signature du groupe ; supporter de West Ham, il en porte souvent les couleurs sur scène.
+
+**iommi** — Guitariste et fondateur de Black Sabbath, groupe formé à Birmingham en 1968, souvent cité comme l'inventeur du heavy metal. Ses riffs lourds et sombres, de Paranoid à Iron Man (1970), ont posé les bases de tout le genre.
+
+**may** — Guitariste de Queen, groupe formé à Londres en 1970. Il a écrit We Will Rock You et joue sur la Red Special, une guitare qu'il a fabriquée avec son père quand il était adolescent ; docteur en astrophysique, il a soutenu sa thèse en 2007.
+
+**page** — Guitariste, fondateur et producteur de Led Zeppelin, groupe formé à Londres en 1968. Ancien musicien de studio très demandé, il a signé des riffs devenus des classiques, de Whole Lotta Love à Kashmir, et le solo de Stairway to Heaven (1971).
+
+**plant** — Chanteur de Led Zeppelin, groupe formé à Londres en 1968. Sa voix aiguë et puissante, de Whole Lotta Love (1969) à Stairway to Heaven, a défini le chant hard rock ; il a ensuite mené une longue carrière solo et enregistré Raising Sand (2007) avec Alison Krauss.
+
+**bonham** — Batteur de Led Zeppelin, groupe formé à Londres en 1968. Sa frappe puissante et son groove, de Moby Dick à When the Levee Breaks, en font l'un des batteurs les plus influents du rock ; à sa mort en 1980, le groupe s'est séparé.
+
+**flea** — Bassiste et cofondateur des Red Hot Chili Peppers, groupe formé à Los Angeles en 1983. Son slap funk, de Give It Away (1991) à Can't Stop, a mis la basse au premier plan du rock ; il joue aussi de la trompette et tourne comme acteur au cinéma.
+
+**corey** — Chanteur de Slipknot, groupe de nu metal formé à Des Moines, dans l'Iowa, en 1995, où il porte le numéro 8 et un masque. Il passe des hurlements aux refrains mélodiques, comme sur Before I Forget (2004), et chante aussi dans Stone Sour.
+
+**shinoda** — Cofondateur de Linkin Park, groupe formé en Californie en 1996, où il rappe, chante, joue des claviers et de la guitare et produit. Sur Hybrid Theory (2000), ses couplets rappés répondent au chant de Chester Bennington, comme sur In the End.
+
+**malakian** — Guitariste, chanteur et principal compositeur de System of a Down, groupe formé à Los Angeles en 1994. Ses riffs saccadés et ses mélodies venues de la musique arménienne marquent Toxicity (2001) et Chop Suey!.
+
+**joe-duplantier** — Chanteur, guitariste et principal compositeur de Gojira, groupe formé en 1996 dans les Landes avec son frère Mario. Riffs massifs, harmoniques sifflées et textes engagés pour l'environnement, de From Mars to Sirius (2005) à L'Enfant sauvage (2012).
+
+**amy-lee** — Chanteuse, pianiste et cofondatrice d'Evanescence, groupe formé à Little Rock, dans l'Arkansas, en 1995. Formée au piano classique, elle mêle chant lyrique et guitares lourdes ; Bring Me to Life (2003) a fait de Fallen l'un des albums rock les plus vendus des années 2000.
+
 
 # Fiches des styles (page d'un classeur) — à relire
 
-**metalcore** (Années 1990 à aujourd'hui) — Né aux États-Unis dans les années 1990, le metalcore croise l'énergie du hardcore punk et les riffs du metal. On le reconnaît à ses breakdowns, ces passages ralentis et écrasants, et à l'alternance de cris et de refrains chantés. Repères : Breakdowns, Cris et chant clair, Guitares accordées bas.
+**metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
 
-**hardcore** (Années 1980 à aujourd'hui) — Ce classeur réunit le hardcore, né de la scène punk américaine au début des années 1980, et les formes extrêmes du metal comme le death metal et le deathcore. Tempos brutaux, voix gutturales ou hurlées, et des passages taillés pour le pit. Repères : Growl et cris, Breakdowns, Double pédale.
+**hardcore** (Fin des années 1980 à aujourd'hui) — Le death metal apparaît en Floride à la fin des années 1980 : voix gutturales, riffs techniques, tempos extrêmes et blast beats. Dans les années 2000, le deathcore y ajoute les breakdowns du metalcore.
 
-**numetal** (Milieu des années 1990 aux années 2000) — Apparu en Californie au milieu des années 1990, le nu metal mélange des riffs lourds et simples, des rythmiques groove et des influences hip-hop : rap, platines, samples. Il a dominé le début des années 2000 avec Korn, Linkin Park et System of a Down. Repères : Riffs groove, Rap et chant, Platines et samples.
+**numetal** (Milieu des années 1990 aux années 2000) — Apparu en Californie au milieu des années 1990, le nu metal mélange des riffs lourds et simples, des rythmiques groove et des influences hip-hop : rap, platines, samples. Il a dominé le début des années 2000 avec Korn, Slipknot et Linkin Park.
 
 **poppunk** (Années 1990 et 2000) — Le pop punk garde la vitesse et les trois accords du punk, et y ajoute des mélodies accrocheuses et des refrains à chanter en chœur. Il explose dans les années 1990 avec Green Day et Blink-182, puis revient en force avec l'emo des années 2000. Repères : Tempo rapide, Refrains en chœur, Textes adolescents.
 
-**legendes** (Années 1960 à 1990) — Les pionniers et les monstres sacrés du rock, ceux qui ont inventé les codes que tout le monde reprend encore. Guitar heroes, voix hors normes et morceaux devenus des hymnes de stade. Repères : Guitar heroes, Hymnes, Pionniers.
+**legendes** (Années 1960 à 1990) — Les pionniers et les monstres sacrés du rock, ceux qui ont inventé les codes que tout le monde reprend encore : guitar heroes, voix hors normes, basses funk et morceaux devenus des hymnes de stade.
 
 **heavy** (Fin des années 1960 aux années 1980) — Né en Angleterre à la fin des années 1960 avec Black Sabbath, le heavy metal pose les bases de tout le metal : riffs puissants, solos de guitare et voix aiguës. La nouvelle vague britannique, Iron Maiden en tête, l'a propulsé dans les années 1980. Repères : Riffs et solos, Voix aiguë, Cuir et clous.
 
@@ -120,3 +150,6 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 
 **bassistes** — Ils relient la batterie et les guitares, et donnent au son son épaisseur. Certains, comme Lemmy, en font un instrument de premier plan. Repères : Groove, Épaisseur, Lignes de basse.
 
+**alternatif** (Années 1990 à aujourd'hui) — Le metal alternatif réunit ceux qui sortent des cases : le rap metal engagé de Rage Against the Machine, les mélodies arméniennes de System of a Down, le metal gothique d'Evanescence ou le métal expérimental de Poppy. Des guitares lourdes au service de morceaux qui ne ressemblent qu'à eux.
+
+**hardrock** (Fin des années 1960 aux années 1980) — Le hard rock durcit le blues-rock à la fin des années 1960 : riffs de guitare saturés, voix puissantes et solos. Led Zeppelin et AC/DC en posent les bases, Guns N' Roses le ramène au sommet à la fin des années 1980.
