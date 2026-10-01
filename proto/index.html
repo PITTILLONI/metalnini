@@ -1541,7 +1541,7 @@ const api = {
   async claimWelcome(token, placed){ return must(await sb.rpc('claim_welcome_pack', { p_token: token, p_placed: placed })); },
   async claimInstall(){ return must(await sb.rpc('claim_install_reward')); },
   async claimPush(){ return must(await sb.rpc('claim_push_reward')); },
-  async requestArtist(a, n, prio){ must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
+  async requestArtist(a, n, prio){ return must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
   async claimBlindtest(m, score){ return must(await sb.rpc('claim_blindtest', { p_musician: m, p_score: score })); },
   async cryQuiz(){ return must(await sb.rpc('cry_quiz')); },
@@ -1750,6 +1750,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
   BINDERS[0].ids = CARDS.map(function(c){ return c.id; });
+  // carte secrète : une seule rareté, hors classeurs et hors décompte (demander « Céline Dion » ouvre 7 jours de chance infime, côté serveur)
+  var SECRET = [{id:'celine', who:'Céline Dion', band:'Céline Dion', title:'My Heart Will Go On', num:'0', inst:'Chant', genre:'Variété (carte secrète)', secret:true}];
 
   // coup spécial : un nom dans le ton du jeu, adossé à un fait réel. Sans fait vérifié, pas de coup spécial.
   var MOVES = {
@@ -1797,6 +1799,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     bennington:['Pilote de relève', 'De 2013 à 2015, il remplace Scott Weiland au chant de Stone Temple Pilots.'],
     prince:['Homme-orchestre', 'Sur son premier album, For You (1978), il joue lui-même tous les instruments.'],
     morello:['Scratch sans platines', 'Le solo de Bulls on Parade imite un DJ qui scratche : il frotte les cordes sur les micros en jouant de l\'interrupteur.'],
+    celine:['Le cœur continue', 'My Heart Will Go On, chanson du film Titanic, a remporté l\'Oscar de la meilleure chanson originale en 1998.'],
     'lars':['Petite annonce', 'Metallica est né d\'une petite annonce qu\'il a passée en 1981 dans un journal de Los Angeles.'],
     'burton':['Solo de basse', 'Sur le premier album de Metallica, (Anesthesia) Pulling Teeth est un solo de basse joué à la wah-wah.'],
     'lombardo':['Sprint', 'Reign in Blood, l\'album culte de Slayer sorti en 1986, dure moins de 29 minutes.'],
@@ -1861,6 +1864,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus.',
     prince:'Chanteur, guitariste et multi-instrumentiste de Minneapolis ; l\'album Purple Rain (1984) accompagne le film du même nom.',
     morello:'Guitariste de Rage Against the Machine, groupe de rap metal de Los Angeles formé en 1991.',
+    celine:'Carte secrète. Chanteuse québécoise, l\'une des voix les plus puissantes de la pop. Aucun growl, mais quel coffre.',
     'lars':'Batteur et cofondateur de Metallica, groupe de thrash formé à Los Angeles en 1981.',
     'burton':'Bassiste de Metallica de 1982 à 1986, mort à 24 ans dans l\'accident du bus de tournée.',
     'lombardo':'Batteur de Slayer, groupe de thrash formé en Californie en 1981.',
@@ -1925,6 +1929,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     bennington:'Chanteur de Linkin Park, groupe californien dont le premier album, Hybrid Theory (2000), est l\'un des disques de nu metal les plus vendus. Sa voix, qui passe d\'un chant fragile à des cris déchirants, porte Numb (2003) ; il est mort en 2017.',
     prince:'Chanteur, guitariste et multi-instrumentiste de Minneapolis. L\'album Purple Rain (1984), bande originale du film du même nom, contient l\'un des solos de guitare les plus célèbres du rock ; il est mort en 2016.',
     morello:'Guitariste de Rage Against the Machine, groupe de rap metal formé à Los Angeles en 1991, puis d\'Audioslave avec Chris Cornell. Diplômé de Harvard, il tire de sa guitare des sons de platines et de sirènes avec ses pédales et son interrupteur ; ses guitares portent des slogans militants, comme « Arm the Homeless ».',
+    celine:'Carte secrète : elle n\'est dans aucun classeur et presque personne ne l\'a. Chanteuse québécoise, elle chante en français et en anglais depuis les années 1980 ; My Heart Will Go On (1997), chanson du film Titanic, est l\'un des singles les plus vendus de l\'histoire. En 2024, elle fait son retour sur scène à la cérémonie d\'ouverture des Jeux olympiques de Paris.',
     'lars':'Batteur et cofondateur de Metallica, groupe de thrash formé à Los Angeles en 1981. Né au Danemark, il a monté le groupe avec James Hetfield grâce à une petite annonce ; il co-écrit l\'essentiel des morceaux, de Master of Puppets (1986) à One (1988).',
     'burton':'Bassiste de Metallica de 1982 à 1986. Formé au classique, il jouait de la basse comme d\'une guitare solo, avec distorsion et pédale wah-wah ; il a marqué Ride the Lightning (1984) et Master of Puppets (1986), dont l\'instrumental Orion. Il est mort en 1986 dans l\'accident du bus de tournée du groupe.',
     'lombardo':'Batteur de Slayer, groupe de thrash formé à Huntington Park, en Californie, en 1981. Sa double pédale rapide et précise sur Reign in Blood (1986) a servi de modèle à des générations de batteurs de metal extrême ; il a aussi joué avec Testament, Suicidal Tendencies et Mr. Bungle.',
@@ -1942,7 +1947,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'amy-lee':'Chanteuse, pianiste et cofondatrice d\'Evanescence, groupe formé à Little Rock, dans l\'Arkansas, en 1995. Formée au piano classique, elle mêle chant lyrique et guitares lourdes ; Bring Me to Life (2003) a fait de Fallen l\'un des albums rock les plus vendus des années 2000.'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
-  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478};
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478};
   // aperçus qui s'ouvrent sur une intro calme : on démarre là où le morceau décolle (secondes dans l'aperçu de 30 s,
   // mesurées sur le volume, 2026-10-01 ; les 4 premières secondes sous 65 % du volume du morceau)
   var TRACK_START = {'knocked-loose':11, 'isaac-hale':10, lars:11, burton:13, frusciante:7, dickinson:2};
@@ -1994,7 +1999,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
   function rank(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return i; return -1; }
-  function card(id){ for(var i=0;i<CARDS.length;i++) if(CARDS[i].id===id) return CARDS[i]; }
+  function card(id){ for(var i=0;i<CARDS.length;i++) if(CARDS[i].id===id) return CARDS[i]; for(i=0;i<(SECRET || []).length;i++) if(SECRET[i].id===id) return SECRET[i]; }
 
   // ---------- État (navigateur uniquement) ----------
   var KEY = 'metalnini-proto-v1';
@@ -3692,7 +3697,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     renderUnders();
     revealEl.classList.remove('dim'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
-    document.getElementById('counter').textContent = 'Carte ' + (idx+1) + ' / ' + current.length;
+    document.getElementById('counter').textContent = x.c.secret ? 'Carte secrète' : 'Carte ' + (idx+1) + ' / ' + current.length;
     document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la retourner. Ça mord pas.';
     renderDeck();
     document.getElementById('flip-img').src = img(x.c.id, x.r);
@@ -4268,7 +4273,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(a.length < 2){ asErr.textContent = 'Deux caractères minimum pour le nom.'; return; }
     btn.disabled = true; asErr.textContent = '';
     var prio = !document.getElementById('as-prio').hidden && document.getElementById('as-prio-in').checked;
-    try{ await ONLINE.requestArtist(a, note.value.trim() || null, prio); if(prio){ state.tickets--; save(); } name.value = ''; note.value = ''; closeArtist(); toast(prio ? 'Demande prioritaire envoyée. ' + esc(a) + ' passe en tête de la liste.' : 'Demande envoyée. Le Grand Architecte a noté ' + esc(a) + '.'); }
+    try{ var secret = await ONLINE.requestArtist(a, note.value.trim() || null, prio);
+      if(secret){ name.value = ''; note.value = ''; closeArtist(); snd('gift'); toast('Le Grand Architecte a entendu ta prière. Pendant 7 jours, quelque chose rôde dans les paquets…'); btn.disabled = false; return; }
+      if(prio){ state.tickets--; save(); } name.value = ''; note.value = ''; closeArtist(); toast(prio ? 'Demande prioritaire envoyée. ' + esc(a) + ' passe en tête de la liste.' : 'Demande envoyée. Le Grand Architecte a noté ' + esc(a) + '.'); }
     catch(e){ asErr.textContent = e.message; }
     btn.disabled = false;
   });
@@ -4285,16 +4292,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var side = r ? fuseSide(id, r) : '', head = r ? '<div class="gframe"><div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div></div>' :
+    var side = r && !c.secret ? fuseSide(id, r) : '', head = r ? '<div class="gframe"><div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
       // maîtrise et sceaux juste sous la carte
+      // carte secrète : ni maîtrise ni sceaux, une seule rareté
+      (c.secret ? '<p class="mst done"><span class="mst-l">Carte secrète · presque personne ne l\'a</span></p><div class="seals"></div>' :
       (r ? masteryHead(id) : '<p class="mst"><span class="mst-l">Raretés obtenues</span></p>') + '<div class="seals">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0, l = '<i>' + x.label.charAt(0) + '</i>';
         return n ? '<button type="button" class="seal' + (x.k === r ? ' cur' : '') + '" data-r="' + x.k + '" style="--sc:' + x.color + '" aria-label="' + x.label + ', ' + n + ' exemplaire' + (n > 1 ? 's' : '') + (x.k === r ? ', affichée' : '') + '">' + l + (n > 1 ? '<em class="num">×' + n + '</em>' : '') + '<small>' + x.label + '</small></button>'
                  : '<span class="seal off" style="--sc:' + x.color + '" aria-label="' + x.label + ', pas encore obtenue">' + l + '<small>' + x.label + '</small></span>';
-      }).join('') + '</div>' +
-      '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? rarity(r).label + ' · Arcane ' + esc(c.num) : 'Pas encore obtenue') + '</p>' +
+      }).join('') + '</div>') +
+      '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? (c.secret ? 'Carte secrète' : rarity(r).label) + ' · Arcane ' + esc(c.num) : 'Pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
       // le nom se touche : il déplie la présentation de l'artiste (bio, coup spécial, fiche)
       (r ? '<details class="d-art"><summary><h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +

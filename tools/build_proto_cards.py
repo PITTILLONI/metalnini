@@ -27,6 +27,11 @@ for aid in ids:
             subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst],
                            check=True, stdout=subprocess.DEVNULL)
     ready.append(aid)
+# cartes secrètes (une seule image, hors liste des musiciens complets) : Céline Dion
+for sid in ("celine",):
+    p, dst = f"{CREAS}/{sid}-legendaire.jpg", f"{OUT}/{sid}-legendaire.jpg"
+    if os.path.exists(p) and (not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(p)):
+        subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst], check=True, stdout=subprocess.DEVNULL)
 # paquets : rognés automatiquement au ras du sachet (bords non noirs), puis allégés
 def crop_pack(src, dst):
     import struct, tempfile

@@ -105,3 +105,6 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 ---
 
 *Ce document est une aide à la décision. Il ne constitue pas un avis juridique. Les cas « à discuter » restent à trancher par le propriétaire.*
+
+## Carte secrète (2026-10-01)
+**Céline Dion** (`celine`, easter egg) : RAS. Polémiques sans rapport avec la règle : ligne de vêtements non genrés qualifiée de « satanique » par un prêtre américain ([i-D](https://i-d.co/article/celine-dion-has-been-accused-of-satanism-over-her-gender-neutral-clothing-line/)), prestation des Jeux olympiques critiquée en France ([Yahoo](https://www.yahoo.com/entertainment/celine-dion-under-attack-french-225708492.html)) ; elle a retiré d'elle-même une chanson écrite par R. Kelly après les accusations contre lui ([CBC](https://www.cbc.ca/1.4979215)).

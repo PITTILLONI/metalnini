@@ -53,3 +53,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | malakian | [Daron_Malakian_live_2026.png](https://commons.wikimedia.org/wiki/File:Daron_Malakian_live_2026.png) | Californipedia | CC0 |
 | joe-duplantier | [2017_RiP_-_Gojira_-_Joe_Duplantier_-_by_2eight_-_8SC9257.jpg](https://commons.wikimedia.org/wiki/File:2017_RiP_-_Gojira_-_Joe_Duplantier_-_by_2eight_-_8SC9257.jpg) | Stefan Brending (2eight) | CC BY-SA 4.0 |
 | amy-lee | [Amy_Lee_of_Evanescence_@_Maquinária_Festival_03.jpg](https://commons.wikimedia.org/wiki/File:Amy_Lee_of_Evanescence_@_Maquin%C3%A1ria_Festival_03.jpg) | Silvio Tanaka from Sao Paulo, Brazil | CC BY 2.0 |
+| celine | [Céline_Dion_en_2013_(cropped).JPG](https://commons.wikimedia.org/wiki/File:C%C3%A9line_Dion_en_2013_(cropped).JPG) | Yoyo76300 | CC BY-SA 3.0 |
