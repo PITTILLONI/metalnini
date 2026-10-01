@@ -42,7 +42,7 @@
   /* ---------- Tab bar ---------- */
   /* barre d'onglets flottante, boutons en relief */
   /* barre d'onglets : fond encre, filet or fin, icônes SVG maison */
-  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; transform:translateZ(0); will-change:transform; display:flex; justify-content:center; padding:8px 12px calc(6px + var(--safe-b));
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:20; transform:translate3d(0, var(--tb-drift, 0px), 0); will-change:transform; display:flex; justify-content:center; padding:8px 12px calc(6px + var(--safe-b));
           background:linear-gradient(180deg, rgba(13,10,8,.94), #0d0a08 40%);
           border-top:1px solid rgba(235,154,38,.3); box-shadow:0 -18px 40px rgba(0,0,0,.6)}
   .tabbar button{flex:1; max-width:160px; position:relative; background:none; border:0; padding:6px 4px 4px; font:600 .7rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:#8f877b; cursor:pointer; transition:color .2s ease}
@@ -211,7 +211,7 @@
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
   /* échange réduit : pastille au-dessus de la barre d'onglets pour y revenir */
-  .trade-pill{position:fixed; left:16px; right:16px; bottom:calc(var(--tb, 86px) + 10px); z-index:25; max-width:520px; margin:0 auto; min-height:48px; display:flex; align-items:center; gap:12px; padding:10px 16px; border:1px solid var(--gold); border-radius:999px; background:var(--ink); color:var(--text); font:600 .86rem var(--mono); text-align:left; cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,.6); animation:sheetup .24s cubic-bezier(.2,.8,.2,1)}
+  .trade-pill{position:fixed; left:16px; right:16px; bottom:calc(var(--tb, 86px) + 10px); transform:translate3d(0, var(--tb-drift, 0px), 0); z-index:25; max-width:520px; margin:0 auto; min-height:48px; display:flex; align-items:center; gap:12px; padding:10px 16px; border:1px solid var(--gold); border-radius:999px; background:var(--ink); color:var(--text); font:600 .86rem var(--mono); text-align:left; cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,.6); animation:sheetup .24s cubic-bezier(.2,.8,.2,1)}
   .trade-pill[hidden]{display:none} .trade-pill b{color:var(--gold-hi)} .trade-pill em{flex:1; min-width:0; font-style:normal; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .trade-pill span{flex:none; color:var(--gold-hi); font-weight:700; text-transform:uppercase; letter-spacing:.08em}
   .trade-in{max-width:520px; margin:0 auto; padding:calc(24px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); text-align:center}
@@ -907,7 +907,7 @@
   @keyframes crack{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
   .ptilt.shake{animation:rumble .07s linear infinite}
   /* (2) ranger ses cartes */
-  .tray{position:fixed; left:0; right:0; bottom:var(--tb, calc(64px + var(--safe-b))); transform:translateZ(0); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(235,154,38,.35); padding:10px 16px}
+  .tray{position:fixed; left:0; right:0; bottom:var(--tb, calc(64px + var(--safe-b))); transform:translate3d(0, var(--tb-drift, 0px), 0); z-index:19; background:rgba(22,20,18,.97); border-top:1px solid rgba(235,154,38,.35); padding:10px 16px}
   .tray-in{max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:8px}
   .tray p{margin:0; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
   .tray .cards{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:6px 3px 8px; margin:0 -3px}
@@ -1580,7 +1580,7 @@ const api = {
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
   // concerts : le fichier du billet ne quitte pas le téléphone ; photo souvenir dans le dossier du joueur (bucket « concerts »)
-  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, band_id, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
+  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, band_id, band_size, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
   async challenges(){ return must(await sb.from('concert_challenges').select('id, title, hint, proof, points, band_only').eq('active', true).order('sort')); },
   async pickChallenge(c, ch){ must(await sb.rpc('pick_challenge', { p_concert: c, p_challenge: ch })); },
   async unpickChallenge(c, ch){ must(await sb.rpc('unpick_challenge', { p_concert: c, p_challenge: ch })); },
@@ -3130,8 +3130,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function gigDone(c){ if(c.picks) return c.picks;
     return (c.concert_picks || []).filter(function(p){ return p.done_at && !p.cancelled && p.concert_challenges; })
       .map(function(p){ return {title:p.concert_challenges.title, band:p.band_bonus, points:p.concert_challenges.points + (p.picked_early ? 1 : 0) + (p.band_bonus ? 2 : 0)}; }); }
-  // points de rang des concerts : 3 par concert passé, plus les défis relevés (1 de plus si choisis à l'avance, 2 de plus si toute la bande l'a relevé)
-  function gigPoints(list){ return (list || []).filter(gigPast).reduce(function(s, c){ return s + 3 + gigDone(c).reduce(function(t, x){ return t + x.points; }, 0); }, 0); }
+  // points de rang des concerts : 3 par concert passé, +1 par membre de sa bande en plus de soi (jusqu'à +5, figé à la validation du talon),
+  // plus les défis relevés (1 de plus si choisis à l'avance, 2 de plus si toute la bande l'a relevé)
+  function bandBonus(n){ return Math.min(5, Math.max(0, (n || 1) - 1)); }
+  function gigPoints(list){ return (list || []).filter(gigPast).reduce(function(s, c){ return s + 3 + bandBonus(c.band_size) + gigDone(c).reduce(function(t, x){ return t + x.points; }, 0); }, 0); }
   var GIG_TITLES = [[1, 'Premier pogo'], [5, 'Habitué du pit'], [10, 'Bête de scène'], [25, 'Vétéran des barrières']];
   var TICKET_ICON = '<path d="M15 5l0 2"/><path d="M15 11l0 2"/><path d="M15 17l0 2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"/>';
   function gigTitle(n){ var t = null, next = GIG_TITLES[0]; GIG_TITLES.forEach(function(x, i){ if(n >= x[0]){ t = x[1]; next = GIG_TITLES[i + 1] || null; } }); return {label:t, next:next}; }
@@ -3216,7 +3218,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var d = gigDate(b.played_on), alone = b.members.length < 2, inBand = b.members.map(function(m){ return m.id; }), friends = [];
     try{ friends = ((await ONLINE.friends()) || []).filter(function(f){ return inBand.indexOf(f.friend_id) === -1; }); }catch(e){}
     document.getElementById('band-t').textContent = 'Ta bande';
-    document.getElementById('band-for').textContent = b.artist + ' · ' + d.day + ' ' + d.month + ' ' + d.year + (alone ? ' · à deux au moins, les défis en bande s\'ouvrent' : '');
+    document.getElementById('band-for').textContent = b.artist + ' · ' + d.day + ' ' + d.month + ' ' + d.year + (alone ? ' · à deux au moins, les défis en bande s\'ouvrent' : ' · bande de ' + b.members.length + ' : +' + bandBonus(b.members.length) + ' point' + (bandBonus(b.members.length) > 1 ? 's' : '') + ' au talon validé') + '. Jusqu\'à +5 à six.';
     document.getElementById('band-in').innerHTML = '<ul class="band-ms">' + b.members.map(function(m){
         return '<li><b>' + esc(m.name) + '</b>' + (m.me ? '<small>toi</small>' : m.host ? '<small>a monté la bande</small>' : '') +
           (m.done.length ? '<span>' + m.done.map(function(t){ return '✓ ' + esc(t); }).join(' · ') + '</span>' : '') + '</li>'; }).join('') + '</ul>' +
@@ -3291,7 +3293,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // talon validé : 3 points de rang, et la carte Rare de l'artiste la première fois qu'on le voit (s'il est dans le jeu)
   function claimGig(c, b){ b.disabled = true;
     ONLINE.claimConcert(c.id).then(function(res){ c.claimed = true; renderCorner();
-      if(res && res.kind === 'card') rewardArrived(res, 'Talon validé · ' + c.artist); else toast('Talon validé : +3 points de rang.');
+      if(res && res.kind === 'card') rewardArrived(res, 'Talon validé · ' + c.artist); else toast('Talon validé : +3 points de rang' + (c.band_id ? ', plus le bonus de ta bande.' : '.'));
+      loadGigs();
     }, function(e){ b.disabled = false; toast(esc(e.message)); }); }
   var gigSheet = document.getElementById('gig-sheet'), gigErr = document.getElementById('gig-err');
   function gigEl(id){ return document.getElementById(id); }
@@ -3439,7 +3442,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div>' + icon('<path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/>', 22) + '<b class="num">' + p.stats.cards + '</b><span>musiciens</span><small>1 pt chacun</small></div>' +
         '<div>' + icon('<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', 22) + '<b class="num">' + binders + '</b><span>classeurs pliés</span><small>4 pts chacun</small></div>' +
         '<div>' + icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 22) + '<b class="num">' + p.pins.length + '</b><span>maîtrises</span><small>6 pts chacune</small></div>' +
-        '<div>' + icon(TICKET_ICON, 22) + '<b class="num">' + gc + '</b><span>concerts</span><small>3 pts + défis</small></div></div>';
+        '<div>' + icon(TICKET_ICON, 22) + '<b class="num">' + gc + '</b><span>concerts</span><small>3 pts, + bande et défis</small></div></div>';
   }
   function commitPack(){
     if(ONLINE){
@@ -3466,6 +3469,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // hauteur réelle de la barre (zone de sécurité comprise) : le bac « À ranger » et la pastille d'échange s'y posent pile
   function tbHeight(){ document.documentElement.style.setProperty('--tb', document.querySelector('.tabbar').getBoundingClientRect().height + 'px'); }
   tbHeight(); addEventListener('resize', tbHeight);
+  // iPhone, app installée : si la barre d'onglets décroche du bas de l'écran et part avec la page, on la recale
+  // (avec ce qui est posé dessus : bac « À ranger », pastille d'échange) ; bas de la fenêtre, pas de la zone visible : le clavier ne la soulève pas
+  var tbDrift = 0, tbQueued = false;
+  function pinTabbar(){ if(tbQueued) return; tbQueued = true;
+    requestAnimationFrame(function(){ tbQueued = false;
+      var d = Math.round(innerHeight - document.querySelector('.tabbar').getBoundingClientRect().bottom);
+      if(Math.abs(d) > 1){ tbDrift += d; document.documentElement.style.setProperty('--tb-drift', tbDrift + 'px'); } }); }
+  addEventListener('scroll', pinTabbar, {passive:true}); addEventListener('resize', pinTabbar);
   function go(v){
     ['packs','binder','corner','settings','profile'].forEach(function(x){ document.getElementById('v-'+x).hidden = x !== v; });
     tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-v') === v)); });
@@ -4715,7 +4726,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
   (function(){
-    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-start', 'trade-pick', 'mastery-sheet', 'troc', 'quiz', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome'], locked = false, y = 0, b = document.body;
+    var ids = ['sheet', 'sort-sheet', 'trade', 'trade-start', 'trade-pick', 'mastery-sheet', 'troc', 'quiz', 'artist-sheet', 'show-sheet', 'inst-sheet', 'zoom', 'pub', 'deal-recap', 'power-sheet', 'confirm', 'dupfx', 'reveal', 'welcome', 'gig-sheet', 'df-sheet', 'band-sheet', 'loot'], locked = false, y = 0, b = document.body;
     function update(){
       var any = ids.some(function(id){ var el = document.getElementById(id); return el && !el.hidden; });
       if(any === locked) return; locked = any;
