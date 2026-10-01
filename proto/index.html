@@ -179,7 +179,8 @@
   .c-hud-t > span{display:flex; justify-content:space-between; align-items:baseline; gap:8px} .c-hud-t b{font:400 1.35rem/1 var(--gothic); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .c-hud-t small{flex:none; font:800 .82rem/1 var(--display); letter-spacing:.04em; color:var(--gold-hi)}
   #v-corner .g-title{margin-top:26px}
-  .corner-sec{margin:32px 0 0} .corner-lead{margin:0 0 14px; color:var(--muted); font-size:.95rem; text-align:center}
+  .corner-sec{margin:32px 0 0} .corner-sec.ct-off{display:none !important} .corner-tabs + .corner-sec{margin-top:14px}
+  .corner-tabs button{position:relative} .ct-dot{position:absolute; top:-6px; right:-4px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:var(--accent); color:#fff; font:800 .7rem/20px var(--display); font-style:normal} .corner-lead{margin:0 0 14px; color:var(--muted); font-size:.95rem; text-align:center}
   #v-corner .g-title + .corner-sec{margin-top:12px}
   /* deux boutons de troc en relief : « Mon code » en or, « Son code » à l'encre */
   .tr-go{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding-bottom:6px}
@@ -1083,17 +1084,18 @@
     <button type="button" class="c-hud" id="corner-hud"></button>
   </div>
   <h1 class="g-title">Metal Corner</h1>
-  <section class="corner-sec">
+  <div class="kind-chips corner-tabs" id="corner-tabs" role="tablist" aria-label="Rubriques de Metal Corner"></div>
+  <section class="corner-sec" data-ct="troc">
     <p class="corner-lead">Troque tes cartes avec un pote, côte à côte ou à distance.</p>
     <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon code</b><small>Ton pote le scanne</small></span></button>
       <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Son code</b><small>Caméra ou code</small></span></button></div>
   </section>
-  <section class="corner-sec" id="invites-sec" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
-  <section class="corner-sec" id="friends-sec" hidden><h2 class="g-sub">Mes potes</h2><div id="friends"></div></section>
-  <section class="corner-sec"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
-  <section class="corner-sec" id="gigs-sec"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
-  <section class="corner-sec" id="prog-sec"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
-  <section class="corner-sec" id="history-sec" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
+  <section class="corner-sec" id="invites-sec" data-ct="troc" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
+  <section class="corner-sec" id="friends-sec" data-ct="troc" hidden><h2 class="g-sub">Mes potes</h2><div id="friends"></div></section>
+  <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
+  <section class="corner-sec" id="gigs-sec" data-ct="concerts"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
+  <section class="corner-sec" id="prog-sec" data-ct="rang"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
+  <section class="corner-sec" id="history-sec" data-ct="troc" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
 </main>
 
 <!-- ============ CLASSEUR ============ -->
@@ -2078,8 +2080,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       presence();
       api.tickets().then(function(n){ state.tickets = n; save(); }).catch(function(){});
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
-      if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ go('corner'); tradeJoin(troc); }, 600); }
-      if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ go('corner'); bandJoin(bd); }, 600); }
+      if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('troc'); go('corner'); tradeJoin(troc); }, 600); }
+      if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('concerts'); go('corner'); bandJoin(bd); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -3044,6 +3046,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   // Metal Corner social : propositions d'échange reçues, mes potes (profil, échange direct), historique des échanges
   var friendsList = [], invitesList = [];
+  // rubriques de Metal Corner, une à la fois (la dernière ouverte est gardée) ; pastille quand quelque chose attend
+  var CORNER_TABS = [['troc', 'Troc'], ['concerts', 'Concerts'], ['epreuves', 'Épreuves'], ['rang', 'Rang']];
+  function gigsWaiting(){ return (bandInvites || []).length + (gigs || []).filter(function(c){
+    return gigPast(c) && (!c.claimed || (gigOpen(c) && (c.concert_picks || []).some(function(p){ return !p.done_at; }))); }).length; }
+  function cornerTab(t){
+    if(t){ state.cornerTab = t; save(); }
+    var cur = CORNER_TABS.some(function(x){ return x[0] === state.cornerTab; }) ? state.cornerTab : 'troc';
+    [].forEach.call(document.querySelectorAll('#v-corner [data-ct]'), function(sec){ sec.classList.toggle('ct-off', sec.getAttribute('data-ct') !== cur); });
+    var wait = {troc:(invitesList || []).length, concerts:gigsWaiting(), epreuves:claimables().length}, el = document.getElementById('corner-tabs');
+    el.innerHTML = CORNER_TABS.map(function(x){ var n = wait[x[0]] || 0;
+      return '<button type="button" role="tab" data-ct-go="' + x[0] + '" aria-selected="' + (x[0] === cur) + '"' + (n ? ' aria-label="' + x[1] + ', ' + n + ' en attente"' : '') + '>' + x[1] + (n ? '<i class="ct-dot" aria-hidden="true">' + n + '</i>' : '') + '</button>'; }).join('');
+    [].forEach.call(el.children, function(b){ b.onclick = function(){ cornerTab(b.getAttribute('data-ct-go')); window.scrollTo(0, 0); }; });
+  }
   function renderSocial(){
     if(!ONLINE) return;
     ONLINE.tradeInvites().then(function(list){ invitesList = list || []; paintInvites(); }).catch(function(){});
@@ -3053,7 +3068,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function avatarHtml(name, url){ return '<span class="f-av"' + (url ? ' style="background-image:url(\'' + esc(url) + '\')"' : '') + '>' + (url ? '' : esc((name || '?').charAt(0).toUpperCase())) + '</span>'; }
   function paintInvites(){
-    document.getElementById('invites-sec').hidden = !invitesList.length;
+    document.getElementById('invites-sec').hidden = !invitesList.length; cornerTab();
     document.getElementById('invites').innerHTML = invitesList.map(function(v, i){
       return '<div class="invite">' + avatarHtml(v.from_name) + '<span><b>' + esc(v.from_name || 'Un pote') + '</b><small>te propose un échange</small></span><span class="f-acts"><button type="button" data-join="' + i + '">Rejoindre</button></span></div>'; }).join('');
     [].forEach.call(document.querySelectorAll('[data-join]'), function(b){ b.onclick = function(){ tradeJoin(invitesList[+b.getAttribute('data-join')].code); }; });
@@ -3401,7 +3416,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var HORNS_ICON = '<path d="M11 11.5v-1a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 12v-6.5a1.5 1.5 0 0 1 3 0v10.5a6 6 0 0 1 -6 6h-2a4 4 0 0 1 -4 -4v-5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M8 16.5c1.6 -1.6 3.8 -2.1 6.2 -1.5"/>';
   function icon(paths, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 24) + '" height="' + (w || 24) + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>'; }
   function renderCorner(){
-    renderGoals(); renderGigs();
+    renderGoals(); renderGigs(); cornerTab();
     var p = myProfile(), sc = p.score, t = titleOf(sc), tr = state.trades || 0, nx = t.next, ti = TITLES.map(function(x){ return x[1]; }).indexOf(t.label), cur = TITLES[ti][0];
     var span = nx ? sc - cur + nx.left : 1, pct = nx ? Math.round((sc - cur) / span * 100) : 100, binders = p.patches.filter(function(x){ return x.done; }).length;
     var gc = (gigs || []).filter(gigPast).length, gt = gigTitle(gc);
@@ -3410,7 +3425,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     hud.innerHTML = '<span class="c-ring"><svg viewBox="0 0 50 50" aria-hidden="true"><circle cx="25" cy="25" r="22"/><circle cx="25" cy="25" r="22" class="fg" style="stroke-dasharray:' + (C * pct / 100).toFixed(1) + ' ' + C.toFixed(1) + '"/></svg><span>' + icon(TITLE_ICONS[ti], 20) + '</span></span>' +
       '<span class="c-hud-t"><span><b>' + esc(t.label) + '</b><small class="num">' + (nx ? sc + ' / ' + (sc + nx.left) + ' pts' : sc + ' pts') + '</small></span>' + notch(pct, Math.max(2, Math.min(10, span))) + '</span>';
     hud.setAttribute('aria-label', 'Ton rang : ' + t.label + ', ' + sc + ' point' + (sc > 1 ? 's' : '') + (nx ? ', ' + nx.label + ' dans ' + nx.left + ' point' + (nx.left > 1 ? 's' : '') : '') + '. Voir ta progression');
-    hud.onclick = function(){ document.getElementById('prog-sec').scrollIntoView({behavior:reduce ? 'auto' : 'smooth', block:'start'}); };
+    hud.onclick = function(){ cornerTab('rang'); window.scrollTo(0, 0); };
     var road = TITLES.map(function(x, i){
       var st = i < ti ? 'done' : i === ti ? 'cur' : i === ti + 1 ? 'next' : 'lock';
       var sub = st === 'cur' ? 'Ton titre actuel · ' + sc + ' point' + (sc > 1 ? 's' : '') : st === 'done' ? 'Débloqué' : st === 'next' ? 'Encore ' + nx.left + ' point' + (nx.left > 1 ? 's' : '') + ' · dès ' + x[0] : 'Dès ' + x[0] + ' points';

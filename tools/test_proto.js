@@ -457,6 +457,13 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('band-join').dispatchEvent(new w9.Event('submit', { cancelable:true })); await sleep(60);
   check('bandes : rejointe par lien ou code', joined === 'XYZ789' && d9.getElementById('band-sheet').hidden);
 
+  // 17. Metal Corner en rubriques : 4 puces, une seule rubrique visible, choix gardé, l'anneau de rang ouvre Rang
+  const ctOff = sel => d9.querySelector(sel).classList.contains('ct-off');
+  [...d9.querySelectorAll('#corner-tabs button')].find(b => b.dataset.ctGo === 'concerts').click(); await sleep(10);
+  check('Metal Corner : 4 rubriques, Concerts seule visible', d9.querySelectorAll('#corner-tabs button').length === 4 && !ctOff('#gigs-sec') && ctOff('#prog-sec') && ctOff('#v-corner [data-ct="epreuves"]') && JSON.parse(w9.localStorage.getItem('metalnini-proto-v1')).cornerTab === 'concerts');
+  d9.getElementById('corner-hud').click(); await sleep(10);
+  check('Metal Corner : l\'anneau de rang ouvre la rubrique Rang', !ctOff('#prog-sec') && ctOff('#gigs-sec'));
+
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
   process.exit(0);

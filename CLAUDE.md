@@ -22,6 +22,7 @@ Projet perso (hors United Heroes) : collection de cartes de musiciens metal et r
 ## Sécurité
 - Secrets uniquement dans le Trousseau macOS (`krea-api-perso`, `supabase-token`, `supabase-db-password`, `resend-api-key`, `gmail-smtp`, `vapid-private`, `push-secret`). Jamais dans le dépôt, jamais affichés.
 - Côté client : seulement la clé publique Supabase. Toute règle de jeu est vérifiée côté serveur (RLS, fonctions `security definer`).
+- Lecture de ses propres données côté client : toujours filtrer sur son compte (`.eq('user_id' | 'id', await myId())`), jamais compter sur la règle d'accès seule : un admin lit les lignes de tous les joueurs (bug du 2026-10-01 : le propriétaire voyait le profil d'un autre joueur).
 
 ## Reprendre sur une autre machine
 1. `git clone https://github.com/PITTILLONI/metalnini.git && cd metalnini`
@@ -46,6 +47,7 @@ Projet perso (hors United Heroes) : collection de cartes de musiciens metal et r
   6. Dans `ios/Packages/MetalniniKit/Sources/MetalniniKit/Catalog.swift`, puis `python3 tools/gen_seed.py` et application de la seed.
   7. Ajouter l'artiste à `export/bios-artistes-a-relire.md`.
   Les demandes des joueurs (`artist_requests`, priorité d'abord) et leurs groupes favoris (`profiles.fav_bands`) sont visibles dans l'admin ; il n'y en avait aucun le 2026-09-30.
+- Metal Corner (2026-10-01) : 4 rubriques en puces (Troc, Concerts, Épreuves, Rang, `data-ct`, `state.cornerTab`), une seule visible, pastille quand quelque chose attend ; l'anneau de rang ouvre Rang, les liens ?troc= et ?bande= ouvrent leur rubrique.
 - Interface (2026-09-30) : signature « collector arcade » appliquée à tous les écrans. Côté cartes : gothique, cadres gravés, sceaux, cierge. Côté jeu : relief, crans, coffre du butin. Détail et classes dans `design-system/metalnini/MASTER.md` ; maquettes de direction sur le canvas claude.ai https://claude.ai/artifact/14q1ykMpYActHdFWuuSt1W (privé, compte du propriétaire). Classeurs : tant qu'il n'y a qu'une collection, sa puce s'appelle « Toutes » et ouvre directement « Toutes les cartes » (la page de rangement) ; toucher un style lance l'extrait de son hymne (premier morceau `play` de `STYLE_INFO`), arrêté en quittant les classeurs.
 - À confirmer sur iPhone (app installée) : la barre d'onglets reste en place sur Classeur (correctif `7099579`), et le joueur peut écouter son propre cri (correctif `d01df29`). À relire par le propriétaire : `export/bios-artistes-a-relire.md` (61 bios et 14 textes de style).
 - En attente : TestFlight (inscription Apple Developer), inscription par e-mail dans l'app iOS, domaine d'e-mail dédié, paquets dédiés aux nouveaux styles, sons (en préparation par un ami : fiche `sons.html`, 46 sons nommés dont les variantes, PDF avec cases « Fait » dans `export/metalnini-sons.pdf`).

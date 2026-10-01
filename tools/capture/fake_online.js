@@ -31,4 +31,4 @@ __fake.cryQuiz = async function(){ return []; };
 __gigs[0].band_id = 'b1'; __gigs[0].concert_picks[1].band_bonus = true;
 __fake.bandInvites = async function(){ return [{code:'XYZ789', artist:'Ghost', played_on:'2027-03-02', from_name:'Riffeuse'}]; };
 __fake.bandState = async function(){ return {id:'b1', code:'ABC234', artist:'Spiritbox', played_on:__gigs[0].played_on, members:[{id:'u1', name:'Antoine', me:true, host:true, done:['Photo du pit']}, {id:'f1', name:'Riffeuse', done:['Photo du pit', 'Circle pit']}]}; };
-__fake.friends = async function(){ return [{friend_id:'f1', username:'Riffeuse'}, {friend_id:'f2', username:'Bob le Slammeur'}, {friend_id:'f3', username:'Doom'}]; };
+__fake.friends = async function(){ return [{friend_id:'f1', username:'Riffeuse', trades:2}, {friend_id:'f2', username:'Bob le Slammeur', trades:1}, {friend_id:'f3', username:'Doom', trades:1}]; };
