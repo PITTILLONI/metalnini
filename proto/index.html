@@ -2526,7 +2526,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Objectifs : les classeurs les plus proches d'être complétés, puis la maîtrise la plus avancée
   function goals(){
     var list = [];
-    BINDERS.forEach(function(b){
+    BINDERS.forEach(function(b){ if(b.secret) return;   // jamais d'objectif qui trahirait la carte secrète
       var ids = b.ids.filter(function(id){ return card(id); }), miss = ids.filter(function(id){ return !best(id); });
       if(ids.length && miss.length) list.push({b:b, ids:ids, miss:miss});
     });
