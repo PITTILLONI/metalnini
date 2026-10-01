@@ -3427,7 +3427,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       cv.toBlob(function(blob){
         var file = new File([blob], 'metalnini-' + b.c.id + '.png', {type:'image/png'}), text = 'Je viens de tirer ' + b.c.who + ' en ' + rarity(b.r).label + ' sur Metalnini';
         var done = function(){ if(!state.shared){ state.shared = true; save(); renderGoals(); } };
-        if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file], text:text, url:location.href}).then(done).catch(function(){}); return; }
+        // l'image seule : avec un texte ou un lien en plus, Slack, WhatsApp et d'autres ne gardent que le lien
+        if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file]}).then(done).catch(function(){}); return; }
         var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
         done(); toast('Image enregistrée : ' + esc(file.name));
       }, 'image/png');
