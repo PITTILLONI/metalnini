@@ -1499,6 +1499,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
 const must = r => { if(r.error) throw new Error(frMsg(r.error.message)); return r.data; };
+// ses propres lignes : toujours filtrées sur son compte (un admin a le droit de lire celles de tous les joueurs)
+const myId = async () => { const { data } = await sb.auth.getSession(); return data.session ? data.session.user.id : null; };
 const here = location.origin + location.pathname;
 // messages d'authentification courants, en français
 function frMsg(m){
@@ -1553,7 +1555,7 @@ const api = {
   async mediaUrl(bucket, path){ return path ? (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl : null; },
   async savePush(e, k, a){ must(await sb.rpc('save_push_subscription', { p_endpoint: e, p_p256dh: k, p_auth: a })); },
   async deletePush(e){ must(await sb.rpc('delete_push_subscription', { p_endpoint: e })); },
-  async power(){ const rows = must(await sb.from('profiles').select('metal_power').limit(1)); return rows[0] ? rows[0].metal_power : null; },
+  async power(){ const rows = must(await sb.from('profiles').select('metal_power').eq('id', await myId())); return rows[0] ? rows[0].metal_power : null; },
   async setFavBands(list){ must(await sb.rpc('set_fav_bands', { p_bands: list })); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
   async giftNotices(){ return must(await sb.rpc('my_gift_notices')) || []; },
@@ -1562,13 +1564,13 @@ const api = {
   async resetCollection(){ must(await sb.rpc('reset_my_collection')); },
   // photo et cri : fichiers privés dans le dossier du joueur, lus par lien signé
   async media(){
-    const rows = must(await sb.from('profiles').select('avatar_path, cry_path').limit(1)), r = rows[0] || {};
+    const rows = must(await sb.from('profiles').select('avatar_path, cry_path').eq('id', await myId())), r = rows[0] || {};
     const url = async (b, p) => p ? (must(await sb.storage.from(b).createSignedUrl(p, 3600))).signedUrl : null;
     return { avatar: await url('avatars', r.avatar_path), cry: await url('cries', r.cry_path) };
   },
   async uploadMedia(kind, blob, ext){
     const { data: { user } } = await sb.auth.getUser(), bucket = kind === 'avatar' ? 'avatars' : 'cries';
-    const rows = must(await sb.from('profiles').select(kind + '_path').limit(1)), old = rows[0] && rows[0][kind + '_path'];
+    const rows = must(await sb.from('profiles').select(kind + '_path').eq('id', user.id)), old = rows[0] && rows[0][kind + '_path'];
     const path = user.id + '/' + kind + '-' + Date.now() + '.' + ext;
     must(await sb.storage.from(bucket).upload(path, blob, { contentType: blob.type, upsert: false }));
     must(await sb.rpc('set_profile_media', { p_kind: kind, p_path: path }));
@@ -1576,7 +1578,7 @@ const api = {
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
   // concerts : le fichier du billet ne quitte pas le téléphone ; photo souvenir dans le dossier du joueur (bucket « concerts »)
-  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, band_id, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').order('played_on', { ascending: false })); },
+  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, band_id, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
   async challenges(){ return must(await sb.from('concert_challenges').select('id, title, hint, proof, points, band_only').eq('active', true).order('sort')); },
   async pickChallenge(c, ch){ must(await sb.rpc('pick_challenge', { p_concert: c, p_challenge: ch })); },
   async unpickChallenge(c, ch){ must(await sb.rpc('unpick_challenge', { p_concert: c, p_challenge: ch })); },
@@ -1604,9 +1606,9 @@ const api = {
   },
   async deleteConcert(id){ const p = must(await sb.rpc('delete_concert', { p_id: id })); if(p) await sb.storage.from('concerts').remove([p]); },
   async friendConcerts(f){ return must(await sb.rpc('friend_concerts', { p_friend: f })); },
-  async username(){ const rows = must(await sb.from('profiles').select('username').limit(1)); return rows[0] ? rows[0].username : null; },
+  async username(){ const rows = must(await sb.from('profiles').select('username').eq('id', await myId())); return rows[0] ? rows[0].username : null; },
   async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
-  async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed')); },
+  async inventory(){ return must(await sb.from('inventory').select('musician_id, rarity, copies, placed').eq('user_id', await myId())); },
   async fusionCosts(){ const rows = must(await sb.from('settings').select('key, value').like('key', 'fusion_cost_%')), out = {}; rows.forEach(r => { out[r.key.replace('fusion_cost_', '')] = +r.value; }); return out; },
   async openPack(type, requestId, format){ return must(await sb.rpc('open_pack', { p_pack_type: type, p_request_id: requestId, p_format: format })); },
   async place(m, r){ must(await sb.rpc('place_card', { p_musician: m, p_rarity: r })); },
@@ -1620,7 +1622,7 @@ const api = {
   async tradeCancel(id){ must(await sb.rpc('trade_cancel', { p_trade: id })); },
   async tradeCount(){ return must(await sb.rpc('my_trade_count')); },
   async tradeActive(){ return must(await sb.rpc('trade_active')); },
-  async claims(){ return must(await sb.from('objective_claims').select('key')).map(r => r.key); },
+  async claims(){ return must(await sb.from('objective_claims').select('key').eq('user_id', await myId())).map(r => r.key); },
   async claimObjective(key){ return must(await sb.rpc('claim_objective', { p_key: key })); },
   async tradePartnerCards(id){ return must(await sb.rpc('trade_partner_cards', { p_trade: id })); },
   async tradeWant(id, m, r, on){ return must(await sb.rpc('trade_want', { p_trade: id, p_musician: m, p_rarity: r, p_on: on })); },
