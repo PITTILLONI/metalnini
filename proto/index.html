@@ -674,10 +674,12 @@
   .bp-head .back-btn{margin:4px 0 0}
   .bp-row{display:flex; align-items:center; justify-content:space-between; gap:10px}
   .bp-row h2{font-size:1.9rem}
-  .bsheet{position:fixed; inset:0; z-index:80; background:rgba(5,4,4,.6); display:flex; align-items:flex-end; justify-content:center; animation:dfin .18s ease-out}
+  .bsheet{position:fixed; inset:0; z-index:80; background:rgba(5,4,4,.6); display:flex; align-items:flex-end; justify-content:center; animation:bs-dim .34s ease-out}
   .bsheet[hidden]{display:none}
-  .bsheet-in{width:100%; max-width:560px; background:var(--surface); border-top:1px solid var(--border); border-radius:20px 20px 0 0; padding:10px 18px calc(18px + env(safe-area-inset-bottom)); animation:sheetup .24s cubic-bezier(.2,.8,.2,1)}
-  @keyframes sheetup{from{transform:translateY(100%)}}
+  .bsheet-in{width:100%; max-width:560px; background:var(--surface); border-top:1px solid var(--border); border-radius:20px 20px 0 0; padding:10px 18px calc(18px + env(safe-area-inset-bottom)); animation:bs-up .46s cubic-bezier(.22,1,.36,1); will-change:transform; touch-action:pan-y}
+  /* feuilles du bas : elles montent du bas, amorties ; le fond s'assombrit en même temps (pas la feuille) */
+  @keyframes bs-up{from{transform:translate3d(0, 100%, 0)}} @keyframes bs-dim{from{background-color:rgba(5,4,4,0)}}
+  @media (prefers-reduced-motion: reduce){ .bsheet, .bsheet-in, .sheet, .sheet-in{animation:none} }
   .bsheet .grab{display:block; width:40px; height:4px; border-radius:2px; background:rgba(255,255,255,.2); margin:0 auto 12px}
   .bsheet h2{font-size:1.5rem; margin-bottom:10px}
   .bsheet .eyebrow{margin:14px 0 8px}
@@ -720,9 +722,9 @@
   .slot .cap{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
   /* ---------- Détail ---------- */
-  .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center}
+  .sheet{position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center; animation:bs-dim .34s ease-out}
   .sheet[hidden]{display:none}
-  .sheet-in{position:relative; display:flex; flex-direction:column; width:100%; max-width:560px; max-height:94vh; max-height:calc(100dvh - env(safe-area-inset-top) - 12px); overflow:hidden; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 0 calc(20px + env(safe-area-inset-bottom))}
+  .sheet-in{position:relative; display:flex; flex-direction:column; width:100%; max-width:560px; max-height:94vh; max-height:calc(100dvh - env(safe-area-inset-top) - 12px); overflow:hidden; background:var(--surface); border-radius:18px 18px 0 0; padding:16px 0 calc(20px + env(safe-area-inset-bottom)); animation:bs-up .46s cubic-bezier(.22,1,.36,1); will-change:transform}
   #detail{min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:0 16px}
   /* bouton fermer : en surimpression, hors de la zone qui défile, il ne prend pas de place */
   .sheet-close{position:absolute; top:12px; right:12px; z-index:6; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(255,255,255,.18); background:rgba(10,8,7,.72); color:var(--text); font-size:1rem; cursor:pointer}
@@ -4728,6 +4730,39 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     askConfirm({eyebrow:'Réglages', title:'Tout brûler ?', text:'Ta collection, tes doublons et tes maîtrises partent en fumée. Impossible de revenir en arrière.', yes:'Oui, repartir de zéro', no:'Non, je garde tout'},
       function(){ resetAll(); go('packs'); toast('Collection brûlée. Le pit t\'attend.'); });
   });
+
+  // feuilles du bas (et fiche d'une carte) : à la fermeture, elles redescendent avant de disparaître ;
+  // on les ferme aussi en les tirant vers le bas depuis le haut (poignée, titre), ou n'importe où si rien ne défile dedans
+  (function(){
+    var sheets = [].slice.call(document.querySelectorAll('.bsheet, #sheet')), own = new WeakSet(), CAN = typeof Element.prototype.animate === 'function';
+    function panel(el){ return el.querySelector('.bsheet-in, .sheet-in'); }
+    function slideOut(el){
+      var p = panel(el), from = el._dragY || 0, dur = reduce ? 1 : 260; el._dragY = 0;
+      own.add(el); el.hidden = false;   // gardée à l'écran le temps de la descente
+      var a = p.animate([{transform:'translate3d(0,' + from + 'px,0)'}, {transform:'translate3d(0,100%,0)'}], {duration:dur, easing:'cubic-bezier(.4,0,1,1)', fill:'forwards'});
+      var b = el.animate([{backgroundColor:getComputedStyle(el).backgroundColor}, {backgroundColor:'rgba(5,4,4,0)'}], {duration:dur, fill:'forwards'});
+      a.onfinish = function(){ own.add(el); el.hidden = true; p.style.transform = ''; p.style.transition = ''; a.cancel(); b.cancel(); };
+    }
+    // seulement une feuille qui était ouverte (oldValue null) et qu'on vient de fermer
+    var mo = CAN && new MutationObserver(function(list){ list.forEach(function(m){ var el = m.target;
+      if(own.has(el)){ own.delete(el); return; }
+      if(el.hidden && m.oldValue === null) slideOut(el); }); });
+    if(mo) sheets.forEach(function(el){ mo.observe(el, { attributes: true, attributeOldValue: true, attributeFilter: ['hidden'] }); });
+    sheets.forEach(function(el){
+      var p = panel(el), y0 = null, dy = 0, t0 = 0;
+      p.addEventListener('touchstart', function(e){
+        var top = e.touches[0].clientY - p.getBoundingClientRect().top, scroller = el.querySelector('#detail') || p;
+        y0 = (top < 72 || scroller.scrollHeight <= scroller.clientHeight) && scroller.scrollTop <= 0 ? e.touches[0].clientY : null; dy = 0; t0 = Date.now(); }, {passive:true});
+      p.addEventListener('touchmove', function(e){ if(y0 === null) return;
+        dy = Math.max(0, e.touches[0].clientY - y0); p.style.transition = 'none'; p.style.transform = dy ? 'translate3d(0,' + dy + 'px,0)' : ''; }, {passive:true});
+      p.addEventListener('touchend', function(){ if(y0 === null) return; y0 = null;
+        var fast = dy > 40 && dy / Math.max(1, Date.now() - t0) > .6;
+        if(dy > p.offsetHeight * .28 || fast){ el._dragY = dy; el.dispatchEvent(new MouseEvent('click', {bubbles:true})); if(!el.hidden){ el._dragY = 0; settle(); } }
+        else settle();
+        function settle(){ p.style.transition = 'transform .28s cubic-bezier(.22,1,.36,1)'; p.style.transform = ''; }
+      });
+    });
+  })();
 
   // fenêtre ouverte (fiche, feuilles, confirmation, rangement, révélation) : la page derrière ne défile plus.
   // Safari iOS ignore overflow:hidden sur le body : on fige la page à sa position et on la restaure à la fermeture.
