@@ -229,6 +229,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const d5 = dom5.window.document;
   d5.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
   d5.querySelector('#binder-kinds button').click(); await sleep(15);
+  check('carte secrète pas trouvée : pas de classeur Céleste', !d5.querySelector('#binder-kinds [data-kind="Céleste"]'));
   check('une seule collection : puce « Toutes » en premier, qui ouvre directement toutes les cartes', d5.querySelector('#binder-kinds button').textContent === 'Toutes' && !d5.getElementById('binder-page').hidden && /Toutes les cartes/.test(d5.getElementById('binder-title').textContent) && d5.getElementById('binder-back').hidden);
   await openB(d5, 'numetal');
   const kslot = d5.querySelector('#grid .slot[data-id="korn"]');

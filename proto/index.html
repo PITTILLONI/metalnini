@@ -650,6 +650,7 @@
   .back-btn{background:none; border:0; min-height:44px; padding:6px 0; margin:0 0 10px; color:var(--gold-hi); font:600 .8rem var(--display); letter-spacing:.12em; text-transform:uppercase; cursor:pointer}
   .kind-chips{display:flex; gap:8px; overflow-x:auto; padding:14px 0 10px; scrollbar-width:none}
   .kind-chips::-webkit-scrollbar{display:none}
+  .kind-chips.five{gap:5px} .kind-chips.five button{flex:1 1 auto; padding:0 6px; font-size:.76rem; letter-spacing:.02em}
   @media (max-width:370px){ .kind-chips{gap:5px} .kind-chips button{padding:0 7px; font-size:.82rem} }
   .kind-chips button{flex:1 0 auto; min-height:44px; padding:0 10px; border-radius:12px; border:1px solid #2e251d; background:#15110f; box-shadow:0 3px 0 #000; color:var(--muted); font:800 .88rem var(--display); letter-spacing:.04em; text-transform:uppercase; cursor:pointer}
   .kind-chips button[aria-selected="true"]{background:var(--gold); border-color:var(--gold); box-shadow:0 3px 0 #8a5510; color:#1a0f05}
@@ -1752,6 +1753,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   BINDERS[0].ids = CARDS.map(function(c){ return c.id; });
   // carte secrète : une seule rareté, hors classeurs et hors décompte (demander « Céline Dion » ouvre 7 jours de chance infime, côté serveur)
   var SECRET = [{id:'celine', who:'Céline Dion', band:'Céline Dion', title:'My Heart Will Go On', num:'0', inst:'Chant', genre:'Variété (carte secrète)', secret:true}];
+  // son classeur « Céleste » n'apparaît qu'une fois la carte trouvée ; ni patch, ni récompense de classeur, ni blind test
+  BINDERS.push({k:'celeste', kind:'Céleste', label:'Céleste', ids:['celine'], secret:true});
 
   // coup spécial : un nom dans le ton du jeu, adossé à un fait réel. Sans fait vérifié, pas de coup spécial.
   var MOVES = {
@@ -2197,7 +2200,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var seen = {}; return ownedKeys().sort(byRarity).filter(function(k){ var id = k.split('|')[0]; if(seen[id]) return false; seen[id] = true; return true; }).slice(0, 3); }
   function myProfile(){
     var mus = CARDS.filter(function(c){ return best(c.id); }), keys = ownedKeys();
-    var binders = BINDERS.filter(function(b){ return b.kind !== 'Collection' && b.ids.some(function(id){ return card(id); }); });
+    var binders = BINDERS.filter(function(b){ return b.kind !== 'Collection' && !b.secret && b.ids.some(function(id){ return card(id); }); });
     var done = binders.filter(binderDone), pins = CARDS.filter(function(c){ return isMastered(c.id); });
     var fav = CARDS.map(function(c){ return {c:c, n:RARITIES.filter(function(r){ return state.owned[c.id + '|' + r.k]; }).length}; }).sort(function(a, b){ return b.n - a.n; })[0];
     var media = state.showMedia !== false;
@@ -2549,7 +2552,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function claimables(){
     if(!ONLINE || !state.claims) return [];
     var out = [];
-    BINDERS.forEach(function(b){ var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
+    BINDERS.forEach(function(b){ if(b.secret) return; var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
       if(ids.length && ids.every(function(id){ return placed(id); })) out.push({key:'binder:' + b.k, title:'Classeur plié : ' + binderLabel(b), gift:'paquet, carte ou artiste prioritaire'}); });
     CARDS.forEach(function(c){ if(mastered(c.id)) out.push({key:'mastery:' + c.id, title:'Maîtrise : ' + c.who, gift:'carte Rare, paquet ou artiste prioritaire'}); });
     if(crySrc()) out.push({key:'cry', title:'Ton cri enregistré', gift:'une carte cadeau'});
@@ -2601,7 +2604,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!ONLINE || !state.claims) return [];
     var out = (cryPool.length ? [{key:'cry', label:'Les cris de tes potes', cry:true, rows:cryPool, art:'cry'}] : []).concat(CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }).map(function(c){
       return {key:'quiz:' + c.id, label:'Maîtrise de ' + c.who, seed:[c], art:'m:' + c.id, claim:function(sc){ return ONLINE.claimBlindtest(c.id, sc); }}; }));
-    BINDERS.forEach(function(b){ var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
+    BINDERS.forEach(function(b){ if(b.secret) return; var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
       if(ids.length && ids.every(function(id){ return placed(id); }) && !state.claims['quiz:b-' + b.k])
         out.push({key:'quiz:b-' + b.k, label:'Classeur ' + binderLabel(b), seed:ids.map(card), art:'b:' + b.k, claim:function(sc){ return ONLINE.claimBlindtestBinder(b.k, sc); }}); });
     return out;
@@ -4166,6 +4169,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // tant qu'il n'y a qu'une collection, sa puce s'appelle « Toutes » et ouvre directement « Toutes les cartes » (la page de rangement)
   function soloCollection(){ var c = BINDERS.filter(function(b){ return b.kind === 'Collection'; }); return c.length === 1 ? c[0] : null; }
   function kindLabel(k){ return k === 'Collection' && soloCollection() ? 'Toutes' : k; }
+  // catégories affichées : + « Céleste » une fois la carte secrète trouvée (elle ouvre directement son classeur)
+  function kinds(){ return KINDS.concat(best('celine') ? ['Céleste'] : []); }
   // extrait du style : l'hymne du style (premier morceau « À écouter »), lancé quand on touche le classeur du style
   var styleTap = false;
   function styleTrack(k){ var si = STYLE_INFO[k]; return si && si.play ? si.play.filter(function(id){ return TRACKS[id]; })[0] || null : null; }
@@ -4173,10 +4178,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
   function renderBinder(){
     if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
-    var kind = KINDS.indexOf(state.binderKind) === -1 ? KINDS[0] : state.binderKind, solo = kind === 'Collection' && soloCollection();
+    var ks = kinds(), kind = ks.indexOf(state.binderKind) === -1 ? ks[0] : state.binderKind, solo = (kind === 'Collection' && soloCollection()) || (kind === 'Céleste' && binderOf('celeste'));
     if(solo){ state.binderOpen = true; state.binder = solo.k; }
     var kindsEl = document.getElementById('binder-kinds');
-    kindsEl.innerHTML = KINDS.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + kindLabel(k) + '</button>'; }).join('');
+    kindsEl.classList.toggle('five', ks.length > 4);
+    kindsEl.innerHTML = ks.map(function(k){ return '<button type="button" role="tab" data-kind="' + k + '" aria-selected="' + (k === kind) + '">' + kindLabel(k) + '</button>'; }).join('');
     [].forEach.call(kindsEl.children, function(btn){ btn.onclick = function(){ state.binderKind = btn.getAttribute('data-kind'); state.binderOpen = false; save(); renderBinder(); window.scrollTo(0, 0); }; });
     var inPage = state.binderOpen && binderOf(state.binder).kind === kind;
     document.getElementById('binder-list').hidden = inPage; document.getElementById('ask-artist').hidden = inPage;
