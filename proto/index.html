@@ -538,6 +538,7 @@
   .pf-note{font-size:.86rem; margin:0 0 10px}
   .ask-artist{display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; margin:18px 0 8px; padding:14px 16px; min-height:44px; border:1px dashed rgba(235,154,38,.45); border-radius:12px; background:transparent; color:var(--text); cursor:pointer}
   .ask-artist b{font:700 .95rem var(--mono)} .ask-artist span{font:500 .8rem var(--mono); color:var(--gold-hi)}
+  .aa-tk{margin-top:6px; padding:4px 12px; border-radius:999px; background:var(--gold); color:var(--ink); font:800 .74rem var(--display); font-style:normal; letter-spacing:.06em; text-transform:uppercase}
   .as-in{width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font:inherit; font-size:1rem; resize:vertical}
   #artist-sheet .pf-row{margin-top:10px}
   .as-prio{display:flex; align-items:center; gap:10px; min-height:44px; margin:8px 0 0; font:600 .84rem var(--mono); color:var(--gold-hi); cursor:pointer} .as-prio[hidden]{display:none} .as-prio input{width:22px; height:22px; accent-color:var(--gold)}
@@ -720,6 +721,10 @@
   .slot .empty::before{content:""; position:absolute; inset:0; background:#140b0b url(cards/back.jpg) center/cover; opacity:.16}
   .slot .empty small{font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:0 6px}
   .slot .count{position:absolute; top:6px; right:6px; z-index:2; background:rgba(12,11,10,.88); border:1px solid rgba(235,154,38,.55); border-radius:6px; font:700 1rem/1 var(--display); letter-spacing:.02em; color:#fff; padding:4px 7px; box-shadow:0 3px 10px rgba(0,0,0,.6)}
+  /* point rouge : ce qui est nouveau ou attend une action, à l'endroit même (même compte que la pastille de Metal Corner) */
+  .goal, .invite, .df, .band-inv p{position:relative}
+  .goal > .new-dot, .invite > .new-dot, .df > .new-dot, .band-inv p > .new-dot{position:absolute; top:-4px; right:-4px; z-index:3; width:12px; height:12px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px var(--bg), 0 0 10px #e11d2e}
+  .goal > .new-dot{top:8px; right:8px}   /* la carte d'objectif rogne ce qui dépasse */
   .slot .new-dot{position:absolute; top:6px; left:6px; z-index:2; width:10px; height:10px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px rgba(0,0,0,.6), 0 0 10px #e11d2e}
   .slot .cap{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
@@ -1127,7 +1132,7 @@
   </div>
   <button type="button" class="save-banner" id="save-banner" hidden><b>Tes cartes ne sont pas encore sauvegardées</b><span>Créer mon compte</span></button>
   <div class="binder-list" id="binder-list"></div>
-  <button type="button" class="ask-artist" id="ask-artist"><b>Il manque un artiste ?</b><span>Propose-le au Grand Architecte</span></button>
+  <button type="button" class="ask-artist" id="ask-artist"><b>Il manque un artiste ?</b><span>Propose-le au Grand Architecte</span><em class="aa-tk" id="aa-tk" hidden></em></button>
   <div class="binder-page" id="binder-page">
     <div class="bp-head">
       <button type="button" class="back-btn" id="binder-back"></button>
@@ -2112,6 +2117,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
       ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); syncPush();
+      renderSocial(); loadGigs();   // invitations, potes, concerts : la pastille de Metal Corner est juste dès la connexion
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
       presence();
       api.tickets().then(function(n){ state.tickets = n; save(); }).catch(function(){});
@@ -2601,7 +2607,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(res.kind === 'points'){ snd('reward'); refreshDaily();
       showLoot(label, '<span class="gframe"><img src="cards/pack-serie.jpg" alt="Un paquet"></span>', ['<b>+1 paquet</b>'], 'Un paquet au choix t\'attend dans tes cartes du jour.', 'Choisir mon paquet', function(){ go('packs'); }); return; }
     if(res.kind === 'ticket'){ snd('reward'); state.tickets = (state.tickets || 0) + 1; save();
-      showLoot(label, '<div class="loot-ticket"><span><small>Ticket · 1 entrée</small><b>Artiste prioritaire</b></span><em>N°1</em></div>', ['<b>+1 ticket</b>'], 'Ta prochaine demande d\'artiste passe en tête chez le Grand Architecte.', 'Encaisser'); return; }
+      showLoot(label, '<div class="loot-ticket"><span><small>Ticket · 1 entrée</small><b>Artiste prioritaire</b></span><em>N°1</em></div>', ['<b>+1 ticket</b>'], 'Ta prochaine demande d\'artiste passe en tête chez le Grand Architecte.', 'Proposer un artiste', function(){ go('binder'); document.getElementById('ask-artist').click(); document.getElementById('as-prio-in').checked = true; }); return; }
     if(res.kind !== 'card') return;
     try{ applyInventory(await ONLINE.inventory()); }catch(e){}
     renderStats(); if(!card(res.m)) return;
@@ -2736,20 +2742,20 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function crans(pct){ return pct >= 100 ? 100 : pct > 0 ? Math.max(10, Math.min(90, Math.floor(pct / 10) * 10)) : 0; }
   function notch(pct, n){ var on = Math.floor(pct / 100 * n + 1e-9), h = ''; for(var i = 0; i < n; i++) h += '<i' + (i < on ? ' class="on"' : '') + '></i>'; return '<i class="notch" aria-hidden="true">' + h + '</i>'; }
   function renderGoals(){
-    var list = goals(), done = claimables(), qz = quizzes(), n = document.getElementById('quest-n');
-    // pastille de l'onglet : seulement les récompenses à prendre et les nouveaux objectifs (jamais vus) ; ouvrir l'onglet les marque comme vus
+    var list = goals(), done = claimables(), qz = quizzes();
+    // nouveaux objectifs (jamais vus) : point rouge sur leur carte, vus une fois la rubrique Épreuves affichée
     if(!state.goalsSeen){ state.goalsSeen = {}; list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
-    if(!document.getElementById('v-corner').hidden){ list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
-    var fresh = list.filter(function(g){ return !state.goalsSeen[g.key]; }).length, c = done.length + qz.length + fresh;
-    n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!(done.length + qz.length));
-    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (done.length ? ', ' + done.length + ' récompense' + (done.length > 1 ? 's' : '') + ' à récupérer' : '') + (fresh ? ', ' + fresh + ' nouvel' + (fresh > 1 ? 's' : '') + ' objectif' + (fresh > 1 ? 's' : '') : ''));
+    var freshKeys = {}; list.forEach(function(g){ if(!state.goalsSeen[g.key]) freshKeys[g.key] = true; });
+    epreuvesWait = done.length + qz.length + Object.keys(freshKeys).length;
+    if(!document.getElementById('v-corner').hidden && (state.cornerTab || 'troc') === 'epreuves'){ list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
+    paintCornerBadge();
     var el = document.getElementById('quest-list');
     el.innerHTML = done.map(function(o, i){
-      return '<button type="button" class="goal quest claim" data-claim="' + i + '">' + goalArt(o.key, null) + '<span class="q-body"><b>' + esc(o.title) + '</b><span class="pc">' + ICON_CHEST + 'Ouvrir</span><small>Terminé · ' + esc(o.gift) + '</small></span></button>'; }).join('') +
-      qz.map(function(q, i){ return '<button type="button" class="goal quest quizgo" data-quiz="' + i + '">' + goalArt(q.art, null).replace('</span>', ICON_HEAD + '</span>') +
+      return '<button type="button" class="goal quest claim" data-claim="' + i + '"><i class="new-dot" aria-hidden="true"></i>' + goalArt(o.key, null) + '<span class="q-body"><b>' + esc(o.title) + '</b><span class="pc">' + ICON_CHEST + 'Ouvrir</span><small>Terminé · ' + esc(o.gift) + '</small></span></button>'; }).join('') +
+      qz.map(function(q, i){ return '<button type="button" class="goal quest quizgo" data-quiz="' + i + '"><i class="new-dot" aria-hidden="true"></i>' + goalArt(q.art, null).replace('</span>', ICON_HEAD + '</span>') +
         '<span class="q-body"><b>' + (q.cry ? 'Qui a poussé ce cri ?' : 'Blind test débloqué') + '</b><span class="pc">Jouer</span><small>' + esc(q.label) + (q.cry ? ' · ' + q.rows.length + ' cri' + (q.rows.length > 1 ? 's' : '') + ' à démasquer' : ' · 5 extraits, une carte à gagner') + '</small></span></button>'; }).join('') +
       (list.length ? list.map(function(g){
-      return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' +
+      return '<button type="button" class="goal quest" data-b="' + (g.binder || 'all') + '"' + (g.detail ? ' data-d="' + g.detail + '"' : '') + (g.act ? ' data-act="' + g.act + '"' : '') + '>' + (freshKeys[g.key] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') +
         goalArt(g.key, g.detail) + '<span class="q-body"><b>' + esc(g.title) + '</b><span class="pc">' + g.pct + ' %</span>' + notch(g.pct, 5) + '</span></button>'; }).join('')
       : done.length ? '' : '<p class="corner-empty">Tout est plié pour l\'instant. Respect.</p>');
     [].forEach.call(el.querySelectorAll('[data-claim]'), function(b){ b.onclick = function(){ claimObjective(done[+b.getAttribute('data-claim')], b); }; });
@@ -3086,14 +3092,23 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var CORNER_TABS = [['troc', 'Troc'], ['concerts', 'Concerts'], ['epreuves', 'Épreuves'], ['rang', 'Rang']];
   function gigsWaiting(){ return (bandInvites || []).length + (gigs || []).filter(function(c){
     return gigPast(c) && (!c.claimed || (gigOpen(c) && (c.concert_picks || []).some(function(p){ return !p.done_at; }))); }).length; }
+  // ce qui attend dans chaque rubrique ; la pastille de l'onglet Metal Corner en est la somme
+  var epreuvesWait = 0;
+  function cornerWaits(){ return {troc:(invitesList || []).length, concerts:gigsWaiting(), epreuves:epreuvesWait}; }
+  function paintCornerBadge(){
+    var w = cornerWaits(), c = w.troc + w.concerts + w.epreuves, n = document.getElementById('quest-n');
+    n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!c);
+    document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (c ? ', ' + c + ' en attente' : ''));
+  }
   function cornerTab(t){
     if(t){ state.cornerTab = t; save(); }
     var cur = CORNER_TABS.some(function(x){ return x[0] === state.cornerTab; }) ? state.cornerTab : 'troc';
     [].forEach.call(document.querySelectorAll('#v-corner [data-ct]'), function(sec){ sec.classList.toggle('ct-off', sec.getAttribute('data-ct') !== cur); });
-    var wait = {troc:(invitesList || []).length, concerts:gigsWaiting(), epreuves:claimables().length}, el = document.getElementById('corner-tabs');
+    var wait = cornerWaits(), el = document.getElementById('corner-tabs');
     el.innerHTML = CORNER_TABS.map(function(x){ var n = wait[x[0]] || 0;
       return '<button type="button" role="tab" data-ct-go="' + x[0] + '" aria-selected="' + (x[0] === cur) + '"' + (n ? ' aria-label="' + x[1] + ', ' + n + ' en attente"' : '') + '>' + x[1] + (n ? '<i class="ct-dot" aria-hidden="true">' + n + '</i>' : '') + '</button>'; }).join('');
-    [].forEach.call(el.children, function(b){ b.onclick = function(){ cornerTab(b.getAttribute('data-ct-go')); window.scrollTo(0, 0); }; });
+    [].forEach.call(el.children, function(b){ b.onclick = function(){ var t = b.getAttribute('data-ct-go'); cornerTab(t); if(t === 'epreuves') renderGoals(); window.scrollTo(0, 0); }; });
+    paintCornerBadge();
   }
   function renderSocial(){
     if(!ONLINE) return;
@@ -3106,7 +3121,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function paintInvites(){
     document.getElementById('invites-sec').hidden = !invitesList.length; cornerTab();
     document.getElementById('invites').innerHTML = invitesList.map(function(v, i){
-      return '<div class="invite">' + avatarHtml(v.from_name) + '<span><b>' + esc(v.from_name || 'Un pote') + '</b><small>te propose un échange</small></span><span class="f-acts"><button type="button" data-join="' + i + '">Rejoindre</button></span></div>'; }).join('');
+      return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(v.from_name) + '<span><b>' + esc(v.from_name || 'Un pote') + '</b><small>te propose un échange</small></span><span class="f-acts"><button type="button" data-join="' + i + '">Rejoindre</button></span></div>'; }).join('');
     [].forEach.call(document.querySelectorAll('[data-join]'), function(b){ b.onclick = function(){ tradeJoin(invitesList[+b.getAttribute('data-join')].code); }; });
   }
   function paintFriends(){
@@ -3194,21 +3209,21 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }).then(function(){
       return Promise.all(gigs.filter(function(c){ return c.photo_path && !gigPhotoUrl[c.photo_path]; }).map(function(c){
         return ONLINE.mediaUrl('concerts', c.photo_path).then(function(u){ gigPhotoUrl[c.photo_path] = u; }).catch(function(){}); }));
-    }).then(function(){ if(!document.getElementById('v-corner').hidden) renderCorner(); else renderGigs(); }).catch(function(){});
+    }).then(function(){ if(!document.getElementById('v-corner').hidden) renderCorner(); else { renderGigs(); renderGoals(); } }).catch(function(){});
   }
   // actions d'un de mes concerts : défis choisis (preuve, retrait), « + Défi », talon à valider
   function gigActs(c){
     var picks = c.concert_picks || [], open = gigOpen(c), live = open && gigPast(c), out = '';
     picks.forEach(function(p){ var ch = p.concert_challenges || {};
       if(p.done_at) out += '<span class="df ' + (p.cancelled ? 'off' : 'done') + '">' + (p.cancelled ? 'Annulé · ' : '✓ ') + esc(ch.title) + (p.band_bonus && !p.cancelled ? ' · bande' : '') + '</span>';
-      else if(live) out += '<button type="button" class="df go" data-act="prove" data-ch="' + esc(p.challenge_id) + '">' + (ch.proof === 'video' ? 'Filmer' : 'Photo') + ' · ' + esc(ch.title) + '</button>';
+      else if(live) out += '<button type="button" class="df go" data-act="prove" data-ch="' + esc(p.challenge_id) + '"><i class="new-dot" aria-hidden="true"></i>' + (ch.proof === 'video' ? 'Filmer' : 'Photo') + ' · ' + esc(ch.title) + '</button>';
       else if(open) out += '<button type="button" class="df" data-act="unpick" data-ch="' + esc(p.challenge_id) + '" aria-label="Retirer le défi ' + esc(ch.title) + '">' + esc(ch.title) + TL_X + '</button>';
       else out += '<span class="df off">' + esc(ch.title) + ' · raté</span>';
     });
     if(open && picks.length < 3) out += '<button type="button" class="df add" data-act="pick">+ Défi</button>';
     if(c.band_id) out += '<button type="button" class="df band" data-act="band">Ta bande</button>';
     else if(open) out += '<button type="button" class="df add" data-act="band">+ Bande</button>';
-    if(gigPast(c) && !c.claimed) out += '<button type="button" class="df claim" data-act="claim">Valider le talon</button>';
+    if(gigPast(c) && !c.claimed) out += '<button type="button" class="df claim" data-act="claim"><i class="new-dot" aria-hidden="true"></i>Valider le talon</button>';
     return out ? '<div class="tl-acts" data-id="' + esc(c.id) + '">' + out + '</div>' : '';
   }
   function renderGigs(){
@@ -3217,7 +3232,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var list = gigs || [];
     box.innerHTML = '<div class="pf-row"><button type="button" class="btn" id="gig-open">J\'y étais</button><button type="button" class="btn ghost" id="band-open">Code de bande</button></div>' +
       (bandInvites.length ? '<div class="band-inv">' + bandInvites.map(function(i){ var d = gigDate(i.played_on);
-        return '<p><span><b>' + esc(i.from_name) + '</b> t\'invite dans sa bande pour <b>' + esc(i.artist) + '</b> · ' + d.day + ' ' + esc(d.month) + '</span><button type="button" class="df go" data-code="' + esc(i.code) + '">Rejoindre</button></p>'; }).join('') + '</div>' : '') + (list.length
+        return '<p><i class="new-dot" aria-hidden="true"></i><span><b>' + esc(i.from_name) + '</b> t\'invite dans sa bande pour <b>' + esc(i.artist) + '</b> · ' + d.day + ' ' + esc(d.month) + '</span><button type="button" class="df go" data-code="' + esc(i.code) + '">Rejoindre</button></p>'; }).join('') + '</div>' : '') + (list.length
       ? '<div class="talons">' + list.map(function(c){ return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + gigActs(c) + '</div>'; }).join('') + '</div>'
       : '<p class="corner-lead gig-empty">Ton premier talon t\'attend : importe un billet, ou note le concert à la main.</p>');
     document.getElementById('gig-open').onclick = openGig;
@@ -4203,6 +4218,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openBinder(k){ var b = binderOf(k); state.binder = b.k; state.binderKind = b.kind; state.binderOpen = true; save(); }
   function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
   function renderBinder(){
+    var tk = ONLINE ? state.tickets || 0 : 0, aa = document.getElementById('aa-tk');   // ticket prioritaire : on le voit là où il sert
+    aa.hidden = !tk; aa.textContent = 'Ticket prioritaire' + (tk > 1 ? ' ×' + tk : '') + ' · ta demande passe en tête';
     if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
     var ks = kinds(), kind = ks.indexOf(state.binderKind) === -1 ? ks[0] : state.binderKind, solo = (kind === 'Collection' && soloCollection()) || (kind === 'Céleste' && binderOf('celeste'));
     if(solo){ state.binderOpen = true; state.binder = solo.k; }
