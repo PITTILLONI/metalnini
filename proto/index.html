@@ -3073,9 +3073,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     musicEl.play().catch(function(){}); musicApply();
   }
   function duck(v){ musicDuck = v; musicApply(); }
-  // premier geste : le son se déverrouille, les sons courts se préchargent, la musique démarre
-  addEventListener('pointerdown', function first(){ removeEventListener('pointerdown', first, true); sndInit(); musicStart();
-    ['tap', 'flip', 'tear', 'place', 'deal', 'reveal-commune', 'reveal-rare'].forEach(sndLoad); }, true);
+  // premier geste : le son se déverrouille, les sons courts se préchargent, la musique démarre.
+  // Doigt levé ou touche (sur écran tactile, pointerdown ne compte pas comme geste) ; on retente à chaque geste tant que rien ne joue.
+  var SND_GESTURES = ['pointerup', 'keydown'], sndPreloaded = false;
+  function sndUnlock(){
+    if(!sndInit()) return;
+    musicStart(); musicApply();
+    if(!sndPreloaded){ sndPreloaded = true; ['tap', 'flip', 'tear', 'place', 'deal', 'reveal-commune', 'reveal-rare'].forEach(sndLoad); }
+    if(sndCtx.state === 'running' && (!musicEl || !musicEl.paused || !musicLevel())) SND_GESTURES.forEach(function(t){ removeEventListener(t, sndUnlock, true); });
+  }
+  SND_GESTURES.forEach(function(t){ addEventListener(t, sndUnlock, true); });
   document.addEventListener('visibilitychange', musicApply);
   new MutationObserver(function(){ duck(revealEl.hidden ? 1 : .35); }).observe(document.getElementById('reveal'), {attributes:true, attributeFilter:['hidden']});
   // interface : un « tap » discret sur les boutons, un son pour les choix
