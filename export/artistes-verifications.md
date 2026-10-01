@@ -13,7 +13,8 @@ Légende des statuts : **condamnation** / **accusation** (avec son issue : proc�
 # Partie 1 — Artistes déjà dans le jeu
 
 ## Décisions du propriétaire (2026-10-01)
-- Retirés : Axl Rose (jamais mis en base, retiré du dépôt), Ozzy Osbourne, Dave Mustaine, Tom Araya (déjà en base et dans des collections : retrait à organiser, voir CLAUDE.md).
+- Retiré : Axl Rose (jamais mis en base, retiré du dépôt).
+- Retrait souhaité mais abandonné : Ozzy Osbourne, Dave Mustaine, Tom Araya. Leurs cartes étaient déjà distribuées dans les collections, on n'y touche pas. La règle s'applique aux ajouts à venir.
 - Gardés : Lemmy Kilmister, Oli Sykes, George Fisher (Cannibal Corpse, sans reprendre de visuels du groupe).
 - Artistes prévus : aucun écarté (Jimmy Page, Flea et John Bonham restent dans la liste).
 
