@@ -1649,8 +1649,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
-    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes']},
-    {k:'hardcore', kind:'Styles', label:'Death metal & deathcore', ids:['ramos','corpsegrinder','white-gluz','duplantier','joe-duplantier']},
+    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes']},
+    {k:'hardcore', kind:'Styles', label:'Death metal & deathcore', ids:['ramos','corpsegrinder','white-gluz']},
+    {k:'prog',      kind:'Styles', label:'Metal progressif', ids:['keenan','duplantier','joe-duplantier','jinjer']},
     {k:'numetal', kind:'Styles', label:'Nu metal', ids:['korn','root','jordison','corey','bennington','shinoda']},
     {k:'alternatif', kind:'Styles', label:'Metal alternatif', ids:['zack','morello','tankian','malakian','poppy','amy-lee']},
     {k:'poppunk', kind:'Styles', label:'Pop punk & emo', ids:['blink182','hoppus','hayley','armstrong','gerard-way']},
@@ -1658,7 +1659,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     {k:'legendes', kind:'Styles', label:'Légendes du rock', ids:['hendrix','mercury','prince','may','frusciante','flea']},
     {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro','harris','iommi']},
     {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett','lars','burton','lombardo']},
-    {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','keenan']},
+    {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl']},
     {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison','lars','lombardo','bonham']},
     {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince','morello','iommi','may','page','malakian']},
@@ -1686,12 +1687,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var CARDS = [
     ['knocked-loose','Bryan Garris','Knocked Loose','The Deadringer','IV','Chant','Hardcore'],
     ['isaac-hale','Isaac Hale','Knocked Loose','Counting Worms','X','Guitare','Hardcore'],
-    ['jinjer','Tatiana Shmayluk','Jinjer','Pisces','V','Chant','Metalcore progressif'],
+    ['jinjer','Tatiana Shmayluk','Jinjer','Pisces','V','Chant','Metal progressif'],
     ['spiritbox','Courtney LaPlante','Spiritbox','Holy Roller','VI','Chant','Metalcore'],
     ['landmvrks','Florent Salfati','Landmvrks','Lost in the Waves','VIII','Chant','Metalcore'],
     ['ramos','Will Ramos','Lorna Shore','To the Hellfire','XIV','Chant','Deathcore'],
     ['heriot','Debbie Gough','Heriot','Devoured by the Mouth of Hell','XVIII','Chant, guitare','Metalcore'],
-    ['duplantier','Mario Duplantier','Gojira','Flying Whales','XVI','Batterie','Death metal progressif'],
+    ['duplantier','Mario Duplantier','Gojira','Flying Whales','XVI','Batterie','Metal progressif'],
     ['blink182','Travis Barker','Blink-182','All the Small Things','VII','Batterie','Pop punk'],
     ['hoppus','Mark Hoppus','Blink-182',"What's My Age Again?",'XII','Basse, chant','Pop punk'],
     ['hendrix','Jimi Hendrix','Jimi Hendrix','Purple Haze','IX','Guitare','Rock psychédélique'],
@@ -1743,7 +1744,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['corey','Corey Taylor','Slipknot','Before I Forget','LXI','Chant','Nu metal'],
     ['shinoda','Mike Shinoda','Linkin Park','In the End','LXII','Chant, claviers','Nu metal'],
     ['malakian','Daron Malakian','System of a Down','Chop Suey!','LXIII','Guitare, chant','Metal alternatif'],
-    ['joe-duplantier','Joe Duplantier','Gojira','L\'Enfant sauvage','LXIV','Chant, guitare','Death metal progressif'],
+    ['joe-duplantier','Joe Duplantier','Gojira','L\'Enfant sauvage','LXIV','Chant, guitare','Metal progressif'],
     ['amy-lee','Amy Lee','Evanescence','Bring Me to Life','LXV','Chant','Metal gothique']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
@@ -2021,12 +2022,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var PACK_TAGS = {serie:'Tous les styles dans le même pit. Personne ne choisit son voisin.', metalcore:'Du pit hardcore aux refrains metalcore : ça cogne, puis ça chante.',
     hardcore:'Growls, blast beats et breakdowns : pour ceux qui trouvent le metalcore trop poli.', numetal:'Baggys, dreadlocks et platines : les années 2000 n\'ont jamais fini.',
     poppunk:'Trois accords, un skate et des refrains à hurler en voiture.', legendes:'Ceux sans qui personne ici n\'aurait touché une guitare.',
-    heavy:'Cuir, clous et voix qui montent jusqu\'au plafond.', thrash:'Plus vite, plus fort, et on reprend du début.', grunge:'Chemises à carreaux et larsen de Seattle.', alternatif:'Rap, sirènes et pianos gothiques : le metal qui sort des cases.'};
+    heavy:'Cuir, clous et voix qui montent jusqu\'au plafond.', thrash:'Plus vite, plus fort, et on reprend du début.', grunge:'Chemises à carreaux et larsen de Seattle.', prog:'Des mesures impaires et des morceaux de dix minutes : prévois du temps.', alternatif:'Rap, sirènes et pianos gothiques : le metal qui sort des cases.'};
   // fiches des styles (et des instruments) : comprendre la musique d'un classeur. era = époque, tags = repères pour le reconnaître,
   // play = cartes du classeur dont le morceau illustre le style
   var STYLE_INFO = {
     metalcore:{era:'Années 1980 à aujourd\'hui', txt:'Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.', tags:['Breakdowns', 'Cris et chant clair', 'Pit'], play:['knocked-loose', 'spiritbox', 'landmvrks']},
-    hardcore:{era:'Fin des années 1980 à aujourd\'hui', txt:'Le death metal apparaît en Floride à la fin des années 1980 : voix gutturales, riffs techniques, tempos extrêmes et blast beats. Dans les années 2000, le deathcore y ajoute les breakdowns du metalcore.', tags:['Growls', 'Blast beats', 'Breakdowns'], play:['ramos', 'corpsegrinder', 'duplantier']},
+    hardcore:{era:'Fin des années 1980 à aujourd\'hui', txt:'Le death metal apparaît en Floride à la fin des années 1980 : voix gutturales, riffs techniques, tempos extrêmes et blast beats. Dans les années 2000, le deathcore y ajoute les breakdowns du metalcore.', tags:['Growls', 'Blast beats', 'Breakdowns'], play:['ramos', 'corpsegrinder', 'white-gluz']},
+    prog:{era:'Fin des années 1980 à aujourd\'hui', txt:'Le metal progressif emprunte au rock progressif ses structures longues et ses rythmes impairs, et y ajoute la puissance du metal : polyrythmies, changements de tempo, morceaux construits comme des voyages. Tool, Gojira ou Jinjer y mêlent groove, riffs massifs et passages planants.', tags:['Rythmes impairs', 'Morceaux longs', 'Polyrythmies'], play:['keenan', 'duplantier', 'jinjer']},
     numetal:{era:'Milieu des années 1990 aux années 2000', txt:'Apparu en Californie au milieu des années 1990, le nu metal mélange des riffs lourds et simples, des rythmiques groove et des influences hip-hop : rap, platines, samples. Il a dominé le début des années 2000 avec Korn, Slipknot et Linkin Park.', tags:['Riffs groove', 'Rap et chant', 'Platines et samples'], play:['korn', 'bennington', 'corey']},
     poppunk:{era:'Années 1990 et 2000', txt:'Le pop punk garde la vitesse et les trois accords du punk, et y ajoute des mélodies accrocheuses et des refrains à chanter en chœur. Il explose dans les années 1990 avec Green Day et Blink-182, puis revient en force avec l\'emo des années 2000.', tags:['Tempo rapide', 'Refrains en chœur', 'Textes adolescents'], play:['blink182', 'hayley', 'armstrong']},
     legendes:{era:'Années 1960 à 1990', txt:'Les pionniers et les monstres sacrés du rock, ceux qui ont inventé les codes que tout le monde reprend encore : guitar heroes, voix hors normes, basses funk et morceaux devenus des hymnes de stade.', tags:['Guitar heroes', 'Hymnes', 'Pionniers'], play:['hendrix', 'mercury', 'prince']},
@@ -4446,7 +4448,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['grunge', 'cobain', 'Grunge', 'Nirvana, Foo Fighters, Soundgarden'], ['numetal', 'bennington', 'Nu metal', 'Linkin Park, Korn, Slipknot'],
     ['alternatif', 'tankian', 'Metal alternatif', 'System of a Down, RATM, Evanescence'], ['poppunk', 'hayley', 'Pop punk & emo', 'Blink-182, Green Day, Paramore'],
     ['heavy', 'ozzy', 'Heavy metal', 'Ozzy, Iron Maiden, Motörhead'], ['thrash', 'hetfield', 'Thrash', 'Metallica, Megadeth, Slayer'],
-    ['metalcore', 'spiritbox', 'Hardcore & metalcore', 'Knocked Loose, Spiritbox, Jinjer'], ['hardcore', 'ramos', 'Death metal & deathcore', 'Gojira, Lorna Shore, Cannibal Corpse']];
+    ['metalcore', 'spiritbox', 'Hardcore & metalcore', 'Knocked Loose, Spiritbox, Landmvrks'], ['hardcore', 'ramos', 'Death metal & deathcore', 'Lorna Shore, Cannibal Corpse, Arch Enemy'],
+    ['prog', 'keenan', 'Metal progressif', 'Tool, Gojira, Jinjer']];
   var onbEl = document.getElementById('onb');
   function onbShow(html){ onbEl.innerHTML = '<div class="onb-in">' + html + '</div>'; onbEl.hidden = false; onbEl.scrollTop = 0; }
   function onbClose(){ onbEl.hidden = true; onbEl.innerHTML = ''; }

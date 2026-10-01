@@ -153,3 +153,5 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 **alternatif** (Années 1990 à aujourd'hui) — Le metal alternatif réunit ceux qui sortent des cases : le rap metal engagé de Rage Against the Machine, les mélodies arméniennes de System of a Down, le metal gothique d'Evanescence ou le métal expérimental de Poppy. Des guitares lourdes au service de morceaux qui ne ressemblent qu'à eux.
 
 **hardrock** (Fin des années 1960 aux années 1980) — Le hard rock durcit le blues-rock à la fin des années 1960 : riffs de guitare saturés, voix puissantes et solos. Led Zeppelin et AC/DC en posent les bases, Guns N' Roses le ramène au sommet à la fin des années 1980.
+
+**prog** (Fin des années 1980 à aujourd'hui) — Le metal progressif emprunte au rock progressif ses structures longues et ses rythmes impairs, et y ajoute la puissance du metal : polyrythmies, changements de tempo, morceaux construits comme des voyages. Tool, Gojira ou Jinjer y mêlent groove, riffs massifs et passages planants.
