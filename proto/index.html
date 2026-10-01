@@ -617,6 +617,7 @@
   .combo[data-r="holo"]{font-size:clamp(2.8rem, 14vw, 3.8rem); color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
   .combo[data-r="signature"]{font-size:clamp(3.1rem, 15.5vw, 4.2rem); color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(235,154,38,.65)}
   .combo[data-r="legendaire"]{font-size:clamp(3.4rem, 17vw, 4.6rem); font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
+  .combo[data-r="celeste"]{font-size:clamp(2.6rem, 13vw, 3.6rem); color:#ffd9ea; --cb:#f4a6c8} .combo[data-r="celeste"] span{box-shadow:0 0 40px rgba(244,166,200,.8)}
   .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
   @keyframes comboshake{50%{translate:4px 0}}
@@ -985,7 +986,23 @@
   @keyframes fl-b{0%,100%{transform:scaleY(1) translateY(0)}50%{transform:scaleY(1.12) translateY(-2%)}}
   @keyframes drift{to{background-position-x:-900px}}
   #flames-pack{z-index:31}
-  #flames-reveal{position:fixed; z-index:0}   /* toujours au bas de l'écran, même quand la révélation défile */
+  #flames-reveal{position:fixed; z-index:0}
+  /* carte secrète (Céline) : fond rose nacré, cœurs qui montent, reflet irisé sur la carte, compteur en « Carte secrète » rose */
+  .reveal.celeste{background:radial-gradient(ellipse at center, #3b1a2c 0%, #14070e 72%)}
+  .celeste-fx{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; opacity:0; transition:opacity .8s ease}
+  .reveal.celeste .celeste-fx{opacity:1}
+  .celeste-fx i{position:absolute; bottom:-48px; left:var(--x); width:var(--s); height:var(--s); opacity:0;
+    background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f4a6c8' d='M12 21s-7.5-4.6-9.6-9.3C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.2C19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E");
+    filter:drop-shadow(0 0 6px rgba(244,166,200,.7)); animation:heart-up var(--d) linear var(--dl) infinite}
+  @keyframes heart-up{0%{transform:translate3d(0, 0, 0) scale(.6); opacity:0} 12%{opacity:.85} 100%{transform:translate3d(var(--dx), -112vh, 0) scale(1.05); opacity:0}}
+  .reveal.celeste .charge-legendaire .face.back{box-shadow:inset 0 0 0 2px #f4a6c8, 0 0 70px 20px rgba(244,166,200,.8)}
+  .reveal.celeste .glow{box-shadow:0 0 80px 26px rgba(244,166,200,.7) !important}   /* le halo suit la carte en rose, pas en rouge Légendaire */
+  .reveal.celeste .counter{font:400 1.7rem/1 var(--gothic); letter-spacing:0; text-transform:none; color:#ffd9ea; text-shadow:0 0 16px rgba(244,166,200,.85)}
+  .reveal.celeste .flip .front::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; mix-blend-mode:screen;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,205,230,.6) 44%, rgba(205,230,255,.55) 52%, rgba(255,240,205,.5) 58%, transparent 72%) 0 0/260% 100% no-repeat;
+    animation:celeste-sweep 2.6s ease-in-out .9s 3}
+  @keyframes celeste-sweep{from{background-position:120% 0} to{background-position:-40% 0}}
+  @media (prefers-reduced-motion: reduce){ .celeste-fx i, .reveal.celeste .flip .front::after{animation:none} }   /* toujours au bas de l'écran, même quand la révélation défile */
   #reveal-one{position:relative; z-index:1}
   .pack-desc{margin:4px 0 0; max-width:320px; text-align:center; font-size:.84rem; color:var(--muted); line-height:1.4}
   .pack-desc b{color:var(--text); font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; font-weight:500}
@@ -1316,6 +1333,7 @@
 </div>
 <div class="reveal" id="reveal" hidden aria-live="polite">
   <div class="flames" id="flames-reveal" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="celeste-fx" id="celeste-fx" aria-hidden="true"></div>
   <button type="button" class="skip" id="skip">Tout révéler</button>
   <button type="button" class="icon-btn rev-share" id="share" hidden aria-label="Partager cette carte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1"/><path d="M12 14v-11"/><path d="M9 6l3 -3l3 3"/></svg></button>
   <div id="reveal-one">
@@ -3695,7 +3713,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('to-binder').hidden = true; document.getElementById('share').hidden = true; document.getElementById('rev-next').hidden = true; document.getElementById('hint').style.visibility = '';
     var cb = document.getElementById('combo'); cb.classList.remove('go'); cb.innerHTML = ''; cb.style.opacity = '';
     flip.style.transition = 'none'; flip.classList.remove('on'); flip.style.transform = ''; void flip.offsetWidth; flip.style.transition = '';
-    document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on');
+    document.getElementById('rays').className = ''; document.getElementById('flames-reveal').classList.remove('on'); revealEl.classList.remove('celeste');
     stage.className = 'stage';
     renderUnders();
     revealEl.classList.remove('dim'); clearTarget();
@@ -3716,6 +3734,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     signature:['Signée ! Tu peux hurler.', 'Chokbar : une Signature !', 'Signée à la main, ma gueule !', 'Wall of death autorisé !', 'Masterclass. Rien à dire.', 'Signature. Les PNJ peuvent sortir.'],
     legendaire:['Légendaire. Arrête tout.', 'Wallah… LÉGENDAIRE !', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.', 'T\'as cassé le jeu, fraté.', 'Légendaire. Aura infinie.', 'Les autres peuvent rentrer chez eux.']
   };
+  var CELESTE_LINES = ['Céline. Personne ne va te croire.', 'Le cœur continue. Le tien aussi ?', 'Carte secrète. Respire.', 'Céline Dion ? Dans le pit ?!'];
   var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Encore ? Il te suit ou quoi ?', 'T\'as déjà le t-shirt, papy.', 'Doublon. Le destin a de l\'humour.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Red flag, fraté.'];
   // même carte trois fois dans le paquet : le destin s'acharne
   var TRIPLE_LINES = ['Trois fois la même. T\'es maudit, avoue.', 'Triplé ! Cheh.', 'Trois fois ? Le seum, ma gueule.', 'Tu collectionnes ou tu te venges ?', 'Wallah, trois fois la même. C\'est un complot.'];
@@ -3727,10 +3746,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function fillInfo(x){
     var line = document.getElementById('combo');
     var same = current.slice(0, idx + 1).filter(function(y){ return y.c.id === x.c.id && y.r === x.r; }).length;
-    var text = same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]);
-    line.innerHTML = '<span>' + esc(text) + '</span>'; line.setAttribute('data-r', same >= 3 ? 'triple' : x.r);
+    var text = x.c.secret ? pick(CELESTE_LINES) : same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]);
+    line.innerHTML = '<span>' + esc(text) + '</span>'; line.setAttribute('data-r', x.c.secret ? 'celeste' : same >= 3 ? 'triple' : x.r);
     line.classList.remove('go'); void line.offsetWidth; if(!reduce) line.classList.add('go'); else line.style.opacity = 1;
-    var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
+    var ri = document.getElementById('ci-r'); ri.textContent = x.c.secret ? 'Carte secrète' : rarity(x.r).label; ri.style.color = x.c.secret ? '#f4a6c8' : rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
     document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
   }
@@ -3744,6 +3763,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openStack(){
     var pile = document.getElementById('pile'); pile.classList.remove('pull'); void pile.offsetWidth; if(!reduce) pile.classList.add('pull');
   }
+  // carte secrète : le fond vire au rose nacré et des cœurs montent du bas de l'écran
+  function celesteFx(){
+    var fx = document.getElementById('celeste-fx');
+    if(!fx.children.length) for(var i = 0; i < 22; i++) fx.insertAdjacentHTML('beforeend', '<i style="--x:' + Math.round(Math.random() * 96) + '%; --s:' + (14 + Math.round(Math.random() * 22)) + 'px; --d:' + (5 + Math.random() * 5).toFixed(1) + 's; --dl:' + (Math.random() * 5).toFixed(1) + 's; --dx:' + Math.round(Math.random() * 120 - 60) + 'px"></i>');
+    revealEl.classList.add('celeste');
+  }
   function reveal(dir){
     if(!current[idx]) return;
     var x = current[idx], r = x.r, ms = reduce ? 0 : CHARGE[r]; busy = true; side = dir || side || 1;
@@ -3752,8 +3777,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       stage.classList.add('charge-' + r);
       flip.style.transition = 'transform .25s ease-out'; flip.style.transform = 'rotateY(' + (side * 14) + 'deg)';
       if(rank(r) >= 3){ revealEl.classList.add('dim'); stage.classList.add('rumble'); SFX.rumble(ms); }
-      if(r === 'legendaire') document.getElementById('flames-reveal').classList.add('on');
-      if(rank(r) >= 2){ rays(r); }
+      if(x.c.secret) celesteFx(); else if(r === 'legendaire') document.getElementById('flames-reveal').classList.add('on');
+      if(rank(r) >= 2 && !x.c.secret){ rays(r); }
     }
     setTimeout(function(){
       stage.classList.remove('rumble'); SFX.flip();
@@ -3761,11 +3786,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       flip.style.transition = 'transform ' + dur + 's cubic-bezier(.2,.8,.2,1)'; flip.style.transform = 'rotateY(' + (side * 180) + 'deg)';
       flip.classList.add('on'); flipped = true;
       setTimeout(function(){
-        fillInfo(x); stage.classList.add('impact'); SFX[r](); flash(r);
-        if(rank(r) >= 3){ ring(r); quake(); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); }
+        fillInfo(x); stage.classList.add('impact'); SFX[r]();
+        if(!x.c.secret){ flash(r); if(rank(r) >= 3){ ring(r); quake(); } if(r === 'legendaire'){ setTimeout(function(){ ring(r); flash(r); }, 260); } }
         document.getElementById('card-info').classList.add('on'); busy = false; seenUpTo = Math.max(seenUpTo, idx); renderDeck(); setTarget(document.getElementById('pile'), tilt, r);
         document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la suivante' + (rank(r) >= 2 ? ' · bouge-la, elle brille' : '');
-        if(idx === current.length - 1){ showDone(); showListen(document.getElementById('ci-listen'), x.c.id, true); }
+        if(x.c.secret){ revealEl.classList.add('celeste'); showListen(document.getElementById('ci-listen'), x.c.id, 'tap'); }   // la chanson démarre tout de suite
+        if(idx === current.length - 1){ showDone(); if(!x.c.secret) showListen(document.getElementById('ci-listen'), x.c.id, true); }
       }, reduce ? 0 : ({signature:560, legendaire:800}[r] || 320));
     }, ms);
   }
@@ -3812,7 +3838,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('glow').setAttribute('data-r', x.r); document.getElementById('sheen').setAttribute('data-r', x.r);
     flip.style.transition = 'none'; flip.classList.add('on'); flip.style.transform = 'rotateY(180deg)';
     renderUnders(); document.getElementById('counter').textContent = 'Carte ' + (i + 1) + ' / ' + current.length;
-    var ri = document.getElementById('ci-r'); ri.textContent = rarity(x.r).label; ri.style.color = rarity(x.r).color;
+    var ri = document.getElementById('ci-r'); ri.textContent = x.c.secret ? 'Carte secrète' : rarity(x.r).label; ri.style.color = x.c.secret ? '#f4a6c8' : rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
     document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
     document.getElementById('card-info').classList.add('on'); renderDeck(); setTarget(document.getElementById('pile'), tilt, x.r);
