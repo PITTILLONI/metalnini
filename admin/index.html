@@ -141,6 +141,7 @@
       <button data-t="packs">Paquets & probabilités</button>
       <button data-t="catalog">Catalogue</button>
       <button data-t="trades">Échanges</button>
+      <button data-t="concerts">Concerts</button>
       <button data-t="log">Journal</button>
       <button data-t="team">Admins</button>
       <button data-t="account">Mon compte</button>
@@ -150,6 +151,7 @@
     <section data-p="packs" hidden></section>
     <section data-p="catalog" hidden></section>
     <section data-p="trades" hidden></section>
+    <section data-p="concerts" hidden></section>
     <section data-p="log" hidden></section>
     <section data-p="team" hidden></section>
     <section data-p="account" hidden></section>
@@ -249,7 +251,7 @@ async function openTab(t){
   tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.t === t)));
   document.querySelectorAll('[data-p]').forEach(p => p.hidden = p.dataset.p !== t);
   const el = document.querySelector(`[data-p="${t}"]`); el.innerHTML = '<p class="muted">Chargement…</p>';
-  try { await ({dash, players, packs, catalogTab, trades, log, team, account})[t === 'catalog' ? 'catalogTab' : t](el); }
+  try { await ({dash, players, packs, catalogTab, trades, concerts, log, team, account})[t === 'catalog' ? 'catalogTab' : t](el); }
   catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; }
 }
 async function loadCatalog(){
@@ -589,6 +591,57 @@ async function trades(el){
   const rows = await sb.rpc('admin_trades', { p_user: null, p_limit: 200 }).then(must);
   const done = rows.filter(t => t.status === 'done').length;
   el.innerHTML = `<div class="card"><h3>Échanges · ${done} conclu${done > 1 ? 's' : ''} sur les ${rows.length} derniers</h3>${tradesTable(rows)}</div>`;
+}
+
+// ---------------------------------------------------------------- concerts : défis et preuves
+// défis proposés aux joueurs (jusqu'à 3 par concert, un point de plus s'ils sont choisis à l'avance) ; preuves validées d'office, annulables ici
+function challengeRow(c){
+  const n = !c.id;
+  return `<tr data-ch="${n ? 'new' : c.id}"><td><input class="ch-sort" type="number" value="${n ? '' : c.sort}" style="width:64px" aria-label="Ordre"></td>
+    <td><input class="ch-title" value="${esc(c.title)}" maxlength="60" placeholder="${n ? 'Nouveau défi' : ''}" aria-label="Défi"></td>
+    <td><input class="ch-hint" value="${esc(c.hint)}" maxlength="200" aria-label="Consigne"></td>
+    <td><select class="ch-proof" aria-label="Preuve"><option value="photo"${c.proof === 'video' ? '' : ' selected'}>Photo</option><option value="video"${c.proof === 'video' ? ' selected' : ''}>Vidéo 10 s</option></select></td>
+    <td><input class="ch-points" type="number" min="0" max="20" value="${n ? 2 : c.points}" style="width:64px" aria-label="Points"></td>
+    <td><input class="ch-band" type="checkbox"${c.band_only ? ' checked' : ''} aria-label="En bande seulement"></td>
+    <td><input class="ch-active" type="checkbox"${n || c.active ? ' checked' : ''} aria-label="Actif"></td>
+    <td><button class="ghost fit" data-save>${n ? 'Ajouter' : 'Enregistrer'}</button><span class="msg"></span></td></tr>`;
+}
+async function concerts(el){
+  const [chs, picks] = await Promise.all([
+    sb.from('concert_challenges').select('*').order('sort').then(must),
+    sb.from('concert_picks').select('concert_id, challenge_id, user_id, picked_early, proof_path, done_at, cancelled, concerts(artist, played_on), concert_challenges(title, points)')
+      .not('done_at', 'is', null).order('done_at', { ascending: false }).limit(100).then(must)]);
+  const ids = [...new Set(picks.map(p => p.user_id))], names = {};
+  if(ids.length) (await sb.from('profiles').select('id, username').in('id', ids).then(must)).forEach(p => { names[p.id] = p.username || 'sans pseudo'; });
+  el.innerHTML = `<div class="card"><h3>Défis de concert</h3><p class="muted">Jusqu'à 3 par concert, un point de plus si le défi est choisi avant le jour J. Preuve le jour du concert ou dans les 2 jours, validée tout de suite. « En bande » : réservé aux bandes (bientôt).</p>
+    <div class="table-wrap"><table><tr><th>Ordre</th><th>Défi</th><th>Consigne</th><th>Preuve</th><th>Points</th><th>En bande</th><th>Actif</th><th></th></tr>
+    ${chs.map(challengeRow).join('')}${challengeRow({})}</table></div></div>
+    <div class="card"><h3>Preuves récentes · ${picks.length}</h3>${picks.length ? `<div class="table-wrap"><table><tr><th>Date</th><th>Joueur</th><th>Concert</th><th>Défi</th><th>Preuve</th><th></th></tr>
+      ${picks.map((p, i) => `<tr data-i="${i}"><td>${fmt(p.done_at)}</td><td><b>${esc(names[p.user_id] || '—')}</b></td>
+        <td>${esc(p.concerts && p.concerts.artist)} <span class="muted">${esc(p.concerts && p.concerts.played_on)}</span></td>
+        <td>${esc(p.concert_challenges && p.concert_challenges.title)} <span class="muted">+${((p.concert_challenges && p.concert_challenges.points) || 0) + (p.picked_early ? 1 : 0)}</span></td>
+        <td><button class="ghost fit" data-proof>Voir</button></td>
+        <td>${p.cancelled ? '<span class="err">annulée</span> <button class="ghost fit" data-cancel="0">Rétablir</button>' : '<button class="ghost fit" data-cancel="1">Annuler</button>'}<span class="msg"></span></td></tr>`).join('')}</table></div>`
+      : '<p class="muted">Aucune preuve pour l\'instant.</p>'}</div>`;
+  el.querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {
+    const tr = b.closest('tr'), id = tr.dataset.ch, v = c => tr.querySelector(c), msg = tr.querySelector('.msg');
+    const row = { title: v('.ch-title').value.trim(), hint: v('.ch-hint').value.trim() || null, proof: v('.ch-proof').value,
+      points: +v('.ch-points').value || 0, band_only: v('.ch-band').checked, active: v('.ch-active').checked, sort: +v('.ch-sort').value || (chs.length + 1) };
+    if(row.title.length < 2){ msg.textContent = ' Titre trop court'; return; }
+    b.disabled = true;
+    try { await (id === 'new' ? sb.from('concert_challenges').insert(row) : sb.from('concert_challenges').update(row).eq('id', id)).then(must); await concerts(el); }
+    catch(e){ b.disabled = false; msg.textContent = ' ' + (e.message || e); }
+  });
+  el.querySelectorAll('[data-proof]').forEach(b => b.onclick = async () => {
+    const p = picks[+b.closest('tr').dataset.i], w = window.open('', '_blank');
+    try { const r = await sb.storage.from('concerts').createSignedUrl(p.proof_path, 600).then(must); w.location = r.signedUrl; }
+    catch(e){ w.close(); b.closest('tr').querySelector('.msg').textContent = ' ' + (e.message || e); }
+  });
+  el.querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => {
+    const p = picks[+b.closest('tr').dataset.i]; b.disabled = true;
+    try { await sb.rpc('admin_cancel_challenge', { p_concert: p.concert_id, p_challenge: p.challenge_id, p_cancel: b.dataset.cancel === '1' }).then(must); await concerts(el); }
+    catch(e){ b.disabled = false; b.closest('tr').querySelector('.msg').textContent = ' ' + (e.message || e); }
+  });
 }
 
 // ---------------------------------------------------------------- équipe d'admin

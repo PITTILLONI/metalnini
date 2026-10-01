@@ -118,7 +118,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const extra = [...shown].filter(x => !ownedIds.has(x)), missing = [...ownedIds].filter(x => !shown.has(x));
   check('classeur = collection (aucun artiste en trop)', extra.length === 0 && missing.length === 0, 'en trop: ' + extra + ' / manquants: ' + missing);
   { const w2 = await binderCards(d); const own = state().owned;
-    const slip = ['root','jordison'].some(id => Object.keys(own).some(k => k.startsWith(id + '|') && own[k] > 0));
+    const slip = ['root','jordison','corey'].some(id => Object.keys(own).some(k => k.startsWith(id + '|') && own[k] > 0));
     check('classeur de groupe : nom caché tant qu\'aucune carte n\'est trouvée', slip ? /Slipknot/.test(w2) : !/Slipknot/.test(w2) && /Groupe mystère/.test(w2), w2); }
   // un grand classeur (les guitaristes) : il y reste toujours des cases vides après quelques paquets
   await openB(d, 'guitaristes');
@@ -419,6 +419,25 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('concerts : enregistré avec le musicien du jeu, talon affiché', added && added.musician === 'korn' && added.date === '2026-06-20' && d9.getElementById('gig-sheet').hidden && /Korn/.test(d9.querySelector('#gigs .talon').textContent));
   d9.getElementById('pf-pub-open').click(); await sleep(20);
   check('concerts : talon sur le profil public', /Les talons · 1 concert/.test(d9.getElementById('pub-in').textContent));
+  d9.getElementById('pub-x').click();
+
+  // 15. Défis de concert : talon passé à valider (carte bonus), défi choisi pour un concert du jour, puis bouton de preuve
+  let claimedId = null, picked = null; const now9 = new Date();
+  const iso9 = now9.getFullYear() + '-' + String(now9.getMonth() + 1).padStart(2, '0') + '-' + String(now9.getDate()).padStart(2, '0');
+  fake9.claimConcert = async id => { claimedId = id; return null; };
+  fake9.challenges = async () => [{ id:'c1', title:'Circle pit', hint:'Un tour complet.', proof:'video', points:3, band_only:false }, { id:'c2', title:'Slam en bande', proof:'video', points:5, band_only:true }];
+  fake9.pickChallenge = async (c, ch) => { picked = ch; gigs9.find(g => g.id === c).concert_picks = [{ challenge_id:ch, picked_early:false, done_at:null, cancelled:false, concert_challenges:{ title:'Circle pit', points:3, proof:'video' } }]; };
+  d9.querySelector('#gigs [data-act="claim"]').click(); await sleep(30);
+  check('défis : talon passé validé', claimedId === 'g1');
+  fake9.addConcert = async c => { gigs9.unshift({ id:'g2', artist:c.artist, musician_id:null, played_on:c.date, venue:null, city:null, photo_path:null, photo_public:false, claimed:false, concert_picks:[] }); return 'g2'; };
+  d9.getElementById('gig-open').click(); await sleep(10);
+  d9.getElementById('gig-artist').value = 'Gojira'; d9.getElementById('gig-date').value = iso9;
+  d9.getElementById('gig-send').click(); await sleep(80);
+  d9.querySelector('.tl-acts[data-id="g2"] [data-act="pick"]').click(); await sleep(30);
+  check('défis : liste de l\'admin, sans les défis en bande', !d9.getElementById('df-sheet').hidden && d9.querySelectorAll('#df-list .df-opt').length === 1);
+  d9.querySelector('#df-list .df-opt').click(); await sleep(80);
+  const prove9 = d9.querySelector('.tl-acts[data-id="g2"] [data-act="prove"]');
+  check('défis : choisi, puis bouton de preuve le jour du concert', picked === 'c1' && d9.getElementById('df-sheet').hidden && prove9 && /Filmer · Circle pit/.test(prove9.textContent));
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');

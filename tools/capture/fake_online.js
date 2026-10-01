@@ -12,8 +12,15 @@ __fake.tradeInvites = async function(){ return []; }; __fake.friends = async fun
 __fake.presence = async function(){};
 __fake.claimBlindtest = async function(){ return {kind:'points', points:2}; };
 // concerts : deux talons (un passé avec photo, un à venir), ajout en mémoire
-window.__gigs = [{id:'g1', artist:'Gojira', musician_id:null, played_on:'2026-06-21', venue:'Hellfest', city:'Clisson', photo_path:'u1/concert-1.jpg', photo_public:true},
-  {id:'g2', artist:'Spiritbox', musician_id:'spiritbox', played_on:'2027-02-14', venue:'Zénith', city:'Paris', photo_path:null, photo_public:false}];
+(function(){ var d = new Date(), t = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+window.__gigs = [{id:'g3', artist:'Spiritbox', musician_id:'spiritbox', played_on:t, venue:'Zénith', city:'Paris', photo_path:null, photo_public:false, claimed:false,
+    concert_picks:[{challenge_id:'c4', picked_early:true, done_at:null, cancelled:false, concert_challenges:{title:'Circle pit', points:3, proof:'video'}},
+      {challenge_id:'c1', picked_early:true, done_at:t, cancelled:false, concert_challenges:{title:'Photo du pit', points:2, proof:'photo'}}]},
+  {id:'g1', artist:'Gojira', musician_id:null, played_on:'2026-06-21', venue:'Hellfest', city:'Clisson', photo_path:'u1/concert-1.jpg', photo_public:true, claimed:true,
+    concert_picks:[{challenge_id:'c5', picked_early:false, done_at:'2026-06-21', cancelled:false, concert_challenges:{title:'Slam', points:4, proof:'video'}}]},
+  {id:'g2', artist:'Lorna Shore', musician_id:'ramos', played_on:'2027-02-14', venue:'Olympia', city:'Paris', photo_path:null, photo_public:false, claimed:false, concert_picks:[]}]; })();
+__fake.challenges = async function(){ return [{id:'c1', title:'Photo du pit', hint:'Le pit vu de l\'intérieur, en plein morceau.', proof:'photo', points:2}, {id:'c2', title:'Crie son nom', hint:'Hurle le nom de l\'artiste entre deux morceaux.', proof:'video', points:2},
+  {id:'c3', title:'Headbanging', hint:'Dix secondes de nuque en roue libre.', proof:'video', points:2}, {id:'c4', title:'Circle pit', hint:'Un tour complet dans le cercle.', proof:'video', points:3}, {id:'c5', title:'Slam', hint:'Porté par la foule, en respectant la sécurité de la salle.', proof:'video', points:4}]; };
 __fake.concerts = async function(){ return __gigs.slice(); };
 __fake.addConcert = async function(c){ var id = 'g' + (__gigs.length + 1); __gigs.unshift({id:id, artist:c.artist, musician_id:c.musician, played_on:c.date, venue:c.venue, city:c.city, photo_path:null, photo_public:false}); return id; };
 __fake.concertPhoto = async function(){ return 'u1/p.jpg'; }; __fake.deleteConcert = async function(id){ __gigs = __gigs.filter(function(c){ return c.id !== id; }); };
