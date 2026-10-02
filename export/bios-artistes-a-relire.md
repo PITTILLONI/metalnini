@@ -2,7 +2,7 @@
 
 Affichées dans la fiche carte (section « L'artiste »). La présentation courte reste pour la révélation. Corrige directement dans ce fichier ou dis-moi quoi changer.
 
-Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : la bio de Reuno et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
+Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter et Nito Mestre, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
 
 **knocked-loose** — Chanteur de Knocked Loose, groupe de hardcore formé en 2013 dans le comté d'Oldham, au Kentucky. Son cri aigu et rageur est la signature du groupe. L'EP A Tear in the Fabric of Life (2021) puis l'album You Won't Go Before You're Supposed To (2024) en ont fait une tête d'affiche du hardcore actuel.
 
@@ -128,6 +128,10 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 **amy-lee** — Chanteuse, pianiste et cofondatrice d'Evanescence, groupe formé à Little Rock, dans l'Arkansas, en 1995. Formée au piano classique, elle mêle chant lyrique et guitares lourdes ; Bring Me to Life (2003) a fait de Fallen l'un des albums rock les plus vendus des années 2000.
 
 **reuno** — Il fonde Lofofora à Paris en 1989, l'un des pionniers du metal fusion en France ; le groupe doit son nom à un cactus, le lophophora. Il chante en français des textes engagés et souvent ironiques, contre le racisme et l'extrême droite, comme No facho sur le premier album (1995). Dur comme fer (1999), avec Les gens, reste un classique de la scène française ; il chante aussi dans le groupe de stoner Mudweiser. *(À relire.)*
+
+**sam-carter** — Il rejoint en 2007 Architects, groupe de metalcore formé à Brighton, en Angleterre. Après la mort du guitariste et principal compositeur Tom Searle en 2016, le groupe sort Doomsday (2017), puis l'album Holy Hell (2018) ; For Those That Wish to Exist (2021) se classe numéro un des ventes au Royaume-Uni. Il alterne cris et chant clair sur des textes qui parlent de deuil et d'écologie. *(À relire.)*
+
+**nito** — Il fonde Sui Generis à Buenos Aires avec Charly García ; sa voix douce et sa flûte portent Vida (1972), avec Canción para mi muerte, puis Confesiones de invierno (1973). En 1975, le concert d'adieu au Luna Park devient un monument du rock argentin ; il forme ensuite Nito Mestre y los Desconocidos de Siempre. *(À relire.)*
 
 
 # Fiches des styles (page d'un classeur) — à relire
