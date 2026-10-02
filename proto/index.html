@@ -1131,18 +1131,19 @@
   </div>
   <h1 class="g-title">Metal Corner</h1>
   <div class="kind-chips corner-tabs" id="corner-tabs" role="tablist" aria-label="Rubriques de Metal Corner"></div>
-  <section class="corner-sec" data-ct="troc">
-    <p class="corner-lead">Troque tes cartes avec un pote, côte à côte ou à distance.</p>
+  <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open">+ Pote</button></div><div id="friends"></div></section>
+  <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
+  <section class="corner-sec" data-ct="potes">
+    <h2 class="g-sub">Troquer une carte</h2><p class="corner-lead">Côte à côte ou à distance, avec un pote ou un fan croisé au concert.</p>
     <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon code</b><small>Ton pote le scanne</small></span></button>
       <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Son code</b><small>Caméra ou code</small></span></button></div>
   </section>
-  <section class="corner-sec" id="slam-sec" data-ct="troc" hidden><h2 class="g-sub">Slam</h2><div id="slam"></div></section>
-  <section class="corner-sec" id="invites-sec" data-ct="troc" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
-  <section class="corner-sec" id="friends-sec" data-ct="troc" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open">+ Pote</button></div><div id="friends"></div></section>
+  <section class="corner-sec" id="history-sec" data-ct="potes" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
+  <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Plonge dans la foule une fois par jour et garde tes talons de concert.</p></section>
+  <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><h2 class="g-sub">Slam</h2><div id="slam"></div></section>
+  <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
   <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
-  <section class="corner-sec" id="gigs-sec" data-ct="concerts"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
   <section class="corner-sec" id="prog-sec" data-ct="rang"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
-  <section class="corner-sec" id="history-sec" data-ct="troc" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
 </main>
 
 <!-- ============ CLASSEUR ============ -->
@@ -2184,8 +2185,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       presence();
       api.tickets().then(function(n){ state.tickets = n; save(); }).catch(function(){});
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
-      if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('troc'); go('corner'); tradeJoin(troc); }, 600); }
-      if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('concerts'); go('corner'); bandJoin(bd); }, 600); }
+      if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('potes'); go('corner'); tradeJoin(troc); }, 600); }
+      if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('fosse'); go('corner'); bandJoin(bd); }, 600); }
       if(pendingSlam || pendingPote){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || ''); pendingSlam = pendingPote = null; setTimeout(function(){ openLink(lk); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
@@ -2810,7 +2811,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!state.goalsSeen){ state.goalsSeen = {}; list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
     var freshKeys = {}; list.forEach(function(g){ if(!state.goalsSeen[g.key]) freshKeys[g.key] = true; });
     epreuvesWait = done.length + qz.length + Object.keys(freshKeys).length;
-    if(!document.getElementById('v-corner').hidden && (state.cornerTab || 'troc') === 'epreuves'){ list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
+    if(!document.getElementById('v-corner').hidden && state.cornerTab === 'epreuves'){ list.forEach(function(g){ state.goalsSeen[g.key] = true; }); save(); }
     paintCornerBadge();
     var el = document.getElementById('quest-list');
     el.innerHTML = done.map(function(o, i){
@@ -3163,20 +3164,21 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Metal Corner social : propositions d'échange reçues, mes potes (profil, échange direct), historique des échanges
   var friendsList = [], invitesList = [];
   // rubriques de Metal Corner, une à la fois (la dernière ouverte est gardée) ; pastille quand quelque chose attend
-  var CORNER_TABS = [['troc', 'Troc'], ['concerts', 'Concerts'], ['epreuves', 'Épreuves'], ['rang', 'Rang']];
+  var CORNER_TABS = [['potes', 'Potes'], ['fosse', 'Fosse'], ['epreuves', 'Épreuves'], ['rang', 'Rang']];
   function gigsWaiting(){ return (bandInvites || []).length + (gigs || []).filter(function(c){
     return gigPast(c) && (!c.claimed || (gigOpen(c) && (c.concert_picks || []).some(function(p){ return !p.done_at; }))); }).length; }
   // ce qui attend dans chaque rubrique ; la pastille de l'onglet Metal Corner en est la somme
   var epreuvesWait = 0;
-  function cornerWaits(){ return {troc:(invitesList || []).length + slamWaiting(), concerts:gigsWaiting(), epreuves:epreuvesWait}; }
+  function cornerWaits(){ return {potes:(invitesList || []).length, fosse:slamWaiting() + gigsWaiting(), epreuves:epreuvesWait}; }
   function paintCornerBadge(){
-    var w = cornerWaits(), c = w.troc + w.concerts + w.epreuves, n = document.getElementById('quest-n');
+    var w = cornerWaits(), c = w.potes + w.fosse + w.epreuves, n = document.getElementById('quest-n');
     n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!c);
     document.getElementById('tab-corner').setAttribute('aria-label', 'Metal Corner' + (c ? ', ' + c + ' en attente' : ''));
   }
   function cornerTab(t){
     if(t){ state.cornerTab = t; save(); }
-    var cur = CORNER_TABS.some(function(x){ return x[0] === state.cornerTab; }) ? state.cornerTab : 'troc';
+    state.cornerTab = {troc:'potes', concerts:'fosse'}[state.cornerTab] || state.cornerTab;   // anciennes rubriques (avant le 2026-10-02)
+    var cur = CORNER_TABS.some(function(x){ return x[0] === state.cornerTab; }) ? state.cornerTab : 'potes';
     [].forEach.call(document.querySelectorAll('#v-corner [data-ct]'), function(sec){ sec.classList.toggle('ct-off', sec.getAttribute('data-ct') !== cur); });
     var wait = cornerWaits(), el = document.getElementById('corner-tabs');
     el.innerHTML = CORNER_TABS.map(function(x){ var n = wait[x[0]] || 0;
@@ -3281,13 +3283,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var on = !!(x || claim) && pillEl.hidden && tradeEl.hidden && document.getElementById('v-corner').hidden;
     slamPill.hidden = !on; if(!on) return;
     slamPill.innerHTML = x ? '<em><b>' + esc(x.name) + '</b> plane au-dessus de la foule · ' + x.count + '/' + x.goal + '</em><span>Porter</span>' : '<em>Slam atterri : <b>récompense</b> à prendre</em><span>Voir</span>';
-    slamPill.onclick = x ? function(){ slamCarry(x, slamPill); } : function(){ cornerTab('troc'); go('corner'); };
+    slamPill.onclick = x ? function(){ slamCarry(x, slamPill); } : function(){ cornerTab('fosse'); go('corner'); };
   }
   // lien de slam ou de pote (au démarrage, ou notification touchée alors que l'app était ouverte)
   function openLink(q){
     var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1];
     if(!sl && !pc) return;
-    cornerTab('troc'); go('corner');
+    cornerTab(sl ? 'fosse' : 'potes'); go('corner');
     if(sl){ slamJoin(sl); if(pc) ONLINE.addFriend(pc).catch(function(){}); }   // lien de renfort : on devient aussi pote de celui qui l'a envoyé
     else addPote(pc);
   }

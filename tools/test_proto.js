@@ -470,8 +470,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
 
   // 17. Metal Corner en rubriques : 4 puces, une seule rubrique visible, choix gardé, l'anneau de rang ouvre Rang
   const ctOff = sel => d9.querySelector(sel).classList.contains('ct-off');
-  [...d9.querySelectorAll('#corner-tabs button')].find(b => b.dataset.ctGo === 'concerts').click(); await sleep(10);
-  check('Metal Corner : 4 rubriques, Concerts seule visible', d9.querySelectorAll('#corner-tabs button').length === 4 && !ctOff('#gigs-sec') && ctOff('#prog-sec') && ctOff('#v-corner [data-ct="epreuves"]') && JSON.parse(w9.localStorage.getItem('metalnini-proto-v1')).cornerTab === 'concerts');
+  [...d9.querySelectorAll('#corner-tabs button')].find(b => b.dataset.ctGo === 'fosse').click(); await sleep(10);
+  check('Metal Corner : 4 rubriques, Fosse seule visible (slam et concerts)', d9.querySelectorAll('#corner-tabs button').length === 4 && !ctOff('#gigs-sec') && !ctOff('#slam-sec') && ctOff('#friends-sec') && ctOff('#prog-sec') && ctOff('#v-corner [data-ct="epreuves"]') && JSON.parse(w9.localStorage.getItem('metalnini-proto-v1')).cornerTab === 'fosse');
   d9.getElementById('corner-hud').click(); await sleep(10);
   check('Metal Corner : l\'anneau de rang ouvre la rubrique Rang', !ctOff('#prog-sec') && ctOff('#gigs-sec'));
 
@@ -483,8 +483,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.slamClaim = async id => { sclaimed = id; feed9.carried = []; return { kind:'points', points:2 }; };
   fake9.slamLaunch = async () => { launched = true; feed9.mine = { id:'m1', goal:5, ends_at:soon9, landed:false, claimed:false, crashed:false, carriers:[] }; return JSON.parse(JSON.stringify(feed9)); };
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
-  [...d9.querySelectorAll('#corner-tabs button')].find(b => b.dataset.ctGo === 'troc').click(); await sleep(10);
-  check('slam : le slam d\'un pote à porter, pastille sur Troc', !d9.getElementById('slam-sec').hidden && !!d9.querySelector('#slam [data-carry="s1"]') && /1/.test(d9.querySelector('[data-ct-go="troc"]').textContent) && !!d9.getElementById('slam-go'));
+  [...d9.querySelectorAll('#corner-tabs button')].find(b => b.dataset.ctGo === 'fosse').click(); await sleep(10);
+  check('slam : le slam d\'un pote à porter, pastille sur Fosse', !d9.getElementById('slam-sec').hidden && !!d9.querySelector('#slam [data-carry="s1"]') && +((d9.querySelector('[data-ct-go="fosse"] .ct-dot') || {}).textContent || 0) >= 1 && !!d9.getElementById('slam-go'));
   d9.querySelector('#slam [data-carry="s1"]').click(); await sleep(60);
   check('slam : porté jusqu\'à l\'atterrissage, récompense de porteur à récupérer', carried === 's1' && !!d9.querySelector('#slam [data-sclaim="s1"]'));
   d9.querySelector('#slam [data-sclaim="s1"]').click(); await sleep(80);
