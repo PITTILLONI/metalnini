@@ -101,6 +101,7 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Daron Malakian (seulement des tensions internes à System of a Down)
 - Joe Duplantier
 - Amy Lee
+- Lofofora (2026-10-02, Reuno au chant) : aucun fait trouvé. Dans une interview, Reuno dénonce les violences sexistes du milieu, sans mise en cause d'un membre ([Radio Metal](https://www.radiometal.com/article/lofofora-sniper-encore-fache,481486), [Hard Force](https://hardforce.com/artist/664/lofofora), [W-Fenec](https://www.w-fenec.org/metal/lofofora.html)).
 
 ---
 

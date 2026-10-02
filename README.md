@@ -84,4 +84,9 @@ Les images de l'onglet Direction artistique se déposent dans `assets/da/moodboa
 - **Backlog** :
   - carte en fond d'écran de téléphone ;
   - « Blind test des growls », sous réserve de licences ;
-  - jeu autour des danses de concert (pogo, slam, crowd killing, circle pit, wall of death…), idée du propriétaire du 2026-10-01, à cadrer.
+  - danses de concert (idée du propriétaire du 2026-10-01 ; le slam est fait, le reste est à cadrer) :
+    - pogo de bande : pendant un extrait de 30 s, chaque membre de la bande secoue son téléphone ; la jauge commune ne monte que si les secousses sont synchronisées ; palier = paquet « Pit » ou défi de bande ;
+    - wall of death : deux potes face à face, chacun pose une carte face cachée, compte à rebours, « GO » des deux côtés et les cartes se croisent (troc à l'aveugle à rareté égale) ;
+    - circle pit : tracer des cercles au doigt au tempo de l'hymne d'un style, les avatars des potes tournent autour ; débloqué par classeur ;
+    - pit du vendredi : 20 minutes par semaine pour tous les joueurs, jauge globale remplie par les secousses, un paquet pour tous à chaque palier ;
+    - contraintes iPhone : l'accéléromètre demande une autorisation (à demander au toucher), Safari ne vibre pas (tout passe par le son et l'image).

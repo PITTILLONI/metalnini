@@ -507,6 +507,12 @@
   .df-opt em .num{font:800 1.4rem var(--display); letter-spacing:0; color:var(--gold-hi)}
   #gigs > .pf-row{margin-top:4px}
   .df.band{border-color:rgba(235,154,38,.45); color:var(--gold-hi)}
+  .slam-box{margin:0 0 8px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .slam-box.land{border-color:var(--gold); background:rgba(235,154,38,.08)}
+  .slam-box b{display:block; font:600 .95rem/1.3 var(--mono)} .slam-box small{display:block; margin-top:2px; color:var(--muted); font:500 .78rem/1.45 var(--mono)} .slam-box .btn{margin-top:12px}
+  .slam-hands{display:flex; gap:6px; margin:12px 0 4px} .slam-hands i{flex:1; display:grid; place-items:center; height:40px; border:1px solid var(--border); border-radius:10px; color:var(--muted)}
+  .slam-hands i.on{border-color:var(--gold); color:var(--gold-hi); background:rgba(235,154,38,.1)} .slam-box.jump .slam-hands i{animation:slam-up .6s cubic-bezier(.2,.8,.3,1) both} .slam-hands i:nth-child(2n){animation-delay:.08s !important}
+  @keyframes slam-up{40%{transform:translateY(-10px)}}
+  @media (prefers-reduced-motion: reduce){ .slam-box.jump .slam-hands i{animation:none} }
   .band-inv{display:grid; gap:8px; margin-top:12px} .band-inv p{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:10px; background:var(--surface); font:500 .86rem/1.4 var(--mono)}
   .band-ms{list-style:none; margin:12px 0 4px; padding:0; display:grid; gap:8px}
   .band-ms li{padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg)} .band-ms b{font:400 1.15rem var(--gothic)}
@@ -1115,6 +1121,7 @@
     <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon code</b><small>Ton pote le scanne</small></span></button>
       <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Son code</b><small>Caméra ou code</small></span></button></div>
   </section>
+  <section class="corner-sec" id="slam-sec" data-ct="troc" hidden><h2 class="g-sub">Slam</h2><div id="slam"></div></section>
   <section class="corner-sec" id="invites-sec" data-ct="troc" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
   <section class="corner-sec" id="friends-sec" data-ct="troc" hidden><h2 class="g-sub">Mes potes</h2><div id="friends"></div></section>
   <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
@@ -1261,14 +1268,14 @@
 <div class="bsheet" id="gig-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="gig-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
-    <h2 id="gig-t">J'y étais</h2>
-    <p class="pf-note">Ton billet reste sur ton téléphone : on n'en garde que l'artiste, la date et la salle.</p>
+    <h2 id="gig-t">J'y étais, j'y vais</h2>
+    <p class="pf-note">Concert vu ou billet pour le prochain. Ton billet reste sur ton téléphone : on n'en garde que l'artiste, la date et la salle.</p>
     <div class="pf-row gig-src"><button type="button" class="btn ghost" id="gig-file-b">Importer</button><button type="button" class="btn ghost" id="gig-cam-b">Photographier</button></div>
     <input type="file" id="gig-file" accept="application/pdf,image/*" hidden><input type="file" id="gig-cam" accept="image/*" capture="environment" hidden>
     <p class="gig-read" id="gig-read" aria-live="polite"></p>
     <label class="pf-label" for="gig-artist">Artiste ou groupe</label>
     <input id="gig-artist" class="as-in" maxlength="80" autocomplete="off" list="gig-artists" placeholder="ex. Gojira"><datalist id="gig-artists"></datalist>
-    <label class="pf-label" for="gig-date">Date</label>
+    <label class="pf-label" for="gig-date">Date, passée ou à venir</label>
     <input id="gig-date" class="as-in" type="date">
     <div class="pf-row gig-place"><div><label class="pf-label" for="gig-venue">Salle</label><input id="gig-venue" class="as-in" maxlength="80" autocomplete="off" placeholder="ex. Zénith"></div>
       <div><label class="pf-label" for="gig-city">Ville</label><input id="gig-city" class="as-in" maxlength="60" autocomplete="off" placeholder="ex. Paris"></div></div>
@@ -1625,6 +1632,11 @@ const api = {
   async bandInvite(band, friend){ must(await sb.rpc('band_invite', { p_band: band, p_friend: friend })); },
   async bandLeave(concert){ must(await sb.rpc('band_leave', { p_concert: concert })); },
   async bandInvites(){ return must(await sb.rpc('my_band_invites')); },
+  // slam : plonger dans la foule une fois par jour, porter ceux de ses potes, récompense à l'atterrissage
+  async slamFeed(){ return must(await sb.rpc('slam_feed')); },
+  async slamLaunch(){ return must(await sb.rpc('slam_launch')); },
+  async slamCarry(id){ return must(await sb.rpc('slam_carry', { p_slam: id })); },
+  async slamClaim(id){ return must(await sb.rpc('slam_claim', { p_slam: id })); },
   async addConcert(c){ return must(await sb.rpc('add_concert', { p_artist: c.artist, p_musician: c.musician || null, p_date: c.date, p_venue: c.venue || null, p_city: c.city || null })); },
   async concertPhoto(id, blob, pub){
     const { data: { user } } = await sb.auth.getUser(), path = user.id + '/concert-' + Date.now() + '.jpg';
@@ -2124,6 +2136,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('troc'); go('corner'); tradeJoin(troc); }, 600); }
       if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('concerts'); go('corner'); bandJoin(bd); }, 600); }
+      if(pendingSlam){ pendingSlam = false; setTimeout(function(){ cornerTab('troc'); go('corner'); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -2261,7 +2274,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div><b style="font-size:1.15rem; line-height:1.15">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>' +
       (d.friend ? '<section class="pub-sec"><p class="eyebrow">Il lui manque, tu l\'as en double</p>' + (d.missing.length ? '<div class="pub-miss">' + d.missing.map(function(k){ return '<img src="' + kImg(k) + '" alt="' + esc(card(k.split('|')[0]).who) + '">'; }).join('') + '</div>' : '<p class="pub-empty">Rien pour l\'instant : tes doublons, il les a déjà.</p>') +
         '<button type="button" class="btn block" id="pub-trade" style="margin-top:14px">Lui proposer un échange</button></section>' : '');
-    var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ var pl = new Audio(d.cry).play(); if(pl) pl.catch(function(){ toast('Lecture impossible : recharge l\'app et réessaie.'); }); };
+    var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ cryPlay(new Audio(d.cry)).catch(function(){ toast('Lecture impossible : recharge l\'app et réessaie.'); }); };
     var pt = document.getElementById('pub-trade'); if(pt) pt.onclick = function(){ closePub(); inviteFriend(d.friend, pt); };
     [].forEach.call(document.querySelectorAll('.pub-fan button'), function(b){ b.onclick = function(){ if(!d.own) return; closePub(); openDetail(b.getAttribute('data-k').split('|')[0]); }; });
   }
@@ -2353,7 +2366,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       recTimer = setTimeout(stopRec, 6000);
     }, 3 * 900));
   });
-  playBtn.addEventListener('click', function(){ var src = recBlob ? recUrl : crySrc(); if(!src) return; if(player) player.pause(); player = new Audio(src); player.play().catch(function(){ pfErr.textContent = 'Lecture impossible sur ce navigateur.'; }); });
+  playBtn.addEventListener('click', function(){ var src = recBlob ? recUrl : crySrc(); if(!src) return; if(player) player.pause(); player = new Audio(src); cryPlay(player).catch(function(){ pfErr.textContent = 'Lecture impossible sur ce navigateur.'; }); });
   saveBtn.addEventListener('click', async function(){
     if(!recBlob) return; saveBtn.disabled = true; pfErr.textContent = '';
     try{
@@ -2791,7 +2804,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // lien d'invitation (?troc=CODE) : ouvert avant la connexion, il est rejoint dès que le joueur est en ligne
   var pendingTroc = (/[?&]troc=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;
   var pendingBand = (/[?&]bande=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien d'une bande de concert, rejointe une fois en ligne
-  if(pendingTroc || pendingBand) history.replaceState(null, '', location.pathname + location.hash);
+  var pendingSlam = /[?&]slam=[0-9a-f-]{36}/.test(location.search);   // notification d'un slam : ouvre la rubrique Troc une fois en ligne
+  if(pendingTroc || pendingBand || pendingSlam) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
   function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
@@ -3048,10 +3062,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.mediaUrl('cries', t.partner_cry).then(function(url){
       setTimeout(function(){
         toast('Le cri de <b>' + esc(t.partner || 'ton pote') + '</b> résonne dans le pit.');
-        var fallback = function(){ var pl = new Audio(url).play(); if(pl) pl.catch(function(){}); };
+        var fallback = function(){ cryPlay(new Audio(url)).catch(function(){}); };
         if(!sndInit()){ fallback(); return; }
         fetch(url).then(function(r){ return r.arrayBuffer(); }).then(function(b){ return new Promise(function(ok, ko){ sndCtx.decodeAudioData(b, ok, ko); }); })
-          .then(function(buf){ var src = sndCtx.createBufferSource(); src.buffer = buf; src.connect(sfxBus); src.start(); }).catch(fallback);
+          .then(function(buf){ var src = sndCtx.createBufferSource(); src.buffer = buf; src.connect(sfxBus); src.onended = duckBack; duck(0); src.start(); }).catch(fallback);
       }, 1100);
     }).catch(function(){});
   }
@@ -3094,7 +3108,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return gigPast(c) && (!c.claimed || (gigOpen(c) && (c.concert_picks || []).some(function(p){ return !p.done_at; }))); }).length; }
   // ce qui attend dans chaque rubrique ; la pastille de l'onglet Metal Corner en est la somme
   var epreuvesWait = 0;
-  function cornerWaits(){ return {troc:(invitesList || []).length, concerts:gigsWaiting(), epreuves:epreuvesWait}; }
+  function cornerWaits(){ return {troc:(invitesList || []).length + slamWaiting(), concerts:gigsWaiting(), epreuves:epreuvesWait}; }
   function paintCornerBadge(){
     var w = cornerWaits(), c = w.troc + w.concerts + w.epreuves, n = document.getElementById('quest-n');
     n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!c);
@@ -3113,10 +3127,54 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function renderSocial(){
     if(!ONLINE) return;
     ONLINE.tradeInvites().then(function(list){ invitesList = list || []; paintInvites(); }).catch(function(){});
-    ONLINE.friends().then(function(list){ friendsList = list || []; friendIds = {}; friendsList.forEach(function(f){ friendIds[f.friend_id] = true; }); paintFriends(); }).catch(function(){});
+    ONLINE.friends().then(function(list){ friendsList = list || []; friendIds = {}; friendsList.forEach(function(f){ friendIds[f.friend_id] = true; }); paintFriends(); if(slamData) paintSlam(); }).catch(function(){});
     ONLINE.myTrades().then(paintHistory).catch(function(){});
+    loadSlam();
     ONLINE.cryQuiz().then(function(rows){ var n = cryPool.length; cryPool = rows || []; if(n !== cryPool.length) renderGoals(); }).catch(function(){});
   }
+  // ---------- Slam : plonger dans la foule, porté par ses potes ----------
+  var slamData = null, HAND_ICON = '<path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/>';
+  // à faire : slams à porter, atterrissages à récupérer (le mien et ceux que j'ai portés)
+  function slamWaiting(){ var d = slamData; if(!d) return 0;
+    return (d.crowd || []).length + (d.carried || []).filter(function(x){ return x.landed; }).length + (d.mine && d.mine.landed && !d.mine.claimed ? 1 : 0); }
+  function slamLeft(iso){ var m = Math.max(0, Math.round((new Date(iso) - Date.now()) / 6e4)); return m >= 60 ? Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') : m + ' min'; }
+  function slamHands(n, goal){ var out = ''; for(var i = 0; i < goal; i++) out += '<i' + (i < n ? ' class="on"' : '') + '>' + icon(HAND_ICON, 20) + '</i>';
+    return '<div class="slam-hands" role="img" aria-label="' + n + ' porteur' + (n > 1 ? 's' : '') + ' sur ' + goal + '">' + out + '</div>'; }
+  function loadSlam(){
+    if(!ONLINE) return;
+    Promise.resolve().then(function(){ return ONLINE.slamFeed(); }).then(function(d){ slamData = d; paintSlam(); }).catch(function(){});
+  }
+  function paintSlam(jump){
+    var d = slamData, sec = document.getElementById('slam-sec'); sec.hidden = !d; if(!d) return;
+    var m = d.mine, hours = Math.round(d.window / 6) / 10, mine;
+    if(!m) mine = '<div class="slam-box"><b>Plonge dans la foule</b><small>' + d.goal + ' potes doivent te porter en ' + String(hours).replace('.', ',') + ' h. Atterrissage réussi : une récompense pour toi et pour chaque porteur.</small>' +
+      (friendsList.length ? '<button type="button" class="btn block" id="slam-go">Slammer</button>' : '<small>Fais un premier troc : tes potes formeront la foule.</small>') + '</div>';
+    else if(m.landed && !m.claimed) mine = '<div class="slam-box land"><b>Atterrissage réussi</b><small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' + slamHands(m.carriers.length, m.goal) +
+      '<button type="button" class="btn block" id="slam-claim" data-id="' + esc(m.id) + '">Récupérer ma récompense</button></div>';
+    else if(m.landed) mine = '<div class="slam-box"><b>Slam réussi</b><small>La foule reprend son souffle. Remets ça demain.</small></div>';
+    else if(m.crashed) mine = '<div class="slam-box"><b>Écrasé dans la fosse</b><small>' + m.carriers.length + ' porteur' + (m.carriers.length > 1 ? 's' : '') + ' sur ' + m.goal + '. Demain, préviens la foule avant de plonger.</small>' + slamHands(m.carriers.length, m.goal) + '</div>';
+    else mine = '<div class="slam-box' + (jump ? ' jump' : '') + '"><b>Tu planes au-dessus de la foule</b><small><span class="num">' + m.carriers.length + '/' + m.goal + '</span> porteurs · encore ' + slamLeft(m.ends_at) + '</small>' + slamHands(m.carriers.length, m.goal) +
+      (m.carriers.length ? '<small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' : '<small>Tes potes sont prévenus. Relance-les, la fosse n\'attend pas.</small>') + '</div>';
+    var rows = (d.crowd || []).map(function(x){
+        return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>plane au-dessus de la foule · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span><span class="f-acts"><button type="button" data-carry="' + esc(x.id) + '">Porter</button></span></div>'; }).join('') +
+      (d.carried || []).map(function(x){
+        return x.landed ? '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>a atterri grâce à toi</small></span><span class="f-acts"><button type="button" data-sclaim="' + esc(x.id) + '">Récompense</button></span></div>'
+          : '<div class="friend">' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>tu le portes · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span></div>'; }).join('');
+    document.getElementById('slam').innerHTML = rows + mine;
+    var go = document.getElementById('slam-go'); if(go) go.onclick = function(){ go.disabled = true;
+      ONLINE.slamLaunch().then(function(f){ slamData = f; snd('rumble'); paintSlam(true); cornerTab(); toast('Tu plonges ! Tes potes sont prévenus : ' + f.goal + ' porteurs avant ' + new Date(f.mine.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + '.'); },
+        function(e){ go.disabled = false; toast(esc(e.message)); }); };
+    var cl = document.getElementById('slam-claim'); if(cl) cl.onclick = function(){ slamClaim(cl, 'Slam réussi'); };
+    [].forEach.call(document.querySelectorAll('#slam [data-sclaim]'), function(b){ b.onclick = function(){ slamClaim(b, 'Porteur de slam'); }; });
+    [].forEach.call(document.querySelectorAll('#slam [data-carry]'), function(b){ b.onclick = function(){ b.disabled = true;
+      var x = d.crowd.filter(function(c){ return c.id === b.getAttribute('data-carry'); })[0];
+      ONLINE.slamCarry(x.id).then(function(r){ snd(r.landed ? 'reward' : 'select');
+        toast(r.landed ? '<b>' + esc(x.name) + '</b> atterrit grâce à toi.' + (r.rewarded ? ' Récupère ta récompense.' : '') : 'Tu portes <b>' + esc(x.name) + '</b>. Encore ' + (r.goal - r.count) + ' paire' + (r.goal - r.count > 1 ? 's' : '') + ' de bras.');
+        loadSlam(); }, function(e){ toast(esc(e.message)); loadSlam(); }); }; });
+    cornerTab();
+  }
+  function slamClaim(b, label){ b.disabled = true;
+    ONLINE.slamClaim(b.getAttribute('data-id') || b.getAttribute('data-sclaim')).then(function(res){ rewardArrived(res, label); loadSlam(); }, function(e){ b.disabled = false; toast(esc(e.message)); }); }
   function avatarHtml(name, url){ return '<span class="f-av"' + (url ? ' style="background-image:url(\'' + esc(url) + '\')"' : '') + '>' + (url ? '' : esc((name || '?').charAt(0).toUpperCase())) + '</span>'; }
   function paintInvites(){
     document.getElementById('invites-sec').hidden = !invitesList.length; cornerTab();
@@ -3167,11 +3225,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }catch(e){ toast(esc(e.message)); }
   }
 
-  // ---------- Concerts : « J'y étais » ----------
+  // ---------- Concerts : « J'y étais, j'y vais » ----------
   // mes concerts, gardés en mémoire (liens des photos signés à la demande) ; le billet est lu sur le téléphone puis oublié
   var gigs = null, gigPhotoUrl = {}, gigBlob = null, PDF_LIB = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
-  var MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
-    MONTHS_EN = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+  // mois écrits sur les billets, en entier ou abrégés (français et anglais) : numéro du mois
+  var MONTH_N = {};
+  [['janvier', 'janv', 'jan', 'january'], ['février', 'fevrier', 'févr', 'fevr', 'fév', 'fev', 'feb', 'february'], ['mars', 'mar', 'march'], ['avril', 'avr', 'apr', 'april'],
+   ['mai', 'may'], ['juin', 'jun', 'june'], ['juillet', 'juil', 'jul', 'july'], ['août', 'aout', 'aug', 'august'], ['septembre', 'sept', 'sep', 'september'],
+   ['octobre', 'oct', 'october'], ['novembre', 'nov', 'november'], ['décembre', 'decembre', 'déc', 'dec', 'december']].forEach(function(l, i){ l.forEach(function(n){ MONTH_N[n] = i + 1; }); });
   var VENUE_RE = /(zénith|zenith|olympia|ar[eé]na|stade|stadium|palais|salle|hall|club|th[eé][aâ]tre|theatre|festival|hellfest|bercy|bataclan|cigale|trabendo|élysée|elysee|docks|aéronef|transbordeur|rockhal|ancienne belgique|forest national|wacken)/i;
   var TL_X = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>';
   function today(){ var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -3228,13 +3289,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function renderGigs(){
     var box = document.getElementById('gigs');
-    if(!ONLINE){ box.innerHTML = '<p class="corner-lead">Note les concerts que tu as vus : crée ton compte pour garder tes talons.</p>'; return; }
+    if(!ONLINE){ box.innerHTML = '<p class="corner-lead">Note les concerts que tu as vus et ceux qui t\'attendent : crée ton compte pour garder tes talons.</p>'; return; }
     var list = gigs || [];
-    box.innerHTML = '<div class="pf-row"><button type="button" class="btn" id="gig-open">J\'y étais</button><button type="button" class="btn ghost" id="band-open">Code de bande</button></div>' +
+    box.innerHTML = '<div class="pf-row"><button type="button" class="btn" id="gig-open" aria-label="Ajouter un concert">+ Concert</button><button type="button" class="btn ghost" id="band-open">Code de bande</button></div>' +
       (bandInvites.length ? '<div class="band-inv">' + bandInvites.map(function(i){ var d = gigDate(i.played_on);
         return '<p><i class="new-dot" aria-hidden="true"></i><span><b>' + esc(i.from_name) + '</b> t\'invite dans sa bande pour <b>' + esc(i.artist) + '</b> · ' + d.day + ' ' + esc(d.month) + '</span><button type="button" class="df go" data-code="' + esc(i.code) + '">Rejoindre</button></p>'; }).join('') + '</div>' : '') + (list.length
       ? '<div class="talons">' + list.map(function(c){ return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + gigActs(c) + '</div>'; }).join('') + '</div>'
-      : '<p class="corner-lead gig-empty">Ton premier talon t\'attend : importe un billet, ou note le concert à la main.</p>');
+      : '<p class="corner-lead gig-empty">Un concert vu, ou un billet pour le prochain ? Importe-le, ou note-le à la main : ton premier talon t\'attend.</p>');
     document.getElementById('gig-open').onclick = openGig;
     document.getElementById('band-open').onclick = function(){ openJoin(''); };
     [].forEach.call(box.querySelectorAll('.band-inv [data-code]'), function(b){ b.onclick = function(){ b.disabled = true; bandJoin(b.getAttribute('data-code')); }; });
@@ -3365,18 +3426,21 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     gigSheet.hidden = false;
   }
   function closeGig(){ gigSheet.hidden = true; }
-  function monthIdx(s){ s = s.toLowerCase(); var i = MONTHS.indexOf(s); return (i === -1 ? MONTHS_EN.indexOf(s) : i) + 1; }
   // lecture d'un billet : artiste du jeu, date du concert (la plus tardive : la date d'achat vient avant) et salle
   function guessTicket(text){
-    var low = text.toLowerCase(), g = {}, max = new Date(Date.now() + 365 * 864e5), dates = [], m, re, mo = MONTHS.concat(MONTHS_EN).join('|');
+    var low = text.toLowerCase(), g = {}, max = new Date(Date.now() + 365 * 864e5), dates = [], m, re,
+      mo = Object.keys(MONTH_N).sort(function(a, b){ return b.length - a.length; }).join('|'), th = '(?:er|st|nd|rd|th)?', yr = '(?:,?\\s+(\\d{4}))?';
     gigNames().forEach(function(n){ if(n.length > 2 && low.indexOf(n.toLowerCase()) !== -1 && (!g.artist || n.length > g.artist.length)) g.artist = n; });
-    function add(y, mon, d){ y = +y; if(y < 100) y += 2000; var dt = new Date(Date.UTC(y, mon - 1, +d)); if(mon >= 1 && dt.getUTCMonth() === mon - 1 && y >= 1960 && dt <= max) dates.push(dt.toISOString().slice(0, 10)); }
+    // sans année (« sam. 14 juin ») : la prochaine fois que tombe ce jour
+    function add(y, mon, d){
+      if(!y){ var now = new Date(); y = now.getFullYear(); if(new Date(y, mon - 1, +d, 23) < now) y++; }
+      y = +y; if(y < 100) y += 2000; var dt = new Date(Date.UTC(y, mon - 1, +d)); if(mon >= 1 && dt.getUTCMonth() === mon - 1 && y >= 1960 && dt <= max) dates.push(dt.toISOString().slice(0, 10)); }
     re = /\b(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4}|\d{2})\b/g; while((m = re.exec(text))) add(m[3], +m[2], m[1]);
     re = /\b(\d{4})-(\d{2})-(\d{2})\b/g; while((m = re.exec(text))) add(m[1], +m[2], m[3]);
-    re = new RegExp('(\\d{1,2})(?:er)?\\s+(' + mo + ')\\.?\\s+(\\d{4})', 'g'); while((m = re.exec(low))) add(m[3], monthIdx(m[2]), m[1]);
-    re = new RegExp('(' + mo + ')\\s+(\\d{1,2}),?\\s+(\\d{4})', 'g'); while((m = re.exec(low))) add(m[3], monthIdx(m[1]), m[2]);
+    re = new RegExp('\\b(\\d{1,2})' + th + '\\s+(' + mo + ')\\b\\.?' + yr, 'g'); while((m = re.exec(low))) add(m[3], MONTH_N[m[2]], m[1]);
+    re = new RegExp('\\b(' + mo + ')\\b\\.?\\s+(\\d{1,2})' + th + '\\b' + yr, 'g'); while((m = re.exec(low))) add(m[3], MONTH_N[m[1]], m[2]);
     g.date = dates.sort().pop() || null;
-    g.venue = text.split('\n').map(function(l){ return l.trim(); }).filter(function(l){ return l.length >= 4 && l.length <= 80 && VENUE_RE.test(l); })[0] || null;
+    g.venue = text.split(/\n|\s[-–—·|•]\s|\s{3,}/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length >= 4 && l.length <= 80 && VENUE_RE.test(l); })[0] || null;
     return g;
   }
   function readTicket(f){
@@ -3623,6 +3687,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     musicEl.play().catch(function(){}); musicApply();
   }
   function duck(v){ musicDuck = v; musicApply(); }
+  // un cri coupe la musique le temps qu'il résonne, puis elle reprend à son niveau (coupée en blind test, baissée en révélation)
+  function duckBack(){ duck(quiz ? 0 : revealEl.hidden ? 1 : .35); }
+  function cryPlay(el){ duck(0); el.addEventListener('ended', duckBack); el.addEventListener('pause', duckBack);
+    var pl = el.play(); if(pl) pl.catch(duckBack); return pl || Promise.resolve(); }
   // premier geste : le son se déverrouille, les sons courts se préchargent, la musique démarre.
   // Doigt levé ou touche (sur écran tactile, pointerdown ne compte pas comme geste) ; on retente à chaque geste tant que rien ne joue.
   var SND_GESTURES = ['pointerup', 'keydown'], sndPreloaded = false;

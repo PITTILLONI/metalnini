@@ -32,3 +32,8 @@ __gigs[0].band_id = 'b1'; __gigs[0].concert_picks[1].band_bonus = true;
 __fake.bandInvites = async function(){ return [{code:'XYZ789', artist:'Ghost', played_on:'2027-03-02', from_name:'Riffeuse'}]; };
 __fake.bandState = async function(){ return {id:'b1', code:'ABC234', artist:'Spiritbox', played_on:__gigs[0].played_on, members:[{id:'u1', name:'Antoine', me:true, host:true, done:['Photo du pit']}, {id:'f1', name:'Riffeuse', done:['Photo du pit', 'Circle pit']}]}; };
 __fake.friends = async function(){ return [{friend_id:'f1', username:'Riffeuse', trades:2}, {friend_id:'f2', username:'Bob le Slammeur', trades:1}, {friend_id:'f3', username:'Doom', trades:1}]; };
+// slam : Riffeuse à porter, Doom porté et atterri (récompense), mon slam en vol (2 porteurs sur 5)
+(function(){ var soon = new Date(Date.now() + 4300e3).toISOString();
+__fake.slamFeed = async function(){ return {goal:5, window:120, crowd:[{id:'s1', name:'Riffeuse', goal:5, ends_at:soon, count:3}],
+  carried:[{id:'s2', name:'Doom', goal:5, ends_at:soon, count:5, landed:true, rewarded:true}],
+  mine:{id:'m1', goal:5, ends_at:soon, landed:false, claimed:false, crashed:false, carriers:['Bob le Slammeur', 'Riffeuse']}}; }; })();

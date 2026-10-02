@@ -406,12 +406,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('d-trade').click(); await sleep(40);
   check('échanger depuis une carte : feuille ouverte, la carte proposée', !d9.getElementById('trade-start').hidden && /Jonathan Davis/.test(d9.getElementById('ts-card').textContent));
 
-  // 14. Concerts : « J'y étais » enregistre un concert (musicien du jeu reconnu), talon dans Metal Corner et sur le profil
+  // 14. Concerts : « J'y étais, j'y vais » enregistre un concert (musicien du jeu reconnu), talon dans Metal Corner et sur le profil
   let added = null; const gigs9 = [];
   fake9.concerts = async () => gigs9.slice();
   fake9.addConcert = async c => { added = c; gigs9.unshift({ id:'g1', artist:c.artist, musician_id:c.musician, played_on:c.date, venue:c.venue, city:c.city, photo_path:null, photo_public:false }); return 'g1'; };
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(60);
-  check('concerts : bouton « J\'y étais » dans Metal Corner', !!d9.getElementById('gig-open'));
+  check('concerts : bouton « Ajouter un concert » dans Metal Corner', !!d9.getElementById('gig-open'));
   d9.getElementById('gig-open').click(); await sleep(10);
   check('concerts : feuille ouverte, artistes du jeu proposés', !d9.getElementById('gig-sheet').hidden && d9.querySelectorAll('#gig-artists option').length > 10);
   d9.getElementById('gig-send').click(); await sleep(10);
@@ -465,6 +465,23 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('Metal Corner : 4 rubriques, Concerts seule visible', d9.querySelectorAll('#corner-tabs button').length === 4 && !ctOff('#gigs-sec') && ctOff('#prog-sec') && ctOff('#v-corner [data-ct="epreuves"]') && JSON.parse(w9.localStorage.getItem('metalnini-proto-v1')).cornerTab === 'concerts');
   d9.getElementById('corner-hud').click(); await sleep(10);
   check('Metal Corner : l\'anneau de rang ouvre la rubrique Rang', !ctOff('#prog-sec') && ctOff('#gigs-sec'));
+
+  // 18. Slam : porter le slam d'un pote (atterrissage, récompense de porteur), puis plonger soi-même
+  let launched = false, carried = null, sclaimed = null; const soon9 = new Date(Date.now() + 3600e3).toISOString();
+  const feed9 = { mine:null, crowd:[{ id:'s1', name:'Riffeuse', goal:5, ends_at:soon9, count:4 }], carried:[], goal:5, window:120 };
+  fake9.slamFeed = async () => JSON.parse(JSON.stringify(feed9));
+  fake9.slamCarry = async id => { carried = id; feed9.crowd = []; feed9.carried = [{ id:'s1', name:'Riffeuse', goal:5, ends_at:soon9, count:5, landed:true, rewarded:true }]; return { count:5, goal:5, landed:true, rewarded:true }; };
+  fake9.slamClaim = async id => { sclaimed = id; feed9.carried = []; return { kind:'points', points:2 }; };
+  fake9.slamLaunch = async () => { launched = true; feed9.mine = { id:'m1', goal:5, ends_at:soon9, landed:false, claimed:false, crashed:false, carriers:[] }; return JSON.parse(JSON.stringify(feed9)); };
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
+  [...d9.querySelectorAll('#corner-tabs button')].find(b => b.dataset.ctGo === 'troc').click(); await sleep(10);
+  check('slam : le slam d\'un pote à porter, pastille sur Troc', !d9.getElementById('slam-sec').hidden && !!d9.querySelector('#slam [data-carry="s1"]') && /1/.test(d9.querySelector('[data-ct-go="troc"]').textContent) && !!d9.getElementById('slam-go'));
+  d9.querySelector('#slam [data-carry="s1"]').click(); await sleep(60);
+  check('slam : porté jusqu\'à l\'atterrissage, récompense de porteur à récupérer', carried === 's1' && !!d9.querySelector('#slam [data-sclaim="s1"]'));
+  d9.querySelector('#slam [data-sclaim="s1"]').click(); await sleep(80);
+  check('slam : récompense de porteur récupérée', sclaimed === 's1' && !d9.querySelector('#slam [data-sclaim]'));
+  d9.getElementById('slam-go').click(); await sleep(60);
+  check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .slam-hands i').length === 5);
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
