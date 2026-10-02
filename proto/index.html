@@ -288,7 +288,7 @@
   .invite{border-color:var(--gold); background:rgba(235,154,38,.08)}
   .f-av{width:44px; height:44px; border-radius:50%; background:var(--surface-2) center/cover; border:1px solid var(--gold); display:grid; place-items:center; font:800 1.1rem var(--display); color:var(--gold-hi)}
   .friend b, .invite b, .hist b{display:block; font:600 .9rem/1.25 var(--mono)} .friend small, .invite small, .hist small{display:block; color:var(--muted); font:500 .74rem var(--mono)}
-  .f-acts{display:flex; gap:6px} .f-acts button{min-height:40px; padding:0 12px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--gold-hi); font:600 .76rem var(--mono); cursor:pointer}
+  .f-acts{display:flex; gap:6px} .f-acts button{min-height:40px; padding:0 12px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--gold-hi); font:600 .76rem var(--mono); cursor:pointer} .f-acts button.ask{border-color:var(--gold); background:var(--gold); color:var(--ink)} .f-acts button:disabled{color:var(--muted); cursor:default}
   .hist{grid-template-columns:1fr auto} .h-cards{display:flex; gap:3px; margin-top:6px} .h-cards img{width:26px; aspect-ratio:2/3; object-fit:cover; border-radius:3px} .h-cards i{align-self:center; margin:0 4px; color:var(--muted); font-style:normal}
   .pub-miss{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px} .pub-miss img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
   #mastery-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} #mastery-sheet .pf-note{color:var(--muted)} #mastery-sheet .eyebrow{margin:14px 0 8px}
@@ -1661,6 +1661,7 @@ const api = {
   async bandInvites(){ return must(await sb.rpc('my_band_invites')); },
   // slam : plonger dans la foule une fois par jour, porter ceux de ses potes, récompense à l'atterrissage
   async slamFeed(){ return must(await sb.rpc('slam_feed')); },
+  async slamAsk(friend){ must(await sb.rpc('slam_ask', { p_friend: friend })); },
   async slamJoin(id){ return must(await sb.rpc('slam_join', { p_slam: id })); },
   async friendCode(){ return must(await sb.rpc('my_friend_code')); },
   async addFriend(code){ return must(await sb.rpc('add_friend', { p_code: code })); },
@@ -3173,7 +3174,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.cryQuiz().then(function(rows){ var n = cryPool.length; cryPool = rows || []; if(n !== cryPool.length) renderGoals(); }).catch(function(){});
   }
   // ---------- Slam : plonger dans la foule, porté par ses potes ----------
-  var slamData = null, slamX = null;
+  var slamData = null, slamX = null, friendsSig = '';
+  // mon slam en l'air (sinon null) ; signature de ce qui change les boutons des potes
+  function slamFlying(){ var m = slamData && slamData.mine; return m && !m.landed && !m.crashed && m.carrier_ids ? m : null; }
+  function slamSig(){ var m = slamFlying(); return m ? m.id + m.carrier_ids.join() + m.asked_ids.join() : ''; }
   // à faire : slams à porter, atterrissages à récupérer (le mien et ceux que j'ai portés)
   function slamWaiting(){ var d = slamData; if(!d) return 0;
     return (d.crowd || []).length + (d.carried || []).filter(function(x){ return x.landed; }).length + (d.mine && d.mine.landed && !d.mine.claimed ? 1 : 0); }
@@ -3237,6 +3241,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(document.querySelectorAll('#slam [data-carry]'), function(b){ b.onclick = function(){
       slamCarry(d.crowd.filter(function(c){ return c.id === b.getAttribute('data-carry'); })[0], b); }; });
     cornerTab(); paintSlamPill();
+    if(slamSig() !== friendsSig) paintFriends();
   }
   function slamCarry(x, b){ b.disabled = true;
     ONLINE.slamCarry(x.id).then(function(r){ snd(r.landed ? 'reward' : 'select');
@@ -3301,14 +3306,23 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function paintFriends(){
     document.getElementById('friends-sec').hidden = !ONLINE;
-    var box = document.getElementById('friends');
+    var box = document.getElementById('friends'), m = slamFlying();
+    friendsSig = slamSig();
     box.innerHTML = friendsList.length ? friendsList.map(function(f, i){
+      // pendant mon slam, « Porte-moi » remplace « Échanger » (l'échange reste possible depuis son profil)
+      var act = !m ? '<button type="button" data-ft="' + i + '">Échanger</button>'
+        : m.carrier_ids.indexOf(f.friend_id) !== -1 ? '<button type="button" disabled>Te porte ✓</button>'
+        : m.asked_ids.indexOf(f.friend_id) !== -1 ? '<button type="button" disabled>Demandé</button>'
+        : '<button type="button" class="ask" data-fa="' + i + '">Porte-moi</button>';
       return '<div class="friend">' + avatarHtml(f.username, null) + '<span><b>' + esc(f.username || 'Pote') + '</b><small>' + (f.trades ? f.trades + ' échange' + (f.trades > 1 ? 's' : '') : 'pas encore de troc') + (f.last_trade ? ' · dernier le ' + new Date(f.last_trade).toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) : '') + '</small></span>' +
-        '<span class="f-acts"><button type="button" data-fp="' + i + '">Profil</button><button type="button" data-ft="' + i + '">Échanger</button></span></div>'; }).join('')
+        '<span class="f-acts"><button type="button" data-fp="' + i + '">Profil</button>' + act + '</span></div>'; }).join('')
       : '<p class="corner-lead">Pas encore de potes. Envoie ton code : ils formeront ta foule.</p>';
     friendsList.forEach(function(f, i){ if(!f.avatar_path) return; ONLINE.mediaUrl('avatars', f.avatar_path).then(function(u){ var el = box.querySelectorAll('.f-av')[i]; if(el && u){ el.style.backgroundImage = 'url("' + u + '")'; el.textContent = ''; } }).catch(function(){}); });
     [].forEach.call(box.querySelectorAll('[data-fp]'), function(b){ b.onclick = function(){ openFriend(friendsList[+b.getAttribute('data-fp')]); }; });
     [].forEach.call(box.querySelectorAll('[data-ft]'), function(b){ b.onclick = function(){ inviteFriend(friendsList[+b.getAttribute('data-ft')], b); }; });
+    [].forEach.call(box.querySelectorAll('[data-fa]'), function(b){ b.onclick = function(){ var f = friendsList[+b.getAttribute('data-fa')]; b.disabled = true;
+      ONLINE.slamAsk(f.friend_id).then(function(){ m.asked_ids.push(f.friend_id); b.textContent = 'Demandé'; b.classList.remove('ask'); snd('select'); toast('<b>' + esc(f.username || 'Ton pote') + '</b> est prévenu. Il a intérêt à tendre les bras.'); },
+        function(e){ b.disabled = false; toast(esc(e.message)); }); }; });
   }
   function inviteFriend(f, btn){
     if(!needOnline() || tradeResume()) return;

@@ -505,6 +505,16 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   pill9.click(); await sleep(60);
   check('slam : porté depuis la pastille, pastille retirée', carried2 === 's3' && pill9.hidden);
 
+  // 22. « Porte-moi » : pendant mon slam, demander à un pote de me porter (une fois)
+  let asked9 = null;
+  feed9.mine = { id:'m1', goal:5, ends_at:soon9, landed:false, claimed:false, crashed:false, carriers:[], carrier_ids:[], asked_ids:[] };
+  fake9.slamAsk = async f => { asked9 = f; };
+  d9.getElementById('tab-corner').click(); await sleep(80);
+  const ask9 = d9.querySelector('#friends [data-fa]');
+  check('slam : « Porte-moi » dans la liste des potes pendant le slam', !!ask9 && /Porte-moi/.test(ask9.textContent) && !d9.querySelector('#friends [data-ft]'));
+  ask9.click(); await sleep(40);
+  check('slam : pote sollicité, bouton « Demandé »', asked9 === 'f1' && ask9.disabled && /Demandé/.test(ask9.textContent));
+
   // 21. Lien de slam ouvert sans être connecté (navigateur) : explication, code de pote à taper dans l'app
   const dom10 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/?slam=0f8b8c2e-1d2a-4c5e-9f00-123456789abc&pote=qwe789', beforeParse(w){
     w.matchMedia = () => ({ matches: false }); w.scrollTo = () => {};
