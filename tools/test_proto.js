@@ -482,6 +482,17 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('slam : récompense de porteur récupérée', sclaimed === 's1' && !d9.querySelector('#slam [data-sclaim]'));
   d9.getElementById('slam-go').click(); await sleep(60);
   check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .slam-hands i').length === 5);
+  check('slam : « Appeler la foule » pendant le vol', !!d9.getElementById('slam-call'));
+
+  // 19. Potes par code : mon code affiché, ajout par lien collé
+  let addedCode = null;
+  fake9.friendCode = async () => 'QWE789';
+  fake9.addFriend = async c => { addedCode = c; return 'Bob'; };
+  d9.getElementById('pote-open').click(); await sleep(30);
+  check('potes : feuille ouverte, mon code affiché', !d9.getElementById('pote-sheet').hidden && /QWE 789/.test(d9.getElementById('pote-code').textContent));
+  d9.getElementById('pote-in').value = 'https://x/proto/?pote=zxc456';
+  d9.getElementById('pote-join').dispatchEvent(new w9.Event('submit', { cancelable:true })); await sleep(40);
+  check('potes : ajouté par lien, feuille fermée', addedCode === 'ZXC456' && d9.getElementById('pote-sheet').hidden);
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');

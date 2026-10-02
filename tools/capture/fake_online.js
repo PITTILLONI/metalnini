@@ -37,3 +37,4 @@ __fake.friends = async function(){ return [{friend_id:'f1', username:'Riffeuse',
 __fake.slamFeed = async function(){ return {goal:5, window:120, crowd:[{id:'s1', name:'Riffeuse', goal:5, ends_at:soon, count:3}],
   carried:[{id:'s2', name:'Doom', goal:5, ends_at:soon, count:5, landed:true, rewarded:true}],
   mine:{id:'m1', goal:5, ends_at:soon, landed:false, claimed:false, crashed:false, carriers:['Bob le Slammeur', 'Riffeuse']}}; }; })();
+__fake.friendCode = async function(){ return 'QWE789'; }; __fake.addFriend = async function(){ return 'Bob'; }; __fake.slamJoin = async function(){ return null; };
