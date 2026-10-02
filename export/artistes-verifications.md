@@ -101,7 +101,7 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Daron Malakian (seulement des tensions internes à System of a Down)
 - Joe Duplantier
 - Amy Lee
-- Lofofora (2026-10-02, Reuno au chant) : aucun fait trouvé. Dans une interview, Reuno dénonce les violences sexistes du milieu, sans mise en cause d'un membre ([Radio Metal](https://www.radiometal.com/article/lofofora-sniper-encore-fache,481486), [Hard Force](https://hardforce.com/artist/664/lofofora), [W-Fenec](https://www.w-fenec.org/metal/lofofora.html)).
+- Lofofora (2026-10-02, Reuno au chant, ajouté le jour même) : aucun fait trouvé. Dans une interview, Reuno dénonce les violences sexistes du milieu, sans mise en cause d'un membre ([Radio Metal](https://www.radiometal.com/article/lofofora-sniper-encore-fache,481486), [Hard Force](https://hardforce.com/artist/664/lofofora), [W-Fenec](https://www.w-fenec.org/metal/lofofora.html)).
 
 ---
 
@@ -109,3 +109,5 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 
 ## Carte secrète (2026-10-01)
 **Céline Dion** (`celine`, easter egg) : RAS. Polémiques sans rapport avec la règle : ligne de vêtements non genrés qualifiée de « satanique » par un prêtre américain ([i-D](https://i-d.co/article/celine-dion-has-been-accused-of-satanism-over-her-gender-neutral-clothing-line/)), prestation des Jeux olympiques critiquée en France ([Yahoo](https://www.yahoo.com/entertainment/celine-dion-under-attack-french-225708492.html)) ; elle a retiré d'elle-même une chanson écrite par R. Kelly après les accusations contre lui ([CBC](https://www.cbc.ca/1.4979215)).
+- Sam Carter (Architects, 2026-10-02, demande d'un joueur avec ticket prioritaire) : rien contre lui ; il a arrêté un concert pour dénoncer une agression sexuelle dans le public ([NME](https://www.nme.com/news/music/watch-architects-sam-carter-stop-show-to-call-out-sexual-assault-he-saw-in-the-crowd-2126434)). Cas limite à trancher par le propriétaire : en janvier 2024, le guitariste Adam Christianson a repartagé un message jugé transphobe, l'a retiré et s'est excusé (« accident ») ; Sam Carter a pris position contre la transphobie sur scène ([NME](https://www.nme.com/news/music/architects-sam-carter-originally-wanted-guitarist-adam-christianson-out-of-the-band-following-2024-transphobic-controversy-3845498), [Loudwire](https://loudwire.com/architects-sam-carter-addresses-controversy-adam-christianson-social-media-post/)).
+- Sui Generis (2026-10-02, demande d'un joueur) : plusieurs groupes portent ce nom (le groupe de folk rock argentin de Charly García et Nito Mestre, années 1970 ; un groupe australien de metal progressif) ; à préciser avant toute vérification.

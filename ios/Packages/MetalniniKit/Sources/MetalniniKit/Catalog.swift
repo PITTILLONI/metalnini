@@ -66,6 +66,7 @@ public enum Catalog {
         .init(id: "malakian", name: "Daron Malakian", band: "System of a Down", arcanaTitle: "Chop Suey!", arcanaNumber: "LXIII", instruments: [.guitare, .chant], subgenre: "Metal alternatif"),
         .init(id: "joe-duplantier", name: "Joe Duplantier", band: "Gojira", arcanaTitle: "L'Enfant sauvage", arcanaNumber: "LXIV", instruments: [.chant, .guitare], subgenre: "Metal progressif"),
         .init(id: "amy-lee", name: "Amy Lee", band: "Evanescence", arcanaTitle: "Bring Me to Life", arcanaNumber: "LXV", instruments: [.chant], subgenre: "Metal gothique"),
+        .init(id: "reuno", name: "Reuno", band: "Lofofora", arcanaTitle: "Les gens", arcanaNumber: "LXVI", instruments: [.chant], subgenre: "Metal fusion"),
     ]
 
     public static let binders: [Binder] = [
@@ -74,14 +75,14 @@ public enum Catalog {
         .init(id: "hardcore", kind: .style, label: "Death metal & deathcore", musicianIDs: ["ramos", "corpsegrinder", "white-gluz"]),
         .init(id: "prog", kind: .style, label: "Metal progressif", musicianIDs: ["keenan", "duplantier", "joe-duplantier", "jinjer"]),
         .init(id: "numetal", kind: .style, label: "Nu metal", musicianIDs: ["korn", "root", "jordison", "corey", "bennington", "shinoda"]),
-        .init(id: "alternatif", kind: .style, label: "Metal alternatif", musicianIDs: ["zack", "morello", "tankian", "malakian", "poppy", "amy-lee"]),
+        .init(id: "alternatif", kind: .style, label: "Metal alternatif", musicianIDs: ["zack", "morello", "tankian", "malakian", "poppy", "amy-lee", "reuno"]),
         .init(id: "poppunk", kind: .style, label: "Pop punk & emo", musicianIDs: ["blink182", "hoppus", "hayley", "armstrong", "gerard-way"]),
         .init(id: "hardrock", kind: .style, label: "Hard rock", musicianIDs: ["slash", "angus", "page", "plant", "bonham"]),
         .init(id: "legendes", kind: .style, label: "Légendes du rock", musicianIDs: ["hendrix", "mercury", "prince", "may", "frusciante", "flea"]),
         .init(id: "heavy", kind: .style, label: "Heavy metal", musicianIDs: ["dickinson", "halford", "ozzy", "lemmy", "dio", "doro", "harris", "iommi"]),
         .init(id: "thrash", kind: .style, label: "Thrash", musicianIDs: ["hetfield", "mustaine", "araya", "scott-ian", "hammett", "lars", "burton", "lombardo"]),
         .init(id: "grunge", kind: .style, label: "Grunge & alternatif", musicianIDs: ["cobain", "cornell", "staley", "grohl"]),
-        .init(id: "voix", kind: .instrument, label: "Les voix", musicianIDs: ["knocked-loose", "jinjer", "spiritbox", "landmvrks", "ramos", "heriot", "hoppus", "korn", "poppy", "zack", "dickinson", "halford", "ozzy", "lemmy", "hetfield", "mustaine", "araya", "cobain", "cornell", "staley", "grohl", "keenan", "white-gluz", "corpsegrinder", "tankian", "sykes", "hayley", "armstrong", "dio", "doro", "mercury", "gerard-way", "bennington", "prince", "plant", "corey", "shinoda", "malakian", "joe-duplantier", "amy-lee"]),
+        .init(id: "voix", kind: .instrument, label: "Les voix", musicianIDs: ["knocked-loose", "jinjer", "spiritbox", "landmvrks", "ramos", "heriot", "hoppus", "korn", "poppy", "zack", "dickinson", "halford", "ozzy", "lemmy", "hetfield", "mustaine", "araya", "cobain", "cornell", "staley", "grohl", "keenan", "white-gluz", "corpsegrinder", "tankian", "sykes", "hayley", "armstrong", "dio", "doro", "mercury", "gerard-way", "bennington", "prince", "plant", "corey", "shinoda", "malakian", "joe-duplantier", "amy-lee", "reuno"]),
         .init(id: "batteurs", kind: .instrument, label: "Les batteurs", musicianIDs: ["blink182", "duplantier", "jordison", "lars", "lombardo", "bonham"]),
         .init(id: "guitaristes", kind: .instrument, label: "Les guitaristes", musicianIDs: ["isaac-hale", "hendrix", "slash", "frusciante", "root", "mustaine", "scott-ian", "angus", "hammett", "prince", "morello", "iommi", "may", "page", "malakian"]),
         .init(id: "bassistes", kind: .instrument, label: "Les bassistes", musicianIDs: ["hoppus", "lemmy", "araya", "burton", "harris", "flea"]),

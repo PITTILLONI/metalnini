@@ -40,7 +40,11 @@ def call(method, path, key, body=None):
             if e.code == 402:
                 sys.exit("Solde API Krea insuffisant (HTTP 402) : recharger le compte.")
             sys.exit(f"Erreur Krea HTTP {e.code} sur {path} : {detail}")
-    sys.exit(f"Krea toujours saturé (HTTP 429) après 20 minutes d'attente sur {path}.")
+        except (urllib.error.URLError, TimeoutError, OSError):
+            # réseau lent ou coupé : on réessaie au lieu de perdre le job en cours
+            time.sleep(10)
+            continue
+    sys.exit(f"Krea toujours saturé ou injoignable après 40 essais sur {path}.")
 
 
 def main():
@@ -86,7 +90,15 @@ def main():
             if not urls:
                 sys.exit(f"Job terminé sans image : {json.dumps(job)[:300]}")
             tmp = a.out + ".download"
-            urllib.request.urlretrieve(urls[0], tmp)
+            for attempt in range(5):
+                try:
+                    with urllib.request.urlopen(urls[0], timeout=60) as r, open(tmp, "wb") as f:
+                        f.write(r.read())
+                    break
+                except (urllib.error.URLError, TimeoutError, OSError):
+                    time.sleep(10)
+            else:
+                sys.exit(f"Image prête mais impossible à télécharger : {urls[0]}")
             subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "92", tmp, "--out", a.out],
                            check=True, stdout=subprocess.DEVNULL)
             os.remove(tmp)

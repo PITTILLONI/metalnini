@@ -62,7 +62,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('shinoda', 'Mike Shinoda', 'Linkin Park', 'In the End', 'LXII', array['chant', 'clavier']::text[], 'Nu metal'),
   ('malakian', 'Daron Malakian', 'System of a Down', 'Chop Suey!', 'LXIII', array['guitare', 'chant']::text[], 'Metal alternatif'),
   ('joe-duplantier', 'Joe Duplantier', 'Gojira', 'L''Enfant sauvage', 'LXIV', array['chant', 'guitare']::text[], 'Metal progressif'),
-  ('amy-lee', 'Amy Lee', 'Evanescence', 'Bring Me to Life', 'LXV', array['chant']::text[], 'Metal gothique')
+  ('amy-lee', 'Amy Lee', 'Evanescence', 'Bring Me to Life', 'LXV', array['chant']::text[], 'Metal gothique'),
+  ('reuno', 'Reuno', 'Lofofora', 'Les gens', 'LXVI', array['chant']::text[], 'Metal fusion')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -370,7 +371,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('amy-lee', 'rare', 'cards/amy-lee-rare.jpg'),
   ('amy-lee', 'holo', 'cards/amy-lee-holo.jpg'),
   ('amy-lee', 'signature', 'cards/amy-lee-signature.jpg'),
-  ('amy-lee', 'legendaire', 'cards/amy-lee-legendaire.jpg')
+  ('amy-lee', 'legendaire', 'cards/amy-lee-legendaire.jpg'),
+  ('reuno', 'commune', 'cards/reuno-commune.jpg'),
+  ('reuno', 'rare', 'cards/reuno-rare.jpg'),
+  ('reuno', 'holo', 'cards/reuno-holo.jpg'),
+  ('reuno', 'signature', 'cards/reuno-signature.jpg'),
+  ('reuno', 'legendaire', 'cards/reuno-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -468,6 +474,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'malakian'),
   ('all', 'joe-duplantier'),
   ('all', 'amy-lee'),
+  ('all', 'reuno'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -493,6 +500,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('alternatif', 'malakian'),
   ('alternatif', 'poppy'),
   ('alternatif', 'amy-lee'),
+  ('alternatif', 'reuno'),
   ('poppunk', 'blink182'),
   ('poppunk', 'hoppus'),
   ('poppunk', 'hayley'),
@@ -569,6 +577,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'malakian'),
   ('voix', 'joe-duplantier'),
   ('voix', 'amy-lee'),
+  ('voix', 'reuno'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -692,6 +701,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'malakian'),
   ('all', 'joe-duplantier'),
   ('all', 'amy-lee'),
+  ('all', 'reuno'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -717,6 +727,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('alternatif', 'malakian'),
   ('alternatif', 'poppy'),
   ('alternatif', 'amy-lee'),
+  ('alternatif', 'reuno'),
   ('poppunk', 'blink182'),
   ('poppunk', 'hoppus'),
   ('poppunk', 'hayley'),
@@ -793,6 +804,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'malakian'),
   ('voix', 'joe-duplantier'),
   ('voix', 'amy-lee'),
+  ('voix', 'reuno'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),

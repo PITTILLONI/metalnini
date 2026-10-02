@@ -543,22 +543,27 @@ async function catalogTab(el){
   });
 }
 
-// demandes d'artistes des joueurs, regroupées par nom (sans accents ni majuscules), les plus demandés d'abord
+// demandes d'artistes des joueurs, regroupées par nom (sans accents ni majuscules), tickets prioritaires puis les plus demandés d'abord ;
+// « Ajouté » ou « Refusé » prévient chaque demandeur (un ticket prioritaire est rendu en cas de refus)
 async function requests(){
   const box = $('req-list'); if(!box) return;
-  const r = await sb.from('artist_requests').select('*').eq('done', false).order('created_at', { ascending: false });
-  if(r.error){ box.textContent = 'Indisponible (migration 0019 à appliquer ?) : ' + r.error.message; return; }
+  const r = await sb.rpc('admin_requests');
+  if(r.error){ box.textContent = 'Indisponible (migration 0049 à appliquer ?) : ' + r.error.message; return; }
   const key = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
   const groups = Object.values(r.data.reduce((g, x) => { const k = key(x.artist); (g[k] = g[k] || { name: x.artist, rows: [] }).rows.push(x); return g; }, {}))
-    .sort((a, b) => (b.rows.some(x => x.priority) - a.rows.some(x => x.priority)) || b.rows.length - a.rows.length);   // tickets prioritaires en tête
+    .sort((a, b) => (b.rows.some(x => x.priority) - a.rows.some(x => x.priority)) || b.rows.length - a.rows.length);
   if(!groups.length){ box.textContent = 'Aucune demande en attente.'; return; }
   box.className = '';
-  box.innerHTML = `<div class="table-wrap"><table><tr><th>Artiste</th><th>Demandes</th><th>Dernière</th><th>Messages</th><th></th></tr>
-    ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''}</td><td>${g.rows.length}</td><td>${fmt(g.rows[0].created_at)}</td>
-      <td class="muted" style="font-size:.85rem">${g.rows.filter(x => x.note).slice(0, 3).map(x => '« ' + esc(x.note) + ' »').join('<br>') || '—'}</td>
-      <td><button class="ghost" data-req="${i}">Traitée</button></td></tr>`).join('')}</table></div>`;
+  box.innerHTML = `<div class="table-wrap"><table><tr><th>Artiste</th><th>Demandé par</th><th>Dernière</th><th></th></tr>
+    ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''}</td>
+      <td style="font-size:.85rem">${g.rows.map(x => `<div><b>${esc(x.username)}</b>${x.priority ? ' <span class="ok">★ ticket</span>' : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</td>
+      <td>${fmt(g.rows[0].created_at)}</td>
+      <td style="white-space:nowrap"><button data-req="${i}" data-out="added">Ajouté</button> <button class="ghost" data-req="${i}" data-out="refused">Refusé</button></td></tr>`).join('')}</table></div>
+    <p class="muted" style="font-size:.85rem">Ajouté : à faire une fois les cartes en ligne, le demandeur est prévenu tout de suite. Refusé : le ticket prioritaire est rendu.</p>`;
   box.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
-    const res = await sb.from('artist_requests').update({ done: true }).in('id', groups[+b.dataset.req].rows.map(x => x.id)).select('id');
+    const g = groups[+b.dataset.req], added = b.dataset.out === 'added';
+    if(!confirm((added ? 'Marquer « ' + g.name + ' » comme ajouté' : 'Refuser « ' + g.name + ' »') + ' et prévenir ' + g.rows.length + ' joueur' + (g.rows.length > 1 ? 's' : '') + ' ?')) return;
+    const res = await sb.rpc('admin_request_handle', { p_ids: g.rows.map(x => x.id), p_outcome: b.dataset.out });
     if(res.error) say(b, res.error.message); else requests();
   });
 }

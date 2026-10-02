@@ -255,7 +255,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const T = { id:'t1', code:'ABC234', partner_id:'u2', status:'open', version:0, host:true, partner:null, left:false, my_ok:false, their_ok:false, give:[], get:[], my_wants:[], their_wants:[], bonus:null };
   const snap = () => JSON.parse(JSON.stringify(T));
   const fake = { async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
-    async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; },
+    async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 1; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; }, async requestNews(){ return []; },
     async tradeCount(){ return T.status === 'done' ? 1 : 0; }, async tradeActive(){ return null; }, async claims(){ return []; }, async tickets(){ return 0; }, async presence(){}, async cryQuiz(){ return []; }, async cryStatus(){ return null; }, async newCryBonus(){ return null; }, async tradeInvites(){ return []; }, async friends(){ return pals; }, async myTrades(){ return T.status === 'done' ? [{id:'t1', done_at:'2026-09-30T10:00:00Z', partner:'Riffeuse', gave:T.give, got:T.get}] : []; }, async follow(id){ pals = [{friend_id:id, username:'Riffeuse', trades:1, last_trade:'2026-09-30T10:00:00Z'}]; }, async mediaUrl(){ return 'data:audio/wav;base64,'; }, async claimObjective(k){ inv = inv.concat([{musician_id:'hetfield', rarity:'commune', copies:1, placed:false}]); return {kind:'card', m:'hetfield', r:'commune', new:true}; }, async tradeCreate(){ return snap(); }, async tradeState(){ return snap(); }, async tradeCancel(){},
     tradeWatch(id, cb){ watchCb = cb; return () => { watchCb = null; }; },
     async tradePartnerCards(){ return [{musician_id:'jinjer', rarity:'holo', copies:1}, {musician_id:'korn', rarity:'commune', copies:1}]; },
@@ -369,11 +369,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const w9 = dom9.window, d9 = w9.document; let played = null, guessed = null;
   const inv9 = Object.keys(own9).map(k => ({ musician_id:k.split('|')[0], rarity:k.split('|')[1], copies:1, placed:true }));
   const fake9 = new Proxy({ async user(){ return { id:'u1', user_metadata:{} }; }, async inventory(){ return inv9; }, async username(){ return 'moi'; }, async fusionCosts(){ return {}; },
-    async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 0; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; }, async claims(){ return ['mastery:korn']; },
+    async media(){ return {}; }, async power(){ return null; }, async packsLeft(){ return 0; }, async bonusPoints(){ return 0; }, async giftNotices(){ return []; }, async requestNews(){ return [{ artist:'Lofofora', outcome:'added', priority:true }]; }, async claims(){ return ['mastery:korn']; },
     async claimBlindtest(m, sc){ played = {m, sc}; return { kind:'points', points:2 }; }, tradeWatch(){ return () => {}; },
     async cryQuiz(){ return guessed ? [] : [{ friend_id:'f1', cry_path:'f1/cri.webm', choices:[{id:'f2', name:'Bob'}, {id:'f1', name:'Riffeuse'}, {id:'f3', name:'Zed'}] }]; },
     async mediaUrl(){ return 'data:audio/wav;base64,'; }, async cryGuess(f, pick){ guessed = {f, pick}; return f === pick ? { correct:true, reward:{ kind:'points', points:2 } } : { correct:false }; } }, { get: (o, k) => k in o ? o[k] : async () => (k === 'tradeActive' ? null : k === 'tickets' ? 0 : []) });
   await w9.metalniniOnline(fake9); await sleep(100);
+  check('demande d\'artiste exaucée : message à l\'ouverture', /ticket prioritaire a payé.*Lofofora/.test((d9.querySelector('.toast') || {}).textContent || ''));
   d9.getElementById('tab-corner').click(); await sleep(30);
   check('blind test : débloqué par la maîtrise, dans le carrousel', [...d9.querySelectorAll('#quest-list .quizgo')].some(b => /Maîtrise de Jonathan Davis/.test(b.textContent)));
   [...d9.querySelectorAll('#quest-list .quizgo')].find(b => /Maîtrise de Jonathan Davis/.test(b.textContent)).click(); await sleep(150);
@@ -453,6 +454,14 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('bandes : bande montée, code affiché', !d9.getElementById('band-sheet').hidden && /ABC 234/.test(d9.getElementById('band-in').textContent));
   d9.querySelector('#band-in [data-f]').click(); await sleep(20);
   check('bandes : pote invité', invited === 'f1');
+  // un membre de la bande qui n'est pas encore un pote : « + Pote » l'ajoute
+  let befriended = null; fake9.bandAddFriend = async (b, f) => { befriended = b + '/' + f; return 'Zoé'; };
+  band9.members.push({ id:'z3', name:'Zoé', done:[] }); d9.getElementById('band-close').click();
+  d9.querySelector('.tl-acts[data-id="g2"] [data-act="band"]').click(); await sleep(60);
+  check('bandes : « + Pote » seulement pour un membre qui n\'est pas pote', d9.querySelectorAll('#band-in [data-p]').length === 1);
+  d9.querySelector('#band-in [data-p]').click(); await sleep(20);
+  check('bandes : membre ajouté en pote', befriended === 'b1/z3' && !d9.querySelector('#band-in [data-p]') && /Pote ✓/.test(d9.getElementById('band-in').textContent));
+  band9.members.pop();
   d9.getElementById('band-close').click();
   d9.getElementById('band-open').click(); await sleep(10);
   d9.getElementById('band-code-in').value = 'https://x/proto/?bande=XYZ789';
@@ -480,6 +489,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('slam : porté jusqu\'à l\'atterrissage, récompense de porteur à récupérer', carried === 's1' && !!d9.querySelector('#slam [data-sclaim="s1"]'));
   d9.querySelector('#slam [data-sclaim="s1"]').click(); await sleep(80);
   check('slam : récompense de porteur récupérée', sclaimed === 's1' && !d9.querySelector('#slam [data-sclaim]'));
+  // un slam que je porte et qui n'a pas encore atterri : « Renfort » relaie son lien
+  feed9.carried = [{ id:'s2', name:'Bob', goal:5, ends_at:soon9, count:2, landed:false }];
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
+  d9.querySelector('#slam [data-reinf="s2"]').click(); await sleep(20);
+  check('slam : renfort, le lien du slam porté part', /\?slam=s2/.test((d9.querySelector('.toast') || {}).textContent || ''));
+  feed9.carried = [];
   d9.getElementById('slam-go').click(); await sleep(60);
   check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .slam-scene .sc-fan').length === 5 && !!d9.querySelector('#slam .sc-ride .dive'));
   check('slam : « Appeler la foule » pendant le vol', !!d9.getElementById('slam-call'));

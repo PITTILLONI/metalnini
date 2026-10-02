@@ -2,6 +2,8 @@
 
 Affichées dans la fiche carte (section « L'artiste »). La présentation courte reste pour la révélation. Corrige directement dans ce fichier ou dis-moi quoi changer.
 
+Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : la bio de Reuno et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
+
 **knocked-loose** — Chanteur de Knocked Loose, groupe de hardcore formé en 2013 dans le comté d'Oldham, au Kentucky. Son cri aigu et rageur est la signature du groupe. L'EP A Tear in the Fabric of Life (2021) puis l'album You Won't Go Before You're Supposed To (2024) en ont fait une tête d'affiche du hardcore actuel.
 
 **isaac-hale** — Guitariste de Knocked Loose depuis la formation du groupe en 2013 au Kentucky, il assure aussi une partie des voix. Ses riffs épais et ses breakdowns sont au cœur du son du groupe.
@@ -125,6 +127,8 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 
 **amy-lee** — Chanteuse, pianiste et cofondatrice d'Evanescence, groupe formé à Little Rock, dans l'Arkansas, en 1995. Formée au piano classique, elle mêle chant lyrique et guitares lourdes ; Bring Me to Life (2003) a fait de Fallen l'un des albums rock les plus vendus des années 2000.
 
+**reuno** — Il fonde Lofofora à Paris en 1989, l'un des pionniers du metal fusion en France ; le groupe doit son nom à un cactus, le lophophora. Il chante en français des textes engagés et souvent ironiques, contre le racisme et l'extrême droite, comme No facho sur le premier album (1995). Dur comme fer (1999), avec Les gens, reste un classique de la scène française ; il chante aussi dans le groupe de stoner Mudweiser. *(À relire.)*
+
 
 # Fiches des styles (page d'un classeur) — à relire
 
@@ -150,7 +154,7 @@ Affichées dans la fiche carte (section « L'artiste »). La présentation court
 
 **bassistes** — Ils relient la batterie et les guitares, et donnent au son son épaisseur. Certains, comme Lemmy, en font un instrument de premier plan. Repères : Groove, Épaisseur, Lignes de basse.
 
-**alternatif** (Années 1990 à aujourd'hui) — Le metal alternatif réunit ceux qui sortent des cases : le rap metal engagé de Rage Against the Machine, les mélodies arméniennes de System of a Down, le metal gothique d'Evanescence ou le métal expérimental de Poppy. Des guitares lourdes au service de morceaux qui ne ressemblent qu'à eux.
+**alternatif** (Années 1990 à aujourd'hui) — Le metal alternatif réunit ceux qui sortent des cases : le rap metal engagé de Rage Against the Machine, les mélodies arméniennes de System of a Down, le metal gothique d'Evanescence, la fusion française de Lofofora ou le métal expérimental de Poppy. Des guitares lourdes au service de morceaux qui ne ressemblent qu'à eux.
 
 **hardrock** (Fin des années 1960 aux années 1980) — Le hard rock durcit le blues-rock à la fin des années 1960 : riffs de guitare saturés, voix puissantes et solos. Led Zeppelin et AC/DC en posent les bases, Guns N' Roses le ramène au sommet à la fin des années 1980.
 
