@@ -57,3 +57,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | reuno | [W1903-Hellfest2014_Lofofora_Reuno_87482.JPG](https://commons.wikimedia.org/wiki/File:W1903-Hellfest2014_Lofofora_Reuno_87482.JPG) | Llann Wé² | CC BY-SA 3.0 |
 | sam-carter | [2014-06-05_Vainstream_Architects_Sam_Carter_07.jpg](https://commons.wikimedia.org/wiki/File:2014-06-05_Vainstream_Architects_Sam_Carter_07.jpg) | Achim Raschka | CC BY-SA 4.0 |
 | nito | [Nito_Mestre.jpg](https://commons.wikimedia.org/wiki/File:Nito_Mestre.jpg) | Auteur inconnu | Domaine public |
+| brendan-murphy | [Brendan_Murphy_-_Counterparts.jpg](https://commons.wikimedia.org/wiki/File:Brendan_Murphy_-_Counterparts.jpg) | Jacob Stackley | CC BY-SA 4.0 |

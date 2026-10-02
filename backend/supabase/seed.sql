@@ -65,7 +65,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('amy-lee', 'Amy Lee', 'Evanescence', 'Bring Me to Life', 'LXV', array['chant']::text[], 'Metal gothique'),
   ('reuno', 'Reuno', 'Lofofora', 'Les gens', 'LXVI', array['chant']::text[], 'Metal fusion'),
   ('sam-carter', 'Sam Carter', 'Architects', 'Doomsday', 'LXVII', array['chant']::text[], 'Metalcore'),
-  ('nito', 'Nito Mestre', 'Sui Generis', 'Canción para mi muerte', 'LXVIII', array['chant', 'guitare']::text[], 'Folk rock')
+  ('nito', 'Nito Mestre', 'Sui Generis', 'Canción para mi muerte', 'LXVIII', array['chant', 'guitare']::text[], 'Folk rock'),
+  ('brendan-murphy', 'Brendan Murphy', 'Counterparts', 'Praise No Artery Intact', 'LXIX', array['chant']::text[], 'Hardcore mélodique')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -388,7 +389,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('nito', 'rare', 'cards/nito-rare.jpg'),
   ('nito', 'holo', 'cards/nito-holo.jpg'),
   ('nito', 'signature', 'cards/nito-signature.jpg'),
-  ('nito', 'legendaire', 'cards/nito-legendaire.jpg')
+  ('nito', 'legendaire', 'cards/nito-legendaire.jpg'),
+  ('brendan-murphy', 'commune', 'cards/brendan-murphy-commune.jpg'),
+  ('brendan-murphy', 'rare', 'cards/brendan-murphy-rare.jpg'),
+  ('brendan-murphy', 'holo', 'cards/brendan-murphy-holo.jpg'),
+  ('brendan-murphy', 'signature', 'cards/brendan-murphy-signature.jpg'),
+  ('brendan-murphy', 'legendaire', 'cards/brendan-murphy-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -489,6 +495,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'reuno'),
   ('all', 'sam-carter'),
   ('all', 'nito'),
+  ('all', 'brendan-murphy'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -496,6 +503,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('metalcore', 'heriot'),
   ('metalcore', 'sykes'),
   ('metalcore', 'sam-carter'),
+  ('metalcore', 'brendan-murphy'),
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
@@ -596,6 +604,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'reuno'),
   ('voix', 'sam-carter'),
   ('voix', 'nito'),
+  ('voix', 'brendan-murphy'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -722,6 +731,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'reuno'),
   ('all', 'sam-carter'),
   ('all', 'nito'),
+  ('all', 'brendan-murphy'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -729,6 +739,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('metalcore', 'heriot'),
   ('metalcore', 'sykes'),
   ('metalcore', 'sam-carter'),
+  ('metalcore', 'brendan-murphy'),
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
@@ -829,6 +840,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'reuno'),
   ('voix', 'sam-carter'),
   ('voix', 'nito'),
+  ('voix', 'brendan-murphy'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
