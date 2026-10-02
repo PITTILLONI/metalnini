@@ -509,10 +509,25 @@
   .df.band{border-color:rgba(235,154,38,.45); color:var(--gold-hi)}
   .slam-box{margin:0 0 8px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .slam-box.land{border-color:var(--gold); background:rgba(235,154,38,.08)}
   .slam-box b{display:block; font:600 .95rem/1.3 var(--mono)} .slam-box small{display:block; margin-top:2px; color:var(--muted); font:500 .78rem/1.45 var(--mono)} .slam-box .btn{margin-top:12px}
-  .slam-hands{display:flex; gap:6px; margin:12px 0 4px} .slam-hands i{flex:1; display:grid; place-items:center; height:40px; border:1px solid var(--border); border-radius:10px; color:var(--muted)}
-  .slam-hands i.on{border-color:var(--gold); color:var(--gold-hi); background:rgba(235,154,38,.1)} .slam-box.jump .slam-hands i{animation:slam-up .6s cubic-bezier(.2,.8,.3,1) both} .slam-hands i:nth-child(2n){animation-delay:.08s !important}
-  @keyframes slam-up{40%{transform:translateY(-10px)}}
-  @media (prefers-reduced-motion: reduce){ .slam-box.jump .slam-hands i{animation:none} }
+  /* scène du slam : la foule (bras levés en or = porteurs), le slammeur sur la scène, porté, atterri ou écrasé */
+  .slam-scene{display:block; width:100%; height:auto; margin:10px 0 4px; overflow:visible}
+  .slam-scene g, .slam-scene path, .slam-scene circle{transform-box:fill-box; transform-origin:center}
+  .sc-fan circle, .sc-fan path{fill:none; stroke:var(--muted); stroke-width:2.2; stroke-linecap:round} .sc-fan circle{fill:var(--surface-2)}
+  .sc-fan.up circle, .sc-fan.up path{stroke:var(--gold-hi)} .sc-fan.up .sc-arm{transform-origin:50% 100%; animation:sc-wave 1.1s ease-in-out var(--d) infinite alternate}
+  .sc-me path{fill:none; stroke:var(--text); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round} .sc-me circle{fill:var(--text)}
+  .sc-me.bob{animation:sc-bob 1.6s ease-in-out infinite} .sc-me.bob.dive{animation:sc-dive .8s cubic-bezier(.5,0,.6,1.4), sc-bob 1.6s ease-in-out .8s infinite}
+  .sc-me.hop{animation:sc-hop 1.2s ease-in-out infinite} .sc-me.horns{animation:sc-hop .9s ease-in-out infinite}
+  .sc-me.down path{stroke:var(--accent-text)} .sc-me.down circle{fill:var(--accent-text)}
+  .sc-ride{transition:transform .9s cubic-bezier(.3,1.3,.5,1)} .sc-stage{fill:var(--gold-lo)}
+  .sc-burst path{fill:none; stroke:var(--gold-hi); stroke-width:2.4; stroke-linecap:round; animation:sc-burst 1.4s ease-out infinite}
+  .sc-dust circle{fill:var(--muted); animation:sc-dust 2.4s ease-out infinite} .sc-dust circle:nth-child(2){animation-delay:.5s} .sc-dust circle:nth-child(3){animation-delay:1s}
+  @keyframes sc-wave{to{transform:translateY(-3px)}}
+  @keyframes sc-bob{50%{transform:translateY(-5px) rotate(-4deg)}}
+  @keyframes sc-dive{0%{transform:translate(-40px, -46px) rotate(-70deg)}}
+  @keyframes sc-hop{35%{transform:translateY(-6px)}70%{transform:none}}
+  @keyframes sc-burst{0%{opacity:0; transform:scale(.6)}30%{opacity:1}100%{opacity:0; transform:scale(1.3)}}
+  @keyframes sc-dust{0%{opacity:.6; transform:none}100%{opacity:0; transform:translateY(-10px) scale(1.6)}}
+  @media (prefers-reduced-motion: reduce){ .slam-scene *{animation:none !important; transition:none !important} }
   .band-inv{display:grid; gap:8px; margin-top:12px} .band-inv p{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:10px; background:var(--surface); font:500 .86rem/1.4 var(--mono)}
   .band-ms{list-style:none; margin:12px 0 4px; padding:0; display:grid; gap:8px}
   .band-ms li{padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg)} .band-ms b{font:400 1.15rem var(--gothic)}
@@ -1484,6 +1499,7 @@
   <div class="trade-in" id="trade-in"></div>
 </div>
 <button type="button" class="trade-pill" id="trade-pill" hidden></button>
+<button type="button" class="trade-pill" id="slam-pill" hidden></button>
 <div class="troc" id="troc" hidden role="dialog" aria-modal="true" aria-labelledby="troc-t">
   <div class="troc-in">
     <p class="eyebrow">Troc conclu</p><h2 id="troc-t"></h2>
@@ -2133,6 +2149,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         if(/type=recovery/.test(location.hash)) showAuth('newpw');
         else if(state.welcome){ document.getElementById('auth').hidden = true; renderStats(); }   // cartes de bienvenue pas encore sauvegardées : on continue à jouer
         else if(!state.onbSeen) startOnboarding(); else showAuth('signup');
+        if(pendingSlam || pendingPote) setTimeout(linkAsGuest, 2000);   // après le fondu de l'écran de démarrage
         return; }
       document.getElementById('auth').hidden = true; document.getElementById('auth-later').hidden = true;
       await claimWelcome(api, user);
@@ -2150,8 +2167,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('troc'); go('corner'); tradeJoin(troc); }, 600); }
       if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('concerts'); go('corner'); bandJoin(bd); }, 600); }
-      if(pendingSlam){ var sl = pendingSlam; pendingSlam = null; setTimeout(function(){ cornerTab('troc'); go('corner'); slamJoin(sl); }, 600); }
-      if(pendingPote){ var pc = pendingPote; pendingPote = null; setTimeout(function(){ cornerTab('troc'); go('corner'); addPote(pc); }, 600); }
+      if(pendingSlam || pendingPote){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || ''); pendingSlam = pendingPote = null; setTimeout(function(){ openLink(lk); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -2821,6 +2837,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var pendingBand = (/[?&]bande=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien d'une bande de concert, rejointe une fois en ligne
   var pendingSlam = (/[?&]slam=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // lien ou notification d'un slam : rejoint la foule une fois en ligne
   var pendingPote = (/[?&]pote=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien de pote : ajouté une fois en ligne
+  // lien de slam ou de pote ouvert sans être connecté (sur iPhone, un lien s'ouvre dans Safari, pas dans l'app installée)
+  function linkAsGuest(){
+    var code = pendingPote ? pendingPote.toUpperCase().slice(0, 3) + ' ' + pendingPote.toUpperCase().slice(3) : null;
+    askConfirm(standalone() ? {eyebrow:pendingSlam ? 'Slam' : 'Pote', title:'Connecte-toi d\'abord', text:'Le lien t\'attend : une fois connecté, il s\'ouvre tout seul.', yes:'Me connecter', no:'Plus tard'}
+      : {eyebrow:pendingSlam ? 'Slam' : 'Pote', title:'Tu n\'es pas connecté ici',
+         text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Troc, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
+         yes:'Me connecter ici', no:'OK'}, function(){ showAuth('login'); });
+  }
   if(pendingTroc || pendingBand || pendingSlam || pendingPote) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
@@ -2834,7 +2858,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var pillEl = document.getElementById('trade-pill');
   function paintPill(){
     var t = trade, on = !!t && tradeEl.hidden && (t.status === 'open' || t.status === 'live');
-    pillEl.hidden = !on; if(!on) return;
+    pillEl.hidden = !on; paintSlamPill(); if(!on) return;
     var who = esc(t.partner || 'ton pote');
     pillEl.innerHTML = '<em>' + (t.status === 'open' ? 'Ton code <b>' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</b> attend ton pote' : 'Échange avec <b>' + who + '</b>' + (t.their_ok ? ' · a validé' : ((t.their_wants || []).length ? ' · te demande des cartes' : ''))) + '</em><span>Reprendre</span>';
   }
@@ -3149,27 +3173,45 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.cryQuiz().then(function(rows){ var n = cryPool.length; cryPool = rows || []; if(n !== cryPool.length) renderGoals(); }).catch(function(){});
   }
   // ---------- Slam : plonger dans la foule, porté par ses potes ----------
-  var slamData = null, HAND_ICON = '<path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/>';
+  var slamData = null, slamX = null;
   // à faire : slams à porter, atterrissages à récupérer (le mien et ceux que j'ai portés)
   function slamWaiting(){ var d = slamData; if(!d) return 0;
     return (d.crowd || []).length + (d.carried || []).filter(function(x){ return x.landed; }).length + (d.mine && d.mine.landed && !d.mine.claimed ? 1 : 0); }
   function slamLeft(iso){ var m = Math.max(0, Math.round((new Date(iso) - Date.now()) / 6e4)); return m >= 60 ? Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') : m + ' min'; }
-  function slamHands(n, goal){ var out = ''; for(var i = 0; i < goal; i++) out += '<i' + (i < n ? ' class="on"' : '') + '>' + icon(HAND_ICON, 20) + '</i>';
-    return '<div class="slam-hands" role="img" aria-label="' + n + ' porteur' + (n > 1 ? 's' : '') + ' sur ' + goal + '">' + out + '</div>'; }
+  // scène : st = ready (sur le bord de la scène), fly (porté, avance d'un cran par porteur), land (atterri, cornes levées), crash (dans la fosse)
+  function slamScene(st, n, goal, dive){
+    var W = 320, x0 = 40, step = 196 / Math.max(1, goal - 1), crowd = '', fig, x = Math.round(20 + Math.min(n, goal) / goal * 220);
+    for(var i = 0; i < goal; i++){ var fx = Math.round(x0 + i * step), up = st === 'land' || i < n;
+      crowd += '<g class="sc-fan' + (up ? ' up' : '') + '" style="--d:' + (i * .12).toFixed(2) + 's"><circle cx="' + fx + '" cy="92" r="8"/><path d="M' + (fx - 12) + ' 112 q12 -16 24 0"/>' +
+        (up ? '<path class="sc-arm" d="M' + (fx - 7) + ' 88 l-6 -18 M' + (fx + 7) + ' 88 l6 -18"/>' : '') + '</g>'; }
+    // silhouettes : debout (bras selon l'état) ou allongée, la tête vers l'avant
+    function stand(cx, base, arms){ return '<circle cx="' + cx + '" cy="' + (base - 36) + '" r="6"/><path d="M' + cx + ' ' + (base - 29) + ' v17 l-7 12 M' + cx + ' ' + (base - 12) + ' l7 12 ' + arms + '"/>'; }
+    var lying = '<circle cx="17" cy="-3" r="6"/><path d="M9 0 h-22 l-12 -7 M-13 0 l-12 6 M4 0 l8 -11 M4 0 l10 -6"/>';
+    if(st === 'ready') fig = '<rect class="sc-stage" x="0" y="52" width="40" height="6" rx="2"/><g class="sc-me hop">' + stand(22, 52, 'M22 27 l9 -8 M22 27 l9 -2') + '</g>';
+    // atterrissage et chute : à droite de la foule
+    else if(st === 'land') fig = '<g class="sc-burst"><path d="M296 52 v-9 M283 58 l-6 -6 M309 58 l6 -6 M277 70 h-8 M315 70 h8"/></g><g class="sc-me horns">' + stand(296, 112, 'M296 82 l-8 -14 M296 82 l8 -14') + '</g>';
+    else if(st === 'crash') fig = '<g class="sc-dust"><circle cx="276" cy="110" r="4"/><circle cx="294" cy="112" r="3"/><circle cx="312" cy="110" r="4"/></g>' +
+      '<g transform="translate(298 108) rotate(10)"><g class="sc-me down">' + lying + '</g></g>';
+    else fig = '<g class="sc-ride" data-x="' + x + '" style="transform:translate(' + x + 'px, 0)"><g transform="translate(0 66)"><g class="sc-me bob' + (dive ? ' dive' : '') + '">' + lying + '</g></g></g>';
+    var label = st === 'ready' ? 'Prêt à plonger' : st === 'land' ? 'Atterri, porté par ' + n : st === 'crash' ? 'Écrasé dans la fosse, ' + n + ' porteur' + (n > 1 ? 's' : '') + ' sur ' + goal : 'Porté par ' + n + ' sur ' + goal;
+    return '<svg class="slam-scene" viewBox="' + (st === 'crash' ? '0 60 ' + W + ' 56' : '0 0 ' + W + ' 116') + '" role="img" aria-label="' + label + '">' + crowd + fig + '</svg>'; }
+  // nouvelles du slam toutes les 30 s et au retour dans l'app : porteurs de mon slam, slams des potes à porter (pastille)
+  setInterval(function(){ if(ONLINE && !document.hidden) loadSlam(); }, 30000);
+  document.addEventListener('visibilitychange', function(){ if(ONLINE && !document.hidden) loadSlam(); });
   function loadSlam(){
     if(!ONLINE) return;
     Promise.resolve().then(function(){ return ONLINE.slamFeed(); }).then(function(d){ slamData = d; paintSlam(); }).catch(function(){});
   }
-  function paintSlam(jump){
+  function paintSlam(dive){
     var d = slamData, sec = document.getElementById('slam-sec'); sec.hidden = !d; if(!d) return;
     var m = d.mine, hours = Math.round(d.window / 6) / 10, mine;
-    if(!m) mine = '<div class="slam-box"><b>Plonge dans la foule</b><small>' + d.goal + ' potes doivent te porter en ' + String(hours).replace('.', ',') + ' h. Atterrissage réussi : une récompense pour toi et pour chaque porteur.</small>' +
+    if(!m) mine = '<div class="slam-box">' + slamScene('ready', 0, d.goal) + '<b>Plonge dans la foule</b><small>' + d.goal + ' potes doivent te porter en ' + String(hours).replace('.', ',') + ' h. Atterrissage réussi : une récompense pour toi et pour chaque porteur.</small>' +
       (friendsList.length ? '<button type="button" class="btn block" id="slam-go">Slammer</button>' : '<small>Il te faut une foule : ajoute tes potes avec ton code.</small><button type="button" class="btn block" id="slam-potes">Ajouter des potes</button>') + '</div>';
-    else if(m.landed && !m.claimed) mine = '<div class="slam-box land"><b>Atterrissage réussi</b><small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' + slamHands(m.carriers.length, m.goal) +
+    else if(m.landed && !m.claimed) mine = '<div class="slam-box land">' + slamScene('land', m.carriers.length, m.goal) + '<b>Atterrissage réussi</b><small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' +
       '<button type="button" class="btn block" id="slam-claim" data-id="' + esc(m.id) + '">Récupérer ma récompense</button></div>';
-    else if(m.landed) mine = '<div class="slam-box"><b>Slam réussi</b><small>La foule reprend son souffle. Remets ça demain.</small></div>';
-    else if(m.crashed) mine = '<div class="slam-box"><b>Écrasé dans la fosse</b><small>' + m.carriers.length + ' porteur' + (m.carriers.length > 1 ? 's' : '') + ' sur ' + m.goal + '. Demain, préviens la foule avant de plonger.</small>' + slamHands(m.carriers.length, m.goal) + '</div>';
-    else mine = '<div class="slam-box' + (jump ? ' jump' : '') + '"><b>Tu planes au-dessus de la foule</b><small><span class="num">' + m.carriers.length + '/' + m.goal + '</span> porteurs · encore ' + slamLeft(m.ends_at) + '</small>' + slamHands(m.carriers.length, m.goal) +
+    else if(m.landed) mine = '<div class="slam-box">' + slamScene('land', m.carriers.length, m.goal) + '<b>Slam réussi</b><small>La foule reprend son souffle. Remets ça demain.</small></div>';
+    else if(m.crashed) mine = '<div class="slam-box">' + slamScene('crash', m.carriers.length, m.goal) + '<b>Écrasé dans la fosse</b><small>' + m.carriers.length + ' porteur' + (m.carriers.length > 1 ? 's' : '') + ' sur ' + m.goal + '. Demain, préviens la foule avant de plonger.</small></div>';
+    else mine = '<div class="slam-box">' + slamScene('fly', m.carriers.length, m.goal, dive) + '<b>Tu planes au-dessus de la foule</b><small><span class="num">' + m.carriers.length + '/' + m.goal + '</span> porteurs · encore ' + slamLeft(m.ends_at) + '</small>' +
       (m.carriers.length ? '<small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' : '<small>Tes potes sont prévenus. Relance-les, la fosse n\'attend pas.</small>') +
       '<button type="button" class="btn ghost block" id="slam-call">Appeler la foule</button></div>';
     var rows = (d.crowd || []).map(function(x){
@@ -3178,21 +3220,46 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return x.landed ? '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>a atterri grâce à toi</small></span><span class="f-acts"><button type="button" data-sclaim="' + esc(x.id) + '">Récompense</button></span></div>'
           : '<div class="friend">' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>tu le portes · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span></div>'; }).join('');
     document.getElementById('slam').innerHTML = rows + mine;
+    // le slammeur avance au-dessus de la foule depuis sa dernière position
+    var ride = document.querySelector('#slam .sc-ride'), to = ride && +ride.getAttribute('data-x');
+    if(ride && slamX != null && slamX !== to && !dive){ ride.style.transform = 'translate(' + slamX + 'px, 0)'; ride.getBoundingClientRect(); requestAnimationFrame(function(){ ride.style.transform = 'translate(' + to + 'px, 0)'; }); }
+    slamX = ride ? to : null;
     var go = document.getElementById('slam-go'); if(go) go.onclick = function(){ go.disabled = true;
       ONLINE.slamLaunch().then(function(f){ slamData = f; snd('rumble'); paintSlam(true); cornerTab(); toast('Tu plonges ! Tes potes sont prévenus : ' + f.goal + ' porteurs avant ' + new Date(f.mine.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + '.'); },
         function(e){ go.disabled = false; toast(esc(e.message)); }); };
     var sp = document.getElementById('slam-potes'); if(sp) sp.onclick = openPote;
-    var call = document.getElementById('slam-call'); if(call) call.onclick = function(){
-      share('Je plonge dans la foule sur Metalnini : porte-moi avant ' + new Date(m.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + ' !', location.origin + location.pathname + '?slam=' + m.id, 'Lien copié. Envoie-le à la foule.'); };
+    var call = document.getElementById('slam-call'); if(call){ if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
+      call.onclick = function(){   // le code de pote voyage avec le lien : ouvert hors de l'app, il se tape dans « + Pote »
+        share('Je plonge dans la foule sur Metalnini : porte-moi avant ' + new Date(m.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + ' !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''),
+          location.origin + location.pathname + '?slam=' + m.id + (poteCode ? '&pote=' + poteCode : ''), 'Lien copié. Envoie-le à la foule.'); }; }
     var cl = document.getElementById('slam-claim'); if(cl) cl.onclick = function(){ slamClaim(cl, 'Slam réussi'); };
     [].forEach.call(document.querySelectorAll('#slam [data-sclaim]'), function(b){ b.onclick = function(){ slamClaim(b, 'Porteur de slam'); }; });
-    [].forEach.call(document.querySelectorAll('#slam [data-carry]'), function(b){ b.onclick = function(){ b.disabled = true;
-      var x = d.crowd.filter(function(c){ return c.id === b.getAttribute('data-carry'); })[0];
-      ONLINE.slamCarry(x.id).then(function(r){ snd(r.landed ? 'reward' : 'select');
-        toast(r.landed ? '<b>' + esc(x.name) + '</b> atterrit grâce à toi.' + (r.rewarded ? ' Récupère ta récompense.' : '') : 'Tu portes <b>' + esc(x.name) + '</b>. Encore ' + (r.goal - r.count) + ' paire' + (r.goal - r.count > 1 ? 's' : '') + ' de bras.');
-        loadSlam(); }, function(e){ toast(esc(e.message)); loadSlam(); }); }; });
-    cornerTab();
+    [].forEach.call(document.querySelectorAll('#slam [data-carry]'), function(b){ b.onclick = function(){
+      slamCarry(d.crowd.filter(function(c){ return c.id === b.getAttribute('data-carry'); })[0], b); }; });
+    cornerTab(); paintSlamPill();
   }
+  function slamCarry(x, b){ b.disabled = true;
+    ONLINE.slamCarry(x.id).then(function(r){ snd(r.landed ? 'reward' : 'select');
+      toast(r.landed ? '<b>' + esc(x.name) + '</b> atterrit grâce à toi.' + (r.rewarded ? ' Récupère ta récompense dans Metal Corner.' : '') : 'Tu portes <b>' + esc(x.name) + '</b>. Encore ' + (r.goal - r.count) + ' paire' + (r.goal - r.count > 1 ? 's' : '') + ' de bras.');
+      b.disabled = false; loadSlam(); }, function(e){ b.disabled = false; toast(esc(e.message)); loadSlam(); });
+  }
+  // pastille au-dessus de la barre d'onglets, sur tous les écrans sauf Metal Corner : un slam à porter d'un toucher, ou une récompense qui attend
+  var slamPill = document.getElementById('slam-pill');
+  function paintSlamPill(){
+    var d = slamData, x = d && (d.crowd || [])[0], claim = d && slamWaiting() > (d.crowd || []).length;
+    var on = !!(x || claim) && pillEl.hidden && tradeEl.hidden && document.getElementById('v-corner').hidden;
+    slamPill.hidden = !on; if(!on) return;
+    slamPill.innerHTML = x ? '<em><b>' + esc(x.name) + '</b> plane au-dessus de la foule · ' + x.count + '/' + x.goal + '</em><span>Porter</span>' : '<em>Slam atterri : <b>récompense</b> à prendre</em><span>Voir</span>';
+    slamPill.onclick = x ? function(){ slamCarry(x, slamPill); } : function(){ cornerTab('troc'); go('corner'); };
+  }
+  // lien de slam ou de pote (au démarrage, ou notification touchée alors que l'app était ouverte)
+  function openLink(q){
+    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1];
+    if(!sl && !pc) return;
+    cornerTab('troc'); go('corner');
+    if(sl) slamJoin(sl); else addPote(pc);
+  }
+  if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function(e){ if(e.data && e.data.url && ONLINE) openLink(new URL(e.data.url).search); });
   // lien d'un slam ouvert : je rejoins la foule (potes avec le slammeur), puis je peux le porter
   function slamJoin(id){
     Promise.resolve().then(function(){ return ONLINE.slamJoin(id); }).then(function(name){
@@ -3652,6 +3719,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(v === 'packs'){ renderStats(); checkGifts(); packStep(ONLINE && state.pending && state.pending.length ? 'open' : 'choose'); } else if(pTarget && pTarget.root.id === 'pack-root') clearTarget();
     document.body.classList.toggle('placing', v === 'binder' && (state.toPlace || []).length > 0); renderTray();
     if(v === 'settings') renderSettings();
+    paintSlamPill();
     window.scrollTo(0,0);
   }
   tabs.forEach(function(t){ t.addEventListener('click', function(){ go(t.getAttribute('data-v')); }); });

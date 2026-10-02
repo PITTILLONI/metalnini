@@ -7,12 +7,13 @@ self.addEventListener('push', function(e){
     body: d.body || '', icon: '../icons/icon-192.png', tag: d.tag || 'metalnini', data: {url: new URL(d.url || './', self.registration.scope).href}
   }));
 });
-// toucher la notification : on revient sur l'app déjà ouverte, sinon on l'ouvre
+// toucher la notification : on revient sur l'app déjà ouverte en lui passant le lien (slam, pote…), sinon on l'ouvre sur ce lien
 self.addEventListener('notificationclick', function(e){
   e.notification.close();
   var url = (e.notification.data && e.notification.data.url) || self.registration.scope;
   e.waitUntil(self.clients.matchAll({type: 'window', includeUncontrolled: true}).then(function(list){
-    for(var i = 0; i < list.length; i++) if(list[i].url.indexOf(self.registration.scope) === 0) return list[i].focus();
+    var app = list.filter(function(c){ return c.url.indexOf(self.registration.scope) === 0; })[0];
+    if(app){ app.postMessage({url: url}); return app.focus(); }
     return self.clients.openWindow(url);
   }));
 });

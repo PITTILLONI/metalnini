@@ -481,7 +481,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.querySelector('#slam [data-sclaim="s1"]').click(); await sleep(80);
   check('slam : récompense de porteur récupérée', sclaimed === 's1' && !d9.querySelector('#slam [data-sclaim]'));
   d9.getElementById('slam-go').click(); await sleep(60);
-  check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .slam-hands i').length === 5);
+  check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .slam-scene .sc-fan').length === 5 && !!d9.querySelector('#slam .sc-ride .dive'));
   check('slam : « Appeler la foule » pendant le vol', !!d9.getElementById('slam-call'));
 
   // 19. Potes par code : mon code affiché, ajout par lien collé
@@ -493,6 +493,27 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('pote-in').value = 'https://x/proto/?pote=zxc456';
   d9.getElementById('pote-join').dispatchEvent(new w9.Event('submit', { cancelable:true })); await sleep(40);
   check('potes : ajouté par lien, feuille fermée', addedCode === 'ZXC456' && d9.getElementById('pote-sheet').hidden);
+
+  // 20. Pastille du slam : hors de Metal Corner, le slam d'un pote se porte d'un toucher
+  let carried2 = null;
+  feed9.crowd = [{ id:'s3', name:'Doom', goal:5, ends_at:soon9, count:1 }];
+  fake9.slamCarry = async id => { carried2 = id; feed9.crowd = []; return { count:2, goal:5, landed:false, rewarded:true }; };
+  d9.getElementById('tab-corner').click(); await sleep(60);
+  d9.querySelector('.tabbar [data-v="binder"]').click(); await sleep(20);
+  const pill9 = d9.getElementById('slam-pill');
+  check('slam : pastille hors de Metal Corner', !pill9.hidden && /Doom/.test(pill9.textContent) && /Porter/.test(pill9.textContent));
+  pill9.click(); await sleep(60);
+  check('slam : porté depuis la pastille, pastille retirée', carried2 === 's3' && pill9.hidden);
+
+  // 21. Lien de slam ouvert sans être connecté (navigateur) : explication, code de pote à taper dans l'app
+  const dom10 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/?slam=0f8b8c2e-1d2a-4c5e-9f00-123456789abc&pote=qwe789', beforeParse(w){
+    w.matchMedia = () => ({ matches: false }); w.scrollTo = () => {};
+    w.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: () => () => {} }); w.HTMLElement.prototype.setPointerCapture = () => {}; w.HTMLElement.prototype.scrollIntoView = () => {};
+    w.addEventListener('error', e => errors.push(e.message)); } });
+  await sleep(150);
+  const w10 = dom10.window, d10 = w10.document;
+  await w10.metalniniOnline({ async user(){ return null; } }); await sleep(2200);
+  check('lien hors de l\'app : explication et code de pote', !d10.getElementById('confirm').hidden && /QWE 789/.test(d10.getElementById('confirm-d').textContent) && /Me connecter/.test(d10.getElementById('confirm-yes').textContent));
 
   console.log(results.join('\n'));
   console.log(errors.length ? 'ERREURS JS : ' + errors.join(' ; ') : 'aucune erreur JS');
