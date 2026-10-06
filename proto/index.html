@@ -2571,7 +2571,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(android) return 'Micro refusé. Touche le cadenas à côté de l\'adresse (ou, app installée : appui long sur l\'icône, Infos), Autorisations, Micro, « Autoriser ».';
     return 'Micro refusé. Touche le cadenas à côté de l\'adresse, puis autorise le micro pour ce site et réessaie.';
   }
-  function stopRec(){ duckBack(); countTimers.forEach(clearTimeout); countTimers = []; counting = false; countEl.innerHTML = ''; clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
+  function stopRec(){ duckBack(); audioSession('playback'); countTimers.forEach(clearTimeout); countTimers = []; counting = false; countEl.innerHTML = ''; clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
   recBtn.addEventListener('click', async function(){
     pfErr.textContent = '';
     if(counting){ stopRec(); resetCry(); return; }
@@ -2583,12 +2583,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     recordCry();
   });
   // le micro est demandé dans le geste même (toucher du bouton ou « Autoriser le micro ») : iOS l'exige dans l'app installée
+  // iPhone : la session audio est en « lecture » pour la musique (bouton silencieux) ; dans ce mode, iOS refuse le micro
+  // (InvalidStateError). Le temps du cri, elle passe en « lecture et enregistrement », puis revient.
+  function audioSession(t){ try{ if(navigator.audioSession) navigator.audioSession.type = t; }catch(e){} }
   async function recordCry(){
+    audioSession('play-and-record');
     try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
     catch(e){
       // réglages audio refusés par l'appareil : micro standard
-      if(e && e.name === 'NotAllowedError'){ pfErr.textContent = micHelp(e); return; }
-      try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }catch(e2){ pfErr.textContent = micHelp(e2); return; }
+      if(e && e.name === 'NotAllowedError'){ audioSession('playback'); pfErr.textContent = micHelp(e); return; }
+      try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }catch(e2){ audioSession('playback'); pfErr.textContent = micHelp(e2); return; }
     }
     duck(0);   // la musique se tait pendant que tu cries
     var type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].filter(function(t){ return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t); })[0] || '';
@@ -4257,7 +4261,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(sndCtx) { if(sndCtx.state === 'suspended') sndCtx.resume(); return sndCtx; }
     var C = window.AudioContext || window.webkitAudioContext; if(!C) return null;
     // iPhone (iOS 17+) : jouer comme une app de musique, même avec le bouton silencieux
-    try{ if(navigator.audioSession) navigator.audioSession.type = 'playback'; }catch(e){}
+    audioSession('playback');
     sndCtx = new C(); sfxBus = sndCtx.createGain(); sfxBus.gain.value = .9; sfxBus.connect(sndCtx.destination);
     musicBus = sndCtx.createGain(); musicBus.gain.value = 0; musicBus.connect(sndCtx.destination);
     return sndCtx;
