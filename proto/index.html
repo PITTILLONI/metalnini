@@ -1732,6 +1732,7 @@ const api = {
   async shop(){ const r = must(await sb.from('settings').select('value').eq('key', 'shop').maybeSingle()); return r ? r.value : {}; },
   async startPurchase(o, a, n){ return must(await sb.rpc('start_purchase', { p_offer: o, p_artist: a || null, p_note: n || null })); },
   async purchaseNews(){ return must(await sb.rpc('my_purchase_news')) || []; },
+  async messages(){ return must(await sb.rpc('my_messages')) || []; },
   async requestNews(){ return must(await sb.rpc('my_request_news')) || []; },
   async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
   async packsLeft(){ return must(await sb.rpc('packs_left_today')); },
@@ -2324,7 +2325,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       // pseudo choisi à l'inscription, enregistré à la première connexion
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
-      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); checkRequests(); checkPurchases(); syncPush();
+      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); checkRequests(); checkPurchases(); checkMessages(); syncPush();
       renderSocial(); loadGigs();   // invitations, potes, concerts : la pastille de Metal Corner est juste dès la connexion
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
       presence();
@@ -2332,7 +2333,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('potes'); go('corner'); tradeJoin(troc); }, 600); }
       if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('fosse'); go('corner'); bandJoin(bd); }, 600); }
-      if(pendingSlam || pendingPote || pendingPit){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || ''); pendingSlam = pendingPote = pendingPit = null; setTimeout(function(){ openLink(lk); }, 600); }
+      if(pendingSlam || pendingPote || pendingPit || pendingVue){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || '') + '&vue=' + (pendingVue || ''); pendingSlam = pendingPote = pendingPit = pendingVue = null; setTimeout(function(){ openLink(lk); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -3026,7 +3027,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var pendingTroc = (/[?&]troc=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;
   var pendingBand = (/[?&]bande=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien d'une bande de concert, rejointe une fois en ligne
   var pendingSlam = (/[?&]slam=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
-  var pendingPit = (/[?&]pit=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // lien ou notification d'un circle pit : on rejoint le cercle une fois en ligne   // lien ou notification d'un slam : rejoint la foule une fois en ligne
+  var pendingPit = (/[?&]pit=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
+  var pendingVue = (/[?&]vue=([a-z]+)/.exec(location.search) || [])[1] || null;   // notification de l'admin : l'écran à ouvrir   // lien ou notification d'un circle pit : on rejoint le cercle une fois en ligne   // lien ou notification d'un slam : rejoint la foule une fois en ligne
   var pendingPote = (/[?&]pote=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien de pote : ajouté une fois en ligne
   // lien de slam ou de pote ouvert sans être connecté (sur iPhone, un lien s'ouvre dans Safari, pas dans l'app installée)
   function linkAsGuest(){
@@ -3036,7 +3038,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
          text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Troc, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
          yes:'Me connecter ici', no:'OK'}, function(){ showAuth('login'); });
   }
-  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit) history.replaceState(null, '', location.pathname + location.hash);
+  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit || pendingVue) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
   function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
@@ -3605,9 +3607,27 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     slamPill.innerHTML = x ? '<em><b>' + esc(x.name) + '</b> plane au-dessus de la foule · ' + x.count + '/' + x.goal + '</em><span>Porter</span>' : '<em>Slam atterri : <b>récompense</b> à prendre</em><span>Voir</span>';
     slamPill.onclick = x ? function(){ slamCarry(x, slamPill); } : function(){ cornerTab('fosse'); go('corner'); };
   }
+  // écran demandé par un message de l'admin : classeur, ou une rubrique de Metal Corner ; sinon l'accueil
+  function openVue(v){
+    if(v === 'classeur'){ go('binder'); return; }
+    if(['potes', 'fosse', 'epreuves', 'rang'].indexOf(v) >= 0){ cornerTab(v); go('corner'); window.scrollTo(0, 0); return; }
+    go('packs');
+  }
+  // messages de l'admin pour qui n'a pas eu la notification : montrés à l'ouverture
+  function checkMessages(){
+    if(!ONLINE) return;
+    Promise.resolve().then(function(){ return ONLINE.messages(); }).then(function(list){
+      // le plus récent en fenêtre (avec l'écran qu'il propose), les précédents en bandeaux
+      var m = list[list.length - 1]; if(!m) return;
+      list.slice(0, -1).forEach(function(x, i){ setTimeout(function(){ toast('<b>' + esc(x.title) + '</b> ' + esc(x.body)); }, 1500 + i * 4500); });
+      var vu = m.url && (/[?&]vue=([a-z]+)/.exec(m.url) || [])[1];
+      askConfirm({eyebrow:'Message du Grand Architecte', title:m.title, text:m.body, yes:vu ? 'Voir' : 'Compris', no:'Plus tard'}, function(){ if(vu) openVue(vu); });
+    }).catch(function(){});
+  }
   // lien de slam ou de pote (au démarrage, ou notification touchée alors que l'app était ouverte)
   function openLink(q){
     var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1], pt = (/[?&]pit=([0-9a-f-]{36})/.exec(q) || [])[1];
+    var vu = (/[?&]vue=([a-z]+)/.exec(q) || [])[1]; if(vu && !sl && !pc && !pt){ openVue(vu); return; }
     if(pt){ cornerTab('fosse'); go('corner'); pitEnter(pt); if(pc) ONLINE.addFriend(pc).catch(function(){}); return; }
     if(!sl && !pc) return;
     cornerTab(sl ? 'fosse' : 'potes'); go('corner');
@@ -4724,7 +4744,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     go('packs'); openChosen();
   });
   document.getElementById('wl-later').addEventListener('click', function(){ var g = closeWl(); if(g && g.cards) toast('Ton cadeau t\'attend dans le classeur, à ranger.'); });
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ checkGifts(); checkRequests(); checkPurchases(); } });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ checkGifts(); checkRequests(); checkPurchases(); checkMessages(); } });
   function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
   var dealing = false, dealLog = null, wantWelcome = false;
