@@ -223,7 +223,7 @@
   .road-bonus{display:flex; align-items:center; gap:12px; margin:0 0 22px; padding:10px 12px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000}
   .road-bonus .st-node{width:44px; height:44px} .road-bonus.on .st-node{border:2px solid var(--gold); color:var(--gold-hi)}
   .road-bonus .st-t b{font-size:1.15rem} .road-bonus.on .st-t b{color:var(--text)}
-  .fs-how{margin:-4px 0 12px; font:500 .84rem/1.45 var(--mono); color:var(--muted)} .fs-how summary{display:inline-flex; align-items:center; min-height:36px; cursor:pointer; color:var(--gold-hi); font-weight:600}
+  .fs-how{margin:-4px 0 12px; font:500 .84rem/1.45 var(--mono); color:var(--muted)} .fs-how summary{display:inline-flex; align-items:center; min-height:36px; cursor:pointer; color:var(--muted); font-weight:600; text-decoration:underline; text-underline-offset:3px}   /* discret, mais souligné : ça s'ouvre */
   .fs-how p{margin:4px 0 8px} .fs-how b{color:var(--text)}
   .fs-add{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:4px 0 6px}
   .pit{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(120% 70% at 50% 30%, #2a1a10 0%, #0c0a09 70%)}
@@ -331,12 +331,21 @@
   .troc-swap{width:56px; height:56px; display:grid; place-items:center; border-radius:50%; border:1px solid var(--gold); color:var(--gold-hi); background:var(--ink)}
   .troc-note{margin:0; color:var(--muted); font-size:.88rem}
   /* potes, propositions, historique */
-  .friend, .invite, .hist{display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:12px; width:100%; min-height:60px; padding:8px 10px; margin:0 0 8px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); text-align:left}
+  .car-h{display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x proximity; scroll-padding-inline:16px; margin:0 -16px 6px; padding:4px 16px 10px; scrollbar-width:none; -webkit-overflow-scrolling:touch} .car-h::-webkit-scrollbar{display:none}
+  .pote-b{flex:none; width:84px; display:flex; flex-direction:column; align-items:center; gap:4px; scroll-snap-align:start; text-align:center}
+  .pote-go{display:flex; flex-direction:column; align-items:center; gap:5px; width:100%; min-height:44px; border:0; padding:0; background:none; cursor:pointer}
+  .pote-go b{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .78rem var(--mono)}
+  .pit-av.big{width:60px; height:60px; font-size:1.4rem}
+  .pote-b small{font:500 .68rem var(--mono); color:var(--muted)} .pote-b small.ok{color:#7fd18b}
+  .pote-b .ask{min-height:32px; padding:0 10px; border:1px solid var(--accent-text); border-radius:999px; background:none; color:var(--accent-text); font:700 .7rem var(--mono); cursor:pointer}
+  .hist-c{flex:none; width:156px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:12px 8px 10px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); scroll-snap-align:start; cursor:pointer}
+  .hist-c b{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .82rem var(--mono)} .hist-c small{font:500 .7rem var(--mono); color:var(--muted)}
+  .friend, .invite{display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:12px; width:100%; min-height:60px; padding:8px 10px; margin:0 0 8px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); text-align:left}
   .invite{border-color:var(--gold); background:rgba(235,154,38,.08)}
   .f-av{width:44px; height:44px; border-radius:50%; background:var(--surface-2) center/cover; border:1px solid var(--gold); display:grid; place-items:center; font:800 1.1rem var(--display); color:var(--gold-hi)}
-  .friend b, .invite b, .hist b{display:block; font:600 .9rem/1.25 var(--mono)} .friend small, .invite small, .hist small{display:block; color:var(--muted); font:500 .74rem var(--mono)}
+  .friend b, .invite b{display:block; font:600 .9rem/1.25 var(--mono)} .friend small, .invite small{display:block; color:var(--muted); font:500 .74rem var(--mono)}
   .f-acts{display:flex; gap:6px} .f-acts button{min-height:40px; padding:0 12px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--gold-hi); font:600 .76rem var(--mono); cursor:pointer} .f-acts button.ask{border-color:var(--gold); background:var(--gold); color:var(--ink)} .f-acts button:disabled{color:var(--muted); cursor:default}
-  .hist{grid-template-columns:1fr auto} .h-cards{display:flex; gap:3px; margin-top:6px} .h-cards img{width:26px; aspect-ratio:2/3; object-fit:cover; border-radius:3px} .h-cards i{align-self:center; margin:0 4px; color:var(--muted); font-style:normal}
+  .h-cards{display:flex; gap:3px; margin-top:6px} .h-cards img{width:26px; aspect-ratio:2/3; object-fit:cover; border-radius:3px} .h-cards i{align-self:center; margin:0 4px; color:var(--muted); font-style:normal}
   .pub-miss{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px} .pub-miss img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
   #mastery-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} #mastery-sheet .pf-note{color:var(--muted)} #mastery-sheet .eyebrow{margin:14px 0 8px}
   .ms-crowned{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
@@ -543,7 +552,7 @@
   .df svg{flex:none; opacity:.7} span.df{cursor:default}
   .df.done{border-color:rgba(235,154,38,.45); color:var(--gold-hi)} .df.off{color:var(--muted)}
   .df.go{background:var(--gold); border-color:var(--gold); color:var(--ink)}
-  .df.add{border-style:dashed; color:var(--gold-hi)}
+  .df.add{border-style:dashed; color:var(--gold-hi)} #pote-open{justify-content:center; width:44px; padding:0; font:700 1.5rem/1 var(--display)}   /* une bulle : le QR, lui, est en grand juste au-dessus */
   .df.claim{background:var(--accent); border-color:var(--accent); color:var(--text)}
   .tl-df{display:flex; flex-wrap:wrap; gap:4px 10px; margin:4px 0 0} .tl-df span{font:600 .7rem var(--mono); color:var(--gold-hi)}
   #df-sheet .bsheet-in{max-height:86dvh; overflow-y:auto}
@@ -1208,7 +1217,7 @@
     <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon QR</b><small>Troc, pote ou bande</small></span></button>
       <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Scanner</b><small>Son QR ou son code</small></span></button></div>
   </section>
-  <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open">+ Pote</button></div><div id="friends"></div></section>
+  <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open" aria-label="Ajouter un pote">+</button></div><div id="friends"></div></section>
   <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
   <section class="corner-sec" id="history-sec" data-ct="potes" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
   <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Plonge dans la foule une fois par jour et garde tes talons de concert.</p></section>
@@ -1431,6 +1440,7 @@
       <div class="dev-row"><div><b>App sur l'écran d'accueil</b><small id="inst-note"></small></div><button type="button" class="btn ghost dev-go" id="inst-go" hidden>Installer</button><a class="btn ghost dev-go" id="inst-safari" hidden>Ouvrir dans Safari</a></div>
       <label class="toggle">Notifications <input type="checkbox" id="s-push"></label>
       <p class="note" id="push-note"></p>
+      <label class="toggle" id="s-mail-row" hidden>Recevoir les nouvelles par e-mail <input type="checkbox" id="s-mail"></label>
     </div>
     <div class="field">
       <label class="toggle">Musique <input type="checkbox" id="s-music"></label>
@@ -1732,6 +1742,8 @@ const api = {
   async shop(){ const r = must(await sb.from('settings').select('value').eq('key', 'shop').maybeSingle()); return r ? r.value : {}; },
   async startPurchase(o, a, n){ return must(await sb.rpc('start_purchase', { p_offer: o, p_artist: a || null, p_note: n || null })); },
   async purchaseNews(){ return must(await sb.rpc('my_purchase_news')) || []; },
+  async mailOptout(){ const rows = must(await sb.from('profiles').select('mail_optout').eq('id', await myId())); return rows[0] ? rows[0].mail_optout : false; },
+  async setMailOptout(v){ return must(await sb.rpc('set_mail_optout', { p_off: v })); },
   async messages(){ return must(await sb.rpc('my_messages')) || []; },
   async requestNews(){ return must(await sb.rpc('my_request_news')) || []; },
   async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
@@ -1837,18 +1849,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
-    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy']},
+    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates']},
     {k:'hardcore', kind:'Styles', label:'Death metal & deathcore', ids:['ramos','corpsegrinder','white-gluz']},
     {k:'prog',      kind:'Styles', label:'Metal progressif', ids:['keenan','duplantier','joe-duplantier','jinjer']},
     {k:'numetal', kind:'Styles', label:'Nu metal', ids:['korn','root','jordison','corey','bennington','shinoda']},
     {k:'alternatif', kind:'Styles', label:'Metal alternatif', ids:['zack','morello','tankian','malakian','poppy','amy-lee','reuno','chino']},
-    {k:'poppunk', kind:'Styles', label:'Pop punk & emo', ids:['blink182','hoppus','hayley','armstrong','gerard-way']},
+    {k:'poppunk', kind:'Styles', label:'Pop punk & emo', ids:['blink182','hoppus','hayley','armstrong','gerard-way','kowalewicz']},
     {k:'hardrock', kind:'Styles', label:'Hard rock', ids:['slash','angus','page','plant','bonham','lzzy-hale']},
     {k:'legendes', kind:'Styles', label:'Légendes du rock', ids:['hendrix','mercury','prince','may','frusciante','flea','nito']},
     {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro','harris','iommi','broden']},
     {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett','lars','burton','lombardo','blythe']},
     {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','peter-hayes']},
-    {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee','reuno','sam-carter','nito','brendan-murphy','chino','lzzy-hale','peter-hayes','broden','mccall','blythe','heafy']},
+    {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee','reuno','sam-carter','nito','brendan-murphy','chino','lzzy-hale','peter-hayes','broden','mccall','blythe','heafy','kowalewicz','yates']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison','lars','lombardo','bonham']},
     {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince','morello','iommi','may','page','malakian','lzzy-hale','peter-hayes','heafy']},
     {k:'bassistes', kind:'Instruments', label:'Les bassistes', ids:['hoppus','lemmy','araya','burton','harris','flea']},
@@ -1944,7 +1956,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['broden','Joakim Brodén','Sabaton','Primo Victoria','LXXIII','Chant','Power metal'],
     ['mccall','Winston McCall','Parkway Drive','Wild Eyes','LXXIV','Chant','Metalcore'],
     ['blythe','Randy Blythe','Lamb of God','Redneck','LXXV','Chant','Groove metal'],
-    ['heafy','Matt Heafy','Trivium','In Waves','LXXVI','Chant, guitare','Metalcore']
+    ['heafy','Matt Heafy','Trivium','In Waves','LXXVI','Chant, guitare','Metalcore'],
+    ['kowalewicz','Ben Kowalewicz','Billy Talent','Red Flag','LXXVII','Chant','Punk rock'],
+    ['yates','Brendan Yates','Turnstile','Mystery','LXXVIII','Chant','Hardcore']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -2024,6 +2038,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'mccall':['Vague de fond', 'Parkway Drive vient de Byron Bay, ville de surfeurs : chaque breakdown déferle comme une vague.'],
     'blythe':['Objectif ouvert', 'Hurleur sur scène, photographe en coulisses : il shoote ses tournées entre deux riffs.'],
     'heafy':['Déferlante', 'Sur In Waves, il fait sauter des salles entières au même rythme, d\'un seul cri.'],
+    'kowalewicz':['Drapeau rouge', 'Sur Red Flag, il hurle le refrain et toute la salle lève le poing avec lui.'],
+    'yates':['Fête de fosse', 'Il saute partout : un concert de Turnstile ressemble à une fête de hardcore où toute la salle danse.'],
     'sam-carter':['Pas dans ma fosse', 'En plein concert, il arrête le morceau pour dénoncer une agression sexuelle qu\'il vient de voir dans le public.'],
     nito:['Adiós Sui Generis', 'En 1975, le concert d\'adieu du groupe au Luna Park de Buenos Aires devient un film et un album mythiques.'],
     reuno:['Le verbe en première ligne', 'Ses textes en français, engagés et ironiques, tapent sur la société depuis 1989 ; No facho annonce la couleur dès le premier album.']
@@ -2100,6 +2116,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'mccall':'Chanteur de Parkway Drive, groupe de metalcore formé en 2003 à Byron Bay, en Australie.',
     'blythe':'Chanteur de Lamb of God, groupe de groove metal formé à Richmond, en Virginie, en 1994.',
     'heafy':'Chanteur et guitariste de Trivium, groupe de metalcore et de heavy metal d\'Orlando, en Floride.',
+    'kowalewicz':'Chanteur de Billy Talent, groupe de punk rock de Mississauga, en Ontario.',
+    'yates':'Chanteur de Turnstile, groupe de hardcore formé à Baltimore en 2010.',
     'sam-carter':'Chanteur d\'Architects, groupe de metalcore de Brighton qu\'il rejoint en 2007.',
     nito:'Chanteur, flûtiste et guitariste de Sui Generis, duo pionnier du rock argentin.',
     reuno:'Chanteur et fondateur de Lofofora, groupe pionnier du metal fusion français formé à Paris en 1989.'
@@ -2176,12 +2194,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'mccall':'Il chante dans Parkway Drive depuis sa formation en 2003 à Byron Bay, sur la côte est australienne. Atlas (2012), avec Wild Eyes, et ses refrains repris en chœur par le public font du groupe un pilier du metalcore ; Reverence (2018) et Darker Still (2022) le poussent vers le heavy metal.',
     'blythe':'Il chante dans Lamb of God, formé en 1994 à Richmond sous le nom de Burn the Priest. Redneck (2006), sur l\'album Sacrament, devient leur titre le plus connu. Photographe, il a aussi écrit Dark Days (2015), le récit de son procès à Prague, où il a été acquitté en 2013.',
     'heafy':'Né au Japon et élevé en Floride, il rejoint Trivium adolescent, à la fin des années 1990. Ascendancy (2005) les révèle ; In Waves (2011) devient leur hymne de scène. Il mène aussi Ibaraki, projet de black metal, et joue en direct sur Twitch.',
+    'kowalewicz':'Il fonde le groupe au lycée à Mississauga, près de Toronto, sous le nom de Pezz, rebaptisé Billy Talent en 1999. Sa voix aiguë et nerveuse porte Billy Talent II (2006), avec Red Flag et Fallen Leaves, numéro un au Canada. Le groupe remplit les salles du Canada et d\'Europe, où il est particulièrement populaire en Allemagne.',
+    'yates':'Il fonde Turnstile à Baltimore en 2010. Le groupe ouvre le hardcore au groove, à la pop et aux synthés sans lâcher la puissance : Glow On (2021), avec Mystery, le fait connaître bien au-delà de la scène, puis Never Enough (2025) confirme. Sur scène, il ne tient pas en place.',
     'sam-carter':'Il rejoint en 2007 Architects, groupe de metalcore formé à Brighton, en Angleterre. Après la mort du guitariste et principal compositeur Tom Searle en 2016, le groupe sort Doomsday (2017), puis l\'album Holy Hell (2018) ; For Those That Wish to Exist (2021) se classe numéro un des ventes au Royaume-Uni. Il alterne cris et chant clair sur des textes qui parlent de deuil et d\'écologie.',
     nito:'Il fonde Sui Generis à Buenos Aires avec Charly García ; sa voix douce et sa flûte portent Vida (1972), avec Canción para mi muerte, puis Confesiones de invierno (1973). En 1975, le concert d\'adieu au Luna Park devient un monument du rock argentin ; il forme ensuite Nito Mestre y los Desconocidos de Siempre.',
     reuno:'Il fonde Lofofora à Paris en 1989, l\'un des pionniers du metal fusion en France ; le groupe doit son nom à un cactus, le lophophora. Il chante en français des textes engagés et souvent ironiques, contre le racisme et l\'extrême droite, comme No facho sur le premier album (1995). Dur comme fer (1999), avec Les gens, reste un classique de la scène française ; il chante aussi dans le groupe de stoner Mudweiser.'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
-  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478, 'reuno':1479579101, 'sam-carter':1485076238, 'nito':321615277, 'brendan-murphy':1778051238, 'chino':1099848811, 'lzzy-hale':513677117, 'peter-hayes':1660742424, 'broden':1463539660, 'mccall':1485057043, 'blythe':400111421, 'heafy':446292215};
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478, 'reuno':1479579101, 'sam-carter':1485076238, 'nito':321615277, 'brendan-murphy':1778051238, 'chino':1099848811, 'lzzy-hale':513677117, 'peter-hayes':1660742424, 'broden':1463539660, 'mccall':1485057043, 'blythe':400111421, 'heafy':446292215, 'kowalewicz':159312944, 'yates':1576430193};
   // aperçus qui s'ouvrent sur une intro calme : on démarre là où le morceau décolle (secondes dans l'aperçu de 30 s,
   // mesurées sur le volume, 2026-10-01 ; les 4 premières secondes sous 65 % du volume du morceau)
   var TRACK_START = {'knocked-loose':11, 'isaac-hale':10, lars:11, burton:13, frusciante:7, dickinson:2};
@@ -3610,6 +3630,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // écran demandé par un message de l'admin : classeur, ou une rubrique de Metal Corner ; sinon l'accueil
   function openVue(v){
     if(v === 'classeur'){ go('binder'); return; }
+    if(v === 'reglages'){ go('settings'); return; }
     if(['potes', 'fosse', 'epreuves', 'rang'].indexOf(v) >= 0){ cornerTab(v); go('corner'); window.scrollTo(0, 0); return; }
     go('packs');
   }
@@ -3675,24 +3696,23 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(v.from_name) + '<span><b>' + esc(v.from_name || 'Un pote') + '</b><small>te propose un échange</small></span><span class="f-acts"><button type="button" data-join="' + i + '">Rejoindre</button></span></div>'; }).join('');
     [].forEach.call(document.querySelectorAll('[data-join]'), function(b){ b.onclick = function(){ tradeJoin(invitesList[+b.getAttribute('data-join')].code); }; });
   }
+  // mes potes en carrousel : photo et pseudo, un toucher ouvre son profil (l'échange s'y propose) ;
+  // pendant mon slam, « Porte-moi » sous chaque bulle (puis « Demandé » ou « Te porte ✓ »)
   function paintFriends(){
     document.getElementById('friends-sec').hidden = !ONLINE;
     var box = document.getElementById('friends'), m = slamFlying();
     friendsSig = slamSig();
-    box.innerHTML = friendsList.length ? friendsList.map(function(f, i){
-      // pendant mon slam, « Porte-moi » remplace « Échanger » (l'échange reste possible depuis son profil)
-      var act = !m ? '<button type="button" data-ft="' + i + '">Échanger</button>'
-        : m.carrier_ids.indexOf(f.friend_id) !== -1 ? '<button type="button" disabled>Te porte ✓</button>'
-        : m.asked_ids.indexOf(f.friend_id) !== -1 ? '<button type="button" disabled>Demandé</button>'
+    box.innerHTML = friendsList.length ? '<div class="car-h">' + friendsList.map(function(f, i){
+      var act = !m ? '<small>' + (f.trades ? f.trades + ' troc' + (f.trades > 1 ? 's' : '') : 'pote') + '</small>'
+        : m.carrier_ids.indexOf(f.friend_id) !== -1 ? '<small class="ok">Te porte ✓</small>'
+        : m.asked_ids.indexOf(f.friend_id) !== -1 ? '<small>Demandé</small>'
         : '<button type="button" class="ask" data-fa="' + i + '">Porte-moi</button>';
-      return '<div class="friend">' + avatarHtml(f.username, null) + '<span><b>' + esc(f.username || 'Pote') + '</b><small>' + (f.trades ? f.trades + ' échange' + (f.trades > 1 ? 's' : '') : 'pas encore de troc') + (f.last_trade ? ' · dernier le ' + new Date(f.last_trade).toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) : '') + '</small></span>' +
-        '<span class="f-acts"><button type="button" data-fp="' + i + '">Profil</button>' + act + '</span></div>'; }).join('')
-      : '<p class="corner-lead">Pas encore de potes. Envoie ton code : ils formeront ta foule.</p>';
-    friendsList.forEach(function(f, i){ if(!f.avatar_path) return; ONLINE.mediaUrl('avatars', f.avatar_path).then(function(u){ var el = box.querySelectorAll('.f-av')[i]; if(el && u){ el.style.backgroundImage = 'url("' + u + '")'; el.textContent = ''; } }).catch(function(){}); });
+      return '<div class="pote-b"><button type="button" class="pote-go" data-fp="' + i + '" aria-label="Profil de ' + esc(f.username || 'Pote') + '">' + avDisc({name:f.username || 'Pote', avatar:f.avatar_path}, 'big') + '<b>' + esc(f.username || 'Pote') + '</b></button>' + act + '</div>'; }).join('') + '</div>'
+      : '<p class="corner-lead">Pas encore de potes. Montre ton QR ou envoie ton code : ils formeront ta foule.</p>';
+    hydrateAvatars(box);
     [].forEach.call(box.querySelectorAll('[data-fp]'), function(b){ b.onclick = function(){ openFriend(friendsList[+b.getAttribute('data-fp')]); }; });
-    [].forEach.call(box.querySelectorAll('[data-ft]'), function(b){ b.onclick = function(){ inviteFriend(friendsList[+b.getAttribute('data-ft')], b); }; });
     [].forEach.call(box.querySelectorAll('[data-fa]'), function(b){ b.onclick = function(){ var f = friendsList[+b.getAttribute('data-fa')]; b.disabled = true;
-      ONLINE.slamAsk(f.friend_id).then(function(){ m.asked_ids.push(f.friend_id); b.textContent = 'Demandé'; b.classList.remove('ask'); snd('select'); toast('<b>' + esc(f.username || 'Ton pote') + '</b> est prévenu. Il a intérêt à tendre les bras.'); },
+      ONLINE.slamAsk(f.friend_id).then(function(){ m.asked_ids.push(f.friend_id); b.outerHTML = '<small>Demandé</small>'; snd('select'); toast('<b>' + esc(f.username || 'Ton pote') + '</b> est prévenu. Il a intérêt à tendre les bras.'); },
         function(e){ b.disabled = false; toast(esc(e.message)); }); }; });
   }
   function inviteFriend(f, btn){
@@ -3701,12 +3721,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.tradeInvite(f.friend_id).then(function(t){ tradeShow(t); toast('Proposition envoyée à ' + esc(f.username || 'ton pote') + '. Il reçoit une notification.'); })
       .catch(function(e){ snd('nope'); toast(esc(e.message)); }).then(function(){ btn.disabled = false; });
   }
+  // mes trocs en carrousel : le pote (photo), la date, ce que j'ai donné ⇄ reçu ; un toucher ouvre son profil
   function paintHistory(rows){
     rows = (rows || []).filter(function(h){ return h.done_at; });
     document.getElementById('history-sec').hidden = !rows.length;
-    var mini = function(list){ return (list || []).filter(function(x){ return card(x.m); }).slice(0, 4).map(function(x){ return '<img src="' + img(x.m, x.r) + '" alt="' + esc(card(x.m).who) + '" loading="lazy">'; }).join(''); };
-    document.getElementById('history').innerHTML = rows.slice(0, 8).map(function(h){
-      return '<div class="hist"><span><b>' + esc(h.partner || 'Pote') + '</b><small>' + new Date(h.done_at).toLocaleDateString('fr-FR', {day:'numeric', month:'long'}) + '</small><span class="h-cards">' + (mini(h.gave) || '<i>rien</i>') + '<i>⇄</i>' + (mini(h.got) || '<i>rien</i>') + '</span></span></div>'; }).join('');
+    var mini = function(list){ return (list || []).filter(function(x){ return card(x.m); }).slice(0, 3).map(function(x){ return '<img src="' + img(x.m, x.r) + '" alt="' + esc(card(x.m).who) + '" loading="lazy">'; }).join(''); };
+    var friendOf = function(h){ return friendsList.filter(function(f){ return f.friend_id === h.partner_id; })[0] || {friend_id:h.partner_id, username:h.partner}; };
+    document.getElementById('history').innerHTML = '<div class="car-h">' + rows.slice(0, 12).map(function(h, i){ var f = friendOf(h);
+      return '<button type="button" class="hist-c" data-h="' + i + '">' + avDisc({name:h.partner || 'Pote', avatar:f.avatar_path}) + '<b>' + esc(h.partner || 'Pote') + '</b><small>' + new Date(h.done_at).toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) + '</small>' +
+        '<span class="h-cards">' + (mini(h.gave) || '<i>rien</i>') + '<i>⇄</i>' + (mini(h.got) || '<i>rien</i>') + '</span></button>'; }).join('') + '</div>';
+    hydrateAvatars(document.getElementById('history'));
+    [].forEach.call(document.querySelectorAll('#history [data-h]'), function(b){ b.onclick = function(){ openFriend(friendOf(rows[+b.getAttribute('data-h')])); }; });
   }
   // profil d'un pote : même veste à patchs que le mien, calculée sur son classeur, avec ce qui lui manque et que j'ai en double
   function profileWith(owned, toPlace, fn){ var o = state.owned, t = state.toPlace; state.owned = owned; state.toPlace = toPlace; try{ return fn(); } finally { state.owned = o; state.toPlace = t; } }
@@ -5378,6 +5403,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var vib = document.getElementById('s-sound'); vib.checked = state.sound !== false; vib.onchange = function(){ state.sound = vib.checked; save(); };
     var mu = document.getElementById('s-music'); mu.checked = state.music !== false; mu.onchange = function(){ state.music = mu.checked; save(); if(mu.checked) musicStart(); musicApply(); };
     var fx = document.getElementById('s-sfx'); fx.checked = state.sfx !== false; fx.onchange = function(){ state.sfx = fx.checked; save(); if(fx.checked){ sndInit(); snd('tap'); } };
+    // e-mails de nouvelles (messages de l'admin) : réglage du compte, lu sur le serveur
+    var mr = document.getElementById('s-mail-row'), mc = document.getElementById('s-mail'); mr.hidden = !ONLINE;
+    if(ONLINE) Promise.resolve().then(function(){ return ONLINE.mailOptout(); }).then(function(off){ mc.checked = !off; }).catch(function(){ mr.hidden = true; });
+    mc.onchange = function(){ var on = mc.checked; ONLINE.setMailOptout(!on).then(function(){ toast(on ? 'Les nouvelles arriveront aussi par e-mail.' : 'Plus d\'e-mail de nouvelles. Les notifications restent.'); }, function(e){ mc.checked = !on; toast(esc(e.message)); }); };
     var ap = document.getElementById('s-autoplay'); ap.checked = state.autoplay !== false; ap.onchange = function(){ state.autoplay = ap.checked; save(); if(!ap.checked) stopListen(); };
     var fz = document.getElementById('s-fuse'); fz.value = state.fuseBase || 3; fz.onchange = function(){ var v = Math.max(2, Math.min(10, parseInt(fz.value,10) || 3)); state.fuseBase = v; fz.value = v; save(); };
     var size = document.getElementById('s-size'); size.value = state.size;

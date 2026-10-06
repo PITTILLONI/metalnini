@@ -2,7 +2,7 @@
 
 Affichées dans la fiche carte (section « L'artiste »). La présentation courte reste pour la révélation. Corrige directement dans ce fichier ou dis-moi quoi changer.
 
-Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter, Nito Mestre et Brendan Murphy, puis (ajoutés le 2026-10-06) Chino Moreno, Lzzy Hale, Peter Hayes, Joakim Brodén, Winston McCall, Randy Blythe et Matt Heafy, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
+Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter, Nito Mestre et Brendan Murphy, puis (ajoutés le 2026-10-06) Chino Moreno, Lzzy Hale, Peter Hayes, Joakim Brodén, Winston McCall, Randy Blythe et Matt Heafy, Ben Kowalewicz et Brendan Yates, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
 
 **knocked-loose** — Chanteur de Knocked Loose, groupe de hardcore formé en 2013 dans le comté d'Oldham, au Kentucky. Son cri aigu et rageur est la signature du groupe. L'EP A Tear in the Fabric of Life (2021) puis l'album You Won't Go Before You're Supposed To (2024) en ont fait une tête d'affiche du hardcore actuel.
 
@@ -149,6 +149,10 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 **blythe** — Il chante dans Lamb of God, formé en 1994 à Richmond sous le nom de Burn the Priest. Redneck (2006), sur l'album Sacrament, devient leur titre le plus connu. Photographe, il a aussi écrit Dark Days (2015), le récit de son procès à Prague, où il a été acquitté en 2013.
 
 **heafy** — Né au Japon et élevé en Floride, il rejoint Trivium adolescent, à la fin des années 1990. Ascendancy (2005) les révèle ; In Waves (2011) devient leur hymne de scène. Il mène aussi Ibaraki, projet de black metal, et joue en direct sur Twitch.
+
+**kowalewicz** — Il fonde le groupe au lycée à Mississauga, près de Toronto, sous le nom de Pezz, rebaptisé Billy Talent en 1999. Sa voix aiguë et nerveuse porte Billy Talent II (2006), avec Red Flag et Fallen Leaves, numéro un au Canada. Le groupe remplit les salles du Canada et d'Europe, où il est particulièrement populaire en Allemagne.
+
+**yates** — Il fonde Turnstile à Baltimore en 2010. Le groupe ouvre le hardcore au groove, à la pop et aux synthés sans lâcher la puissance : Glow On (2021), avec Mystery, le fait connaître bien au-delà de la scène, puis Never Enough (2025) confirme. Sur scène, il ne tient pas en place.
 
 # Fiches des styles (page d'un classeur) — à relire
 

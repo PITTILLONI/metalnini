@@ -216,7 +216,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('demande d\'artiste : Annuler ferme la feuille', d4.getElementById('artist-sheet').hidden);
   key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
-  check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy'].includes(id)), got.join(','));
+  check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
   check('« Tout révéler » : partage et rangement proposés', !d4.getElementById('share').hidden && !d4.getElementById('to-binder').hidden);
 
@@ -550,9 +550,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.slamAsk = async f => { asked9 = f; };
   d9.getElementById('tab-corner').click(); await sleep(80);
   const ask9 = d9.querySelector('#friends [data-fa]');
-  check('slam : « Porte-moi » dans la liste des potes pendant le slam', !!ask9 && /Porte-moi/.test(ask9.textContent) && !d9.querySelector('#friends [data-ft]'));
+  check('slam : « Porte-moi » sous les bulles des potes pendant le slam', !!ask9 && /Porte-moi/.test(ask9.textContent) && !!d9.querySelector('#friends .car-h [data-fp]'));
   ask9.click(); await sleep(40);
-  check('slam : pote sollicité, bouton « Demandé »', asked9 === 'f1' && ask9.disabled && /Demandé/.test(ask9.textContent));
+  check('slam : pote sollicité, « Demandé » sous sa bulle', asked9 === 'f1' && !d9.querySelector('#friends [data-fa]') && /Demandé/.test(d9.getElementById('friends').textContent));
 
   // 21. Lien de slam ouvert sans être connecté (navigateur) : explication, code de pote à taper dans l'app
   const dom10 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/proto/?slam=0f8b8c2e-1d2a-4c5e-9f00-123456789abc&pote=qwe789', beforeParse(w){

@@ -73,7 +73,9 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('broden', 'Joakim Brodén', 'Sabaton', 'Primo Victoria', 'LXXIII', array['chant']::text[], 'Power metal'),
   ('mccall', 'Winston McCall', 'Parkway Drive', 'Wild Eyes', 'LXXIV', array['chant']::text[], 'Metalcore'),
   ('blythe', 'Randy Blythe', 'Lamb of God', 'Redneck', 'LXXV', array['chant']::text[], 'Groove metal'),
-  ('heafy', 'Matt Heafy', 'Trivium', 'In Waves', 'LXXVI', array['chant', 'guitare']::text[], 'Metalcore')
+  ('heafy', 'Matt Heafy', 'Trivium', 'In Waves', 'LXXVI', array['chant', 'guitare']::text[], 'Metalcore'),
+  ('kowalewicz', 'Ben Kowalewicz', 'Billy Talent', 'Red Flag', 'LXXVII', array['chant']::text[], 'Punk rock'),
+  ('yates', 'Brendan Yates', 'Turnstile', 'Mystery', 'LXXVIII', array['chant']::text[], 'Hardcore')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -436,7 +438,17 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('heafy', 'rare', 'cards/heafy-rare.jpg'),
   ('heafy', 'holo', 'cards/heafy-holo.jpg'),
   ('heafy', 'signature', 'cards/heafy-signature.jpg'),
-  ('heafy', 'legendaire', 'cards/heafy-legendaire.jpg')
+  ('heafy', 'legendaire', 'cards/heafy-legendaire.jpg'),
+  ('kowalewicz', 'commune', 'cards/kowalewicz-commune.jpg'),
+  ('kowalewicz', 'rare', 'cards/kowalewicz-rare.jpg'),
+  ('kowalewicz', 'holo', 'cards/kowalewicz-holo.jpg'),
+  ('kowalewicz', 'signature', 'cards/kowalewicz-signature.jpg'),
+  ('kowalewicz', 'legendaire', 'cards/kowalewicz-legendaire.jpg'),
+  ('yates', 'commune', 'cards/yates-commune.jpg'),
+  ('yates', 'rare', 'cards/yates-rare.jpg'),
+  ('yates', 'holo', 'cards/yates-holo.jpg'),
+  ('yates', 'signature', 'cards/yates-signature.jpg'),
+  ('yates', 'legendaire', 'cards/yates-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -545,6 +557,8 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'mccall'),
   ('all', 'blythe'),
   ('all', 'heafy'),
+  ('all', 'kowalewicz'),
+  ('all', 'yates'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -555,6 +569,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('metalcore', 'brendan-murphy'),
   ('metalcore', 'mccall'),
   ('metalcore', 'heafy'),
+  ('metalcore', 'yates'),
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
@@ -581,6 +596,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('poppunk', 'hayley'),
   ('poppunk', 'armstrong'),
   ('poppunk', 'gerard-way'),
+  ('poppunk', 'kowalewicz'),
   ('hardrock', 'slash'),
   ('hardrock', 'angus'),
   ('hardrock', 'page'),
@@ -668,6 +684,8 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'mccall'),
   ('voix', 'blythe'),
   ('voix', 'heafy'),
+  ('voix', 'kowalewicz'),
+  ('voix', 'yates'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -805,6 +823,8 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'mccall'),
   ('all', 'blythe'),
   ('all', 'heafy'),
+  ('all', 'kowalewicz'),
+  ('all', 'yates'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -815,6 +835,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('metalcore', 'brendan-murphy'),
   ('metalcore', 'mccall'),
   ('metalcore', 'heafy'),
+  ('metalcore', 'yates'),
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
@@ -841,6 +862,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('poppunk', 'hayley'),
   ('poppunk', 'armstrong'),
   ('poppunk', 'gerard-way'),
+  ('poppunk', 'kowalewicz'),
   ('hardrock', 'slash'),
   ('hardrock', 'angus'),
   ('hardrock', 'page'),
@@ -928,6 +950,8 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'mccall'),
   ('voix', 'blythe'),
   ('voix', 'heafy'),
+  ('voix', 'kowalewicz'),
+  ('voix', 'yates'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),

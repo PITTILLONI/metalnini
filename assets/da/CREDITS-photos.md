@@ -65,3 +65,5 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | mccall | [Nova2013_Parkway_Drive_Winston_McCall_0010.jpg](https://commons.wikimedia.org/wiki/File:Nova2013_Parkway_Drive_Winston_McCall_0010.jpg) | Sven-Sebastian Sajak (Sven0705) | CC BY-SA 3.0 |
 | blythe | [2015_RiP_Lamb_of_God_-_Randy_Blythe_by_2eight_-_DSC5337.jpg](https://commons.wikimedia.org/wiki/File:2015_RiP_Lamb_of_God_-_Randy_Blythe_by_2eight_-_DSC5337.jpg) | Stefan Brending (2eight) | CC BY-SA 3.0 |
 | heafy | [Hellfest2019Trivium_02_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Hellfest2019Trivium_02_%28cropped%29.jpg) | Selbymay | CC BY-SA 4.0 |
+| kowalewicz | [Benjamin_Kowalewicz.jpg](https://commons.wikimedia.org/wiki/File:Benjamin_Kowalewicz.jpg) | Ana Cansini | CC BY-SA 4.0 |
+| yates | [Turnstile_Full_Force_2019_06_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Turnstile_Full_Force_2019_06_%28cropped%29.jpg) | S. Bollmann | Attribution |

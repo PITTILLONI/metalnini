@@ -276,7 +276,7 @@ async function dash(el){
       <div class="card" style="margin:0"><p class="eyebrow">Cartes distribuées</p><h2 style="margin:0">${players.reduce((a, p) => a + Number(p.cards), 0)}</h2></div>
     </div>
     <div class="card"><h3>Prévenir les joueurs</h3>
-      <p class="muted" style="font-size:.85rem; margin:0 0 10px">Choisis la cible : ceux qui ont activé les notifications la reçoivent (dans la limite de leur budget du jour, sauf « hors budget »), les autres trouvent le message dans l'app à leur prochaine ouverture. Inscrit au journal.</p>
+      <p class="muted" style="font-size:.85rem; margin:0 0 10px">Choisis la cible : ceux qui ont activé les notifications la reçoivent (dans la limite de notifications par jour réglée plus bas, sauf si tu coches « Ignorer la limite »), les autres trouvent le message dans l'app à leur prochaine ouverture. « Aussi par e-mail » : en plus, aux adresses confirmées qui n'ont pas coupé les e-mails (Gmail, 500 par jour au plus). Inscrit au journal.</p>
       <div class="row">
         <div><label for="bc-who">Cible</label><select id="bc-who"><option value="all">Tous les joueurs</option><option value="inst">App installée</option><option value="noinst">App pas installée</option><option value="push">Notifications activées</option><option value="nopush">Notifications pas activées</option><option value="pick">Joueurs choisis</option></select></div>
         <div><label for="bc-plat">Appareil</label><select id="bc-plat"><option value="">Tous</option><option value="iphone">iPhone</option><option value="android">Android</option><option value="ordinateur">Ordinateur</option></select></div>
@@ -288,7 +288,7 @@ async function dash(el){
       <div class="row"><div><label for="bc-title">Titre (60 max)</label><input id="bc-title" maxlength="60"></div><div style="flex:2 1 260px"><label for="bc-body">Message (160 max)</label><input id="bc-body" maxlength="160"></div></div>
       <div class="row"><div><label for="bc-to">Ouvre</label><select id="bc-to"><option value="">L'accueil (paquets)</option><option value="classeur">Le classeur</option><option value="potes">Metal Corner · Potes</option><option value="fosse">Metal Corner · Fosse</option><option value="epreuves">Metal Corner · Épreuves</option><option value="rang">Metal Corner · Rang</option></select></div>
         <div><label for="bc-why">Motif (obligatoire)</label><input id="bc-why" placeholder="ex. arrivée de Prince"></div></div>
-      <div class="row"><label class="fit" style="display:flex; gap:6px; align-items:center"><input type="checkbox" id="bc-force" style="width:auto"> Hors budget du jour</label><p class="muted fit" id="bc-aud" style="margin:0"></p><div class="fit"><button id="bc-go">Envoyer</button></div></div>
+      <div class="row"><label class="fit" style="display:flex; gap:6px; align-items:center"><input type="checkbox" id="bc-force" style="width:auto"> Ignorer la limite de notifications par jour</label><label class="fit" style="display:flex; gap:6px; align-items:center"><input type="checkbox" id="bc-mail" style="width:auto"> Aussi par e-mail</label><p class="muted fit" id="bc-aud" style="margin:0"></p><div class="fit"><button id="bc-go">Envoyer</button></div></div>
       <p class="msg" id="bc-msg"></p></div>
     <div class="card"><h3>Raretés tirées ou réglées (30 j)</h3><p class="muted" style="font-size:.85rem">La barre dorée montre le taux observé, le trait blanc le taux réglé. Un écart important sur beaucoup de tirages signale un problème.</p>
     ${Object.entries(byPack).map(([pk, rows]) => `<h3 style="margin-top:16px; font-size:.95rem">${esc((catalog.packs.find(p => p.id === pk) || {}).label || pk)} <span class="muted" style="font:500 .7rem var(--mono)">· ${rows[0].openings} paquet(s)</span></h3>
@@ -476,9 +476,9 @@ async function bcAudience(){
   const r = await sb.rpc('admin_audience', { p_filter: bcFilter() });
   if(r.error){ $('bc-aud').textContent = r.error.message; return; }
   const a = r.data, inbox = a.players - a.push;
-  $('bc-aud').textContent = `${a.players} joueur${a.players > 1 ? 's' : ''} : ${a.push} par notification, ${inbox} dans l'app`;
+  $('bc-aud').textContent = `${a.players} joueur${a.players > 1 ? 's' : ''} : ${a.push} par notification, ${inbox} dans l'app` + ($('bc-mail').checked ? `, ${a.mail} par e-mail` : '');
 }
-document.addEventListener('change', e => { if(e.target.closest('#bc-who, #bc-plat, #bc-act, #bc-list')) bcAudience(); });
+document.addEventListener('change', e => { if(e.target.closest('#bc-who, #bc-plat, #bc-act, #bc-list, #bc-mail')) bcAudience(); });
 document.addEventListener('input', e => { if(e.target.id !== 'bc-find') return; const q = e.target.value.trim().toLowerCase();
   document.querySelectorAll('#bc-list .bc-p').forEach(l => { l.hidden = !!q && !l.dataset.n.includes(q); }); });
 document.addEventListener('click', async e => {
@@ -490,9 +490,9 @@ document.addEventListener('click', async e => {
   if(!confirm(`Envoyer « ${t} » à ${$('bc-aud').textContent} ?`)) return;
   e.target.disabled = true;
   const url = 'https://pittilloni.github.io/metalnini/proto/' + (to ? '?vue=' + to : '');
-  const r = await sb.rpc('admin_send_message', { p_title: t, p_body: b, p_url: url, p_filter: f, p_reason: why, p_force: $('bc-force').checked });
+  const r = await sb.rpc('admin_send_message', { p_title: t, p_body: b, p_url: url, p_filter: f, p_reason: why, p_force: $('bc-force').checked, p_mail: $('bc-mail').checked });
   e.target.disabled = false;
-  say($('bc-msg'), r.error ? r.error.message : `Envoyé : ${r.data.push} notification${r.data.push > 1 ? 's' : ''}, ${r.data.inbox} message${r.data.inbox > 1 ? 's' : ''} dans l'app (ceux sans notifications ou au bout de leur budget du jour).`, !r.error);
+  say($('bc-msg'), r.error ? r.error.message : `Envoyé : ${r.data.push} notification${r.data.push > 1 ? 's' : ''}, ${r.data.inbox} message${r.data.inbox > 1 ? 's' : ''} dans l'app (ceux sans notifications ou déjà à leur limite du jour)` + (r.data.mail ? `, ${r.data.mail} e-mail${r.data.mail > 1 ? 's' : ''} en route` : '') + '.', !r.error);
 });
 
 // ---------------------------------------------------------------- catalogue
