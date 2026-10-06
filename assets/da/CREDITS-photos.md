@@ -67,3 +67,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | heafy | [Hellfest2019Trivium_02_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Hellfest2019Trivium_02_%28cropped%29.jpg) | Selbymay | CC BY-SA 4.0 |
 | kowalewicz | [Benjamin_Kowalewicz.jpg](https://commons.wikimedia.org/wiki/File:Benjamin_Kowalewicz.jpg) | Ana Cansini | CC BY-SA 4.0 |
 | yates | [Turnstile_Full_Force_2019_06_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Turnstile_Full_Force_2019_06_%28cropped%29.jpg) | S. Bollmann | Attribution |
+| honeycutt | [Kublai_Khan_TX_September_28,_2025.jpg](https://commons.wikimedia.org/wiki/File:Kublai_Khan_TX_September_28%2C_2025.jpg) | Ian D'Andrea (recadrage sur le chanteur) | CC BY-SA 4.0 |

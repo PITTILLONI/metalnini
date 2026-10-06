@@ -251,7 +251,8 @@
   .pit-win{margin:4px 0 14px; padding:16px; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:var(--surface)}
   .pit-win b{display:block; font:900 1.6rem/1.1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pit-win span{display:block; margin-top:4px; font:500 .86rem/1.4 var(--mono)}
   .pp-list{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; max-height:50dvh; overflow-y:auto} .pp-list .eyebrow{flex-basis:100%; margin:8px 0 0}
-  #pit-pick .bsheet-in{max-height:88dvh; overflow-y:auto}
+  #pit-pick .bsheet-in{max-height:88dvh; overflow-y:auto} #pit-pick #pp-go{margin-bottom:8px}
+  .pp-list [aria-pressed="true"]{border-color:var(--gold); background:rgba(235,154,38,.16)} .pp-list [aria-pressed="true"]::before{content:attr(data-n); display:inline-grid; place-items:center; width:20px; height:20px; border-radius:50%; background:var(--gold); color:#1a0f05; font:800 .72rem/1 var(--display)}
   @keyframes pit-spin{to{transform:rotate(360deg)}}
   @keyframes pit-tap{50%{transform:translate(-50%, -50%) scale(.94)}}
   @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av, .pit-run.tap{animation:none} }
@@ -726,7 +727,10 @@
   .listen .lp span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .listen .lp svg{flex:none}
   .listen .lp::after{content:""; position:absolute; left:0; bottom:0; height:2px; width:calc(var(--pg, 0) * 100%); background:var(--gold)}
-  .listen a{min-height:32px; display:inline-flex; align-items:center; font:500 .74rem var(--mono); color:var(--muted); text-decoration:underline; text-underline-offset:3px}
+  .ls-list{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0 12px}
+  .ls-go{display:flex; align-items:center; justify-content:space-between; min-height:52px; padding:0 14px; border:1px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text); font:700 .95rem var(--mono); text-decoration:none} .ls-go span{color:var(--gold-hi)}
+  .ls-all{grid-column:1 / -1; display:flex; justify-content:center; align-items:center; min-height:44px; color:var(--muted); font:500 .82rem var(--mono)}
+  .lp-more{min-height:32px; border:0; padding:0; background:none; font:500 .74rem var(--mono); color:var(--muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer}
   .detail .listen{justify-content:flex-start; margin:0 0 18px}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
@@ -1448,6 +1452,8 @@
       <label class="toggle">Notifications <input type="checkbox" id="s-push"></label>
       <p class="note" id="push-note"></p>
       <label class="toggle" id="s-mail-row" hidden>Recevoir les nouvelles par e-mail <input type="checkbox" id="s-mail"></label>
+      <label class="toggle" id="s-std-row" hidden>Jouer comme un joueur standard <input type="checkbox" id="s-std"></label>
+      <p class="note" id="s-std-note" hidden>Équipe d'admin : paquets comptés, compte à rebours, écran « merch fermé » et boutique, comme les joueurs. Décoche pour retrouver les paquets illimités.</p>
     </div>
     <div class="field">
       <label class="toggle">Musique <input type="checkbox" id="s-music"></label>
@@ -1608,12 +1614,23 @@
   <button type="button" class="icon-btn trade-x" id="pit-x" aria-label="Quitter le circle pit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="pit-in" id="pit-in"></div>
 </div>
+<div class="bsheet" id="listen-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ls-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <p class="eyebrow">Écouter sur ta plateforme</p>
+    <h2 id="ls-t"></h2>
+    <p class="pf-note" id="ls-for"></p>
+    <div class="ls-list" id="ls-list"></div>
+    <button type="button" class="btn ghost block" id="ls-close">Fermer</button>
+  </div>
+</div>
 <div class="bsheet" id="pit-pick" hidden role="dialog" aria-modal="true" aria-labelledby="pp-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
     <h2 id="pp-t">Choisis le morceau</h2>
-    <p class="pf-note">2 minutes de circle pit sur l'extrait de ton choix. Tes potes sont prévenus dès que tu lances.</p>
+    <p class="pf-note">2 minutes de circle pit : choisis jusqu'à 4 morceaux, leurs extraits s'enchaînent. Tes potes sont prévenus dès que tu lances.</p>
     <div class="pp-list" id="pp-list"></div>
+    <button type="button" class="btn block" id="pp-go" disabled>Choisis au moins un morceau</button>
     <button type="button" class="btn ghost block" id="pp-cancel">Plus tard</button>
   </div>
 </div>
@@ -1751,6 +1768,8 @@ const api = {
   async purchaseNews(){ return must(await sb.rpc('my_purchase_news')) || []; },
   async mailOptout(){ const rows = must(await sb.from('profiles').select('mail_optout').eq('id', await myId())); return rows[0] ? rows[0].mail_optout : false; },
   async setMailOptout(v){ return must(await sb.rpc('set_mail_optout', { p_off: v })); },
+  async adminMode(){ return must(await sb.rpc('my_admin_mode')); },
+  async setUnlimited(on){ return must(await sb.rpc('set_my_unlimited', { p_on: on })); },
   async messages(){ return must(await sb.rpc('my_messages')) || []; },
   async requestNews(){ return must(await sb.rpc('my_request_news')) || []; },
   async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
@@ -1802,7 +1821,8 @@ const api = {
   async slamPoints(id){ return must(await sb.rpc('slam_points', { p_user: id || null })) || 0; },
   async fosseAddFriend(id){ return must(await sb.rpc('fosse_add_friend', { p_friend: id })); },
   async pitFeed(){ return must(await sb.rpc('pit_feed')); },
-  async pitOpen(t){ return must(await sb.rpc('pit_open', { p_track: t })); },
+  async pitOpen(t){ return must(await sb.rpc('pit_open_tracks', { p_tracks: t })); },
+  async pitCancel(id){ return must(await sb.rpc('pit_cancel', { p_pit: id })); },
   async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
   async pitRun(id, n){ return must(await sb.rpc('pit_run', { p_pit: id, p_taps: n })); },
   async pitClaim(id){ return must(await sb.rpc('pit_claim', { p_pit: id })); },
@@ -1856,7 +1876,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
-    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates']},
+    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates','honeycutt']},
     {k:'hardcore', kind:'Styles', label:'Death metal & deathcore', ids:['ramos','corpsegrinder','white-gluz']},
     {k:'prog',      kind:'Styles', label:'Metal progressif', ids:['keenan','duplantier','joe-duplantier','jinjer']},
     {k:'numetal', kind:'Styles', label:'Nu metal', ids:['korn','root','jordison','corey','bennington','shinoda']},
@@ -1867,7 +1887,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro','harris','iommi','broden']},
     {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett','lars','burton','lombardo','blythe']},
     {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','peter-hayes']},
-    {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee','reuno','sam-carter','nito','brendan-murphy','chino','lzzy-hale','peter-hayes','broden','mccall','blythe','heafy','kowalewicz','yates']},
+    {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee','reuno','sam-carter','nito','brendan-murphy','chino','lzzy-hale','peter-hayes','broden','mccall','blythe','heafy','kowalewicz','yates','honeycutt']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison','lars','lombardo','bonham']},
     {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince','morello','iommi','may','page','malakian','lzzy-hale','peter-hayes','heafy']},
     {k:'bassistes', kind:'Instruments', label:'Les bassistes', ids:['hoppus','lemmy','araya','burton','harris','flea']},
@@ -1965,7 +1985,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['blythe','Randy Blythe','Lamb of God','Redneck','LXXV','Chant','Groove metal'],
     ['heafy','Matt Heafy','Trivium','In Waves','LXXVI','Chant, guitare','Metalcore'],
     ['kowalewicz','Ben Kowalewicz','Billy Talent','Red Flag','LXXVII','Chant','Punk rock'],
-    ['yates','Brendan Yates','Turnstile','Mystery','LXXVIII','Chant','Hardcore']
+    ['yates','Brendan Yates','Turnstile','Mystery','LXXVIII','Chant','Hardcore'],
+    ['honeycutt','Matt Honeycutt','Kublai Khan TX','Boomslang','LXXIX','Chant','Beatdown hardcore']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -2047,6 +2068,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'heafy':['Déferlante', 'Sur In Waves, il fait sauter des salles entières au même rythme, d\'un seul cri.'],
     'kowalewicz':['Drapeau rouge', 'Sur Red Flag, il hurle le refrain et toute la salle lève le poing avec lui.'],
     'yates':['Fête de fosse', 'Il saute partout : un concert de Turnstile ressemble à une fête de hardcore où toute la salle danse.'],
+    'honeycutt':['Coup de massue', 'Sur Boomslang, le breakdown tombe si lourd que la fosse texane en tremble encore.'],
     'sam-carter':['Pas dans ma fosse', 'En plein concert, il arrête le morceau pour dénoncer une agression sexuelle qu\'il vient de voir dans le public.'],
     nito:['Adiós Sui Generis', 'En 1975, le concert d\'adieu du groupe au Luna Park de Buenos Aires devient un film et un album mythiques.'],
     reuno:['Le verbe en première ligne', 'Ses textes en français, engagés et ironiques, tapent sur la société depuis 1989 ; No facho annonce la couleur dès le premier album.']
@@ -2125,6 +2147,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'heafy':'Chanteur et guitariste de Trivium, groupe de metalcore et de heavy metal d\'Orlando, en Floride.',
     'kowalewicz':'Chanteur de Billy Talent, groupe de punk rock de Mississauga, en Ontario.',
     'yates':'Chanteur de Turnstile, groupe de hardcore formé à Baltimore en 2010.',
+    'honeycutt':'Chanteur de Kublai Khan TX, groupe de beatdown hardcore formé à Sherman, au Texas, en 2009.',
     'sam-carter':'Chanteur d\'Architects, groupe de metalcore de Brighton qu\'il rejoint en 2007.',
     nito:'Chanteur, flûtiste et guitariste de Sui Generis, duo pionnier du rock argentin.',
     reuno:'Chanteur et fondateur de Lofofora, groupe pionnier du metal fusion français formé à Paris en 1989.'
@@ -2203,12 +2226,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'heafy':'Né au Japon et élevé en Floride, il rejoint Trivium adolescent, à la fin des années 1990. Ascendancy (2005) les révèle ; In Waves (2011) devient leur hymne de scène. Il mène aussi Ibaraki, projet de black metal, et joue en direct sur Twitch.',
     'kowalewicz':'Il fonde le groupe au lycée à Mississauga, près de Toronto, sous le nom de Pezz, rebaptisé Billy Talent en 1999. Sa voix aiguë et nerveuse porte Billy Talent II (2006), avec Red Flag et Fallen Leaves, numéro un au Canada. Le groupe remplit les salles du Canada et d\'Europe, où il est particulièrement populaire en Allemagne.',
     'yates':'Il fonde Turnstile à Baltimore en 2010. Le groupe ouvre le hardcore au groove, à la pop et aux synthés sans lâcher la puissance : Glow On (2021), avec Mystery, le fait connaître bien au-delà de la scène, puis Never Enough (2025) confirme. Sur scène, il ne tient pas en place.',
+    'honeycutt':'Il chante dans Kublai Khan TX, formé à Sherman, au Texas, en 2009 : du hardcore et du metalcore taillés pour les breakdowns. Absolute (2019), avec Boomslang, puis Exhibition of Prowess (2024) en font l\'un des groupes les plus lourds de la scène. Ses textes parlent sans détour de la vie au Texas, de la famille et de la colère.',
     'sam-carter':'Il rejoint en 2007 Architects, groupe de metalcore formé à Brighton, en Angleterre. Après la mort du guitariste et principal compositeur Tom Searle en 2016, le groupe sort Doomsday (2017), puis l\'album Holy Hell (2018) ; For Those That Wish to Exist (2021) se classe numéro un des ventes au Royaume-Uni. Il alterne cris et chant clair sur des textes qui parlent de deuil et d\'écologie.',
     nito:'Il fonde Sui Generis à Buenos Aires avec Charly García ; sa voix douce et sa flûte portent Vida (1972), avec Canción para mi muerte, puis Confesiones de invierno (1973). En 1975, le concert d\'adieu au Luna Park devient un monument du rock argentin ; il forme ensuite Nito Mestre y los Desconocidos de Siempre.',
     reuno:'Il fonde Lofofora à Paris en 1989, l\'un des pionniers du metal fusion en France ; le groupe doit son nom à un cactus, le lophophora. Il chante en français des textes engagés et souvent ironiques, contre le racisme et l\'extrême droite, comme No facho sur le premier album (1995). Dur comme fer (1999), avec Les gens, reste un classique de la scène française ; il chante aussi dans le groupe de stoner Mudweiser.'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
-  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478, 'reuno':1479579101, 'sam-carter':1485076238, 'nito':321615277, 'brendan-murphy':1778051238, 'chino':1099848811, 'lzzy-hale':513677117, 'peter-hayes':1660742424, 'broden':1463539660, 'mccall':1485057043, 'blythe':400111421, 'heafy':446292215, 'kowalewicz':159312944, 'yates':1576430193};
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478, 'reuno':1479579101, 'sam-carter':1485076238, 'nito':321615277, 'brendan-murphy':1778051238, 'chino':1099848811, 'lzzy-hale':513677117, 'peter-hayes':1660742424, 'broden':1463539660, 'mccall':1485057043, 'blythe':400111421, 'heafy':446292215, 'kowalewicz':159312944, 'yates':1576430193, 'honeycutt':1477680923};
   // aperçus qui s'ouvrent sur une intro calme : on démarre là où le morceau décolle (secondes dans l'aperçu de 30 s,
   // mesurées sur le volume, 2026-10-01 ; les 4 premières secondes sous 65 % du volume du morceau)
   var TRACK_START = {'knocked-loose':11, 'isaac-hale':10, lars:11, burton:13, frusciante:7, dickinson:2};
@@ -2240,8 +2264,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     stopListen(); el.hidden = true; el.innerHTML = ''; el.setAttribute('data-id', id);
     track(id).then(function(t){
       if(!t || el.getAttribute('data-id') !== id) return;
-      // un seul lien : la page universelle de song.link (Spotify, Apple Music, Deezer, YouTube Music…)
-      el.innerHTML = '<button type="button" class="lp" aria-pressed="false">' + PLAY + '<span>Écouter · ' + esc(t.name) + '</span></button><a href="https://song.link/i/' + TRACKS[id] + '" target="_blank" rel="noopener">Écouter sur ta plateforme</a>';
+      el.innerHTML = '<button type="button" class="lp" aria-pressed="false">' + PLAY + '<span>Écouter · ' + esc(t.name) + '</span></button><button type="button" class="lp-more">Écouter sur ta plateforme</button>';
+      el.querySelector('.lp-more').onclick = function(){ openListenSheet(id, t); };
       el.hidden = false;
       var b = el.querySelector('.lp');
       function start(){
@@ -2257,6 +2281,20 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(auto === 'tap' || (auto && state.autoplay !== false)) start();
     });
   }
+  // « Écouter sur ta plateforme » : feuille du bas, un bouton par plateforme (le morceau y est cherché), et la page song.link
+  var listenSheet = document.getElementById('listen-sheet');
+  function openListenSheet(id, t){
+    var c = card(id), q = encodeURIComponent((c ? c.band + ' ' : '') + t.name);
+    var links = [['Spotify', 'https://open.spotify.com/search/' + q], ['Apple Music', t.link], ['Deezer', 'https://www.deezer.com/search/' + q],
+      ['YouTube Music', 'https://music.youtube.com/search?q=' + q], ['Amazon Music', 'https://music.amazon.fr/search/' + q], ['Tidal', 'https://listen.tidal.com/search?q=' + q]];
+    document.getElementById('ls-t').textContent = t.name;
+    document.getElementById('ls-for').textContent = c ? c.who + ' · ' + c.band : '';
+    document.getElementById('ls-list').innerHTML = links.map(function(l){ return '<a class="ls-go" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + l[0] + '<span aria-hidden="true">↗</span></a>'; }).join('') +
+      '<a class="ls-all" href="https://song.link/i/' + TRACKS[id] + '" target="_blank" rel="noopener">Toutes les plateformes</a>';
+    listenSheet.hidden = false;
+  }
+  document.getElementById('ls-close').onclick = function(){ listenSheet.hidden = true; };
+  listenSheet.addEventListener('click', function(e){ if(e.target === listenSheet || e.target.closest('.ls-go, .ls-all')) listenSheet.hidden = true; });
   function hideListen(el){ stopListen(); el.hidden = true; el.innerHTML = ''; el.removeAttribute('data-id'); }
   function img(id, r){ return 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
@@ -3497,7 +3535,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     Promise.resolve().then(function(){ return ONLINE.pitFeed(); }).then(function(d){ pitData = d; paintPits(); }).catch(function(){});
   }
   function pitLeft(iso){ var s = Math.max(0, Math.round((new Date(iso) - Date.now()) / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-  function trackName(id){ var c = card(id); return c ? c.title + ' · ' + c.who : 'Un morceau'; }
+  function trackName(id, more){ var c = card(id); return (c ? c.title + ' · ' + c.who : 'Un morceau') + (more > 0 ? ' + ' + more : ''); }
   // rubrique Fosse : pits en cours (à rejoindre), pits finis à récupérer, et lancer le mien
   function paintPits(){
     var d = pitData, sec = document.getElementById('pit-sec'); sec.hidden = !d; if(!d) return;
@@ -3506,7 +3544,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">' + (x.in ? 'Y retourner' : 'Courir') + '</button></span></div>'; }).join('') +
       d.done.map(function(x){
         return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>le pit est retombé · tes points t\'attendent</small></span><span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">Voir</button></span></div>'; }).join('');
-    var box = d.opened_today ? '' : '<div class="slam-box"><b>Lance un circle pit</b><small>' + Math.round(d.duration / 60) + ' minutes sur le morceau de ton choix. Tes potes sont prévenus, chacun rameute les siens. Plus le cercle est gros et rapide, plus tout le monde gagne.</small>' +
+    var box = d.opened_today ? (d.live.length ? '' : '<div class="slam-box"><b>Ton pit du jour est passé</b><small>Rejoins celui d\'un pote dès qu\'il en lance un (tu reçois une notification), ou relance le tien demain.</small></div>') : '<div class="slam-box"><b>Lance un circle pit</b><small>' + Math.round(d.duration / 60) + ' minutes sur le morceau de ton choix. Tes potes sont prévenus, chacun rameute les siens. Plus le cercle est gros et rapide, plus tout le monde gagne.</small>' +
       (friendsList.length ? '<button type="button" class="btn block" id="pit-go">Ouvrir le pit</button>' : '<small>Il te faut des potes pour courir : ajoute-les avec ton code.</small>') + '</div>';
     document.getElementById('pits').innerHTML = rows + box;
     hydrateAvatars(document.getElementById('pits'));
@@ -3518,12 +3556,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openPitPick(){
     var hymns = Object.keys(STYLE_INFO).map(function(k){ return styleTrack(k); }).filter(function(id, i, a){ return id && a.indexOf(id) === i && card(id); });
     var mine = CARDS.filter(function(c){ return TRACKS[c.id] && best(c.id) && hymns.indexOf(c.id) < 0; }).map(function(c){ return c.id; });
-    var chip = function(id){ var c = card(id); return '<button type="button" class="df" data-pp="' + id + '">' + esc(c.title) + ' <small>· ' + esc(c.who) + '</small></button>'; };
+    var chip = function(id){ var c = card(id); return '<button type="button" class="df" aria-pressed="false" data-pp="' + id + '">' + esc(c.title) + ' <small>· ' + esc(c.who) + '</small></button>'; };
     document.getElementById('pp-list').innerHTML = '<p class="eyebrow">Les hymnes</p>' + hymns.map(chip).join('') + (mine.length ? '<p class="eyebrow">Tes cartes</p>' + mine.map(chip).join('') : '');
-    [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ b.onclick = function(){
-      [].forEach.call(document.querySelectorAll('#pp-list button'), function(x){ x.disabled = true; });
-      ONLINE.pitOpen(b.getAttribute('data-pp')).then(function(st){ pitPick.hidden = true; snd('rumble'); pitShow(st); loadPits(); },
-        function(e){ [].forEach.call(document.querySelectorAll('#pp-list button'), function(x){ x.disabled = false; }); toast(esc(e.message)); }); }; });
+    var picked = [], go = document.getElementById('pp-go');
+    var paint = function(){ go.disabled = !picked.length; go.textContent = picked.length ? 'Lancer le pit · ' + picked.length + ' morceau' + (picked.length > 1 ? 'x' : '') : 'Choisis au moins un morceau';
+      [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ var i = picked.indexOf(b.getAttribute('data-pp')); b.setAttribute('aria-pressed', String(i >= 0)); b.setAttribute('data-n', i >= 0 ? i + 1 : ''); }); };
+    [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ b.onclick = function(){ var id = b.getAttribute('data-pp'), i = picked.indexOf(id);
+      if(i >= 0) picked.splice(i, 1); else if(picked.length < 4) picked.push(id); else { toast('4 morceaux au plus.'); return; } paint(); }; });
+    go.onclick = function(){ go.disabled = true;
+      ONLINE.pitOpen(picked).then(function(st){ pitPick.hidden = true; snd('rumble'); pitShow(st); loadPits(); }, function(e){ go.disabled = false; toast(esc(e.message)); }); };
+    paint();
     pitPick.hidden = false;
   }
   document.getElementById('pp-cancel').onclick = function(){ pitPick.hidden = true; };
@@ -3543,8 +3585,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // l'extrait du pit en boucle, musique du jeu coupée
   function pitMusic(st){
     if(st.over) return;
-    track(st.track).then(function(t){ if(!t || !pit || pit.id !== st.id || pitEl.hidden) return;
-      stopListen(); audio = startAt(new Audio(t.url), t); audio.loop = true; duck(0); audio.play().then(fadeIn).catch(function(){}); });
+    var list = (st.tracks || [st.track]).filter(function(id){ return TRACKS[id]; }), i = 0;
+    var play = function(){ if(!list.length) return; var id = list[i % list.length];
+      track(id).then(function(t){ if(!t || !pit || pit.id !== st.id || pitEl.hidden || pit.over) return;
+        stopListen(); audio = startAt(new Audio(t.url), t); audio.onended = function(){ i++; play(); }; duck(0); audio.play().then(fadeIn).catch(function(){}); }); };
+    play();   // les extraits s'enchaînent, puis reprennent au premier
   }
   function pitClose(){ clearInterval(pitTimer); clearInterval(pitSync); pitPush(); stopListen(); pitEl.hidden = true; pit = null; loadPits(); }
   document.getElementById('pit-x').onclick = pitClose;
@@ -3568,12 +3613,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var nextSize = sizes.filter(function(x){ return n < x[0]; })[0], nextSpeed = speeds.filter(function(x){ return (t.speed || 0) < x[0]; })[0];
     var gauges = '<div class="pit-gauges"><div><small>Coureurs</small><b class="num">' + n + '</b><span>' + esc(t.size_label || 'Pas encore un cercle') + (nextSize ? ' · ' + esc(nextSize[1]) + ' dès ' + nextSize[0] : '') + '</span></div>' +
       '<div><small>Allure</small><b>' + esc(t.speed_label) + '</b><span><span class="num">' + String(t.speed || 0).replace('.', ',') + '</span> tour/s' + (nextSpeed ? ' · ' + esc(nextSpeed[1]) + ' dès ' + String(nextSpeed[0]).replace('.', ',') : '') + '</span></div></div>';
-    var head = '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">♪ <b>' + esc(trackName(st.track)) + '</b></p></div>';
+    var head = '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">♪ <b>' + esc(trackName(st.track, (st.tracks || []).length - 1)) + '</b></p></div>';
     if(st.over){
       pitIn.innerHTML = head + '<div class="pit-ring"><div class="pit-orbit" style="--spin:40s">' + orbit + '</div></div>' +
-        fosseAdd(runners) + '<div class="pit-win"><b>' + esc(t.size_label ? t.size_label + ' · ' + t.speed_label : 'Pas assez de monde') + '</b><span>' + n + ' coureur' + (n > 1 ? 's' : '') + ', ' + String(t.speed || 0).replace('.', ',') + ' tour/s chacun · ' +
-          (t.points ? t.points + ' point' + (t.points > 1 ? 's' : '') + ' de rang pour chacun' + (st.host ? ', +1 pour toi qui l\'as lancé' : '') : 'il faut au moins 2 coureurs') + '.</span></div>' +
-        (st.in && !st.claimed ? '<button type="button" class="btn block" id="pit-claim">Récupérer</button>' : '<button type="button" class="btn block" id="pit-done">Fermer</button>');
+        fosseAdd(runners) + (st.cancelled ? '<div class="pit-win"><b>Pit annulé</b><span>' + (st.host ? 'Tu as arrêté le cercle. Tu peux en relancer un quand tu veux.' : esc(st.host_name) + ' a arrêté le cercle. Rien à gagner cette fois.') + '</span></div>' :
+        '<div class="pit-win"><b>' + esc(t.size_label ? t.size_label + ' · ' + t.speed_label : 'Pas assez de monde') + '</b><span>' + n + ' coureur' + (n > 1 ? 's' : '') + ', ' + String(t.speed || 0).replace('.', ',') + ' tour/s chacun · ' +
+          (t.points ? t.points + ' point' + (t.points > 1 ? 's' : '') + ' de rang pour chacun' + (st.host ? ', +1 pour toi qui l\'as lancé' : '') : 'il faut au moins 2 coureurs') + '.</span></div>') +
+        (st.in && !st.claimed && !st.cancelled ? '<button type="button" class="btn block" id="pit-claim">Récupérer</button>' : '<button type="button" class="btn block" id="pit-done">Fermer</button>');
       var cl = document.getElementById('pit-claim'); if(cl) cl.onclick = function(){ cl.disabled = true;
         ONLINE.pitClaim(st.id).then(function(r){ pit.claimed = true; loadSlam(); pitClose();
           if(r.loot) rewardArrived(r.loot, 'Circle pit · ' + (t.size_label || '')); else toast(r.points ? '+' + r.points + ' point' + (r.points > 1 ? 's' : '') + ' de rang. Le pit retombe.' : 'Pas de points cette fois : ramène du monde la prochaine.'); },
@@ -3584,13 +3630,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // en cours : on ne redessine que ce qui bouge (le bouton garde le doigt)
     if(!document.getElementById('pit-run')){
       pitIn.innerHTML = head + '<div class="pit-ring"><div class="pit-orbit" id="pit-orbit"></div><button type="button" class="pit-run relief" id="pit-run"><b>Courir</b><small class="num" id="pit-mine"></small></button></div>' +
-        '<div id="pit-gauges"></div><div id="pit-add"></div><div class="pit-acts"><button type="button" class="btn" id="pit-call">Rameuter</button><button type="button" class="btn ghost" id="pit-qr-b">Mon QR</button></div><div id="pit-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pit-qr" role="img" aria-label="QR code du circle pit"></div></div></div>';
+        '<div id="pit-gauges"></div><div id="pit-add"></div><div class="pit-acts"><button type="button" class="btn" id="pit-call">Rameuter</button><button type="button" class="btn ghost" id="pit-qr-b">Mon QR</button></div><div id="pit-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pit-qr" role="img" aria-label="QR code du circle pit"></div></div></div>' +
+        (st.host ? '<button type="button" class="band-leave" id="pit-stop">Annuler le pit</button>' : '');
       var run = document.getElementById('pit-run');
       run.addEventListener('pointerdown', function(e){ e.preventDefault(); if(!pit || pit.over) return; pitPending++; pitMine++; buzz(6);
         document.getElementById('pit-mine').textContent = pitMine + ' tour' + (pitMine > 1 ? 's' : ''); run.classList.remove('tap'); void run.offsetWidth; run.classList.add('tap'); });
       var link = function(){ return location.origin + location.pathname + '?pit=' + pit.id + (poteCode ? '&pote=' + poteCode : ''); };
       if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
       document.getElementById('pit-call').onclick = function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens courir !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
+      var stop = document.getElementById('pit-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le circle pit ? Personne ne gagne rien, et tu pourras en relancer un.')) return;
+        stop.disabled = true; ONLINE.pitCancel(pit.id).then(function(){ stopListen(); toast('Pit annulé. Le cercle se disperse.'); pitClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
       document.getElementById('pit-qr-b').onclick = function(){ var b = document.getElementById('pit-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pit-qr', link()); };
     }
     document.getElementById('pit-mine').textContent = pitMine + ' tour' + (pitMine > 1 ? 's' : '');
@@ -5475,6 +5524,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var mr = document.getElementById('s-mail-row'), mc = document.getElementById('s-mail'); mr.hidden = !ONLINE;
     if(ONLINE) Promise.resolve().then(function(){ return ONLINE.mailOptout(); }).then(function(off){ mc.checked = !off; }).catch(function(){ mr.hidden = true; });
     mc.onchange = function(){ var on = mc.checked; ONLINE.setMailOptout(!on).then(function(){ toast(on ? 'Les nouvelles arriveront aussi par e-mail.' : 'Plus d\'e-mail de nouvelles. Les notifications restent.'); }, function(e){ mc.checked = !on; toast(esc(e.message)); }); };
+    // équipe d'admin : jouer comme un joueur standard (paquets comptés) ou avec les paquets illimités
+    var sr = document.getElementById('s-std-row'), sc = document.getElementById('s-std'), sn = document.getElementById('s-std-note'); sr.hidden = sn.hidden = true;
+    if(ONLINE) Promise.resolve().then(function(){ return ONLINE.adminMode(); }).then(function(m){ if(!m || !m.admin) return; sr.hidden = sn.hidden = false; sc.checked = !m.unlimited; }).catch(function(){});
+    sc.onchange = function(){ var std = sc.checked; ONLINE.setUnlimited(!std).then(function(){ refreshDaily(); toast(std ? 'Mode joueur standard : tes paquets sont comptés comme ceux des joueurs.' : 'Paquets illimités rétablis.'); }, function(e){ sc.checked = !std; toast(esc(e.message)); }); };
     var ap = document.getElementById('s-autoplay'); ap.checked = state.autoplay !== false; ap.onchange = function(){ state.autoplay = ap.checked; save(); if(!ap.checked) stopListen(); };
     var fz = document.getElementById('s-fuse'); fz.value = state.fuseBase || 3; fz.onchange = function(){ var v = Math.max(2, Math.min(10, parseInt(fz.value,10) || 3)); state.fuseBase = v; fz.value = v; save(); };
     var size = document.getElementById('s-size'); size.value = state.size;

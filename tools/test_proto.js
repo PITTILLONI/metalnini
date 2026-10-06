@@ -216,7 +216,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('demande d\'artiste : Annuler ferme la feuille', d4.getElementById('artist-sheet').hidden);
   key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
-  check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates'].includes(id)), got.join(','));
+  check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates','honeycutt'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
   check('« Tout révéler » : partage et rangement proposés', !d4.getElementById('share').hidden && !d4.getElementById('to-binder').hidden);
 

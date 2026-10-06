@@ -75,7 +75,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('blythe', 'Randy Blythe', 'Lamb of God', 'Redneck', 'LXXV', array['chant']::text[], 'Groove metal'),
   ('heafy', 'Matt Heafy', 'Trivium', 'In Waves', 'LXXVI', array['chant', 'guitare']::text[], 'Metalcore'),
   ('kowalewicz', 'Ben Kowalewicz', 'Billy Talent', 'Red Flag', 'LXXVII', array['chant']::text[], 'Punk rock'),
-  ('yates', 'Brendan Yates', 'Turnstile', 'Mystery', 'LXXVIII', array['chant']::text[], 'Hardcore')
+  ('yates', 'Brendan Yates', 'Turnstile', 'Mystery', 'LXXVIII', array['chant']::text[], 'Hardcore'),
+  ('honeycutt', 'Matt Honeycutt', 'Kublai Khan TX', 'Boomslang', 'LXXIX', array['chant']::text[], 'Beatdown hardcore')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -448,7 +449,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('yates', 'rare', 'cards/yates-rare.jpg'),
   ('yates', 'holo', 'cards/yates-holo.jpg'),
   ('yates', 'signature', 'cards/yates-signature.jpg'),
-  ('yates', 'legendaire', 'cards/yates-legendaire.jpg')
+  ('yates', 'legendaire', 'cards/yates-legendaire.jpg'),
+  ('honeycutt', 'commune', 'cards/honeycutt-commune.jpg'),
+  ('honeycutt', 'rare', 'cards/honeycutt-rare.jpg'),
+  ('honeycutt', 'holo', 'cards/honeycutt-holo.jpg'),
+  ('honeycutt', 'signature', 'cards/honeycutt-signature.jpg'),
+  ('honeycutt', 'legendaire', 'cards/honeycutt-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -559,6 +565,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'heafy'),
   ('all', 'kowalewicz'),
   ('all', 'yates'),
+  ('all', 'honeycutt'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -570,6 +577,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('metalcore', 'mccall'),
   ('metalcore', 'heafy'),
   ('metalcore', 'yates'),
+  ('metalcore', 'honeycutt'),
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
@@ -686,6 +694,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'heafy'),
   ('voix', 'kowalewicz'),
   ('voix', 'yates'),
+  ('voix', 'honeycutt'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -825,6 +834,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'heafy'),
   ('all', 'kowalewicz'),
   ('all', 'yates'),
+  ('all', 'honeycutt'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -836,6 +846,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('metalcore', 'mccall'),
   ('metalcore', 'heafy'),
   ('metalcore', 'yates'),
+  ('metalcore', 'honeycutt'),
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
@@ -952,6 +963,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'heafy'),
   ('voix', 'kowalewicz'),
   ('voix', 'yates'),
+  ('voix', 'honeycutt'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
