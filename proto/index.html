@@ -724,7 +724,7 @@
   .listen .lp span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .listen .lp svg{flex:none}
   .listen .lp::after{content:""; position:absolute; left:0; bottom:0; height:2px; width:calc(var(--pg, 0) * 100%); background:var(--gold)}
-  .listen a{min-height:32px; display:inline-flex; align-items:center; font:500 .74rem var(--mono); color:var(--muted); text-decoration:underline; text-underline-offset:3px} .lp-links{display:flex; flex-wrap:wrap; gap:4px 14px}
+  .listen a{min-height:32px; display:inline-flex; align-items:center; font:500 .74rem var(--mono); color:var(--muted); text-decoration:underline; text-underline-offset:3px}
   .detail .listen{justify-content:flex-start; margin:0 0 18px}
   .card-info .n{font-family:var(--display); font-size:1.3rem; text-transform:uppercase; margin-top:2px}
   .tag{display:inline-block; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; padding:3px 7px; border-radius:3px; margin-left:6px; vertical-align:2px}
@@ -818,11 +818,12 @@
   .goal > .new-dot, .invite > .new-dot, .df > .new-dot, .band-inv p > .new-dot{position:absolute; top:-4px; right:-4px; z-index:3; width:12px; height:12px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px var(--bg), 0 0 10px #e11d2e}
   .goal > .new-dot{top:8px; right:8px}   /* la carte d'objectif rogne ce qui dépasse */
   .slot .new-dot{position:absolute; top:6px; left:6px; z-index:2; width:10px; height:10px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px rgba(0,0,0,.6), 0 0 10px #e11d2e}
+  .bcard.ask{border:1.5px dashed rgba(235,154,38,.6); background:linear-gradient(160deg, rgba(235,154,38,.12), rgba(178,58,58,.08))}
+  .bcard.ask .ask-in, .slot.ask .ask-in{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px; text-align:center}
   .slot.ask .img{border:1.5px dashed rgba(235,154,38,.6); background:linear-gradient(160deg, rgba(235,154,38,.12), rgba(178,58,58,.08))}
-  .slot.ask .ask-in{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px; text-align:center}
-  .slot.ask .ask-in b{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:var(--gold); color:#1a0f05; font:900 1.8rem/1 var(--display); box-shadow:0 3px 0 #8a5510}
-  .slot.ask .ask-in span{font:800 .95rem/1.05 var(--display); letter-spacing:.03em; text-transform:uppercase; color:var(--text)}
-  .slot.ask .ask-in small{font:600 .68rem/1.2 var(--mono); color:var(--gold-hi)}
+  .slot.ask .ask-in b, .bcard.ask .ask-in b{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:var(--gold); color:#1a0f05; font:900 1.8rem/1 var(--display); box-shadow:0 3px 0 #8a5510}
+  .slot.ask .ask-in span, .bcard.ask .ask-in span{font:800 .95rem/1.05 var(--display); letter-spacing:.03em; text-transform:uppercase; color:var(--text)}
+  .slot.ask .ask-in small, .bcard.ask .ask-in small{font:600 .68rem/1.2 var(--mono); color:var(--gold-hi)}
   .slot.ask .cap{color:var(--gold-hi)}
   .slot .cap{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
@@ -2237,8 +2238,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     stopListen(); el.hidden = true; el.innerHTML = ''; el.setAttribute('data-id', id);
     track(id).then(function(t){
       if(!t || el.getAttribute('data-id') !== id) return;
-      // Apple Music, et toutes les autres plateformes (Spotify, Deezer, YouTube Music…) par la page universelle de song.link
-      el.innerHTML = '<button type="button" class="lp" aria-pressed="false">' + PLAY + '<span>Écouter · ' + esc(t.name) + '</span></button><span class="lp-links"><a href="' + esc(t.link) + '" target="_blank" rel="noopener">Apple Music</a><a href="https://song.link/i/' + TRACKS[id] + '" target="_blank" rel="noopener">Spotify, Deezer et les autres</a></span>';
+      // un seul lien : la page universelle de song.link (Spotify, Apple Music, Deezer, YouTube Music…)
+      el.innerHTML = '<button type="button" class="lp" aria-pressed="false">' + PLAY + '<span>Écouter · ' + esc(t.name) + '</span></button><a href="https://song.link/i/' + TRACKS[id] + '" target="_blank" rel="noopener">Écouter sur ta plateforme</a>';
       el.hidden = false;
       var b = el.querySelector('.lp');
       function start(){
@@ -2558,12 +2559,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function resetCry(){ recBlob = null; saveBtn.hidden = true; playBtn.hidden = !crySrc(); recBtn.textContent = crySrc() ? '● Refaire mon cri' : '● Enregistrer'; level.style.width = '0'; }
   // micro refusé ou absent : la marche à suivre selon l'appareil
   function micHelp(e){
-    var n = e && e.name, ios = /iPhone|iPad|iPod/.test(navigator.userAgent), android = /Android/.test(navigator.userAgent);
+    var n = e && e.name, ios = /iPhone|iPad|iPod/.test(navigator.userAgent), android = /Android/.test(navigator.userAgent), mac = /Macintosh/.test(navigator.userAgent) && !('ontouchend' in document);
     if(n === 'NotFoundError') return 'Aucun micro trouvé sur cet appareil.';
     if(n === 'NotReadableError') return 'Le micro est déjà utilisé par une autre app (appel, mémo vocal). Ferme-la et réessaie.';
     if(ios && standalone()) return 'Micro refusé. Sur iPhone : Réglages, Safari, Micro, choisis « Demander » ou « Autoriser », puis rouvre Metalnini.';
     if(ios) return 'Micro refusé. Dans Safari : touche « aA » dans la barre d\'adresse, Réglages du site web, Micro, « Autoriser », puis réessaie.';
+    if(mac) return 'Micro refusé. Sur Mac, autorise d\'abord ton navigateur : Réglages Système, Confidentialité et sécurité, Micro (Safari, Arc ou Chrome). Puis autorise le site dans le navigateur et recharge la page.';
     if(android) return 'Micro refusé. Touche le cadenas à côté de l\'adresse (ou, app installée : appui long sur l\'icône, Infos), Autorisations, Micro, « Autoriser ».';
+    if(n !== 'NotAllowedError') return 'Le micro ne répond pas (' + esc(n || 'erreur inconnue') + '). Recharge l\'app et réessaie.';
     return 'Micro refusé. Touche le cadenas à côté de l\'adresse, puis autorise le micro pour ce site et réessaie.';
   }
   function stopRec(){ duckBack(); countTimers.forEach(clearTimeout); countTimers = []; counting = false; countEl.innerHTML = ''; clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
@@ -2579,7 +2582,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     catch(e){ pfErr.textContent = micHelp(e); return; }
     duck(0);   // la musique se tait pendant que tu cries
     var type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].filter(function(t){ return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t); })[0] || '';
-    var chunks = []; rec = new MediaRecorder(recStream, type ? { mimeType: type } : undefined);
+    var chunks = [];
+    try{ rec = new MediaRecorder(recStream, type ? { mimeType: type } : undefined); }
+    catch(e){ recStream.getTracks().forEach(function(x){ x.stop(); }); duckBack(); pfErr.textContent = 'Ce navigateur refuse d\'enregistrer (' + esc(e.name || 'MediaRecorder') + '). Essaie dans Safari ou Chrome.'; return; }
     rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = function(){
       recBlob = new Blob(chunks, { type: (rec.mimeType || type || 'audio/webm').split(';')[0] });
@@ -2598,7 +2603,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [3, 2, 1].forEach(function(n, i){ countTimers.push(setTimeout(function(){ showCount(n); buzz([25]); }, i * 900)); });
     countTimers.push(setTimeout(function(){
       counting = false; showCount('Hurle !', true); buzz([60]);
-      rec.start(); recBtn.classList.add('rec');
+      try{ rec.start(); }catch(e){ stopRec(); resetCry(); pfErr.textContent = 'L\'enregistrement n\'a pas démarré (' + esc(e.name || 'erreur') + '). Recharge l\'app et réessaie.'; return; }
+      recBtn.classList.add('rec');
       var left = 6; recBtn.textContent = '■ Stop · ' + left + ' s';
       (function tick(){ countTimers.push(setTimeout(function(){ if(!rec || rec.state !== 'recording') return; left--; recBtn.textContent = '■ Stop · ' + left + ' s'; if(left > 0) tick(); }, 1000)); })();
       recTimer = setTimeout(stopRec, 6000);
@@ -4900,7 +4906,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(kind === 'Styles') BINDERS.forEach(function(b){ var t = b.kind === 'Styles' && styleTrack(b.k); if(t) track(t); });
       var list = document.getElementById('binder-list'); list.classList.toggle('sub', kind !== 'Collection');
       // un classeur dont aucune carte n'est encore prête n'apparaît pas
-      list.innerHTML = BINDERS.filter(function(b){ return b.kind === kind && b.ids.some(function(id){ return card(id); }); }).map(function(b){
+      // styles et groupes : la demande d'artiste en première carte, comme dans « Toutes les cartes »
+      var askFirst = kind === 'Styles' || kind === 'Groupes';
+      document.getElementById('ask-artist').hidden = askFirst;
+      list.innerHTML = (askFirst ? '<button type="button" class="bcard ask" data-ask="1"><span class="ask-in"><b aria-hidden="true">+</b><span>' + (kind === 'Groupes' ? 'Il manque un groupe ?' : 'Il manque un artiste ?') + '</span><small>' + (tk ? 'Ticket prioritaire ×' + tk : 'Propose-le') + '</small></span></button>' : '') +
+        BINDERS.filter(function(b){ return b.kind === kind && b.ids.some(function(id){ return card(id); }); }).map(function(b){
         var ids = b.ids.filter(function(id){ return card(id); }), have = ids.filter(function(id){ return placed(id); });
         // la carte du classeur porte la meilleure carte rangée en illustration, sinon le dos Metalnini
         var cover = ids.map(function(id){ var r = placed(id); return r ? {id:id, r:r} : null; }).filter(Boolean).sort(function(x, y){ return rank(y.r) - rank(x.r); })[0];
@@ -4909,7 +4919,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           (binderDone(b) ? '<span class="done">Complet ✓</span>' : '') +
           '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + crans(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
       }).join('');
-      [].forEach.call(list.children, function(c){ c.onclick = function(){ styleTap = true; openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
+      [].forEach.call(list.querySelectorAll('[data-b]'), function(c){ c.onclick = function(){ styleTap = true; openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
+      if(askFirst) list.querySelector('[data-ask]').onclick = openAskArtist;
       return;
     }
     var back = document.getElementById('binder-back'); back.textContent = '← ' + kindLabel(kind); back.hidden = !!solo;
