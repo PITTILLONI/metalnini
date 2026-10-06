@@ -222,8 +222,10 @@
   .road-bonus{display:flex; align-items:center; gap:12px; margin:0 0 22px; padding:10px 12px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000}
   .road-bonus .st-node{width:44px; height:44px} .road-bonus.on .st-node{border:2px solid var(--gold); color:var(--gold-hi)}
   .road-bonus .st-t b{font-size:1.15rem} .road-bonus.on .st-t b{color:var(--text)}
-  .fs-how{margin:-4px 0 12px; font:500 .84rem/1.45 var(--mono); color:var(--muted)} .fs-how summary{display:inline-flex; align-items:center; min-height:36px; cursor:pointer; color:var(--muted); font-weight:600; text-decoration:underline; text-underline-offset:3px}   /* discret, mais souligné : ça s'ouvre */
-  .fs-how p{margin:4px 0 8px} .fs-how b{color:var(--text)}
+  .fs-how{margin:-2px 0 12px; padding:10px 12px; border-left:2px solid rgba(235,154,38,.45); font:500 .84rem/1.45 var(--mono); color:var(--muted)}
+  .fs-how p{margin:0 0 6px} .fs-how p:last-child{margin:0} .fs-how b{color:var(--text)}
+  .info-b{width:44px; height:44px; display:grid; place-items:center; border:0; background:none; color:var(--muted); font:italic 700 1.15rem/1 Georgia, serif; cursor:pointer}   /* « i » discret, comme les « + » */
+  .info-b[aria-expanded="true"]{color:var(--gold-hi)}
   .fs-add{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:4px 0 6px}
   .pit{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(120% 70% at 50% 30%, #2a1a10 0%, #0c0a09 70%)}
   .pit-in{max-width:520px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align:center}
@@ -1226,11 +1228,11 @@
   <section class="corner-sec" id="history-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Tes trocs</h2><button type="button" class="df add" id="trade-open" aria-label="Lancer un troc">+</button></div><div id="history"></div></section>
   <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Tes concerts, ton slam du jour et les circle pits de tes potes.</p></section>
   <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
-  <section class="corner-sec" id="pit-sec" data-ct="fosse" hidden><h2 class="g-sub">Circle pit</h2>
-    <details class="fs-how"><summary>C'est quoi ?</summary><p>Tu lances un cercle de 2 minutes sur le morceau de ton choix, et tes potes sont prévenus. Chacun tape « Courir » pour faire tourner le cercle, et rameute les siens pendant que ça tourne.</p><p><b>Plus le cercle est gros et rapide, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et à partir d'un vrai pit endiablé, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></details>
+  <section class="corner-sec" id="pit-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Circle pit</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pit-how" aria-label="C'est quoi, le circle pit ?">i</button></div>
+    <div class="fs-how" id="pit-how" hidden><p>Tu lances un cercle de 2 minutes sur le morceau de ton choix, et tes potes sont prévenus. Chacun tape « Courir » pour faire tourner le cercle, et rameute les siens pendant que ça tourne.</p><p><b>Plus le cercle est gros et rapide, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et à partir d'un vrai pit endiablé, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
     <div id="pits"></div></section>
-  <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><h2 class="g-sub">Slam</h2>
-    <details class="fs-how"><summary>C'est quoi ?</summary><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></details><div id="slam"></div></section>
+  <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Slam</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="slam-how" aria-label="C'est quoi, le slam ?">i</button></div>
+    <div class="fs-how" id="slam-how" hidden><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></div><div id="slam"></div></section>
   <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
   <section class="corner-sec" id="prog-sec" data-ct="rang"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
 </main>
@@ -2562,11 +2564,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var n = e && e.name, ios = /iPhone|iPad|iPod/.test(navigator.userAgent), android = /Android/.test(navigator.userAgent), mac = /Macintosh/.test(navigator.userAgent) && !('ontouchend' in document);
     if(n === 'NotFoundError') return 'Aucun micro trouvé sur cet appareil.';
     if(n === 'NotReadableError') return 'Le micro est déjà utilisé par une autre app (appel, mémo vocal). Ferme-la et réessaie.';
-    if(ios && standalone()) return 'Micro refusé. Sur iPhone : Réglages, Safari, Micro, choisis « Demander » ou « Autoriser », puis rouvre Metalnini.';
+    if(n !== 'NotAllowedError') return 'Le micro ne répond pas (' + esc(n || 'erreur inconnue') + '). Ferme complètement l\'app et rouvre-la, puis réessaie.';
+    if(ios && standalone()) return 'Micro refusé par l\'iPhone (NotAllowedError). Réglages de l\'iPhone, Safari, Micro : choisis « Demander » ou « Autoriser ». Puis ferme complètement Metalnini (balaie-la vers le haut) et rouvre-la.';
     if(ios) return 'Micro refusé. Dans Safari : touche « aA » dans la barre d\'adresse, Réglages du site web, Micro, « Autoriser », puis réessaie.';
     if(mac) return 'Micro refusé. Sur Mac, autorise d\'abord ton navigateur : Réglages Système, Confidentialité et sécurité, Micro (Safari, Arc ou Chrome). Puis autorise le site dans le navigateur et recharge la page.';
     if(android) return 'Micro refusé. Touche le cadenas à côté de l\'adresse (ou, app installée : appui long sur l\'icône, Infos), Autorisations, Micro, « Autoriser ».';
-    if(n !== 'NotAllowedError') return 'Le micro ne répond pas (' + esc(n || 'erreur inconnue') + '). Recharge l\'app et réessaie.';
     return 'Micro refusé. Touche le cadenas à côté de l\'adresse, puis autorise le micro pour ce site et réessaie.';
   }
   function stopRec(){ duckBack(); countTimers.forEach(clearTimeout); countTimers = []; counting = false; countEl.innerHTML = ''; clearTimeout(recTimer); cancelAnimationFrame(meterRaf); if(rec && rec.state === 'recording') rec.stop(); if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; } recBtn.classList.remove('rec'); }
@@ -2577,9 +2579,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!navigator.mediaDevices || !window.MediaRecorder){ pfErr.textContent = 'Ce navigateur ne sait pas enregistrer le son.'; return; }
     // première fois : on explique avant que le téléphone demande (sinon le refus est vite fait)
     if(!state.micAsked){ askConfirm({eyebrow:'Ton cri', title:'Autorise le micro', text:'Ton téléphone va te demander l\'accès au micro : touche « Autoriser ». Il ne sert qu\'à enregistrer ton cri, 6 secondes, quand tu le décides.', yes:'Autoriser le micro', no:'Plus tard'},
-      function(){ state.micAsked = true; save(); recBtn.click(); }); return; }
+      function(){ state.micAsked = true; save(); recordCry(); }); return; }
+    recordCry();
+  });
+  // le micro est demandé dans le geste même (toucher du bouton ou « Autoriser le micro ») : iOS l'exige dans l'app installée
+  async function recordCry(){
     try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
-    catch(e){ pfErr.textContent = micHelp(e); return; }
+    catch(e){
+      // réglages audio refusés par l'appareil : micro standard
+      if(e && e.name === 'NotAllowedError'){ pfErr.textContent = micHelp(e); return; }
+      try{ recStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }catch(e2){ pfErr.textContent = micHelp(e2); return; }
+    }
     duck(0);   // la musique se tait pendant que tu cries
     var type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].filter(function(t){ return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t); })[0] || '';
     var chunks = [];
@@ -2609,7 +2619,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (function tick(){ countTimers.push(setTimeout(function(){ if(!rec || rec.state !== 'recording') return; left--; recBtn.textContent = '■ Stop · ' + left + ' s'; if(left > 0) tick(); }, 1000)); })();
       recTimer = setTimeout(stopRec, 6000);
     }, 3 * 900));
-  });
+  }
   playBtn.addEventListener('click', function(){ var src = recBlob ? recUrl : crySrc(); if(!src) return; if(player) player.pause(); player = new Audio(src); cryPlay(player).catch(function(){ pfErr.textContent = 'Lecture impossible sur ce navigateur.'; }); });
   saveBtn.addEventListener('click', async function(){
     if(!recBlob) return; saveBtn.disabled = true; pfErr.textContent = '';
@@ -3449,6 +3459,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(avUrls[path]) put(avUrls[path]);
       else Promise.resolve().then(function(){ return ONLINE.mediaUrl('avatars', path); }).then(function(u){ avUrls[path] = u; put(u); }).catch(function(){}); });
   }
+  // « i » à droite d'un titre : ouvre ou ferme l'explication
+  document.addEventListener('click', function(e){ var b = e.target.closest('.info-b'); if(!b) return;
+    var box = document.getElementById(b.getAttribute('aria-controls')), on = box.hidden; box.hidden = !on; b.setAttribute('aria-expanded', String(on)); });
   // croisés dans la fosse (porteurs de mon slam, coureurs du même pit) qui ne sont pas encore mes potes : « + Pote » d'un toucher
   function fosseAdd(people){
     var mine = friendsList.map(function(f){ return f.friend_id; }), them = people.filter(function(p){ return p.id && !p.me && mine.indexOf(p.id) < 0; });
