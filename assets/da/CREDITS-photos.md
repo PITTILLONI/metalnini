@@ -58,3 +58,10 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | sam-carter | [2014-06-05_Vainstream_Architects_Sam_Carter_07.jpg](https://commons.wikimedia.org/wiki/File:2014-06-05_Vainstream_Architects_Sam_Carter_07.jpg) | Achim Raschka | CC BY-SA 4.0 |
 | nito | [Nito_Mestre.jpg](https://commons.wikimedia.org/wiki/File:Nito_Mestre.jpg) | Auteur inconnu | Domaine public |
 | brendan-murphy | [Brendan_Murphy_-_Counterparts.jpg](https://commons.wikimedia.org/wiki/File:Brendan_Murphy_-_Counterparts.jpg) | Jacob Stackley | CC BY-SA 4.0 |
+| chino | [Chino_Moreno_2014_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Chino_Moreno_2014_%28cropped%29.jpg) | Ralph Arvesen | CC BY 2.0 |
+| lzzy-hale | [Lzzy_Hale_2023_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Lzzy_Hale_2023_%28cropped%29.jpg) | Stefan Brending (2eight) | CC BY-SA 4.0 |
+| peter-hayes | [Peter_Hayes.jpg](https://commons.wikimedia.org/wiki/File:Peter_Hayes.jpg) | Mel | CC BY 2.0 |
+| broden | [Sabaton,_Joakim_Brodén_06.jpg](https://commons.wikimedia.org/wiki/File:Sabaton%2C_Joakim_Brod%C3%A9n_06.jpg) | Jonas Rogowski | CC BY-SA 3.0 |
+| mccall | [Nova2013_Parkway_Drive_Winston_McCall_0010.jpg](https://commons.wikimedia.org/wiki/File:Nova2013_Parkway_Drive_Winston_McCall_0010.jpg) | Sven-Sebastian Sajak (Sven0705) | CC BY-SA 3.0 |
+| blythe | [2015_RiP_Lamb_of_God_-_Randy_Blythe_by_2eight_-_DSC5337.jpg](https://commons.wikimedia.org/wiki/File:2015_RiP_Lamb_of_God_-_Randy_Blythe_by_2eight_-_DSC5337.jpg) | Stefan Brending (2eight) | CC BY-SA 3.0 |
+| heafy | [Hellfest2019Trivium_02_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Hellfest2019Trivium_02_%28cropped%29.jpg) | Selbymay | CC BY-SA 4.0 |

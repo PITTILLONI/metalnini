@@ -2,7 +2,7 @@
 
 Affichées dans la fiche carte (section « L'artiste »). La présentation courte reste pour la révélation. Corrige directement dans ce fichier ou dis-moi quoi changer.
 
-Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter, Nito Mestre et Brendan Murphy, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
+Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter, Nito Mestre et Brendan Murphy, puis (ajoutés le 2026-10-06) Chino Moreno, Lzzy Hale, Peter Hayes, Joakim Brodén, Winston McCall, Randy Blythe et Matt Heafy, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
 
 **knocked-loose** — Chanteur de Knocked Loose, groupe de hardcore formé en 2013 dans le comté d'Oldham, au Kentucky. Son cri aigu et rageur est la signature du groupe. L'EP A Tear in the Fabric of Life (2021) puis l'album You Won't Go Before You're Supposed To (2024) en ont fait une tête d'affiche du hardcore actuel.
 
@@ -135,6 +135,20 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **brendan-murphy** — Il fonde Counterparts en 2007 à Hamilton, dans l'Ontario, et en reste le seul membre de toujours. Ses cris et ses textes sur la dépression et la perte portent Tragedy Will Find Us (2015) ou Nothing Left to Love (2019) ; l'EP Heaven Let Them Die (2024), avec Praise No Artery Intact, pousse le groupe vers ses breakdowns les plus lourds. Il chante aussi dans End, groupe de metallic hardcore. *(À relire.)*
 
+
+**chino** — Il fonde Deftones à Sacramento avec des amis de lycée. White Pony (2000), avec Change (In the House of Flies), fait du groupe une référence du metal alternatif et lui vaut un Grammy en 2001 pour Elite. Sa voix passe du murmure au cri ; il chante aussi dans Crosses et Team Sleep.
+
+**lzzy-hale** — Elle fonde Halestorm adolescente, en 1997, avec son frère batteur Arejay. The Strange Case Of... (2012), avec I Miss the Misery, leur vaut le Grammy de la meilleure performance hard rock et metal en 2013 pour Love Bites (So Do I). Sa voix puissante et sa Gibson Explorer en font une figure du hard rock actuel.
+
+**peter-hayes** — Passé par The Brian Jonestown Massacre, il fonde Black Rebel Motorcycle Club en 1998 à San Francisco avec Robert Levon Been. Le premier album, B.R.M.C. (2001), avec Spread Your Love, mêle garage rock, guitares saturées et ambiances psychédéliques ; Howl (2005) part vers le blues et le folk.
+
+**broden** — Il cofonde Sabaton en 1999 à Falun, en Suède. Chaque chanson raconte une bataille ou un fait de guerre : Primo Victoria (2005) ouvre leur premier album avec le Débarquement. Le groupe remplit les plus grands festivals européens et lance sa propre chaîne d'histoire sur YouTube.
+
+**mccall** — Il chante dans Parkway Drive depuis sa formation en 2003 à Byron Bay, sur la côte est australienne. Atlas (2012), avec Wild Eyes, et ses refrains repris en chœur par le public font du groupe un pilier du metalcore ; Reverence (2018) et Darker Still (2022) le poussent vers le heavy metal.
+
+**blythe** — Il chante dans Lamb of God, formé en 1994 à Richmond sous le nom de Burn the Priest. Redneck (2006), sur l'album Sacrament, devient leur titre le plus connu. Photographe, il a aussi écrit Dark Days (2015), le récit de son procès à Prague, où il a été acquitté en 2013.
+
+**heafy** — Né au Japon et élevé en Floride, il rejoint Trivium adolescent, à la fin des années 1990. Ascendancy (2005) les révèle ; In Waves (2011) devient leur hymne de scène. Il mène aussi Ibaraki, projet de black metal, et joue en direct sur Twitch.
 
 # Fiches des styles (page d'un classeur) — à relire
 

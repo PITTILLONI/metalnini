@@ -36,5 +36,17 @@ __fake.friends = async function(){ return [{friend_id:'f1', username:'Riffeuse',
 (function(){ var soon = new Date(Date.now() + 4300e3).toISOString();
 __fake.slamFeed = async function(){ return {goal:5, window:120, crowd:[{id:'s1', name:'Riffeuse', goal:5, ends_at:soon, count:3}],
   carried:[{id:'s2', name:'Doom', goal:5, ends_at:soon, count:5, landed:true, rewarded:true}],
-  mine:{id:'m1', goal:5, ends_at:soon, landed:false, claimed:false, crashed:false, carriers:['Bob le Slammeur', 'Riffeuse']}}; }; })();
+  mine:{id:'m1', goal:5, ends_at:soon, landed:false, claimed:false, crashed:false, carriers:['Bob le Slammeur', 'Krampus'], people:[{id:'f2', name:'Bob le Slammeur', url:'cards/hetfield-base.jpg'}, {id:'x8', name:'Krampus', url:'cards/amy-lee-base.jpg'}]}}; }; })();
 __fake.friendCode = async function(){ return 'QWE789'; }; __fake.addFriend = async function(){ return 'Bob'; }; __fake.slamJoin = async function(){ return null; };
+__fake.artistLookup = async function(a){ return /morello/i.test(a) ? {found:true, id:'morello', name:'Tom Morello', band:'Rage Against the Machine', asked:0, funded:false} : {found:false, asked:/deftones/i.test(a) ? 2 : 0, funded:false}; };
+__fake.shop = async function(){ return {pack1:{url:'https://buy.stripe.com/test_x', cents:149, packs:1}, pack3:{url:'https://buy.stripe.com/test_y', cents:299, packs:3}, artist:{url:'https://buy.stripe.com/test_z', cents:299}}; };
+__fake.purchaseNews = async function(){ return []; };
+__fake.slamPoints = async function(){ return 4; };
+// circle pit : celui de Riffeuse tourne (3 coureurs), le mien n'est pas encore lancé
+(function(){ var end = new Date(Date.now() + 97e3).toISOString();
+__pitState = {id:'p1', track:'morello', ends_at:end, over:false, host:false, host_name:'Riffeuse', in:true, rewarded:true, claimed:false,
+  runners:[{id:'f1', name:'Riffeuse', url:'cards/amy-lee-base.jpg', taps:180}, {id:'f2', name:'Bob le Slammeur', url:'cards/hetfield-base.jpg', taps:150}, {id:'x9', name:'Moshzilla', taps:90}, {id:'u1', name:'Antoine', taps:40, me:true}],
+  tier:{runners:3, taps:370, speed:1.7, size:0, speed_tier:1, size_label:'Petit cercle', speed_label:'Endiablé', points:2}};
+__fake.pitFeed = async function(){ return {live:[{id:'p1', name:'Riffeuse', track:'morello', ends_at:end, runners:3, in:false}], done:[], opened_today:false, duration:120}; };
+__fake.pitJoin = async function(){ return __pitState; }; __fake.pitRun = async function(){ return __pitState; }; __fake.pitOpen = async function(){ return __pitState; };
+__fake.pitClaim = async function(){ return {points:2, tier:__pitState.tier, loot:null}; }; })();

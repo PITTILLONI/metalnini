@@ -127,7 +127,15 @@
   .pack-info h2{font-size:1.9rem}
   .pack-info p{margin:8px 0 0; color:var(--muted); font-size:.9rem; line-height:1.4}
   .pack-info .pc-tag{margin-top:4px; font-size:.84rem; min-height:2.8em}   /* deux lignes réservées : le bouton ne bouge pas d'un paquet à l'autre */
-  .pc-wait{color:var(--gold) !important; font-weight:600}
+  .merch-shut{max-width:420px; margin:6px auto 14px; padding:16px; border:1px solid rgba(235,154,38,.35); border-radius:14px; background:var(--surface); text-align:center}
+  .ms-clock{margin:0} .ms-clock small{display:block; font:600 .72rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .ms-clock b{display:block; font:900 2.4rem/1.05 var(--display); color:var(--gold-hi)}
+  .ms-or{margin:12px 0 10px; font:500 .9rem var(--mono)}
+  .ms-offers{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .ms-offer{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:64px; padding:10px}
+  .ms-offer b{font:900 1.1rem/1 var(--display); letter-spacing:.04em; text-transform:uppercase} .ms-offer span{font:700 .95rem var(--mono)}
+  .ms-offer em{position:absolute; top:-9px; left:50%; transform:translateX(-50%); padding:2px 8px; border-radius:999px; background:var(--accent); color:#fff; font:700 .62rem/1.4 var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap}
+  .ms-earn{display:block; width:100%; min-height:44px; margin-top:12px; border:0; background:none; color:var(--muted); font:500 .82rem var(--mono); cursor:pointer} .ms-earn b{color:var(--text); text-decoration:underline}
+  .as-fund{display:block; width:100%; margin:12px 0 0; padding:12px 14px; text-align:left} .as-fund b{display:block; font:900 1.05rem/1.1 var(--display); letter-spacing:.04em; text-transform:uppercase} .as-fund small{display:block; margin-top:3px; font:500 .76rem/1.3 var(--mono); opacity:.85}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
   .open-head{width:100%; text-align:center}
   /* format du paquet : interrupteur en relief à deux positions, le curseur or glisse sur le format choisi */
@@ -183,6 +191,13 @@
   .corner-tabs button{position:relative} .ct-dot{position:absolute; top:-6px; right:-4px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:var(--accent); color:#fff; font:800 .7rem/20px var(--display); font-style:normal} .corner-lead{margin:0 0 14px; color:var(--muted); font-size:.95rem; text-align:center}
   #v-corner .g-title + .corner-sec{margin-top:12px}
   /* deux boutons de troc en relief : « Mon code » en or, « Son code » à l'encre */
+  .qr-ch{display:grid; gap:10px; margin:14px 0 10px}
+  .qr-op{display:block; width:100%; min-height:56px; padding:12px 14px; text-align:left}
+  .qr-op b{display:block; font:900 1.05rem/1.1 var(--display); letter-spacing:.04em; text-transform:uppercase} .qr-op small{display:block; margin-top:3px; font:500 .78rem/1.3 var(--mono); opacity:.8}
+  .qr-bands{display:grid; gap:8px; margin:0 0 12px} .qr-bands p{margin:0; font:500 .85rem var(--mono); color:var(--muted)}
+  .scan-as{display:flex; gap:6px; margin:0 0 8px}
+  .scan-as [aria-checked="true"]{background:var(--gold); border-color:var(--gold); color:#1a0f05}
+  #pote-sheet .tr-qr, #band-sheet .tr-qr{width:min(44vw, 170px)} #pote-sheet .tr-qr-f, #band-sheet .tr-qr-f{margin:8px auto 4px}
   .tr-go{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding-bottom:6px}
   .tr-tile{display:flex; align-items:center; justify-content:center; gap:10px; min-height:80px; padding:12px 10px; text-align:left}
   .tr-tile b{display:block; font:900 1.2rem/1 var(--display); letter-spacing:.04em; text-transform:uppercase} .tr-tile small{display:block; margin-top:3px; font:600 .72rem/1.2 var(--mono); opacity:.8}
@@ -190,6 +205,7 @@
   .corner-empty{margin:0; color:var(--muted); font-size:.92rem}
   /* progression : trois compteurs en relief, puis les titres (débloqués en or, verrouillés en grisé avec leur condition et leurs crans) */
   .rank-stats{display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; padding-bottom:4px}
+  .rank-stats > div:last-child:nth-child(odd){grid-column:1 / -1}   /* tuile seule sur sa ligne : toute la largeur */
   .rank-stats div{display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000; text-align:center}
   .rank-stats svg{color:var(--gold)} .rank-stats b{font:800 1.5rem/1 var(--display); color:var(--text)} .rank-stats span{font:600 .72rem var(--mono); color:var(--muted)} .rank-stats small{font:700 .68rem var(--mono); color:var(--gold-hi)}
   /* chemin des titres : un trait qui se remplit d'or jusqu'au titre actuel (et en partie vers le suivant) ; le titre social à part */
@@ -207,6 +223,37 @@
   .road-bonus{display:flex; align-items:center; gap:12px; margin:0 0 22px; padding:10px 12px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000}
   .road-bonus .st-node{width:44px; height:44px} .road-bonus.on .st-node{border:2px solid var(--gold); color:var(--gold-hi)}
   .road-bonus .st-t b{font-size:1.15rem} .road-bonus.on .st-t b{color:var(--text)}
+  .fs-how{margin:-4px 0 12px; font:500 .84rem/1.45 var(--mono); color:var(--muted)} .fs-how summary{display:inline-flex; align-items:center; min-height:36px; cursor:pointer; color:var(--gold-hi); font-weight:600}
+  .fs-how p{margin:4px 0 8px} .fs-how b{color:var(--text)}
+  .fs-add{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:4px 0 6px}
+  .pit{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(120% 70% at 50% 30%, #2a1a10 0%, #0c0a09 70%)}
+  .pit-in{max-width:520px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align:center}
+  .pit-top{display:flex; flex-direction:column; align-items:center; gap:2px; margin:0 44px 6px}
+  .pit-top .eyebrow{margin:0} .pit-clock{font:900 2.6rem/1 var(--display); color:var(--gold-hi)} .pit-clock.low{color:var(--accent-text)}
+  .pit-song{font:600 .82rem/1.3 var(--mono); color:var(--muted)} .pit-song b{color:var(--text)}
+  .pit-ring{position:relative; width:min(78vw, 300px); aspect-ratio:1; margin:8px auto 10px}
+  .pit-ring::before{content:""; position:absolute; inset:9%; border-radius:50%; border:2px dashed rgba(244,178,67,.35)}
+  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite}
+  .pit-slot{position:absolute; left:50%; top:50%; width:0; height:0; transform:rotate(var(--a)) translateY(calc(min(78vw, 300px) / -2 + 26px)) rotate(calc(-1 * var(--a)))}
+  .pit-slot .pit-av{position:absolute; left:-20px; top:-20px; animation:pit-spin var(--spin, 14s) linear infinite reverse}   /* le visage reste droit pendant que le cercle tourne */
+  .pit-slot .pit-av.me{left:-26px; top:-26px}
+  .pit-run{position:absolute; left:50%; top:50%; width:46%; aspect-ratio:1; transform:translate(-50%, -50%); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; touch-action:manipulation; user-select:none; -webkit-user-select:none}
+  .pit-run b{font:900 1.5rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase} .pit-run small{font:700 .8rem var(--mono)}
+  .pit-run:active{transform:translate(-50%, -48%); box-shadow:0 2px 0 #8a5510}
+  .pit-run.tap{animation:pit-tap .18s ease-out}
+  .pit-run:disabled{opacity:.5}
+  .pit-gauges{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px; text-align:left}
+  .pit-gauges div{padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
+  .pit-gauges small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .pit-gauges b{display:block; font:900 1.25rem/1.1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pit-gauges span{display:block; font:500 .74rem/1.3 var(--mono); color:var(--muted)} .pit-gauges span span{display:inline}
+  .pit-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px} .pit .tr-qr-f{margin:12px auto 0}
+  .pit-win{margin:4px 0 14px; padding:16px; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:var(--surface)}
+  .pit-win b{display:block; font:900 1.6rem/1.1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pit-win span{display:block; margin-top:4px; font:500 .86rem/1.4 var(--mono)}
+  .pp-list{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; max-height:50dvh; overflow-y:auto} .pp-list .eyebrow{flex-basis:100%; margin:8px 0 0}
+  #pit-pick .bsheet-in{max-height:88dvh; overflow-y:auto}
+  @keyframes pit-spin{to{transform:rotate(360deg)}}
+  @keyframes pit-tap{50%{transform:translate(-50%, -50%) scale(.94)}}
+  @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av, .pit-run.tap{animation:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
@@ -510,24 +557,33 @@
   .slam-box{margin:0 0 8px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .slam-box.land{border-color:var(--gold); background:rgba(235,154,38,.08)}
   .slam-box b{display:block; font:600 .95rem/1.3 var(--mono)} .slam-box small{display:block; margin-top:2px; color:var(--muted); font:500 .78rem/1.45 var(--mono)} .slam-box .btn{margin-top:12px}
   /* scène du slam : la foule (bras levés en or = porteurs), le slammeur sur la scène, porté, atterri ou écrasé */
-  .slam-scene{display:block; width:100%; height:auto; margin:10px 0 4px; overflow:visible}
-  .slam-scene g, .slam-scene path, .slam-scene circle{transform-box:fill-box; transform-origin:center}
-  .sc-fan circle, .sc-fan path{fill:none; stroke:var(--muted); stroke-width:2.2; stroke-linecap:round} .sc-fan circle{fill:var(--surface-2)}
-  .sc-fan.up circle, .sc-fan.up path{stroke:var(--gold-hi)} .sc-fan.up .sc-arm{transform-origin:50% 100%; animation:sc-wave 1.1s ease-in-out var(--d) infinite alternate}
-  .sc-me path{fill:none; stroke:var(--text); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round} .sc-me circle{fill:var(--text)}
-  .sc-me.bob{animation:sc-bob 1.6s ease-in-out infinite} .sc-me.bob.dive{animation:sc-dive .8s cubic-bezier(.5,0,.6,1.4), sc-bob 1.6s ease-in-out .8s infinite}
-  .sc-me.hop{animation:sc-hop 1.2s ease-in-out infinite} .sc-me.horns{animation:sc-hop .9s ease-in-out infinite}
-  .sc-me.down path{stroke:var(--accent-text)} .sc-me.down circle{fill:var(--accent-text)}
-  .sc-ride{transition:transform .9s cubic-bezier(.3,1.3,.5,1)} .sc-stage{fill:var(--gold-lo)}
-  .sc-burst path{fill:none; stroke:var(--gold-hi); stroke-width:2.4; stroke-linecap:round; animation:sc-burst 1.4s ease-out infinite}
-  .sc-dust circle{fill:var(--muted); animation:sc-dust 2.4s ease-out infinite} .sc-dust circle:nth-child(2){animation-delay:.5s} .sc-dust circle:nth-child(3){animation-delay:1s}
-  @keyframes sc-wave{to{transform:translateY(-3px)}}
-  @keyframes sc-bob{50%{transform:translateY(-5px) rotate(-4deg)}}
-  @keyframes sc-dive{0%{transform:translate(-40px, -46px) rotate(-70deg)}}
-  @keyframes sc-hop{35%{transform:translateY(-6px)}70%{transform:none}}
-  @keyframes sc-burst{0%{opacity:0; transform:scale(.6)}30%{opacity:1}100%{opacity:0; transform:scale(1.3)}}
-  @keyframes sc-dust{0%{opacity:.6; transform:none}100%{opacity:0; transform:translateY(-10px) scale(1.6)}}
-  @media (prefers-reduced-motion: reduce){ .slam-scene *{animation:none !important; transition:none !important} }
+  .pit-stage{position:relative; height:178px; margin:10px -4px 8px; border-radius:10px; overflow:hidden; background:radial-gradient(120% 90% at 50% 0%, #2a1a10 0%, #120d0a 60%, #0c0a09 100%)}
+  .pit-stage::after{content:""; position:absolute; left:0; right:0; bottom:44px; height:46px; background:radial-gradient(circle at 10px 12px, #000 9px, transparent 10px) 0 0/34px 46px repeat-x, radial-gradient(ellipse at 17px 46px, #000 15px, transparent 16px) 0 0/34px 46px repeat-x; opacity:.55; pointer-events:none}   /* la foule en ombre chinoise */
+  .pit-crowd{z-index:1} .pit-rider{z-index:2}
+  .pit-beam{position:absolute; top:-20px; left:12%; width:90px; height:200px; background:linear-gradient(180deg, rgba(244,178,67,.32), rgba(244,178,67,0)); clip-path:polygon(40% 0, 60% 0, 100% 100%, 0 100%); transform:rotate(-14deg); transform-origin:top center; animation:pit-sweep 6s ease-in-out infinite alternate}
+  .pit-beam.r{left:auto; right:12%; transform:rotate(14deg); animation-delay:-3s; background:linear-gradient(180deg, rgba(224,96,90,.28), rgba(224,96,90,0))}
+  .pit-av{display:inline-flex; align-items:center; justify-content:center; flex:none; width:40px; height:40px; border-radius:50%; background:#2a221b center/cover no-repeat; border:2px solid var(--gold); color:var(--gold-hi); font:800 1rem/1 var(--display)}
+  .pit-av.me{width:52px; height:52px; border-color:var(--accent-text); box-shadow:0 0 0 3px rgba(224,96,90,.25), 0 8px 18px rgba(0,0,0,.6); color:var(--text); font-size:1.3rem}
+  .pit-rider{position:absolute; top:52px; left:var(--x); transform:translateX(-50%) rotate(-8deg); transition:left .9s cubic-bezier(.3,1.3,.5,1); animation:pit-surf 1.6s ease-in-out infinite; z-index:2}
+  .pit-rider.dive{animation:pit-dive .8s cubic-bezier(.5,0,.6,1.4), pit-surf 1.6s ease-in-out .8s infinite}
+  .st-ready .pit-rider{left:9%; top:12px; animation:pit-hop 1.2s ease-in-out infinite}
+  .st-land .pit-rider{left:auto; right:6px; top:10px; transform:none; animation:pit-hop .9s ease-in-out infinite}
+  .st-crash .pit-rider{top:auto; bottom:6px; left:auto; right:12px; transform:rotate(80deg); animation:none; filter:grayscale(1) brightness(.7)}
+  .pit-crowd{position:absolute; left:0; right:0; bottom:8px; display:grid; grid-template-columns:repeat(var(--n), 1fr); margin:0; padding:0 6px; list-style:none}
+  .pit-crowd li{position:relative; display:flex; flex-direction:column; align-items:center; gap:3px; min-width:0}
+  .pit-crowd small{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .62rem/1.2 var(--mono); color:var(--muted)}
+  .pit-crowd li.on small{color:var(--text)}
+  .pit-crowd li.off .pit-av{border:2px dashed rgba(255,255,255,.22); background:transparent; color:rgba(255,255,255,.3)}
+  .pit-arms{position:absolute; top:-15px; width:40px; height:18px; fill:none; stroke:var(--gold-hi); stroke-width:3; stroke-linecap:round; transform-origin:50% 100%; animation:pit-wave 1.1s ease-in-out var(--d) infinite}
+  .st-crash .pit-crowd li.on .pit-av{filter:grayscale(1)} .st-crash .pit-arms{display:none}
+  .pit-burst{position:absolute; right:-10px; top:-10px; width:110px; height:110px; border-radius:50%; background:radial-gradient(circle, rgba(244,178,67,.45), rgba(244,178,67,0) 65%); animation:pit-glow 1.4s ease-out infinite}
+  @keyframes pit-sweep{to{transform:rotate(10deg)}} .pit-beam.r{animation-name:pit-sweep-r} @keyframes pit-sweep-r{from{transform:rotate(14deg)} to{transform:rotate(-10deg)}}
+  @keyframes pit-surf{0%,100%{margin-top:0} 50%{margin-top:-5px}}
+  @keyframes pit-dive{from{top:-60px; opacity:0}}
+  @keyframes pit-hop{0%,100%{margin-top:0} 50%{margin-top:-7px}}
+  @keyframes pit-wave{0%,100%{transform:rotate(-6deg)} 50%{transform:rotate(6deg)}}
+  @keyframes pit-glow{from{transform:scale(.6); opacity:1} to{transform:scale(1.3); opacity:0}}
+  @media (prefers-reduced-motion: reduce){ .pit-stage *{animation:none !important; transition:none !important} }
   .band-inv{display:grid; gap:8px; margin-top:12px} .band-inv p{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:10px; background:var(--surface); font:500 .86rem/1.4 var(--mono)}
   .band-ms{list-style:none; margin:12px 0 4px; padding:0; display:grid; gap:8px}
   .band-ms li{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg)} .band-ms li > div{flex:1; min-width:0} .band-ms .df{flex:none} .band-ms button.df{border-color:var(--gold)} .band-ms span.df{padding:0 4px; border-color:transparent; background:none; color:var(--muted)} .band-ms b{font:400 1.15rem var(--gothic)}
@@ -558,6 +614,8 @@
   .chips-pick button{min-height:40px; padding:0 14px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--muted); font:600 .8rem var(--mono); cursor:pointer}
   .pf-note{font-size:.86rem; margin:0 0 10px}
   .ask-artist{display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; margin:18px 0 8px; padding:14px 16px; min-height:44px; border:1px dashed rgba(235,154,38,.45); border-radius:12px; background:transparent; color:var(--text); cursor:pointer}
+  .as-look{min-height:1.3em; margin:6px 0 0; font:500 .85rem/1.35 var(--mono); color:var(--muted)} .as-look b{color:var(--text)} .as-look.have b{color:var(--gold-hi)} .as-look.new b{color:#7fd18b}
+  .as-see{border:0; background:none; padding:0 2px; min-height:32px; color:var(--gold-hi); font:600 .85rem var(--mono); text-decoration:underline; cursor:pointer}
   .ask-artist b{font:700 .95rem var(--mono)} .ask-artist span{font:500 .8rem var(--mono); color:var(--gold-hi)}
   .aa-tk{margin-top:6px; padding:4px 12px; border-radius:999px; background:var(--gold); color:var(--ink); font:800 .74rem var(--display); font-style:normal; letter-spacing:.06em; text-transform:uppercase}
   .as-in{width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font:inherit; font-size:1rem; resize:vertical}
@@ -747,6 +805,12 @@
   .goal > .new-dot, .invite > .new-dot, .df > .new-dot, .band-inv p > .new-dot{position:absolute; top:-4px; right:-4px; z-index:3; width:12px; height:12px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px var(--bg), 0 0 10px #e11d2e}
   .goal > .new-dot{top:8px; right:8px}   /* la carte d'objectif rogne ce qui dépasse */
   .slot .new-dot{position:absolute; top:6px; left:6px; z-index:2; width:10px; height:10px; border-radius:50%; background:#e11d2e; box-shadow:0 0 0 2px rgba(0,0,0,.6), 0 0 10px #e11d2e}
+  .slot.ask .img{border:1.5px dashed rgba(235,154,38,.6); background:linear-gradient(160deg, rgba(235,154,38,.12), rgba(178,58,58,.08))}
+  .slot.ask .ask-in{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px; text-align:center}
+  .slot.ask .ask-in b{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:var(--gold); color:#1a0f05; font:900 1.8rem/1 var(--display); box-shadow:0 3px 0 #8a5510}
+  .slot.ask .ask-in span{font:800 .95rem/1.05 var(--display); letter-spacing:.03em; text-transform:uppercase; color:var(--text)}
+  .slot.ask .ask-in small{font:600 .68rem/1.2 var(--mono); color:var(--gold-hi)}
+  .slot.ask .cap{color:var(--gold-hi)}
   .slot .cap{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
   /* ---------- Détail ---------- */
@@ -1092,6 +1156,14 @@
     <button type="button" role="radio" data-f="small"><span class="fi"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><g transform="translate(0 7) scale(.78)"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="21.5" text-anchor="middle" class="fi-n">2</text></g><path d="M26 1.5l1.2 3.3 3.3 1.2-3.3 1.2L26 10.5l-1.2-3.3L21.5 6l3.3-1.2z" fill="currentColor"/></svg></span><span><b>Mini</b><small>2 cartes · + de chances</small></span></button>
   </div>
   <p class="small-hint" id="fmt-lock" hidden></p>
+  <div class="merch-shut" id="merch-shut" hidden>
+    <p class="ms-clock"><small>Prochain paquet dans</small><b class="num" id="ms-left"></b></p>
+    <div class="ms-buy" id="ms-buy" hidden>
+      <p class="ms-or">Pas la patience ? Le stand rouvre pour toi.</p>
+      <div class="ms-offers"><button type="button" class="ms-offer relief" data-buy="pack1"><b>1 paquet</b><span>1,49 €</span></button><button type="button" class="ms-offer relief" data-buy="pack3"><em>Le bon plan</em><b>3 paquets</b><span>2,99 €</span></button></div>
+    </div>
+    <button type="button" class="ms-earn" id="ms-earn">Ou gagne-en sans payer : <b>épreuves, slam, concerts</b></button>
+  </div>
   <div class="choose">
     <div class="car-wrap">
       <button type="button" class="car-arrow prev" id="car-prev" aria-label="Paquet précédent">‹</button>
@@ -1099,7 +1171,7 @@
       <button type="button" class="car-arrow next" id="car-next" aria-label="Paquet suivant">›</button>
     </div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
-    <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-tag" id="pc-tag"></p><p class="pc-wait" id="pc-wait" hidden></p></div>
+    <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-tag" id="pc-tag"></p></div>
     <button type="button" class="btn block small-go" id="small-go" hidden></button>
 
   </div>
@@ -1131,16 +1203,20 @@
   </div>
   <h1 class="g-title">Metal Corner</h1>
   <div class="kind-chips corner-tabs" id="corner-tabs" role="tablist" aria-label="Rubriques de Metal Corner"></div>
+  <section class="corner-sec" data-ct="potes">
+    <h2 class="g-sub">Croisé un fan ?</h2><p class="corner-lead">Troc, pote ou bande : montre ton QR, ou scanne le sien.</p>
+    <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon QR</b><small>Troc, pote ou bande</small></span></button>
+      <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Scanner</b><small>Son QR ou son code</small></span></button></div>
+  </section>
   <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open">+ Pote</button></div><div id="friends"></div></section>
   <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
-  <section class="corner-sec" data-ct="potes">
-    <h2 class="g-sub">Troquer une carte</h2><p class="corner-lead">Côte à côte ou à distance, avec un pote ou un fan croisé au concert.</p>
-    <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon code</b><small>Ton pote le scanne</small></span></button>
-      <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Son code</b><small>Caméra ou code</small></span></button></div>
-  </section>
   <section class="corner-sec" id="history-sec" data-ct="potes" hidden><h2 class="g-sub">Tes trocs</h2><div id="history"></div></section>
   <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Plonge dans la foule une fois par jour et garde tes talons de concert.</p></section>
-  <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><h2 class="g-sub">Slam</h2><div id="slam"></div></section>
+  <section class="corner-sec" id="pit-sec" data-ct="fosse" hidden><h2 class="g-sub">Circle pit</h2>
+    <details class="fs-how"><summary>C'est quoi ?</summary><p>Tu lances un cercle de 2 minutes sur le morceau de ton choix, et tes potes sont prévenus. Chacun tape « Courir » pour faire tourner le cercle, et rameute les siens pendant que ça tourne.</p><p><b>Plus le cercle est gros et rapide, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et à partir d'un vrai pit endiablé, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></details>
+    <div id="pits"></div></section>
+  <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><h2 class="g-sub">Slam</h2>
+    <details class="fs-how"><summary>C'est quoi ?</summary><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></details><div id="slam"></div></section>
   <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
   <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
   <section class="corner-sec" id="prog-sec" data-ct="rang"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
@@ -1177,7 +1253,7 @@
     <h1>Ton profil</h1>
     <section class="pf-id">
       <button type="button" class="pf-av" id="pf-av" aria-label="Changer la photo de profil"><span><svg viewBox="0 0 24 24" width="54" height="54" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg></span></button>
-      <div><p class="pf-name" id="pf-name"></p><button type="button" class="link" id="pf-photo">Changer la photo</button></div>
+      <div><p class="pf-name" id="pf-name"></p><button type="button" class="link" id="pf-photo">Changer la photo</button><button type="button" class="link" id="pf-rename" hidden>Changer de pseudo</button></div>
       <input type="file" id="pf-file" accept="image/*" hidden>
     </section>
     <section class="pf-card pf-pub">
@@ -1255,9 +1331,11 @@
     <p class="pf-note">Un musicien ou un groupe que tu veux dans ta collection. Le Grand Architecte lit tout.</p>
     <label class="pf-label" for="as-name">Artiste ou groupe</label>
     <input id="as-name" class="as-in" maxlength="80" autocomplete="off" placeholder="ex. Gojira">
+    <p class="as-look" id="as-look" aria-live="polite"></p>
     <label class="pf-label" for="as-note">Pourquoi lui ? (facultatif)</label>
     <textarea id="as-note" class="as-in" maxlength="200" rows="3" placeholder="ex. Leur live au Hellfest m'a retourné le cerveau."></textarea>
     <label class="as-prio" id="as-prio" hidden><input type="checkbox" id="as-prio-in"> <span>Utiliser un ticket artiste prioritaire <b id="as-prio-n"></b></span></label>
+    <button type="button" class="as-fund relief" id="as-fund" hidden><b>Financer sa carte · 2,99 €</b><small>Elle passe en tête de la liste, tu es prévenu à sa sortie (remboursé si elle ne sort pas)</small></button>
     <p class="err" id="as-err"></p>
     <div class="pf-row"><button type="button" class="btn ghost" id="as-cancel">Annuler</button><button type="button" class="btn" id="as-send">Envoyer</button></div>
   </div>
@@ -1277,10 +1355,24 @@
     <i class="grab" aria-hidden="true"></i>
     <h2 id="pote-t">Ajouter un pote</h2>
     <p class="pf-note">Donne ton code ou tape le sien : vous devenez potes tous les deux. Pas besoin de troc pour te porter quand tu slammes.</p>
-    <p class="eyebrow">Ton code de pote</p><p class="tr-code num" id="pote-code">···</p>
+    <div class="gframe tr-qr-f"><div class="tr-qr" id="pote-qr" role="img" aria-label="QR code de pote"></div></div><p class="eyebrow">Ton code de pote</p><p class="tr-code num" id="pote-code">···</p>
     <button type="button" class="btn block" id="pote-share">Envoyer mon lien</button>
     <form class="tr-join" id="pote-join"><label class="pf-label" for="pote-in">Ou tape son code</label><div class="pf-row"><input class="as-in" id="pote-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="ABC 234"><button type="submit" class="btn">Ajouter</button></div></form>
     <button type="button" class="btn ghost block" id="pote-close">Fermer</button>
+  </div>
+</div>
+<div class="bsheet" id="qr-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="qr-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="qr-t">Que veux-tu faire ?</h2>
+    <p class="pf-note">Choisis d'abord, ton QR suit : chacun ouvre autre chose chez ton pote.</p>
+    <div class="qr-ch">
+      <button type="button" class="qr-op relief" id="qr-troc"><b>Troquer des cartes</b><small>Vous échangez maintenant, côte à côte ou à distance</small></button>
+      <button type="button" class="qr-op relief ink" id="qr-pote"><b>Devenir potes</b><small>Il te suit, te porte quand tu slammes, voit ton classeur</small></button>
+      <button type="button" class="qr-op relief ink" id="qr-bande"><b>L'inviter dans ma bande</b><small>Pour un concert de tes talons</small></button>
+    </div>
+    <div class="qr-bands" id="qr-bands"></div>
+    <button type="button" class="btn ghost block" id="qr-close">Fermer</button>
   </div>
 </div>
 <div class="bsheet" id="band-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="band-t">
@@ -1404,13 +1496,14 @@
 <div class="flames" id="flames-pack" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="uname" id="uname" hidden role="dialog" aria-modal="true" aria-labelledby="uname-t">
   <div class="uname-in">
-    <p class="eyebrow">Bienvenue dans le pit</p>
+    <p class="eyebrow" id="uname-k">Bienvenue dans le pit</p>
     <h2 id="uname-t">Ton nom de scène</h2>
-    <p class="note" style="color:var(--muted)">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
+    <p class="note" id="uname-note" style="color:var(--muted)">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
     <input id="uname-in" aria-labelledby="uname-t" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo">
     <p class="note">3 à 20 caractères : lettres, chiffres, point, tiret ou tiret bas.</p>
     <p class="err" id="uname-err"></p>
     <button type="button" class="btn" id="uname-go">Sur scène !</button>
+    <button type="button" class="btn ghost" id="uname-cancel" hidden>Garder mon pseudo</button>
   </div>
 </div>
 <div class="splash" id="splash" aria-hidden="true"><img src="cards/logo.webp" alt="" width="900" height="534"><p id="splash-line">Balances en cours…</p></div>
@@ -1494,6 +1587,19 @@
   </div>
 </div>
 
+<div class="pit" id="pit" hidden role="dialog" aria-modal="true" aria-label="Circle pit">
+  <button type="button" class="icon-btn trade-x" id="pit-x" aria-label="Quitter le circle pit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
+  <div class="pit-in" id="pit-in"></div>
+</div>
+<div class="bsheet" id="pit-pick" hidden role="dialog" aria-modal="true" aria-labelledby="pp-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="pp-t">Choisis le morceau</h2>
+    <p class="pf-note">2 minutes de circle pit sur l'extrait de ton choix. Tes potes sont prévenus dès que tu lances.</p>
+    <div class="pp-list" id="pp-list"></div>
+    <button type="button" class="btn ghost block" id="pp-cancel">Plus tard</button>
+  </div>
+</div>
 <div class="trade" id="trade" hidden role="dialog" aria-modal="true" aria-label="Échange">
   <button type="button" class="icon-btn trade-min" id="trade-min" aria-label="Réduire l'échange, il reste ouvert"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg></button>
   <button type="button" class="icon-btn trade-x" id="trade-x" aria-label="Quitter l'échange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
@@ -1583,7 +1689,7 @@ const api = {
     return session.user;
   },
   async signUp(email, password, username, welcomeToken){
-    if(!must(await sb.rpc('username_available', { p_username: username }))) throw new Error('ce pseudo est déjà pris');
+    const pb = must(await sb.rpc('username_problem', { p_username: username })); if(pb) throw new Error(pb);
     const d = must(await sb.auth.signUp({ email, password, options: { data: welcomeToken ? { username, welcome_token: welcomeToken } : { username }, emailRedirectTo: here } }));
     if(d.user && d.user.identities && d.user.identities.length === 0) throw new Error('un compte existe déjà avec cet e-mail : connecte-toi');
     return !!d.session;
@@ -1600,6 +1706,7 @@ const api = {
   async claimWelcome(token, placed){ return must(await sb.rpc('claim_welcome_pack', { p_token: token, p_placed: placed })); },
   async claimInstall(){ return must(await sb.rpc('claim_install_reward')); },
   async claimPush(){ return must(await sb.rpc('claim_push_reward')); },
+  async artistLookup(a){ return must(await sb.rpc('artist_lookup', { p_artist: a })); },
   async requestArtist(a, n, prio){ return must(await sb.rpc('request_artist', { p_artist: a, p_note: n, p_priority: !!prio })); },
   async tickets(){ return must(await sb.rpc('my_priority_tickets')); },
   async claimBlindtest(m, score){ return must(await sb.rpc('claim_blindtest', { p_musician: m, p_score: score })); },
@@ -1622,6 +1729,9 @@ const api = {
   async setFavBands(list){ must(await sb.rpc('set_fav_bands', { p_bands: list })); },
   async bonusPoints(){ return must(await sb.rpc('my_bonus_points')); },
   async giftNotices(){ return must(await sb.rpc('my_gift_notices')) || []; },
+  async shop(){ const r = must(await sb.from('settings').select('value').eq('key', 'shop').maybeSingle()); return r ? r.value : {}; },
+  async startPurchase(o, a, n){ return must(await sb.rpc('start_purchase', { p_offer: o, p_artist: a || null, p_note: n || null })); },
+  async purchaseNews(){ return must(await sb.rpc('my_purchase_news')) || []; },
   async requestNews(){ return must(await sb.rpc('my_request_news')) || []; },
   async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
   async packsLeft(){ return must(await sb.rpc('packs_left_today')); },
@@ -1669,6 +1779,13 @@ const api = {
   async friendCode(){ return must(await sb.rpc('my_friend_code')); },
   async addFriend(code){ return must(await sb.rpc('add_friend', { p_code: code })); },
   async slamLaunch(){ return must(await sb.rpc('slam_launch')); },
+  async slamPoints(id){ return must(await sb.rpc('slam_points', { p_user: id || null })) || 0; },
+  async fosseAddFriend(id){ return must(await sb.rpc('fosse_add_friend', { p_friend: id })); },
+  async pitFeed(){ return must(await sb.rpc('pit_feed')); },
+  async pitOpen(t){ return must(await sb.rpc('pit_open', { p_track: t })); },
+  async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
+  async pitRun(id, n){ return must(await sb.rpc('pit_run', { p_pit: id, p_taps: n })); },
+  async pitClaim(id){ return must(await sb.rpc('pit_claim', { p_pit: id })); },
   async slamCarry(id){ return must(await sb.rpc('slam_carry', { p_slam: id })); },
   async slamClaim(id){ return must(await sb.rpc('slam_claim', { p_slam: id })); },
   async addConcert(c){ return must(await sb.rpc('add_concert', { p_artist: c.artist, p_musician: c.musician || null, p_date: c.date, p_venue: c.venue || null, p_city: c.city || null })); },
@@ -1719,20 +1836,20 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // Classeurs : styles (chaque carte dans un seul), puis transversaux (une carte peut compter dans plusieurs)
   var BINDERS = [
     {k:'all', kind:'Collection', label:'Toutes les cartes', ids:null},
-    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes','sam-carter','brendan-murphy']},
+    {k:'metalcore', kind:'Styles', label:'Hardcore & metalcore', ids:['knocked-loose','isaac-hale','spiritbox','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy']},
     {k:'hardcore', kind:'Styles', label:'Death metal & deathcore', ids:['ramos','corpsegrinder','white-gluz']},
     {k:'prog',      kind:'Styles', label:'Metal progressif', ids:['keenan','duplantier','joe-duplantier','jinjer']},
     {k:'numetal', kind:'Styles', label:'Nu metal', ids:['korn','root','jordison','corey','bennington','shinoda']},
-    {k:'alternatif', kind:'Styles', label:'Metal alternatif', ids:['zack','morello','tankian','malakian','poppy','amy-lee','reuno']},
+    {k:'alternatif', kind:'Styles', label:'Metal alternatif', ids:['zack','morello','tankian','malakian','poppy','amy-lee','reuno','chino']},
     {k:'poppunk', kind:'Styles', label:'Pop punk & emo', ids:['blink182','hoppus','hayley','armstrong','gerard-way']},
-    {k:'hardrock', kind:'Styles', label:'Hard rock', ids:['slash','angus','page','plant','bonham']},
+    {k:'hardrock', kind:'Styles', label:'Hard rock', ids:['slash','angus','page','plant','bonham','lzzy-hale']},
     {k:'legendes', kind:'Styles', label:'Légendes du rock', ids:['hendrix','mercury','prince','may','frusciante','flea','nito']},
-    {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro','harris','iommi']},
-    {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett','lars','burton','lombardo']},
-    {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl']},
-    {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee','reuno','sam-carter','nito','brendan-murphy']},
+    {k:'heavy',     kind:'Styles', label:'Heavy metal', ids:['dickinson','halford','ozzy','lemmy','dio','doro','harris','iommi','broden']},
+    {k:'thrash',    kind:'Styles', label:'Thrash', ids:['hetfield','mustaine','araya','scott-ian','hammett','lars','burton','lombardo','blythe']},
+    {k:'grunge',    kind:'Styles', label:'Grunge & alternatif', ids:['cobain','cornell','staley','grohl','peter-hayes']},
+    {k:'voix',      kind:'Instruments', label:'Les voix', ids:['knocked-loose','jinjer','spiritbox','landmvrks','ramos','heriot','hoppus','korn','poppy','zack','dickinson','halford','ozzy','lemmy','hetfield','mustaine','araya','cobain','cornell','staley','grohl','keenan','white-gluz','corpsegrinder','tankian','sykes','hayley','armstrong','dio','doro','mercury','gerard-way','bennington','prince','plant','corey','shinoda','malakian','joe-duplantier','amy-lee','reuno','sam-carter','nito','brendan-murphy','chino','lzzy-hale','peter-hayes','broden','mccall','blythe','heafy']},
     {k:'batteurs',  kind:'Instruments', label:'Les batteurs', ids:['blink182','duplantier','jordison','lars','lombardo','bonham']},
-    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince','morello','iommi','may','page','malakian']},
+    {k:'guitaristes', kind:'Instruments', label:'Les guitaristes', ids:['isaac-hale','hendrix','slash','frusciante','root','mustaine','scott-ian','angus','hammett','prince','morello','iommi','may','page','malakian','lzzy-hale','peter-hayes','heafy']},
     {k:'bassistes', kind:'Instruments', label:'Les bassistes', ids:['hoppus','lemmy','araya','burton','harris','flea']},
     {k:'g-kl',      kind:'Groupes', label:'Knocked Loose', ids:['knocked-loose','isaac-hale']},
     {k:'g-blink',   kind:'Groupes', label:'Blink-182', ids:['blink182','hoppus']},
@@ -1819,7 +1936,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['reuno','Reuno','Lofofora','Les gens','LXVI','Chant','Metal fusion'],
     ['sam-carter','Sam Carter','Architects','Doomsday','LXVII','Chant','Metalcore'],
     ['nito','Nito Mestre','Sui Generis','Canción para mi muerte','LXVIII','Chant, flûte, guitare','Folk rock'],
-    ['brendan-murphy','Brendan Murphy','Counterparts','Praise No Artery Intact','LXIX','Chant','Hardcore mélodique']
+    ['brendan-murphy','Brendan Murphy','Counterparts','Praise No Artery Intact','LXIX','Chant','Hardcore mélodique'],
+    ['chino','Chino Moreno','Deftones','Change','LXX','Chant','Metal alternatif'],
+    ['lzzy-hale','Lzzy Hale','Halestorm','I Miss the Misery','LXXI','Chant, guitare','Hard rock'],
+    ['peter-hayes','Peter Hayes','Black Rebel Motorcycle Club','Spread Your Love','LXXII','Guitare, chant','Garage rock'],
+    ['broden','Joakim Brodén','Sabaton','Primo Victoria','LXXIII','Chant','Power metal'],
+    ['mccall','Winston McCall','Parkway Drive','Wild Eyes','LXXIV','Chant','Metalcore'],
+    ['blythe','Randy Blythe','Lamb of God','Redneck','LXXV','Chant','Groove metal'],
+    ['heafy','Matt Heafy','Trivium','In Waves','LXXVI','Chant, guitare','Metalcore']
   ].map(function(c){ return {id:c[0], who:c[1], band:c[2], title:c[3], num:c[4], inst:c[5], genre:c[6]}; });
   // seuls les musiciens dont les 5 raretés sont prêtes (tools/build_proto_cards.py)
   if(window.METALNINI_READY) CARDS = CARDS.filter(function(c){ return window.METALNINI_READY.indexOf(c.id) !== -1; });
@@ -1892,6 +2016,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'joe-duplantier':['Godzilla', 'Gojira, c\'est le nom japonais de Godzilla, et le groupe s\'est d\'abord appelé Godzilla.'],
     'amy-lee':['Double Grammy', 'En 2004, Evanescence remporte deux Grammy, dont celui du meilleur nouvel artiste.'],
     'brendan-murphy':['Drop fatal', 'Sur Praise No Artery Intact, les breakdowns tombent comme des enclumes : la fosse se fend en deux.'],
+    'chino':['Maison des mouches', 'Sur Change, il chuchote, puis le refrain s\'envole : tout le pit plane avec lui.'],
+    'lzzy-hale':['Foudre au féminin', 'Halestorm est le premier groupe mené par une femme à remporter le Grammy de la meilleure performance hard rock et metal, en 2013.'],
+    'peter-hayes':['Cuir et larsen', 'Blouson de cuir, guitare demi-caisse et larsen à fond : le garage rock de San Francisco ne se repasse pas.'],
+    'broden':['Cours d\'histoire', 'Primo Victoria raconte le Débarquement de 1944 en quatre minutes : la fosse révise sans s\'en rendre compte.'],
+    'mccall':['Vague de fond', 'Parkway Drive vient de Byron Bay, ville de surfeurs : chaque breakdown déferle comme une vague.'],
+    'blythe':['Objectif ouvert', 'Hurleur sur scène, photographe en coulisses : il shoote ses tournées entre deux riffs.'],
+    'heafy':['Déferlante', 'Sur In Waves, il fait sauter des salles entières au même rythme, d\'un seul cri.'],
     'sam-carter':['Pas dans ma fosse', 'En plein concert, il arrête le morceau pour dénoncer une agression sexuelle qu\'il vient de voir dans le public.'],
     nito:['Adiós Sui Generis', 'En 1975, le concert d\'adieu du groupe au Luna Park de Buenos Aires devient un film et un album mythiques.'],
     reuno:['Le verbe en première ligne', 'Ses textes en français, engagés et ironiques, tapent sur la société depuis 1989 ; No facho annonce la couleur dès le premier album.']
@@ -1961,6 +2092,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'joe-duplantier':'Chanteur et guitariste de Gojira, groupe de metal formé dans les Landes en 1996.',
     'amy-lee':'Chanteuse et pianiste d\'Evanescence, groupe formé à Little Rock en 1995.',
     'brendan-murphy':'Chanteur et fondateur de Counterparts, groupe de hardcore mélodique formé à Hamilton, au Canada, en 2007.',
+    'chino':'Chanteur de Deftones, groupe de metal alternatif formé à Sacramento, en Californie, en 1988.',
+    'lzzy-hale':'Chanteuse et guitariste d\'Halestorm, groupe de hard rock fondé avec son frère Arejay en Pennsylvanie.',
+    'peter-hayes':'Guitariste et chanteur de Black Rebel Motorcycle Club, groupe de garage rock fondé à San Francisco en 1998.',
+    'broden':'Chanteur de Sabaton, groupe suédois de power metal qui ne chante que l\'histoire des guerres et des batailles.',
+    'mccall':'Chanteur de Parkway Drive, groupe de metalcore formé en 2003 à Byron Bay, en Australie.',
+    'blythe':'Chanteur de Lamb of God, groupe de groove metal formé à Richmond, en Virginie, en 1994.',
+    'heafy':'Chanteur et guitariste de Trivium, groupe de metalcore et de heavy metal d\'Orlando, en Floride.',
     'sam-carter':'Chanteur d\'Architects, groupe de metalcore de Brighton qu\'il rejoint en 2007.',
     nito:'Chanteur, flûtiste et guitariste de Sui Generis, duo pionnier du rock argentin.',
     reuno:'Chanteur et fondateur de Lofofora, groupe pionnier du metal fusion français formé à Paris en 1989.'
@@ -2030,12 +2168,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     'joe-duplantier':'Chanteur, guitariste et principal compositeur de Gojira, groupe formé en 1996 dans les Landes avec son frère Mario. Riffs massifs, harmoniques sifflées et textes engagés pour l\'environnement, de From Mars to Sirius (2005) à L\'Enfant sauvage (2012).',
     'amy-lee':'Chanteuse, pianiste et cofondatrice d\'Evanescence, groupe formé à Little Rock, dans l\'Arkansas, en 1995. Formée au piano classique, elle mêle chant lyrique et guitares lourdes ; Bring Me to Life (2003) a fait de Fallen l\'un des albums rock les plus vendus des années 2000.',
     'brendan-murphy':'Il fonde Counterparts en 2007 à Hamilton, dans l\'Ontario, et en reste le seul membre de toujours. Ses cris et ses textes sur la dépression et la perte portent Tragedy Will Find Us (2015) ou Nothing Left to Love (2019) ; l\'EP Heaven Let Them Die (2024), avec Praise No Artery Intact, pousse le groupe vers ses breakdowns les plus lourds. Il chante aussi dans End, groupe de metallic hardcore.',
+    'chino':'Il fonde Deftones à Sacramento avec des amis de lycée. White Pony (2000), avec Change (In the House of Flies), fait du groupe une référence du metal alternatif et lui vaut un Grammy en 2001 pour Elite. Sa voix passe du murmure au cri ; il chante aussi dans Crosses et Team Sleep.',
+    'lzzy-hale':'Elle fonde Halestorm adolescente, en 1997, avec son frère batteur Arejay. The Strange Case Of... (2012), avec I Miss the Misery, leur vaut le Grammy de la meilleure performance hard rock et metal en 2013 pour Love Bites (So Do I). Sa voix puissante et sa Gibson Explorer en font une figure du hard rock actuel.',
+    'peter-hayes':'Passé par The Brian Jonestown Massacre, il fonde Black Rebel Motorcycle Club en 1998 à San Francisco avec Robert Levon Been. Le premier album, B.R.M.C. (2001), avec Spread Your Love, mêle garage rock, guitares saturées et ambiances psychédéliques ; Howl (2005) part vers le blues et le folk.',
+    'broden':'Il cofonde Sabaton en 1999 à Falun, en Suède. Chaque chanson raconte une bataille ou un fait de guerre : Primo Victoria (2005) ouvre leur premier album avec le Débarquement. Le groupe remplit les plus grands festivals européens et lance sa propre chaîne d\'histoire sur YouTube.',
+    'mccall':'Il chante dans Parkway Drive depuis sa formation en 2003 à Byron Bay, sur la côte est australienne. Atlas (2012), avec Wild Eyes, et ses refrains repris en chœur par le public font du groupe un pilier du metalcore ; Reverence (2018) et Darker Still (2022) le poussent vers le heavy metal.',
+    'blythe':'Il chante dans Lamb of God, formé en 1994 à Richmond sous le nom de Burn the Priest. Redneck (2006), sur l\'album Sacrament, devient leur titre le plus connu. Photographe, il a aussi écrit Dark Days (2015), le récit de son procès à Prague, où il a été acquitté en 2013.',
+    'heafy':'Né au Japon et élevé en Floride, il rejoint Trivium adolescent, à la fin des années 1990. Ascendancy (2005) les révèle ; In Waves (2011) devient leur hymne de scène. Il mène aussi Ibaraki, projet de black metal, et joue en direct sur Twitch.',
     'sam-carter':'Il rejoint en 2007 Architects, groupe de metalcore formé à Brighton, en Angleterre. Après la mort du guitariste et principal compositeur Tom Searle en 2016, le groupe sort Doomsday (2017), puis l\'album Holy Hell (2018) ; For Those That Wish to Exist (2021) se classe numéro un des ventes au Royaume-Uni. Il alterne cris et chant clair sur des textes qui parlent de deuil et d\'écologie.',
     nito:'Il fonde Sui Generis à Buenos Aires avec Charly García ; sa voix douce et sa flûte portent Vida (1972), avec Canción para mi muerte, puis Confesiones de invierno (1973). En 1975, le concert d\'adieu au Luna Park devient un monument du rock argentin ; il forme ensuite Nito Mestre y los Desconocidos de Siempre.',
     reuno:'Il fonde Lofofora à Paris en 1989, l\'un des pionniers du metal fusion en France ; le groupe doit son nom à un cactus, le lophophora. Il chante en français des textes engagés et souvent ironiques, contre le racisme et l\'extrême droite, comme No facho sur le premier album (1995). Dur comme fer (1999), avec Les gens, reste un classique de la scène française ; il chante aussi dans le groupe de stoner Mudweiser.'
   };
   // extrait officiel de 30 s (iTunes) : identifiant du morceau par carte, autre titre de l'artiste quand celui de la carte n'est pas disponible
-  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478, 'reuno':1479579101, 'sam-carter':1485076238, 'nito':321615277, 'brendan-murphy':1778051238};
+  var TRACKS = {'knocked-loose':1798815163, 'isaac-hale':1798815167, 'jinjer':1183567528, 'spiritbox':1584622651, 'landmvrks':1536139078, 'ramos':1568552356, 'heriot':1748146011, 'duplantier':213374170, 'blink182':1444118647, 'hoppus':1442467458, 'hendrix':344799464, 'korn':1831584743, 'poppy':1817381627, 'slash':1377826728, 'morello':191450927, celine:1481507900, 'lars':1434055375, 'burton':1440901441, 'lombardo':1440850848, 'harris':979947187, 'iommi':1533659672, 'may':6781074741, 'page':580708180, 'plant':580708471, 'bonham':580708478, 'flea':945581838, 'corey':926184076, 'shinoda':528437613, 'malakian':273714640, 'joe-duplantier':525085707, 'amy-lee':1440666111, 'zack':390538384, 'frusciante':947701032, 'root':926184068, 'jordison':927729070, 'dickinson':979938033, 'halford':978784053, 'ozzy':471306671, 'lemmy':1439443121, 'hetfield':1442993961, 'mustaine':725812418, 'araya':1733769810, 'scott-ian':1440847513, 'cobain':1586895442, 'cornell':1440811686, 'staley':217358886, 'grohl':362133505, 'keenan':1474185654, 'white-gluz':1252750322, 'corpsegrinder':1547891861, 'tankian':273714713, 'sykes':1022197806, 'hayley':604804763, 'armstrong':1161539476, 'angus':574044008, 'dio':1440757610, 'doro':1440658704, 'hammett':1571968519, 'mercury':6781027645, 'gerard-way':1156310692, 'bennington':590423552, 'prince':1229320478, 'reuno':1479579101, 'sam-carter':1485076238, 'nito':321615277, 'brendan-murphy':1778051238, 'chino':1099848811, 'lzzy-hale':513677117, 'peter-hayes':1660742424, 'broden':1463539660, 'mccall':1485057043, 'blythe':400111421, 'heafy':446292215};
   // aperçus qui s'ouvrent sur une intro calme : on démarre là où le morceau décolle (secondes dans l'aperçu de 30 s,
   // mesurées sur le volume, 2026-10-01 ; les 4 premières secondes sous 65 % du volume du morceau)
   var TRACK_START = {'knocked-loose':11, 'isaac-hale':10, lars:11, burton:13, frusciante:7, dickinson:2};
@@ -2179,7 +2324,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       // pseudo choisi à l'inscription, enregistré à la première connexion
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
-      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); checkRequests(); syncPush();
+      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); checkGifts(); checkRequests(); checkPurchases(); syncPush();
       renderSocial(); loadGigs();   // invitations, potes, concerts : la pastille de Metal Corner est juste dès la connexion
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
       presence();
@@ -2187,7 +2332,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('potes'); go('corner'); tradeJoin(troc); }, 600); }
       if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('fosse'); go('corner'); bandJoin(bd); }, 600); }
-      if(pendingSlam || pendingPote){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || ''); pendingSlam = pendingPote = null; setTimeout(function(){ openLink(lk); }, 600); }
+      if(pendingSlam || pendingPote || pendingPit){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || ''); pendingSlam = pendingPote = pendingPit = null; setTimeout(function(){ openLink(lk); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -2249,8 +2394,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var POWERS = ['Headbang infini', 'Ouvreur de circle pit', 'Survivant du wall of death', 'A perdu une chaussure dans le pit', 'Connaît les paroles, même les growls',
     'A dormi devant la salle pour le premier rang', 'A attrapé un médiator au vol', 'Premier slam à 14 ans', 'Tympans en acier', 'Air guitar légendaire'];
   var powerSheet = document.getElementById('power-sheet'), powerIn = document.getElementById('pf-power-in');
+  document.getElementById('pf-rename').addEventListener('click', function(){ askUsername(true); });
   function paintName(){
     document.getElementById('pf-name').textContent = state.username || 'Invité';
+    document.getElementById('pf-rename').hidden = !ONLINE || !state.username;
     var t = document.getElementById('pf-power-text'); t.textContent = state.power || 'Pas encore de capacité. Raconte ton meilleur souvenir de concert.'; t.classList.toggle('empty', !state.power);
   }
   function powerCount(){ document.getElementById('pf-power-count').textContent = powerIn.value.length + ' / 120'; }
@@ -2292,7 +2439,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var done = binders.filter(binderDone), pins = CARDS.filter(function(c){ return isMastered(c.id); });
     var fav = CARDS.map(function(c){ return {c:c, n:RARITIES.filter(function(r){ return state.owned[c.id + '|' + r.k]; }).length}; }).sort(function(a, b){ return b.n - a.n; })[0];
     var media = state.showMedia !== false;
-    return {own:true, name:state.username || 'Invité', score:mus.length + 4 * done.length + 6 * pins.length + gigPoints(gigs), power:state.power,
+    return {own:true, name:state.username || 'Invité', score:mus.length + 4 * done.length + 6 * pins.length + gigPoints(gigs) + slamPts, power:state.power,
       avatar:media ? avatarSrc() : null, cry:media ? crySrc() : null, showcase:showcase(),
       patches:binders.map(function(b){ var cov = b.ids.map(function(id){ var r = placed(id); return r ? id + '|' + r : null; }).filter(Boolean).sort(byRarity)[0];
         return {label:binderLabel(b), done:binderDone(b), cover:cov}; }),
@@ -2430,13 +2577,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     saveBtn.disabled = false;
   });
   function signOut(){ if(!AUTH) return; var api = AUTH; ONLINE = null; state.username = null; state.owned = {}; state.toPlace = []; state.pending = null; save(); setNet(); renderStats(); api.signOut().then(function(){ showAuth('login'); }); }
-  function askUsername(){
-    var box = document.getElementById('uname'), inp = document.getElementById('uname-in'), err = document.getElementById('uname-err'), btn = document.getElementById('uname-go');
-    box.hidden = false; setTimeout(function(){ inp.focus(); }, 50);
+  // premier pseudo, ou changement depuis le profil (edit : une fois par semaine, refusé s'il est haineux, vérifié par le serveur)
+  function askUsername(edit){
+    var box = document.getElementById('uname'), inp = document.getElementById('uname-in'), err = document.getElementById('uname-err'), btn = document.getElementById('uname-go'), no = document.getElementById('uname-cancel');
+    document.getElementById('uname-k').textContent = edit ? 'Backstage' : 'Bienvenue dans le pit';
+    document.getElementById('uname-t').textContent = edit ? 'Nouveau nom de scène' : 'Ton nom de scène';
+    document.getElementById('uname-note').textContent = edit ? 'Un changement par semaine. Tes potes, ta bande et tes trocs suivent sous le nouveau nom. Pas de haine dans le pit : les pseudos racistes, sexistes ou homophobes sont refusés.' : 'C\'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.';
+    btn.textContent = edit ? 'Changer' : 'Sur scène !'; no.hidden = !edit; no.onclick = function(){ box.hidden = true; };
+    inp.value = edit ? state.username || '' : ''; err.textContent = '';
+    box.hidden = false; setTimeout(function(){ inp.focus(); if(edit) inp.select(); }, 50);
     var send = async function(){
       var v = inp.value.trim(); if(!/^[A-Za-z0-9_.-]{3,20}$/.test(v)){ err.textContent = 'Pseudo invalide : 3 à 20 caractères, lettres, chiffres, point, tiret ou tiret bas.'; return; }
       btn.disabled = true; err.textContent = '';
-      try{ state.username = await ONLINE.setUsername(v); save(); box.hidden = true; setNet(); SFX.land(); }
+      try{ state.username = await ONLINE.setUsername(v); save(); box.hidden = true; setNet(); SFX.land(); if(edit){ paintName(); toast('Nouveau nom de scène : <b>' + esc(state.username) + '</b>.'); } }
       catch(e){ err.textContent = e.message; }
       btn.disabled = false;
     };
@@ -2571,12 +2724,29 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(n){ var sachet = '<svg viewBox="0 0 24 32" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="currentColor"/></svg>';
       pc.innerHTML = '<span class="pk">' + new Array(Math.min(n, 5) + 1).join(sachet) + '</span><span><b>' + n + ' paquet' + (n > 1 ? 's' : '') + '</b> à ouvrir</span>' +
         (gift || res > 0 ? '<small>' + [res > 0 ? res + ' en réserve' : '', gift ? gift + ' cadeau' + (gift > 1 ? 'x' : '') : ''].filter(Boolean).join(' · ') + '</small>' : ''); }
-    var wait = document.getElementById('pc-wait'); wait.hidden = !closed;
-    wait.textContent = closed ? 'Prochain paquet dans ' + untilMidnight() + ', à minuit pile.' : '';
+    // plus de paquet : compte à rebours, offres de la boutique (si ouverte), et comment en gagner
+    document.getElementById('merch-shut').hidden = !closed; document.getElementById('formats').hidden = closed;
+    if(closed){ document.getElementById('ms-left').textContent = untilMidnight(); document.getElementById('ms-buy').hidden = !(shop && shop.pack1 && shop.pack1.url); }
+  }
+  // boutique (réglage « shop ») : une offre sans lien Stripe reste cachée ; l'achat s'ouvre sur la page de paiement Stripe
+  var shop = {};
+  function buy(offer, artist, note){
+    var o = shop && shop[offer]; if(!ONLINE || !o || !o.url) return Promise.resolve(false);
+    return ONLINE.startPurchase(offer, artist, note).then(function(id){ location.href = o.url + (o.url.indexOf('?') < 0 ? '?' : '&') + 'client_reference_id=' + id; return true; },
+      function(e){ toast(esc(e.message)); return false; });
+  }
+  [].forEach.call(document.querySelectorAll('[data-buy]'), function(b){ b.addEventListener('click', function(){ b.disabled = true; buy(b.getAttribute('data-buy')).then(function(){ b.disabled = false; }); }); });
+  document.getElementById('ms-earn').addEventListener('click', function(){ cornerTab('epreuves'); go('corner'); });
+  // retour de Stripe, ou paiement confirmé pendant qu'on était ailleurs : on annonce et on recompte
+  function checkPurchases(){
+    if(!ONLINE) return;
+    Promise.resolve().then(function(){ return ONLINE.purchaseNews(); }).then(function(list){ if(!list.length) return; snd('gift');
+      list.forEach(function(x, i){ setTimeout(function(){ toast(x.offer === 'artist' ? 'Paiement reçu : <b>' + esc(x.artist) + '</b> passe en tête de la liste du Grand Architecte.' : 'Paiement reçu : ' + (x.offer === 'pack3' ? '<b>3 paquets</b> t\'attendent.' : '<b>un paquet</b> t\'attend.')); }, i * 4500); });
+      refreshDaily(); }).catch(function(){});
   }
   function refreshDaily(){
     if(!ONLINE){ state.packsLeft = null; state.bonus = 0; renderDaily(); return; }
-    Promise.all([ONLINE.packsLeft(), ONLINE.bonusPoints()]).then(function(v){ state.packsLeft = v[0]; state.bonus = v[1]; renderDaily(); }).catch(function(){});
+    Promise.all([ONLINE.packsLeft(), ONLINE.bonusPoints(), Promise.resolve().then(function(){ return ONLINE.shop(); }).catch(function(){ return {}; })]).then(function(v){ state.packsLeft = v[0]; state.bonus = v[1]; shop = v[2] || {}; renderDaily(); }).catch(function(){});
   }
   setInterval(function(){ if(state.packsLeft === 0) renderDaily(); }, 60000);
   // deux temps : choisir un paquet, puis l'ouvrir
@@ -2855,7 +3025,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // lien d'invitation (?troc=CODE) : ouvert avant la connexion, il est rejoint dès que le joueur est en ligne
   var pendingTroc = (/[?&]troc=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;
   var pendingBand = (/[?&]bande=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien d'une bande de concert, rejointe une fois en ligne
-  var pendingSlam = (/[?&]slam=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // lien ou notification d'un slam : rejoint la foule une fois en ligne
+  var pendingSlam = (/[?&]slam=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
+  var pendingPit = (/[?&]pit=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // lien ou notification d'un circle pit : on rejoint le cercle une fois en ligne   // lien ou notification d'un slam : rejoint la foule une fois en ligne
   var pendingPote = (/[?&]pote=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien de pote : ajouté une fois en ligne
   // lien de slam ou de pote ouvert sans être connecté (sur iPhone, un lien s'ouvre dans Safari, pas dans l'app installée)
   function linkAsGuest(){
@@ -2865,7 +3036,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
          text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Troc, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
          yes:'Me connecter ici', no:'OK'}, function(){ showAuth('login'); });
   }
-  if(pendingTroc || pendingBand || pendingSlam || pendingPote) history.replaceState(null, '', location.pathname + location.hash);
+  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
   function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
@@ -2963,8 +3134,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           if(det){ try{ var found = await det.detect(v); txt = found[0] && found[0].rawValue; }catch(e){} }
           else { var k = Math.min(1, 640 / v.videoWidth); cv.width = v.videoWidth * k; cv.height = v.videoHeight * k; cx.drawImage(v, 0, 0, cv.width, cv.height);
             var d = cx.getImageData(0, 0, cv.width, cv.height), q = jsqr(d.data, d.width, d.height); txt = q && q.data; }
-          var code = txt && codeFrom(txt);
-          if(code){ buzz(30); snd('trade-scan'); tradeJoin(code); return; }
+          if(txt && scanRoute(txt)){ buzz(30); snd('trade-scan'); return; }
         }
         raf = requestAnimationFrame(tick);
       };
@@ -2972,12 +3142,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }catch(e){ if(note) note.textContent = 'Caméra indisponible. Tape son code juste en dessous.'; }
   }
   function stopScan(){ if(scanStop) scanStop(); }
+  // QR lu (ou code tapé) : troc, pote, bande ou slam selon le lien ; un code nu suit le choix du joueur (scanAs)
+  var scanAs = 'troc';
+  function scanRoute(txt){
+    var as = /[?&]troc=/.test(txt) ? 'troc' : /[?&](slam|pote|pit)=/.test(txt) ? 'lien' : /[?&]bande=/.test(txt) ? 'bande' : scanAs;
+    if(as === 'troc'){ var code = codeFrom(txt); if(!code) return false; tradeJoin(code); return true; }
+    if(as === 'lien' || as === 'pote'){ if(as === 'pote' && !/^\s*[A-Za-z0-9]{3}[\s-]?[A-Za-z0-9]{3}\s*$/.test(txt)) return false;
+      tradeClose(); if(as === 'lien') openLink(txt); else { cornerTab('potes'); addPote(txt); } return true; }
+    if(!bandCode(txt)) return false;
+    tradeClose(); cornerTab('fosse'); go('corner'); bandJoin(txt); return true;
+  }
   // le QR dessiné est gardé : il fait partie du rendu suivant (morph ne l'efface pas)
   var qrSvg = {};
-  function paintQr(code){
-    loadLib(QR_LIB, 'qrcode').then(function(qrcode){ var q = qrcode(0, 'M'); q.addData(tradeLink(code)); q.make();
-      qrSvg[code] = q.createSvgTag({cellSize:4, margin:0, scalable:true}); var el = document.getElementById('tr-qr'); if(el) el.innerHTML = qrSvg[code]; })
-      .catch(function(){ var el = document.getElementById('tr-qr'); if(el) el.hidden = true; });
+  function paintQr(code){ paintQrInto('tr-qr', tradeLink(code)); }
+  // QR d'un lien (troc, pote, bande) dessiné dans l'élément id, gardé pour les rendus suivants
+  function paintQrInto(id, url){
+    var put = function(){ var el = document.getElementById(id); if(el) el.innerHTML = qrSvg[url]; };
+    if(qrSvg[url]){ put(); return; }
+    loadLib(QR_LIB, 'qrcode').then(function(qrcode){ var q = qrcode(0, 'M'); q.addData(url); q.make(); qrSvg[url] = q.createSvgTag({cellSize:4, margin:0, scalable:true}); put(); })
+      .catch(function(){ var el = document.getElementById(id); if(el) el.hidden = true; });
   }
   // o : label (fin du libellé d'accessibilité), tag / tagCls (étiquette du haut), last (dernier exemplaire), off (désactivée)
   function trCard(x, o){ o = o || {}; var c = card(x.m), rr = rarity(x.r);
@@ -2991,17 +3174,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function renderTradeIn(){
     var t = trade, who = t && t.partner ? esc(t.partner) : 'Ton pote';
     if(tradeScan){
-      tradeIn.innerHTML = '<p class="eyebrow">Échange</p><h2>Scanne son code</h2><p class="pf-note" id="tr-cam-note">Vise le QR code affiché dans son Metal Corner.</p>' +
+      tradeIn.innerHTML = '<p class="eyebrow">Scanner</p><h2>Scanne son QR</h2><p class="pf-note" id="tr-cam-note">Troc, pote ou bande : l\'app reconnaît son QR toute seule.</p>' +
         '<div class="tr-cam"><video id="tr-video" playsinline muted></video><i aria-hidden="true"></i></div>' +
-        '<form class="tr-join" id="tr-join"><label class="pf-label" for="tr-code-in">Ou tape son code</label><div class="pf-row"><input class="as-in" id="tr-code-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="7" placeholder="ABC 234"><button type="submit" class="btn">Rejoindre</button></div></form>';
-      document.getElementById('tr-join').onsubmit = function(e){ e.preventDefault(); tradeJoin(document.getElementById('tr-code-in').value); };
+        '<form class="tr-join" id="tr-join"><label class="pf-label" for="tr-code-in">Ou tape son code</label><div class="scan-as" role="radiogroup" aria-label="Ce code sert à">' + [['troc', 'Troc'], ['pote', 'Pote'], ['bande', 'Bande']].map(function(x){ return '<button type="button" class="df" role="radio" aria-checked="' + (scanAs === x[0]) + '" data-as="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div><div class="pf-row"><input class="as-in" id="tr-code-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="7" placeholder="ABC 234"><button type="submit" class="btn">Rejoindre</button></div></form>';
+      document.getElementById('tr-join').onsubmit = function(e){ e.preventDefault(); if(!scanRoute(document.getElementById('tr-code-in').value)) toast('Un code, c\'est 6 caractères.'); };
+      [].forEach.call(tradeIn.querySelectorAll('[data-as]'), function(x){ x.onclick = function(){ scanAs = x.getAttribute('data-as'); [].forEach.call(tradeIn.querySelectorAll('[data-as]'), function(y){ y.setAttribute('aria-checked', String(y === x)); }); }; });
+      
       startScan(); return;
     }
     if(t.status === 'open'){
       morph(tradeIn, '<p class="eyebrow">Échange</p><h2>Montre ce code</h2><p class="pf-note">Ton pote le scanne depuis son Metal Corner. Pas à côté de toi ? Envoie-lui le lien.</p>' +
-        '<div class="gframe tr-qr-f"><div class="tr-qr" id="tr-qr" role="img" aria-label="QR code de l\'échange">' + (qrSvg[t.code] || '') + '</div></div><p class="tr-code num">' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</p>' +
+        '<div class="gframe tr-qr-f"><div class="tr-qr" id="tr-qr" role="img" aria-label="QR code de l\'échange">' + (qrSvg[tradeLink(t.code)] || '') + '</div></div><p class="tr-code num">' + t.code.slice(0, 3) + ' ' + t.code.slice(3) + '</p>' +
         '<button type="button" class="btn ghost block" id="tr-send">Envoyer le lien</button><p class="tr-wait">En attente de ton pote…</p>');
-      if(!qrSvg[t.code]) paintQr(t.code);
+      if(!qrSvg[tradeLink(t.code)]) paintQr(t.code);
       document.getElementById('tr-send').onclick = function(){
         var url = tradeLink(t.code), txt = 'Viens échanger des cartes avec moi sur Metalnini. Code : ' + t.code;
         if(navigator.share) navigator.share({title:'Metalnini', text:txt, url:url}).catch(function(){});
@@ -3204,51 +3389,186 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return (d.crowd || []).length + (d.carried || []).filter(function(x){ return x.landed; }).length + (d.mine && d.mine.landed && !d.mine.claimed ? 1 : 0); }
   function slamLeft(iso){ var m = Math.max(0, Math.round((new Date(iso) - Date.now()) / 6e4)); return m >= 60 ? Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') : m + ' min'; }
   // scène : st = ready (sur le bord de la scène), fly (porté, avance d'un cran par porteur), land (atterri, cornes levées), crash (dans la fosse)
-  function slamScene(st, n, goal, dive){
-    var W = 320, x0 = 40, step = 196 / Math.max(1, goal - 1), crowd = '', fig, x = Math.round(20 + Math.min(n, goal) / goal * 220);
-    for(var i = 0; i < goal; i++){ var fx = Math.round(x0 + i * step), up = st === 'land' || i < n;
-      crowd += '<g class="sc-fan' + (up ? ' up' : '') + '" style="--d:' + (i * .12).toFixed(2) + 's"><circle cx="' + fx + '" cy="92" r="8"/><path d="M' + (fx - 12) + ' 112 q12 -16 24 0"/>' +
-        (up ? '<path class="sc-arm" d="M' + (fx - 7) + ' 88 l-6 -18 M' + (fx + 7) + ' 88 l6 -18"/>' : '') + '</g>'; }
-    // silhouettes : debout (bras selon l'état) ou allongée, la tête vers l'avant
-    function stand(cx, base, arms){ return '<circle cx="' + cx + '" cy="' + (base - 36) + '" r="6"/><path d="M' + cx + ' ' + (base - 29) + ' v17 l-7 12 M' + cx + ' ' + (base - 12) + ' l7 12 ' + arms + '"/>'; }
-    var lying = '<circle cx="17" cy="-3" r="6"/><path d="M9 0 h-22 l-12 -7 M-13 0 l-12 6 M4 0 l8 -11 M4 0 l10 -6"/>';
-    if(st === 'ready') fig = '<rect class="sc-stage" x="0" y="52" width="40" height="6" rx="2"/><g class="sc-me hop">' + stand(22, 52, 'M22 27 l9 -8 M22 27 l9 -2') + '</g>';
-    // atterrissage et chute : à droite de la foule
-    else if(st === 'land') fig = '<g class="sc-burst"><path d="M296 52 v-9 M283 58 l-6 -6 M309 58 l6 -6 M277 70 h-8 M315 70 h8"/></g><g class="sc-me horns">' + stand(296, 112, 'M296 82 l-8 -14 M296 82 l8 -14') + '</g>';
-    else if(st === 'crash') fig = '<g class="sc-dust"><circle cx="276" cy="110" r="4"/><circle cx="294" cy="112" r="3"/><circle cx="312" cy="110" r="4"/></g>' +
-      '<g transform="translate(298 108) rotate(10)"><g class="sc-me down">' + lying + '</g></g>';
-    else fig = '<g class="sc-ride" data-x="' + x + '" style="transform:translate(' + x + 'px, 0)"><g transform="translate(0 66)"><g class="sc-me bob' + (dive ? ' dive' : '') + '">' + lying + '</g></g></g>';
+  // photos des joueurs (chemins du stockage) : liens signés gardés une heure, posés après coup sur les pastilles data-av
+  var avUrls = {};
+  function avDisc(p, cls){ var n = (p && p.name) || '?';
+    return '<span class="pit-av' + (cls ? ' ' + cls : '') + '"' + (p && p.url ? ' style="background-image:url(\'' + esc(p.url) + '\')"' : p && p.avatar ? ' data-av="' + esc(p.avatar) + '"' : '') + '>' + (p && (p.url || avUrls[p.avatar]) ? '' : esc(n.charAt(0).toUpperCase())) + '</span>'; }
+  function hydrateAvatars(root){
+    [].forEach.call(root.querySelectorAll('[data-av]'), function(el){ var path = el.getAttribute('data-av'); el.removeAttribute('data-av');
+      var put = function(u){ if(u){ el.style.backgroundImage = 'url(\'' + u + '\')'; el.textContent = ''; } };
+      if(avUrls[path]) put(avUrls[path]);
+      else Promise.resolve().then(function(){ return ONLINE.mediaUrl('avatars', path); }).then(function(u){ avUrls[path] = u; put(u); }).catch(function(){}); });
+  }
+  // croisés dans la fosse (porteurs de mon slam, coureurs du même pit) qui ne sont pas encore mes potes : « + Pote » d'un toucher
+  function fosseAdd(people){
+    var mine = friendsList.map(function(f){ return f.friend_id; }), them = people.filter(function(p){ return p.id && !p.me && mine.indexOf(p.id) < 0; });
+    return them.length ? '<div class="fs-add">' + them.map(function(p){ return '<button type="button" class="df" data-fadd="' + esc(p.id) + '">+ ' + esc(p.name) + '</button>'; }).join('') + '</div>' : ''; }
+  function bindFosseAdd(root){
+    [].forEach.call(root.querySelectorAll('[data-fadd]'), function(b){ b.onclick = function(){ b.disabled = true;
+      ONLINE.fosseAddFriend(b.getAttribute('data-fadd')).then(function(name){ b.outerHTML = '<span class="df">' + esc(name) + ' ✓</span>'; snd('trade-join'); toast('<b>' + esc(name) + '</b> rejoint tes potes.'); renderSocial(); },
+        function(e){ b.disabled = false; toast(esc(e.message)); }); }; });
+  }
+  // scène du slam : la foule (les porteurs, en avatars, bras levés ; les places libres en pointillé) et moi au-dessus,
+  // qui avance d'une place à chaque porteur ; atterri sur la scène à droite, ou écrasé dans la fosse
+  var ARMS = '<svg class="pit-arms" viewBox="0 0 40 18" aria-hidden="true"><path d="M8 18 L3 3 M32 18 L37 3"/></svg>';
+  function slamScene(st, people, goal, dive){
+    var n = people.length, slots = '', me = {name:state.username || 'Toi', url:avatarSrc()};
+    for(var i = 0; i < goal; i++){ var p = people[i];
+      slots += p ? '<li class="on" style="--d:' + (i * .15).toFixed(2) + 's">' + ARMS + avDisc(p) + '<small>' + esc(p.name) + '</small></li>'
+                 : '<li class="off">' + avDisc({name:'?'}) + '<small>Libre</small></li>'; }
+    var x = st === 'ready' ? 0 : st === 'land' || st === 'crash' ? 100 : Math.round(Math.min(n, goal) / goal * 86 + 7);
     var label = st === 'ready' ? 'Prêt à plonger' : st === 'land' ? 'Atterri, porté par ' + n : st === 'crash' ? 'Écrasé dans la fosse, ' + n + ' porteur' + (n > 1 ? 's' : '') + ' sur ' + goal : 'Porté par ' + n + ' sur ' + goal;
-    return '<svg class="slam-scene" viewBox="' + (st === 'crash' ? '0 60 ' + W + ' 56' : '0 0 ' + W + ' 116') + '" role="img" aria-label="' + label + '">' + crowd + fig + '</svg>'; }
+    return '<div class="pit-stage st-' + st + '" role="img" aria-label="' + label + '"><i class="pit-beam" aria-hidden="true"></i><i class="pit-beam r" aria-hidden="true"></i>' +
+      (st === 'land' ? '<i class="pit-burst" aria-hidden="true"></i>' : '') +
+      '<div class="pit-rider' + (dive ? ' dive' : '') + '" data-x="' + x + '" style="--x:' + x + '%">' + avDisc(me, 'me') + '</div>' +
+      '<ol class="pit-crowd" style="--n:' + goal + '">' + slots + '</ol></div>'; }
+  // ---------- Circle pit : 2 minutes sur un extrait, on rameute, on court (touchers), gain selon les paliers ----------
+  var pitData = null, pit = null, pitPending = 0, pitMine = 0, pitTimer = 0, pitSync = 0, pitBusy = false;
+  var pitEl = document.getElementById('pit'), pitIn = document.getElementById('pit-in'), pitPick = document.getElementById('pit-pick');
+  function loadPits(){
+    if(!ONLINE) return;
+    Promise.resolve().then(function(){ return ONLINE.pitFeed(); }).then(function(d){ pitData = d; paintPits(); }).catch(function(){});
+  }
+  function pitLeft(iso){ var s = Math.max(0, Math.round((new Date(iso) - Date.now()) / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function trackName(id){ var c = card(id); return c ? c.title + ' · ' + c.who : 'Un morceau'; }
+  // rubrique Fosse : pits en cours (à rejoindre), pits finis à récupérer, et lancer le mien
+  function paintPits(){
+    var d = pitData, sec = document.getElementById('pit-sec'); sec.hidden = !d; if(!d) return;
+    var rows = d.live.map(function(x){
+      return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>circle pit sur ' + esc(trackName(x.track)) + ' · ' + x.runners + ' coureur' + (x.runners > 1 ? 's' : '') + ' · encore ' + pitLeft(x.ends_at) + '</small></span>' +
+        '<span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">' + (x.in ? 'Y retourner' : 'Courir') + '</button></span></div>'; }).join('') +
+      d.done.map(function(x){
+        return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>le pit est retombé · tes points t\'attendent</small></span><span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">Voir</button></span></div>'; }).join('');
+    var box = d.opened_today ? '' : '<div class="slam-box"><b>Lance un circle pit</b><small>' + Math.round(d.duration / 60) + ' minutes sur le morceau de ton choix. Tes potes sont prévenus, chacun rameute les siens. Plus le cercle est gros et rapide, plus tout le monde gagne.</small>' +
+      (friendsList.length ? '<button type="button" class="btn block" id="pit-go">Ouvrir le pit</button>' : '<small>Il te faut des potes pour courir : ajoute-les avec ton code.</small>') + '</div>';
+    document.getElementById('pits').innerHTML = rows + box;
+    hydrateAvatars(document.getElementById('pits'));
+    [].forEach.call(document.querySelectorAll('#pits [data-pit]'), function(b){ b.onclick = function(){ pitEnter(b.getAttribute('data-pit')); }; });
+    var go = document.getElementById('pit-go'); if(go) go.onclick = openPitPick;
+    cornerTab();
+  }
+  // choix du morceau : les hymnes des styles, puis mes cartes qui ont un extrait
+  function openPitPick(){
+    var hymns = Object.keys(STYLE_INFO).map(function(k){ return styleTrack(k); }).filter(function(id, i, a){ return id && a.indexOf(id) === i && card(id); });
+    var mine = CARDS.filter(function(c){ return TRACKS[c.id] && best(c.id) && hymns.indexOf(c.id) < 0; }).map(function(c){ return c.id; });
+    var chip = function(id){ var c = card(id); return '<button type="button" class="df" data-pp="' + id + '">' + esc(c.title) + ' <small>· ' + esc(c.who) + '</small></button>'; };
+    document.getElementById('pp-list').innerHTML = '<p class="eyebrow">Les hymnes</p>' + hymns.map(chip).join('') + (mine.length ? '<p class="eyebrow">Tes cartes</p>' + mine.map(chip).join('') : '');
+    [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ b.onclick = function(){
+      [].forEach.call(document.querySelectorAll('#pp-list button'), function(x){ x.disabled = true; });
+      ONLINE.pitOpen(b.getAttribute('data-pp')).then(function(st){ pitPick.hidden = true; snd('rumble'); pitShow(st); loadPits(); },
+        function(e){ [].forEach.call(document.querySelectorAll('#pp-list button'), function(x){ x.disabled = false; }); toast(esc(e.message)); }); }; });
+    pitPick.hidden = false;
+  }
+  document.getElementById('pp-cancel').onclick = function(){ pitPick.hidden = true; };
+  pitPick.addEventListener('click', function(e){ if(e.target === pitPick) pitPick.hidden = true; });
+  // entrer dans un pit (lien, notification, QR, rubrique) : on le rejoint s'il tourne encore
+  function pitEnter(id){
+    if(!needOnline()) return;
+    ONLINE.pitJoin(id).then(function(st){ pitShow(st); loadPits(); }, function(e){ toast(esc(e.message)); });
+  }
+  function pitShow(st){
+    var first = !pit || pit.id !== st.id; pit = st; pitEl.hidden = false;
+    if(first){ pitPending = 0; pitMine = (st.runners.filter(function(r){ return r.me; })[0] || {}).taps || 0; pitIn.innerHTML = ''; pitMusic(st); }
+    clearInterval(pitTimer); clearInterval(pitSync);
+    pitTimer = setInterval(pitTick, 250); pitSync = setInterval(pitPush, 1500);
+    pitPaint();
+  }
+  // l'extrait du pit en boucle, musique du jeu coupée
+  function pitMusic(st){
+    if(st.over) return;
+    track(st.track).then(function(t){ if(!t || !pit || pit.id !== st.id || pitEl.hidden) return;
+      stopListen(); audio = startAt(new Audio(t.url), t); audio.loop = true; duck(0); audio.play().then(fadeIn).catch(function(){}); });
+  }
+  function pitClose(){ clearInterval(pitTimer); clearInterval(pitSync); pitPush(); stopListen(); pitEl.hidden = true; pit = null; loadPits(); }
+  document.getElementById('pit-x').onclick = pitClose;
+  // touchers envoyés par lots ; le serveur renvoie l'état (coureurs, palier)
+  function pitPush(){
+    if(!pit || pitBusy) return;
+    var n = pitPending, id = pit.id; pitBusy = true; pitPending = 0;
+    ONLINE.pitRun(id, n).then(function(st){ pitBusy = false; if(pit && pit.id === id){ pit = st; pitPaint(); } },
+      function(){ pitBusy = false; pitPending += n; });
+  }
+  function pitTick(){
+    if(!pit) return;
+    var c = document.getElementById('pit-clock'); if(c){ c.textContent = pitLeft(pit.ends_at); c.classList.toggle('low', new Date(pit.ends_at) - Date.now() < 20000); }
+    if(!pit.over && Date.now() >= new Date(pit.ends_at)){ pit.over = true; clearInterval(pitSync); stopListen(); snd('reward'); setTimeout(pitPush, 300); pitPaint(); }
+  }
+  function pitPaint(){
+    var st = pit, t = st.tier, cfgNext = function(arr, i){ return arr[i + 1]; };
+    var runners = st.runners, n = runners.length, spin = Math.max(2.2, 16 / (1 + (t.speed || 0) * 2.2));
+    var orbit = runners.map(function(r, i){ return '<i class="pit-slot" style="--a:' + Math.round(i / Math.max(1, n) * 360) + 'deg">' + avDisc(r, r.me ? 'me' : '') + '</i>'; }).join('');
+    var sizes = [[2, 'Petit cercle'], [5, 'Vrai pit'], [10, 'Cyclone'], [20, 'Ouragan']], speeds = [[1.5, 'Endiablé'], [3, 'Infernal']];
+    var nextSize = sizes.filter(function(x){ return n < x[0]; })[0], nextSpeed = speeds.filter(function(x){ return (t.speed || 0) < x[0]; })[0];
+    var gauges = '<div class="pit-gauges"><div><small>Coureurs</small><b class="num">' + n + '</b><span>' + esc(t.size_label || 'Pas encore un cercle') + (nextSize ? ' · ' + esc(nextSize[1]) + ' dès ' + nextSize[0] : '') + '</span></div>' +
+      '<div><small>Allure</small><b>' + esc(t.speed_label) + '</b><span><span class="num">' + String(t.speed || 0).replace('.', ',') + '</span> tour/s' + (nextSpeed ? ' · ' + esc(nextSpeed[1]) + ' dès ' + String(nextSpeed[0]).replace('.', ',') : '') + '</span></div></div>';
+    var head = '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">♪ <b>' + esc(trackName(st.track)) + '</b></p></div>';
+    if(st.over){
+      pitIn.innerHTML = head + '<div class="pit-ring"><div class="pit-orbit" style="--spin:40s">' + orbit + '</div></div>' +
+        fosseAdd(runners) + '<div class="pit-win"><b>' + esc(t.size_label ? t.size_label + ' · ' + t.speed_label : 'Pas assez de monde') + '</b><span>' + n + ' coureur' + (n > 1 ? 's' : '') + ', ' + String(t.speed || 0).replace('.', ',') + ' tour/s chacun · ' +
+          (t.points ? t.points + ' point' + (t.points > 1 ? 's' : '') + ' de rang pour chacun' + (st.host ? ', +1 pour toi qui l\'as lancé' : '') : 'il faut au moins 2 coureurs') + '.</span></div>' +
+        (st.in && !st.claimed ? '<button type="button" class="btn block" id="pit-claim">Récupérer</button>' : '<button type="button" class="btn block" id="pit-done">Fermer</button>');
+      var cl = document.getElementById('pit-claim'); if(cl) cl.onclick = function(){ cl.disabled = true;
+        ONLINE.pitClaim(st.id).then(function(r){ pit.claimed = true; loadSlam(); pitClose();
+          if(r.loot) rewardArrived(r.loot, 'Circle pit · ' + (t.size_label || '')); else toast(r.points ? '+' + r.points + ' point' + (r.points > 1 ? 's' : '') + ' de rang. Le pit retombe.' : 'Pas de points cette fois : ramène du monde la prochaine.'); },
+          function(e){ cl.disabled = false; toast(esc(e.message)); }); };
+      var dn = document.getElementById('pit-done'); if(dn) dn.onclick = pitClose;
+      hydrateAvatars(pitIn); bindFosseAdd(pitIn); return;
+    }
+    // en cours : on ne redessine que ce qui bouge (le bouton garde le doigt)
+    if(!document.getElementById('pit-run')){
+      pitIn.innerHTML = head + '<div class="pit-ring"><div class="pit-orbit" id="pit-orbit"></div><button type="button" class="pit-run relief" id="pit-run"><b>Courir</b><small class="num" id="pit-mine"></small></button></div>' +
+        '<div id="pit-gauges"></div><div id="pit-add"></div><div class="pit-acts"><button type="button" class="btn" id="pit-call">Rameuter</button><button type="button" class="btn ghost" id="pit-qr-b">Mon QR</button></div><div id="pit-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pit-qr" role="img" aria-label="QR code du circle pit"></div></div></div>';
+      var run = document.getElementById('pit-run');
+      run.addEventListener('pointerdown', function(e){ e.preventDefault(); if(!pit || pit.over) return; pitPending++; pitMine++; buzz(6);
+        document.getElementById('pit-mine').textContent = pitMine + ' tour' + (pitMine > 1 ? 's' : ''); run.classList.remove('tap'); void run.offsetWidth; run.classList.add('tap'); });
+      var link = function(){ return location.origin + location.pathname + '?pit=' + pit.id + (poteCode ? '&pote=' + poteCode : ''); };
+      if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
+      document.getElementById('pit-call').onclick = function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens courir !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
+      document.getElementById('pit-qr-b').onclick = function(){ var b = document.getElementById('pit-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pit-qr', link()); };
+    }
+    document.getElementById('pit-mine').textContent = pitMine + ' tour' + (pitMine > 1 ? 's' : '');
+    var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', spin.toFixed(1) + 's');
+    if(ob.getAttribute('data-sig') !== runners.map(function(r){ return r.id; }).join()){ ob.innerHTML = orbit; ob.setAttribute('data-sig', runners.map(function(r){ return r.id; }).join()); hydrateAvatars(ob); }
+    document.getElementById('pit-gauges').innerHTML = gauges;
+    var pa = document.getElementById('pit-add'), ps = runners.map(function(r){ return r.id; }).join() + '|' + friendsList.length;
+    if(pa.getAttribute('data-sig') !== ps){ pa.innerHTML = fosseAdd(runners); pa.setAttribute('data-sig', ps); bindFosseAdd(pa); }
+  }
   // nouvelles du slam toutes les 30 s et au retour dans l'app : porteurs de mon slam, slams des potes à porter (pastille)
   setInterval(function(){ if(ONLINE && !document.hidden) loadSlam(); }, 30000);
   document.addEventListener('visibilitychange', function(){ if(ONLINE && !document.hidden) loadSlam(); });
+  // points de rang de la fosse (serveur) : 1 par slam porté jusqu'à l'atterrissage (3 par jour au plus), 2 par slam réussi, et les circle pits
+  var slamPts = 0;
   function loadSlam(){
     if(!ONLINE) return;
+    Promise.resolve().then(function(){ return ONLINE.slamPoints(); }).then(function(n){ if(n !== slamPts){ slamPts = n; renderCorner(); } }).catch(function(){});
     Promise.resolve().then(function(){ return ONLINE.slamFeed(); }).then(function(d){ slamData = d; paintSlam(); }).catch(function(){});
+    loadPits();
   }
+  // porteurs de mon slam : avec photo (people) ; anciens serveurs : les seuls noms
+  function slamPeople(m){ return m.people || (m.carriers || []).map(function(nm){ return {name:nm}; }); }
   function paintSlam(dive){
     var d = slamData, sec = document.getElementById('slam-sec'); sec.hidden = !d; if(!d) return;
     var m = d.mine, hours = Math.round(d.window / 6) / 10, mine;
-    if(!m) mine = '<div class="slam-box">' + slamScene('ready', 0, d.goal) + '<b>Plonge dans la foule</b><small>' + d.goal + ' potes doivent te porter en ' + String(hours).replace('.', ',') + ' h. Atterrissage réussi : une récompense pour toi et pour chaque porteur.</small>' +
+    if(!m) mine = '<div class="slam-box">' + slamScene('ready', [], d.goal) + '<b>Plonge dans la foule</b><small>' + d.goal + ' potes doivent te porter en ' + String(hours).replace('.', ',') + ' h. Atterrissage réussi : une récompense pour toi et pour chaque porteur.</small>' +
       (friendsList.length ? '<button type="button" class="btn block" id="slam-go">Slammer</button>' : '<small>Il te faut une foule : ajoute tes potes avec ton code.</small><button type="button" class="btn block" id="slam-potes">Ajouter des potes</button>') + '</div>';
-    else if(m.landed && !m.claimed) mine = '<div class="slam-box land">' + slamScene('land', m.carriers.length, m.goal) + '<b>Atterrissage réussi</b><small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' +
+    else if(m.landed && !m.claimed) mine = '<div class="slam-box land">' + slamScene('land', slamPeople(m), m.goal) + '<b>Atterrissage réussi</b><small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' + fosseAdd(slamPeople(m)) +
       '<button type="button" class="btn block" id="slam-claim" data-id="' + esc(m.id) + '">Récupérer ma récompense</button></div>';
-    else if(m.landed) mine = '<div class="slam-box">' + slamScene('land', m.carriers.length, m.goal) + '<b>Slam réussi</b><small>La foule reprend son souffle. Remets ça demain.</small></div>';
-    else if(m.crashed) mine = '<div class="slam-box">' + slamScene('crash', m.carriers.length, m.goal) + '<b>Écrasé dans la fosse</b><small>' + m.carriers.length + ' porteur' + (m.carriers.length > 1 ? 's' : '') + ' sur ' + m.goal + '. Demain, préviens la foule avant de plonger.</small></div>';
-    else mine = '<div class="slam-box">' + slamScene('fly', m.carriers.length, m.goal, dive) + '<b>Tu planes au-dessus de la foule</b><small><span class="num">' + m.carriers.length + '/' + m.goal + '</span> porteurs · encore ' + slamLeft(m.ends_at) + '</small>' +
-      (m.carriers.length ? '<small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' : '<small>Tes potes sont prévenus. Relance-les, la fosse n\'attend pas.</small>') +
+    else if(m.landed) mine = '<div class="slam-box">' + slamScene('land', slamPeople(m), m.goal) + '<b>Slam réussi</b><small>La foule reprend son souffle. Remets ça demain.</small></div>';
+    else if(m.crashed) mine = '<div class="slam-box">' + slamScene('crash', slamPeople(m), m.goal) + '<b>Écrasé dans la fosse</b><small>' + m.carriers.length + ' porteur' + (m.carriers.length > 1 ? 's' : '') + ' sur ' + m.goal + '. Demain, préviens la foule avant de plonger.</small></div>';
+    else mine = '<div class="slam-box">' + slamScene('fly', slamPeople(m), m.goal, dive) + '<b>Tu planes au-dessus de la foule</b><small><span class="num">' + m.carriers.length + '/' + m.goal + '</span> porteurs · encore ' + slamLeft(m.ends_at) + '</small>' +
+      (m.carriers.length ? '<small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' + fosseAdd(slamPeople(m)) : '<small>Tes potes sont prévenus. Relance-les, la fosse n\'attend pas.</small>') +
       '<button type="button" class="btn ghost block" id="slam-call">Appeler la foule</button></div>';
     var rows = (d.crowd || []).map(function(x){
-        return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>plane au-dessus de la foule · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span><span class="f-acts"><button type="button" data-carry="' + esc(x.id) + '">Porter</button></span></div>'; }).join('') +
+        return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>plane au-dessus de la foule · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span><span class="f-acts"><button type="button" data-carry="' + esc(x.id) + '">Porter</button></span></div>'; }).join('') +
       (d.carried || []).map(function(x){
-        return x.landed ? '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>a atterri grâce à toi</small></span><span class="f-acts"><button type="button" data-sclaim="' + esc(x.id) + '">Récompense</button></span></div>'
-          : '<div class="friend">' + avatarHtml(x.name) + '<span><b>' + esc(x.name) + '</b><small>tu le portes · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span>' +
+        return x.landed ? '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>a atterri grâce à toi</small></span><span class="f-acts"><button type="button" data-sclaim="' + esc(x.id) + '">Récompense</button></span></div>'
+          : '<div class="friend">' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>tu le portes · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span>' +
             (x.count < x.goal ? '<span class="f-acts"><button type="button" data-reinf="' + esc(x.id) + '">Renfort</button></span>' : '') + '</div>'; }).join('');
     document.getElementById('slam').innerHTML = rows + mine;
+    hydrateAvatars(document.getElementById('slam')); bindFosseAdd(document.getElementById('slam'));
     // le slammeur avance au-dessus de la foule depuis sa dernière position
-    var ride = document.querySelector('#slam .sc-ride'), to = ride && +ride.getAttribute('data-x');
-    if(ride && slamX != null && slamX !== to && !dive){ ride.style.transform = 'translate(' + slamX + 'px, 0)'; ride.getBoundingClientRect(); requestAnimationFrame(function(){ ride.style.transform = 'translate(' + to + 'px, 0)'; }); }
+    var ride = document.querySelector('#slam .pit-rider'), to = ride && +ride.getAttribute('data-x');
+    if(ride && slamX != null && slamX !== to && !dive){ ride.style.setProperty('--x', slamX + '%'); ride.getBoundingClientRect(); requestAnimationFrame(function(){ ride.style.setProperty('--x', to + '%'); }); }
     slamX = ride ? to : null;
     var go = document.getElementById('slam-go'); if(go) go.onclick = function(){ go.disabled = true;
       ONLINE.slamLaunch().then(function(f){ slamData = f; snd('rumble'); paintSlam(true); cornerTab(); toast('Tu plonges ! Tes potes sont prévenus : ' + f.goal + ' porteurs avant ' + new Date(f.mine.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + '.'); },
@@ -3273,7 +3593,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function slamCarry(x, b){ b.disabled = true;
     ONLINE.slamCarry(x.id).then(function(r){ snd(r.landed ? 'reward' : 'select');
-      toast(r.landed ? '<b>' + esc(x.name) + '</b> atterrit grâce à toi.' + (r.rewarded ? ' Récupère ta récompense dans Metal Corner.' : '') : 'Tu portes <b>' + esc(x.name) + '</b>. Encore ' + (r.goal - r.count) + ' paire' + (r.goal - r.count > 1 ? 's' : '') + ' de bras : appelle du renfort.');
+      toast(r.landed ? '<b>' + esc(x.name) + '</b> atterrit grâce à toi : +1 point de rang.' + (r.rewarded ? ' Récupère ta récompense dans Metal Corner.' : '') : 'Tu portes <b>' + esc(x.name) + '</b>. Encore ' + (r.goal - r.count) + ' paire' + (r.goal - r.count > 1 ? 's' : '') + ' de bras, et +1 point de rang à l\'atterrissage : appelle du renfort.');
       b.disabled = false; loadSlam(); }, function(e){ b.disabled = false; toast(esc(e.message)); loadSlam(); });
   }
   // pastille au-dessus de la barre d'onglets, sur tous les écrans sauf Metal Corner : un slam à porter d'un toucher, ou une récompense qui attend
@@ -3287,7 +3607,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // lien de slam ou de pote (au démarrage, ou notification touchée alors que l'app était ouverte)
   function openLink(q){
-    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1];
+    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1], pt = (/[?&]pit=([0-9a-f-]{36})/.exec(q) || [])[1];
+    if(pt){ cornerTab('fosse'); go('corner'); pitEnter(pt); if(pc) ONLINE.addFriend(pc).catch(function(){}); return; }
     if(!sl && !pc) return;
     cornerTab(sl ? 'fosse' : 'potes'); go('corner');
     if(sl){ slamJoin(sl); if(pc) ONLINE.addFriend(pc).catch(function(){}); }   // lien de renfort : on devient aussi pote de celui qui l'a envoyé
@@ -3310,8 +3631,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!needOnline()) return;
     document.getElementById('pote-in').value = ''; poteSheet.hidden = false;
     var el = document.getElementById('pote-code');
-    (poteCode ? Promise.resolve(poteCode) : ONLINE.friendCode()).then(function(c){ poteCode = c; el.textContent = c.slice(0, 3) + ' ' + c.slice(3); }, function(e){ el.textContent = '···'; toast(esc(e.message)); });
+    (poteCode ? Promise.resolve(poteCode) : ONLINE.friendCode()).then(function(c){ poteCode = c; el.textContent = c.slice(0, 3) + ' ' + c.slice(3); paintQrInto('pote-qr', poteLink(c)); }, function(e){ el.textContent = '···'; toast(esc(e.message)); });
   }
+  function poteLink(c){ return location.origin + location.pathname + '?pote=' + c; }
   function addPote(txt){
     var m = /[?&]pote=([A-Za-z0-9]{6})/.exec(txt) || /^\s*([A-Za-z0-9]{3})[\s-]?([A-Za-z0-9]{3})\s*$/.exec(txt), code = m ? (m[1] + (m[2] || '')).toUpperCase() : null;
     if(!code){ toast('Un code de pote a 6 caractères.'); return; }
@@ -3320,7 +3642,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   document.getElementById('pote-open').onclick = openPote;
   document.getElementById('pote-share').onclick = function(){ if(!poteCode) return;
-    share('Deviens mon pote sur Metalnini, que tu puisses me porter quand je slamme. Code : ' + poteCode, location.origin + location.pathname + '?pote=' + poteCode, 'Lien copié. Envoie-le à tes potes.'); };
+    share('Deviens mon pote sur Metalnini, que tu puisses me porter quand je slamme. Code : ' + poteCode, poteLink(poteCode), 'Lien copié. Envoie-le à tes potes.'); };
   document.getElementById('pote-join').onsubmit = function(e){ e.preventDefault(); addPote(document.getElementById('pote-in').value); };
   document.getElementById('pote-close').onclick = function(){ poteSheet.hidden = true; };
   poteSheet.addEventListener('click', function(e){ if(e.target === poteSheet) poteSheet.hidden = true; });
@@ -3372,9 +3694,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     try{
       var rows = await ONLINE.friendCards(f.friend_id), owned = {}, toPlace = [];
       rows.forEach(function(r){ if(!card(r.musician_id)) return; var k = r.musician_id + '|' + r.rarity; owned[k] = r.copies; if(!r.placed) toPlace.push(k); });
-      var fc = await ONLINE.friendConcerts(f.friend_id).catch(function(){ return []; }), mine = gigs;
-      gigs = fc;   // son classement compte ses concerts, pas les miens
-      try{ var d = profileWith(owned, toPlace, function(){ var p = myProfile(); p.showcase = ownedKeys().sort(byRarity).filter(function(k, i, a){ return a.map(function(x){ return x.split('|')[0]; }).indexOf(k.split('|')[0]) === i; }).slice(0, 3); return p; }); } finally { gigs = mine; }
+      var fc = await ONLINE.friendConcerts(f.friend_id).catch(function(){ return []; }), mine = gigs, myPts = slamPts;
+      var sp = await Promise.resolve().then(function(){ return ONLINE.slamPoints(f.friend_id); }).catch(function(){ return 0; });
+      gigs = fc; slamPts = sp;   // son classement compte ses concerts et ses slams, pas les miens
+      try{ var d = profileWith(owned, toPlace, function(){ var p = myProfile(); p.showcase = ownedKeys().sort(byRarity).filter(function(k, i, a){ return a.map(function(x){ return x.split('|')[0]; }).indexOf(k.split('|')[0]) === i; }).slice(0, 3); return p; }); } finally { gigs = mine; slamPts = myPts; }
       d.own = false; d.name = f.username || 'Pote'; d.power = f.metal_power; d.stats.packs = '—';
       d.avatar = await ONLINE.mediaUrl('avatars', f.avatar_path).catch(function(){ return null; });
       d.cry = await ONLINE.mediaUrl('cries', f.cry_path).catch(function(){ return null; });
@@ -3498,10 +3821,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return '<li><div><b>' + esc(m.name) + '</b>' + (m.me ? '<small>toi</small>' : m.host ? '<small>a monté la bande</small>' : '') +
           (m.done.length ? '<span>' + m.done.map(function(t){ return '✓ ' + esc(t); }).join(' · ') + '</span>' : '') + '</div>' +
           (m.me ? '' : mine.indexOf(m.id) !== -1 ? '<span class="df">Pote ✓</span>' : '<button type="button" class="df" data-p="' + esc(m.id) + '">+ Pote</button>') + '</li>'; }).join('') + '</ul>' +
-      '<p class="eyebrow">Le code de la bande</p><p class="tr-code num">' + esc(b.code.slice(0, 3) + ' ' + b.code.slice(3)) + '</p>' +
+      '<p class="eyebrow">Le code de la bande</p><div class="gframe tr-qr-f"><div class="tr-qr" id="band-qr" role="img" aria-label="QR code de la bande"></div></div><p class="tr-code num">' + esc(b.code.slice(0, 3) + ' ' + b.code.slice(3)) + '</p>' +
       '<button type="button" class="btn block" id="band-share">Envoyer le lien</button>' +
       (friends.length ? '<p class="eyebrow">Inviter un pote</p><div class="band-fr">' + friends.map(function(f){ return '<button type="button" class="df" data-f="' + esc(f.friend_id) + '">' + esc(f.username || 'Pote') + '</button>'; }).join('') + '</div>' : '') +
       '<button type="button" class="band-leave" id="band-leave">Quitter la bande</button>';
+    paintQrInto('band-qr', bandLink(b.code));
     document.getElementById('band-share').onclick = function(){ var url = bandLink(b.code), txt = 'Rejoins ma bande pour ' + b.artist + ' sur Metalnini. Code : ' + b.code;
       if(navigator.share) navigator.share({title:'Metalnini', text:txt, url:url}).catch(function(){});
       else (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Envoie-le à ta bande.'); }, function(){ toast('Code à donner : ' + esc(b.code)); }); };
@@ -3663,7 +3987,19 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   gigSheet.addEventListener('click', function(e){ if(e.target === gigSheet) closeGig(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !gigSheet.hidden) closeGig(); });
 
-  document.getElementById('tr-host').addEventListener('click', tradeHost);
+  // « Mon QR » : on choisit d'abord ce qu'on veut faire, le QR suit
+  var qrSheet = document.getElementById('qr-sheet');
+  document.getElementById('tr-host').addEventListener('click', function(){ if(!needOnline()) return; document.getElementById('qr-bands').innerHTML = ''; qrSheet.hidden = false; });
+  document.getElementById('qr-troc').onclick = function(){ qrSheet.hidden = true; tradeHost(); };
+  document.getElementById('qr-pote').onclick = function(){ qrSheet.hidden = true; openPote(); };
+  document.getElementById('qr-bande').onclick = function(){
+    var box = document.getElementById('qr-bands'), list = (gigs || []).slice().sort(function(x, y){ return x.played_on < y.played_on ? 1 : -1; }).slice(0, 4);
+    box.innerHTML = list.length ? list.map(function(c, i){ var d = gigDate(c.played_on); return '<button type="button" class="df" data-qb="' + i + '">' + esc(c.artist) + ' · ' + d.day + ' ' + d.month + (c.band_id ? ' · ta bande' : '') + '</button>'; }).join('')
+      : '<p>Ajoute d\'abord un concert dans Fosse (« J\'y étais, j\'y vais ») : la bande se monte autour.</p>';
+    [].forEach.call(box.querySelectorAll('[data-qb]'), function(b){ b.onclick = function(){ qrSheet.hidden = true; openBand(list[+b.getAttribute('data-qb')]); }; });
+  };
+  document.getElementById('qr-close').onclick = function(){ qrSheet.hidden = true; };
+  qrSheet.addEventListener('click', function(e){ if(e.target === qrSheet) qrSheet.hidden = true; });
   document.getElementById('tr-scan').addEventListener('click', openScan);
   document.getElementById('trade-x').addEventListener('click', function(){
     if(!trade || trade.status !== 'live'){ if(trade && trade.status === 'open') ONLINE.tradeCancel(trade.id).catch(function(){}); tradeClose(); return; }
@@ -3724,7 +4060,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div>' + icon('<path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/>', 22) + '<b class="num">' + p.stats.cards + '</b><span>musiciens</span><small>1 pt chacun</small></div>' +
         '<div>' + icon('<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', 22) + '<b class="num">' + binders + '</b><span>classeurs pliés</span><small>4 pts chacun</small></div>' +
         '<div>' + icon('<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', 22) + '<b class="num">' + p.pins.length + '</b><span>maîtrises</span><small>6 pts chacune</small></div>' +
-        '<div>' + icon(TICKET_ICON, 22) + '<b class="num">' + gc + '</b><span>concerts</span><small>3 pts, + bande et défis</small></div></div>';
+        '<div>' + icon(TICKET_ICON, 22) + '<b class="num">' + gc + '</b><span>concerts</span><small>3 pts, + bande et défis</small></div>' +
+        '<div>' + icon('<path d="M12 3v4"/><path d="M8 7l4 4l4 -4"/><path d="M4 21c1 -4 4 -6 8 -6s7 2 8 6"/>', 22) + '<b class="num">' + slamPts + '</b><span>points de fosse</span><small>slams portés et réussis, circle pits</small></div></div>';
   }
   function commitPack(){
     if(ONLINE){
@@ -4387,7 +4724,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     go('packs'); openChosen();
   });
   document.getElementById('wl-later').addEventListener('click', function(){ var g = closeWl(); if(g && g.cards) toast('Ton cadeau t\'attend dans le classeur, à ranger.'); });
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ checkGifts(); checkRequests(); } });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ checkGifts(); checkRequests(); checkPurchases(); } });
   function finishPlace(k){ placedSome = true; state.toPlace = (state.toPlace || []).filter(function(x){ return x !== k; }); save(); renderBinder(); renderTray();
     if(ONLINE){ var pp = k.split('|'); ONLINE.place(pp[0], pp[1]).catch(function(e){ toast(esc(e.message)); }); } }
   var dealing = false, dealLog = null, wantWelcome = false;
@@ -4522,7 +4859,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
     document.getElementById('prog-bar').style.width = crans(pct) + '%';
-    document.getElementById('grid').innerHTML = list.map(function(c){
+    // « Toutes les cartes » : la demande d'artiste en première case, là où l'on voit ce qui manque
+    var askSlot = b.k === 'all' ? '<button type="button" class="slot ask" id="ask-slot"><span class="sw"><span class="img"><span class="ask-in"><b aria-hidden="true">+</b><span>Il manque un artiste ?</span><small>' + (tk ? 'Ticket prioritaire ×' + tk : 'Propose-le') + '</small></span></span></span><span class="cap">Ta demande</span></button>' : '';
+    document.getElementById('grid').innerHTML = askSlot + list.map(function(c){
       var r = placed(c.id);
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + pos[c.id] + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
@@ -4530,7 +4869,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
         '</span></span><span class="cap">' + pos[c.id] + ' · ' + esc(c.who) + '</span></button>';
     }).join('');
-    [].forEach.call(document.querySelectorAll('#grid .slot'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
+    [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
+    if(askSlot) document.getElementById('ask-slot').onclick = openAskArtist;
     var mode = state.view || 'pages';
     document.getElementById('grid').hidden = mode !== 'pages';
     var m = document.getElementById('matrix'); m.hidden = mode !== 'matrix';
@@ -4553,12 +4893,31 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   // demande d'artiste : envoyée au serveur (5 par jour), lue dans l'admin ; il faut un compte
   var artistSheet = document.getElementById('artist-sheet'), asErr = document.getElementById('as-err');
-  document.getElementById('ask-artist').addEventListener('click', function(){
+  document.getElementById('ask-artist').addEventListener('click', openAskArtist);
+  function openAskArtist(){
     asErr.textContent = ONLINE ? '' : 'Connecte-toi pour proposer un artiste.'; document.getElementById('as-send').disabled = !ONLINE;
     var t = state.tickets || 0, pr = document.getElementById('as-prio'); pr.hidden = !ONLINE || !t; document.getElementById('as-prio-n').textContent = '(' + t + ')'; document.getElementById('as-prio-in').checked = false;
     artistSheet.hidden = false; if(ONLINE) document.getElementById('as-name').focus();
+  }
+  // avant d'envoyer : déjà dans le jeu, déjà demandé, ou nouveau (vérifié par le serveur, cartes secrètes jamais trahies)
+  var lookT = 0, lookEl = document.getElementById('as-look'), fundEl = document.getElementById('as-fund');
+  fundEl.addEventListener('click', function(){ var a = document.getElementById('as-name').value.trim(); fundEl.disabled = true;
+    buy('artist', a, document.getElementById('as-note').value.trim()).then(function(){ fundEl.disabled = false; }); });
+  document.getElementById('as-name').addEventListener('input', function(){
+    var a = this.value.trim(); clearTimeout(lookT); lookEl.innerHTML = ''; lookEl.className = 'as-look'; fundEl.hidden = true;
+    if(!ONLINE || a.length < 3) return;
+    lookT = setTimeout(function(){ Promise.resolve().then(function(){ return ONLINE.artistLookup(a); }).then(function(r){
+      if(document.getElementById('as-name').value.trim() !== a) return;
+      if(r.found){ lookEl.className = 'as-look have';
+        lookEl.innerHTML = '<b>Déjà dans le jeu</b> : ' + esc(r.name) + ' (' + esc(r.band) + '). <button type="button" class="as-see" data-id="' + esc(r.id) + '">Voir sa carte</button>';
+        lookEl.querySelector('.as-see').onclick = function(){ closeArtist(); openDetail(r.id); }; }
+      else if(r.funded){ lookEl.className = 'as-look'; lookEl.innerHTML = '<b>Déjà financé par un joueur</b> : il arrive bientôt.'; }
+      else if(r.asked){ lookEl.className = 'as-look'; lookEl.innerHTML = '<b>Déjà demandé par ' + r.asked + ' joueur' + (r.asked > 1 ? 's' : '') + '</b> : ta voix compte aussi.'; }
+      else { lookEl.className = 'as-look new'; lookEl.innerHTML = '<b>Pas encore dans le jeu</b>.'; }
+      fundEl.hidden = !(!r.found && !r.funded && shop && shop.artist && shop.artist.url);
+    }).catch(function(){}); }, 400);
   });
-  function closeArtist(){ artistSheet.hidden = true; }
+  function closeArtist(){ artistSheet.hidden = true; clearTimeout(lookT); lookEl.innerHTML = ''; fundEl.hidden = true; }
   document.getElementById('as-cancel').addEventListener('click', closeArtist);
   artistSheet.addEventListener('click', function(e){ if(e.target === artistSheet) closeArtist(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !artistSheet.hidden) closeArtist(); });

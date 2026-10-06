@@ -216,7 +216,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('demande d\'artiste : Annuler ferme la feuille', d4.getElementById('artist-sheet').hidden);
   key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
-  check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy'].includes(id)), got.join(','));
+  check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
   check('« Tout révéler » : partage et rangement proposés', !d4.getElementById('share').hidden && !d4.getElementById('to-binder').hidden);
 
@@ -271,7 +271,11 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d6.getElementById('loot-go').click(); await sleep(50);
   check('objectif touché : la récompense se révèle, l\'objectif disparaît', !d6.getElementById('reveal').hidden && /Objectif atteint/.test(d6.getElementById('counter').textContent) && !d6.querySelector('#quest-list .goal.claim'));
   d6.getElementById('reveal').hidden = true;
-  d6.getElementById('tr-host').click(); await sleep(50);
+  d6.getElementById('tr-host').click(); await sleep(20);
+  check('« Mon QR » : on choisit d\'abord (troc, pote, bande)', !d6.getElementById('qr-sheet').hidden && d6.getElementById('trade').hidden && d6.querySelectorAll('#qr-sheet .qr-op').length === 3);
+  d6.getElementById('qr-bande').click(); await sleep(20);
+  check('« Mon QR » · bande : les concerts proposés, ou comment en ajouter un', d6.getElementById('qr-bands').textContent.length > 0);
+  d6.getElementById('qr-troc').click(); await sleep(50);
   check('échange : code affiché en attendant le pote', !d6.getElementById('trade').hidden && /ABC 234/.test(d6.getElementById('trade-in').textContent));
   Object.assign(T, { status:'live', partner:'Riffeuse', get:[{m:'jinjer', r:'holo', n:1}] }); watchCb(); await sleep(50);
   check('échange : le pote arrive, sa carte s\'affiche côté « Tu reçois »', /Riffeuse/.test(d6.getElementById('trade-in').textContent) && d6.querySelectorAll('#tr-get .tr-card').length === 1);
@@ -285,8 +289,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('réduit : la pastille suit l\'échange (le pote a validé)', /a validé/.test(d6.getElementById('trade-pill').textContent));
   T.their_ok = false; d6.getElementById('trade-pill').click(); await sleep(20);
   check('pastille touchée : retour dans l\'échange', !d6.getElementById('trade').hidden && d6.getElementById('trade-pill').hidden);
-  d6.getElementById('trade-min').click(); d6.getElementById('tab-corner').click(); await sleep(20); d6.getElementById('tr-host').click(); await sleep(20);
-  check('échange réduit : « Mon code » y revient au lieu d\'en ouvrir un autre', !d6.getElementById('trade').hidden && /Riffeuse/.test(d6.getElementById('trade-in').textContent));
+  d6.getElementById('trade-min').click(); d6.getElementById('tab-corner').click(); await sleep(20); d6.getElementById('tr-host').click(); d6.getElementById('qr-troc').click(); await sleep(20);
+  check('échange réduit : « Mon QR » · troc y revient au lieu d\'en ouvrir un autre', !d6.getElementById('trade').hidden && /Riffeuse/.test(d6.getElementById('trade-in').textContent));
   d6.getElementById('tr-add').click(); await sleep(20);
   check('doublons : le nombre d\'exemplaires reste visible sous la carte, même avec une étiquette', /×2/.test(d6.querySelector('#tp-body .tr-card[data-m="korn"][data-r="commune"] small').textContent));
   d6.getElementById('tp-dup').click(); await sleep(20);
@@ -496,8 +500,28 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('slam : renfort, le lien du slam porté part', /\?slam=s2/.test((d9.querySelector('.toast') || {}).textContent || ''));
   feed9.carried = [];
   d9.getElementById('slam-go').click(); await sleep(60);
-  check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .slam-scene .sc-fan').length === 5 && !!d9.querySelector('#slam .sc-ride .dive'));
+  check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .pit-crowd li').length === 5 && !!d9.querySelector('#slam .pit-rider.dive'));
   check('slam : « Appeler la foule » pendant le vol', !!d9.getElementById('slam-call'));
+
+  // 18 bis. Circle pit : rejoindre celui d'un pote, courir (touchers envoyés au serveur), fin du pit, points récupérés
+  let pitTaps = 0, pitClaimed = null; const pitEnd = new Date(Date.now() + 90e3).toISOString();
+  const pitSt = { id:'p1', track:'morello', ends_at:pitEnd, over:false, host:false, host_name:'Riffeuse', in:true, rewarded:true, claimed:false,
+    runners:[{ id:'f1', name:'Riffeuse', taps:20 }, { id:'u1', name:'Moi', taps:0, me:true }], tier:{ runners:2, taps:20, speed:.1, size:0, speed_tier:0, size_label:'Petit cercle', speed_label:'Tranquille', points:1 } };
+  fake9.pitFeed = async () => ({ live:[{ id:'p1', name:'Riffeuse', track:'morello', ends_at:pitEnd, runners:2, in:false }], done:[], opened_today:false, duration:120 });
+  fake9.pitJoin = async () => JSON.parse(JSON.stringify(pitSt));
+  fake9.pitRun = async (id, n) => { pitTaps += n; return JSON.parse(JSON.stringify(pitSt)); };
+  fake9.pitClaim = async id => { pitClaimed = id; return { points:1, tier:pitSt.tier, loot:null }; };
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
+  check('circle pit : le pit d\'un pote à rejoindre, et « Ouvrir le pit »', !d9.getElementById('pit-sec').hidden && !!d9.querySelector('#pits [data-pit="p1"]') && !!d9.getElementById('pit-go'));
+  d9.querySelector('#pits [data-pit="p1"]').click(); await sleep(60);
+  check('circle pit : écran en direct, coureurs en cercle, compte à rebours', !d9.getElementById('pit').hidden && d9.querySelectorAll('#pit-orbit .pit-slot').length === 2 && /1:[23]\d/.test(d9.getElementById('pit-clock').textContent));
+  for(let i = 0; i < 7; i++) d9.getElementById('pit-run').dispatchEvent(new w9.Event('pointerdown', { cancelable:true }));
+  await sleep(1700);
+  check('circle pit : touchers comptés et envoyés', /7 tours/.test(d9.getElementById('pit-mine').textContent) && pitTaps === 7);
+  pitSt.over = true; pitSt.ends_at = new Date(Date.now() - 1000).toISOString(); fake9.pitJoin = async () => JSON.parse(JSON.stringify(pitSt));
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p1"]').click(); await sleep(60);
+  d9.getElementById('pit-claim').click(); await sleep(60);
+  check('circle pit : fin, points récupérés, écran fermé', pitClaimed === 'p1' && d9.getElementById('pit').hidden);
 
   // 19. Potes par code : mon code affiché, ajout par lien collé
   let addedCode = null;
