@@ -227,6 +227,16 @@
   .info-b{width:44px; height:44px; display:grid; place-items:center; border:0; background:none; color:var(--muted); font:italic 700 1.15rem/1 Georgia, serif; cursor:pointer}   /* « i » discret, comme les « + » */
   .info-b[aria-expanded="true"]{color:var(--gold-hi)}
   .fs-add{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:4px 0 6px}
+  .bulk-go{display:block; margin:6px auto 0; min-height:44px}
+  .bulk-sum{margin:4px 0 14px; font:500 .86rem/1.4 var(--mono); color:var(--muted)} .bulk-sum b{color:var(--text)}
+  .bulk-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin:0 0 16px}
+  .bulk-grid figure{position:relative; margin:0; opacity:0; transform:translateY(10px) scale(.96); animation:bulk-in .35s ease-out forwards; animation-delay:var(--d)}
+  .bulk-grid img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:8px; border:2px solid var(--rc)}
+  .bulk-grid figcaption{margin-top:3px; font:600 .64rem/1.2 var(--mono); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .bulk-grid .count{position:absolute; top:5px; right:5px; padding:2px 7px; border-radius:6px; background:rgba(12,11,10,.88); border:1px solid rgba(235,154,38,.55); color:#fff; font:700 .8rem/1.2 var(--display)}
+  .bulk-grid .new{position:absolute; top:5px; left:5px; padding:2px 6px; border-radius:999px; background:var(--accent); color:#fff; font:700 .58rem/1.4 var(--mono); text-transform:uppercase}
+  @keyframes bulk-in{to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion: reduce){ .bulk-grid figure{animation:none; opacity:1; transform:none} }
   .pit{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(120% 70% at 50% 30%, #2a1a10 0%, #0c0a09 70%)}
   .pit-in{max-width:520px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align:center}
   .pit-top{display:flex; flex-direction:column; align-items:center; gap:2px; margin:0 44px 6px}
@@ -1171,6 +1181,7 @@
   <h1 class="home-title" id="home-title">Ton paquet est prêt</h1>
   <button type="button" class="inst-banner" id="inst-banner" hidden><b>Mets Metalnini sur ton écran d'accueil</b><span>Un paquet offert</span></button>
   <p class="packs-count" id="packs-count" hidden></p>
+  <button type="button" class="btn ghost bulk-go" id="bulk-go" hidden></button>
   <div class="formats" id="formats" role="radiogroup" aria-label="Format du paquet">
     <button type="button" role="radio" data-f="big"><span class="fi"><svg viewBox="0 0 24 32" width="22" height="30" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="21.5" text-anchor="middle" class="fi-n">5</text></svg></span><span><b>Standard</b><small>5 cartes</small></span></button>
     <button type="button" role="radio" data-f="small"><span class="fi"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><g transform="translate(0 7) scale(.78)"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="21.5" text-anchor="middle" class="fi-n">2</text></g><path d="M26 1.5l1.2 3.3 3.3 1.2-3.3 1.2L26 10.5l-1.2-3.3L21.5 6l3.3-1.2z" fill="currentColor"/></svg></span><span><b>Mini</b><small>2 cartes · + de chances</small></span></button>
@@ -1610,6 +1621,15 @@
   </div>
 </div>
 
+<div class="pit bulk" id="bulk" hidden role="dialog" aria-modal="true" aria-labelledby="bulk-t">
+  <div class="pit-in">
+    <p class="eyebrow" id="bulk-k">Tout ouvrir</p>
+    <h2 id="bulk-t">Ouverture en cours…</h2>
+    <p class="bulk-sum" id="bulk-sum"></p>
+    <div class="bulk-grid" id="bulk-grid"></div>
+    <div class="pit-acts"><button type="button" class="btn" id="bulk-place" hidden>Ranger mes cartes</button><button type="button" class="btn ghost" id="bulk-close" hidden>Fermer</button></div>
+  </div>
+</div>
 <div class="pit" id="pit" hidden role="dialog" aria-modal="true" aria-label="Circle pit">
   <button type="button" class="icon-btn trade-x" id="pit-x" aria-label="Quitter le circle pit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="pit-in" id="pit-in"></div>
@@ -2702,6 +2722,39 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       applyInventory(await ONLINE.inventory()); save(); prepTease(); pendingReq = null; refreshDaily();
     }).catch(function(e){ pendingReq = null; toast(esc(e.message)); });
   }
+  // tout ouvrir : les paquets en attente tirés un par un par le serveur (même type de paquet), puis toutes les cartes d'un coup
+  var bulkEl = document.getElementById('bulk');
+  document.getElementById('bulk-go').addEventListener('click', async function(){
+    if(!ONLINE || pendingReq) return;
+    var n = Math.floor((state.packsLeft || 0) / 2), type = state.packType || 'serie', got = [], err = null;
+    if(n < 2) return;
+    this.disabled = true; bulkEl.hidden = false;
+    ['bulk-place', 'bulk-close'].forEach(function(id){ document.getElementById(id).hidden = true; });
+    document.getElementById('bulk-grid').innerHTML = ''; document.getElementById('bulk-t').textContent = 'Ouverture en cours…'; snd('rumble');
+    // un paquet déjà tiré mais pas encore révélé passe en premier
+    if(state.pending && state.pending.length){ got = got.concat(state.pending); state.pending = null; }
+    for(var i = 0; i < n; i++){
+      document.getElementById('bulk-sum').textContent = 'Paquet ' + (i + 1) + ' sur ' + n + '…';
+      try{ var rows = await ONLINE.openPack(serverPack(type), uuid(), 'big'); got = got.concat(rows.map(function(r){ return {id:r.musician_id, r:r.rarity, isNew:r.is_new}; })); state.opened++; }
+      catch(e){ err = e; break; }
+    }
+    try{ applyInventory(await ONLINE.inventory()); }catch(e){}
+    got.forEach(function(d){ if(d.isNew && card(d.id)) state.fresh[d.id] = true; }); save(); refreshDaily(); renderStats();
+    got = got.filter(function(d){ return card(d.id); }).sort(function(a, b){ return rank(b.r) - rank(a.r) || (b.isNew - a.isNew); });
+    var counts = RARITIES.map(function(x){ var k = got.filter(function(d){ return d.r === x.k; }).length; return k ? '<b>' + k + '</b> ' + x.label + (k > 1 ? 's' : '') : ''; }).filter(Boolean).reverse().join(' · ');
+    var news = got.filter(function(d){ return d.isNew; }).length;
+    document.getElementById('bulk-t').textContent = got.length ? got.length + ' cartes, ' + news + ' nouvelle' + (news > 1 ? 's' : '') : 'Rien à ouvrir';
+    document.getElementById('bulk-sum').innerHTML = counts + (err ? '<br>' + esc(err.message) : '');
+    // une case par carte (musicien et rareté), ×N pour les doublons
+    var tiles = []; got.forEach(function(d){ var t = tiles.filter(function(x){ return x.id === d.id && x.r === d.r; })[0]; if(t){ t.n++; t.isNew = t.isNew || d.isNew; } else tiles.push({id:d.id, r:d.r, isNew:d.isNew, n:1}); });
+    document.getElementById('bulk-grid').innerHTML = tiles.map(function(d, i){ var c = card(d.id), x = rarity(d.r);
+      return '<figure style="--rc:' + x.color + '; --d:' + Math.min(i, 30) * 60 + 'ms"><img src="' + img(d.id, d.r) + '" alt="' + esc(c.who) + ', ' + x.label + (d.n > 1 ? ', ' + d.n + ' exemplaires' : '') + '" loading="lazy">' + (d.isNew ? '<span class="new">Nouvelle</span>' : '') + (d.n > 1 ? '<span class="count">×' + d.n + '</span>' : '') + '<figcaption>' + esc(c.who) + '</figcaption></figure>'; }).join('');
+    if(got.length) snd(rank(got[0].r) >= 3 ? 'reward' : 'gift');
+    document.getElementById('bulk-place').hidden = !(state.toPlace || []).length; document.getElementById('bulk-close').hidden = false;
+    this.disabled = false;
+  });
+  document.getElementById('bulk-close').onclick = function(){ bulkEl.hidden = true; };
+  document.getElementById('bulk-place').onclick = function(){ bulkEl.hidden = true; go('binder'); };
   function pendingPack(){
     var type = state.packType || 'serie';
     if(ONLINE){ if(state.pending && state.pending.length) return state.pending; requestServerPack(type); return []; }
@@ -2819,6 +2872,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // paquets à ouvrir (2 points = 1 paquet) : ceux du jour, la réserve des jours d'absence (plafond réglé dans l'admin) et les cadeaux
     var pc = document.getElementById('packs-count'), pts = state.packsLeft || 0, n = Math.floor(pts / 2), gift = Math.floor((state.bonus || 0) / 2), res = Math.floor((pts - (state.bonus || 0)) / 2) - 1;
     pc.hidden = state.packsLeft === null || !n;
+    // de retour après plusieurs jours : tout ouvrir d'un coup
+    var bg = document.getElementById('bulk-go'); bg.hidden = !ONLINE || n < 2; bg.textContent = 'Tout ouvrir · ' + n + ' paquets d\'un coup';
     if(n){ var sachet = '<svg viewBox="0 0 24 32" aria-hidden="true"><path d="M3 2h18l-1 2 1 2v22l-1 2 1 2H3l1-2-1-2V6l1-2z" fill="currentColor"/></svg>';
       pc.innerHTML = '<span class="pk">' + new Array(Math.min(n, 5) + 1).join(sachet) + '</span><span><b>' + n + ' paquet' + (n > 1 ? 's' : '') + '</b> à ouvrir</span>' +
         (gift || res > 0 ? '<small>' + [res > 0 ? res + ' en réserve' : '', gift ? gift + ' cadeau' + (gift > 1 ? 'x' : '') : ''].filter(Boolean).join(' · ') + '</small>' : ''); }

@@ -523,6 +523,19 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('pit-claim').click(); await sleep(60);
   check('circle pit : fin, points récupérés, écran fermé', pitClaimed === 'p1' && d9.getElementById('pit').hidden);
 
+  // 18 ter. Tout ouvrir : de retour après plusieurs jours, 3 paquets ouverts en série, toutes les cartes d'un coup
+  let bulkCalls = 0;
+  fake9.packsLeft = async () => 6 - 2 * bulkCalls;
+  fake9.openPack = async () => { bulkCalls++; return ['korn','jinjer','slash','hetfield','ozzy'].map((m, i) => ({ musician_id:m, rarity:i === 0 ? 'holo' : 'commune', is_new:i === 1 })); };
+  fake9.purchaseNews = async () => [{ id:'x', offer:'pack3' }];
+  d9.querySelector('.tabbar [data-v="packs"]').click(); w9.document.dispatchEvent(new w9.Event('visibilitychange')); await sleep(120);
+  fake9.purchaseNews = async () => [];
+  check('tout ouvrir : bouton visible avec 3 paquets', !d9.getElementById('bulk-go').hidden && /3 paquets/.test(d9.getElementById('bulk-go').textContent));
+  d9.getElementById('bulk-go').click(); await sleep(200);
+  check('tout ouvrir : 3 paquets tirés, 15 cartes d\'un coup, la plus rare en premier', bulkCalls === 3 && d9.querySelectorAll('#bulk-grid figure').length === 5 && /×3/.test(d9.getElementById('bulk-grid').textContent) && /Holo/.test(d9.querySelector('#bulk-grid img').alt) && /15 cartes/.test(d9.getElementById('bulk-t').textContent));
+  d9.getElementById('bulk-close').click();
+  fake9.packsLeft = async () => 0;
+
   // 19. Potes par code : mon code affiché, ajout par lien collé
   let addedCode = null;
   fake9.friendCode = async () => 'QWE789';
