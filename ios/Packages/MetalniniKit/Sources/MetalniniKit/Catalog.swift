@@ -80,6 +80,7 @@ public enum Catalog {
         .init(id: "kowalewicz", name: "Ben Kowalewicz", band: "Billy Talent", arcanaTitle: "Red Flag", arcanaNumber: "LXXVII", instruments: [.chant], subgenre: "Punk rock"),
         .init(id: "yates", name: "Brendan Yates", band: "Turnstile", arcanaTitle: "Mystery", arcanaNumber: "LXXVIII", instruments: [.chant], subgenre: "Hardcore"),
         .init(id: "honeycutt", name: "Matt Honeycutt", band: "Kublai Khan TX", arcanaTitle: "Boomslang", arcanaNumber: "LXXIX", instruments: [.chant], subgenre: "Beatdown hardcore"),
+        .init(id: "flynn", name: "Robb Flynn", band: "Machine Head", arcanaTitle: "Davidian", arcanaNumber: "LXXX", instruments: [.chant, .guitare], subgenre: "Groove metal"),
     ]
 
     public static let binders: [Binder] = [
@@ -93,11 +94,11 @@ public enum Catalog {
         .init(id: "hardrock", kind: .style, label: "Hard rock", musicianIDs: ["slash", "angus", "page", "plant", "bonham", "lzzy-hale"]),
         .init(id: "legendes", kind: .style, label: "Légendes du rock", musicianIDs: ["hendrix", "mercury", "prince", "may", "frusciante", "flea", "nito"]),
         .init(id: "heavy", kind: .style, label: "Heavy metal", musicianIDs: ["dickinson", "halford", "ozzy", "lemmy", "dio", "doro", "harris", "iommi", "broden"]),
-        .init(id: "thrash", kind: .style, label: "Thrash", musicianIDs: ["hetfield", "mustaine", "araya", "scott-ian", "hammett", "lars", "burton", "lombardo", "blythe"]),
+        .init(id: "thrash", kind: .style, label: "Thrash", musicianIDs: ["hetfield", "mustaine", "araya", "scott-ian", "hammett", "lars", "burton", "lombardo", "blythe", "flynn"]),
         .init(id: "grunge", kind: .style, label: "Grunge & alternatif", musicianIDs: ["cobain", "cornell", "staley", "grohl", "peter-hayes"]),
-        .init(id: "voix", kind: .instrument, label: "Les voix", musicianIDs: ["knocked-loose", "jinjer", "spiritbox", "landmvrks", "ramos", "heriot", "hoppus", "korn", "poppy", "zack", "dickinson", "halford", "ozzy", "lemmy", "hetfield", "mustaine", "araya", "cobain", "cornell", "staley", "grohl", "keenan", "white-gluz", "corpsegrinder", "tankian", "sykes", "hayley", "armstrong", "dio", "doro", "mercury", "gerard-way", "bennington", "prince", "plant", "corey", "shinoda", "malakian", "joe-duplantier", "amy-lee", "reuno", "sam-carter", "nito", "brendan-murphy", "chino", "lzzy-hale", "peter-hayes", "broden", "mccall", "blythe", "heafy", "kowalewicz", "yates", "honeycutt"]),
+        .init(id: "voix", kind: .instrument, label: "Les voix", musicianIDs: ["knocked-loose", "jinjer", "spiritbox", "landmvrks", "ramos", "heriot", "hoppus", "korn", "poppy", "zack", "dickinson", "halford", "ozzy", "lemmy", "hetfield", "mustaine", "araya", "cobain", "cornell", "staley", "grohl", "keenan", "white-gluz", "corpsegrinder", "tankian", "sykes", "hayley", "armstrong", "dio", "doro", "mercury", "gerard-way", "bennington", "prince", "plant", "corey", "shinoda", "malakian", "joe-duplantier", "amy-lee", "reuno", "sam-carter", "nito", "brendan-murphy", "chino", "lzzy-hale", "peter-hayes", "broden", "mccall", "blythe", "heafy", "kowalewicz", "yates", "honeycutt", "flynn"]),
         .init(id: "batteurs", kind: .instrument, label: "Les batteurs", musicianIDs: ["blink182", "duplantier", "jordison", "lars", "lombardo", "bonham"]),
-        .init(id: "guitaristes", kind: .instrument, label: "Les guitaristes", musicianIDs: ["isaac-hale", "hendrix", "slash", "frusciante", "root", "mustaine", "scott-ian", "angus", "hammett", "prince", "morello", "iommi", "may", "page", "malakian", "lzzy-hale", "peter-hayes", "heafy"]),
+        .init(id: "guitaristes", kind: .instrument, label: "Les guitaristes", musicianIDs: ["isaac-hale", "hendrix", "slash", "frusciante", "root", "mustaine", "scott-ian", "angus", "hammett", "prince", "morello", "iommi", "may", "page", "malakian", "lzzy-hale", "peter-hayes", "heafy", "flynn"]),
         .init(id: "bassistes", kind: .instrument, label: "Les bassistes", musicianIDs: ["hoppus", "lemmy", "araya", "burton", "harris", "flea"]),
         .init(id: "g-kl", kind: .band, label: "Knocked Loose", musicianIDs: ["knocked-loose", "isaac-hale"]),
         .init(id: "g-blink", kind: .band, label: "Blink-182", musicianIDs: ["blink182", "hoppus"]),

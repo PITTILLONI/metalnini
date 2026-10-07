@@ -2,7 +2,7 @@
 
 Affichées dans la fiche carte (section « L'artiste »). La présentation courte reste pour la révélation. Corrige directement dans ce fichier ou dis-moi quoi changer.
 
-Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter, Nito Mestre et Brendan Murphy, puis (ajoutés le 2026-10-06) Chino Moreno, Lzzy Hale, Peter Hayes, Joakim Brodén, Winston McCall, Randy Blythe et Matt Heafy, Ben Kowalewicz, Brendan Yates et Matt Honeycutt, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
+Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style. Reste à relire : les bios de Reuno, Sam Carter, Nito Mestre et Brendan Murphy, puis (ajoutés le 2026-10-06) Chino Moreno, Lzzy Hale, Peter Hayes, Joakim Brodén, Winston McCall, Randy Blythe et Matt Heafy, Ben Kowalewicz, Brendan Yates, Matt Honeycutt et Robb Flynn, et la mention de Lofofora dans la fiche Metal alternatif (ajoutées le 2026-10-02).
 
 **knocked-loose** — Chanteur de Knocked Loose, groupe de hardcore formé en 2013 dans le comté d'Oldham, au Kentucky. Son cri aigu et rageur est la signature du groupe. L'EP A Tear in the Fabric of Life (2021) puis l'album You Won't Go Before You're Supposed To (2024) en ont fait une tête d'affiche du hardcore actuel.
 
@@ -155,6 +155,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 **yates** — Il fonde Turnstile à Baltimore en 2010. Le groupe ouvre le hardcore au groove, à la pop et aux synthés sans lâcher la puissance : Glow On (2021), avec Mystery, le fait connaître bien au-delà de la scène, puis Never Enough (2025) confirme. Sur scène, il ne tient pas en place.
 
 **honeycutt** — Il chante dans Kublai Khan TX, formé à Sherman, au Texas, en 2009 : du hardcore et du metalcore taillés pour les breakdowns. Absolute (2019), avec Boomslang, puis Exhibition of Prowess (2024) en font l'un des groupes les plus lourds de la scène. Ses textes parlent sans détour de la vie au Texas, de la famille et de la colère.
+
+**flynn** — Passé par Vio-lence, figure du thrash de la baie de San Francisco, il fonde Machine Head à Oakland en 1991. Burn My Eyes (1994), avec Davidian et son refrain « Let freedom ring with a shotgun blast », impose le groupe ; The Blackening (2007) en fait un classique moderne. Il chante et joue de la guitare, et prend position contre le racisme dans la scène metal.
 
 # Fiches des styles (page d'un classeur) — à relire
 
