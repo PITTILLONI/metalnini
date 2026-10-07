@@ -69,3 +69,9 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | yates | [Turnstile_Full_Force_2019_06_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Turnstile_Full_Force_2019_06_%28cropped%29.jpg) | S. Bollmann | Attribution |
 | honeycutt | [Kublai_Khan_TX_September_28,_2025.jpg](https://commons.wikimedia.org/wiki/File:Kublai_Khan_TX_September_28%2C_2025.jpg) | Ian D'Andrea (recadrage sur le chanteur) | CC BY-SA 4.0 |
 | flynn | [Robb_Flynn_(Machine_Head)_en_concert_à_La_Rochelle_en_2018.jpg](https://commons.wikimedia.org/wiki/File:Robb_Flynn_%28Machine_Head%29_en_concert_%C3%A0_La_Rochelle_en_2018.jpg) | Tilly antoine | CC BY-SA 4.0 |
+| m-varg (carte maudite) | [Varg_Vikernes-3_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Varg_Vikernes-3_%28cropped%29.jpg) | Рустем Адагамов (Rustem Adagamov) | CC BY-SA 3.0 |
+| m-faust (carte maudite) | [02-08-2014-Bård_G._Eithun_with_Emperor_at_Wacken_Open_Air_2014-JonasR_(cropped).jpg](https://commons.wikimedia.org/wiki/File:02-08-2014-B%C3%A5rd_G._Eithun_with_Emperor_at_Wacken_Open_Air_2014-JonasR_%28cropped%29.jpg) | Jonas Rogowski | CC BY-SA 4.0 |
+| m-watkins (carte maudite) | [Ian_Watkins_(2010)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Ian_Watkins_%282010%29_%28cropped%29.jpg) | Agni Minardi | CC BY 2.0 |
+| m-schaffer (carte maudite) | [Jon_Schaffer_2013.jpg](https://commons.wikimedia.org/wiki/File:Jon_Schaffer_2013.jpg) | dr_zoidberg | CC BY-SA 2.0 |
+| m-glitter (carte maudite) | [Gary_Glitter_-_TopPop_1974_1.png](https://commons.wikimedia.org/wiki/File:Gary_Glitter_-_TopPop_1974_1.png) | AVRO | CC BY-SA 3.0 nl |
+| m-anselmo (carte maudite) | [Phil_Anselmo_2011_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Phil_Anselmo_2011_%28cropped%29.jpg) | MarkScottAustinTX | CC BY-SA 2.0 |

@@ -623,6 +623,10 @@
   .gig-photo{width:100%; min-height:96px; display:grid; place-items:center; border:1px dashed var(--border); border-radius:10px; background:var(--bg) center/cover no-repeat; color:var(--muted); font:600 .84rem var(--mono); cursor:pointer}
   .gig-photo.has{min-height:180px; border-style:solid; color:var(--text)} .gig-photo.has span{padding:6px 12px; border-radius:999px; background:rgba(5,4,4,.7)}
   .pub-empty{font:500 .84rem var(--mono); color:var(--muted); margin:0}
+  .cursed-facts{margin:6px 0 10px; text-align:left} .cursed-facts .eyebrow{color:var(--accent-text)}
+  .cf{border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:8px 0} .cf b{display:block; font:800 .82rem/1.2 var(--display); letter-spacing:.06em; text-transform:uppercase; color:var(--text)} .cf p{margin:3px 0 0; font:500 .88rem/1.45 var(--mono); color:var(--muted)}
+  .cf-src{margin:6px 0 0; font:500 .74rem/1.4 var(--mono); color:var(--muted)} .cf-src a{color:var(--muted)}
+  .curse-go{grid-column:1 / -1; width:100%; flex:1; display:flex; flex-direction:column; align-items:center; background:linear-gradient(#c24040, #8f2626) !important; color:#fff !important; box-shadow:0 4px 0 #5a1616 !important} .curse-go small{font:500 .74rem var(--mono); text-transform:none; letter-spacing:0; opacity:.9}
   .pf-perso-st{color:var(--gold-hi) !important}
   .pf-card{padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); margin-bottom:12px}
   .pf-card-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
@@ -1810,6 +1814,8 @@ const api = {
   async adminMode(){ return must(await sb.rpc('my_admin_mode')); },
   async setUnlimited(on){ return must(await sb.rpc('set_my_unlimited', { p_on: on })); },
   async persoCards(){ return must(await sb.rpc('my_perso_cards')) || []; },
+  async cursedCards(){ return must(await sb.rpc('cursed_cards')) || []; },
+  async curseTear(id){ return must(await sb.rpc('curse_tear', { p_musician: id })); },
   async persoOrder(){ return must(await sb.rpc('my_perso_order')); },
   async messages(){ return must(await sb.rpc('my_messages')) || []; },
   async requestNews(){ return must(await sb.rpc('my_request_news')) || []; },
@@ -2343,7 +2349,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function hideListen(el){ stopListen(); el.hidden = true; el.innerHTML = ''; el.removeAttribute('data-id'); }
   // cartes perso : image du stockage privé (lien signé), jamais dans le dépôt
   var PERSO_IMG = {};
-  function img(id, r){ return PERSO_IMG[id + '|' + r] || 'cards/' + id + '-' + r + '.jpg'; }
+  function img(id, r){ var c = PERSO_IMG[id + '|' + r]; if(c) return c; return /^m-/.test(id) ? 'cards/' + id + '-maudite.jpg' : 'cards/' + id + '-' + r + '.jpg'; }
   function rarity(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return RARITIES[i]; }
   function rank(k){ for(var i=0;i<RARITIES.length;i++) if(RARITIES[i].k===k) return i; return -1; }
   function card(id){ for(var i=0;i<CARDS.length;i++) if(CARDS[i].id===id) return CARDS[i]; for(i=0;i<(SECRET || []).length;i++) if(SECRET[i].id===id) return SECRET[i]; }
@@ -2438,7 +2444,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       // pseudo choisi à l'inscription, enregistré à la première connexion
       var wanted = user.user_metadata && user.user_metadata.username;
       if(!state.username && wanted){ try{ state.username = await api.setUsername(wanted); }catch(e){} }
-      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); loadPerso().then(checkGifts); checkRequests(); checkPurchases(); checkMessages(); syncPush();
+      ONLINE = api; save(); setNet(); renderStats(); refreshDaily(); loadCursed().then(loadPerso).then(checkGifts); checkRequests(); checkPurchases(); checkMessages(); syncPush();
       renderSocial(); loadGigs();   // invitations, potes, concerts : la pastille de Metal Corner est juste dès la connexion
       paintDevice(); if(standalone()) onbInstalled(api); else if(!pendingTroc) setTimeout(askInstall, 2500);
       presence();
@@ -2541,7 +2547,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var MOON = '<svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true"><path d="M13.6 5.2a7 7 0 1 0 0 13.6 5.9 5.9 0 1 1 0-13.6z" fill="currentColor"/><circle cx="15.2" cy="12" r="1.9" fill="currentColor"/></svg>';
   function titleOf(score){ var t = TITLES[0], next = TITLES[1]; TITLES.forEach(function(x, i){ if(score >= x[0]){ t = x; next = TITLES[i + 1] || null; } });
     return {label:t[1], next:next ? {label:next[1], left:next[0] - score} : null}; }
-  function ownedKeys(){ return Object.keys(state.owned).filter(function(k){ return state.owned[k] > 0 && card(k.split('|')[0]); }); }
+  function ownedKeys(){ return Object.keys(state.owned).filter(function(k){ var c = card(k.split('|')[0]); return state.owned[k] > 0 && c && !c.cursed; }); }
   function isMastered(id){ return RARITIES.every(function(r){ return state.owned[id + '|' + r.k]; }); }
   function byRarity(a, b){ return rank(b.split('|')[1]) - rank(a.split('|')[1]); }
   // vitrine : les 3 cartes choisies, sinon les plus rares de 3 musiciens différents
@@ -4541,7 +4547,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     renderUnders();
     revealEl.classList.remove('dim'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
-    document.getElementById('counter').textContent = x.c.secret ? 'Carte secrète' : 'Carte ' + (idx+1) + ' / ' + current.length;
+    document.getElementById('counter').textContent = x.c.cursed ? 'Carte maudite' : x.c.secret ? 'Carte secrète' : 'Carte ' + (idx+1) + ' / ' + current.length;
     document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la retourner. Ça mord pas.';
     renderDeck();
     document.getElementById('flip-img').src = img(x.c.id, x.r);
@@ -4569,7 +4575,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function fillInfo(x){
     var line = document.getElementById('combo');
     var same = current.slice(0, idx + 1).filter(function(y){ return y.c.id === x.c.id && y.r === x.r; }).length;
-    var text = x.c.secret ? pick(CELESTE_LINES) : same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]);
+    var text = x.c.cursed ? 'Une carte maudite s\'est glissée dans ton paquet. Déchire-la pour lever la malédiction.' : x.c.secret ? pick(CELESTE_LINES) : same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]);
     line.innerHTML = '<span>' + esc(text) + '</span>'; line.setAttribute('data-r', x.c.secret ? 'celeste' : same >= 3 ? 'triple' : x.r);
     line.classList.remove('go'); void line.offsetWidth; if(!reduce) line.classList.add('go'); else line.style.opacity = 1;
     var ri = document.getElementById('ci-r'); ri.textContent = x.c.secret ? 'Carte secrète' : rarity(x.r).label; ri.style.color = x.c.secret ? '#f4a6c8' : rarity(x.r).color;
@@ -4946,6 +4952,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!document.getElementById('ps-ok').checked){ e.textContent = 'Coche la case : ta carte sera visible des autres joueurs.'; return; }
     b.disabled = true; buy('perso', nick).then(function(){ b.disabled = false; });
   };
+  // cartes maudites : fiches, faits et sources (serveur) ; classeur « À déchirer » tant qu'on en a une
+  function loadCursed(){
+    if(!ONLINE) return Promise.resolve();
+    return Promise.resolve().then(function(){ return ONLINE.cursedCards(); }).then(function(list){
+      list.forEach(function(m){ if(!card(m.id)) SECRET.push({id:m.id, who:m.who, band:m.band, title:'Carte maudite', num:'☠', inst:'', genre:m.genre, cursed:true, facts:m.facts, sources:m.sources}); });
+      if(!BINDERS.some(function(x){ return x.k === 'maudites'; })) BINDERS.push({k:'maudites', kind:'Maudites', label:'À déchirer', ids:[], secret:true});
+      // l'inventaire est relu : ses cartes maudites n'étaient pas encore connues
+      if(list.length) return ONLINE.inventory().then(function(rows){ applyInventory(rows); renderBinder(); });
+    }).catch(function(){});
+  }
+  function cursedOwned(){ return SECRET.filter(function(c){ return c.cursed && best(c.id); }).map(function(c){ return c.id; }); }
   // cartes perso (faites pour un joueur : offertes par l'admin ou achetées) : fiches et images du stockage privé, puis le classeur « Perso »
   function loadPerso(){
     if(!ONLINE) return Promise.resolve();
@@ -5065,7 +5082,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function soloCollection(){ var c = BINDERS.filter(function(b){ return b.kind === 'Collection'; }); return c.length === 1 ? c[0] : null; }
   function kindLabel(k){ return k === 'Collection' && soloCollection() ? 'Toutes' : k; }
   // catégories affichées : + « Céleste » une fois la carte secrète trouvée (elle ouvre directement son classeur)
-  function kinds(){ return KINDS.concat(best('celine') ? ['Céleste'] : [], persoIds().some(function(id){ return best(id); }) ? ['Perso'] : []); }
+  function kinds(){ var m = BINDERS.filter(function(x){ return x.k === 'maudites'; })[0]; if(m) m.ids = cursedOwned();
+    return KINDS.concat(best('celine') ? ['Céleste'] : [], persoIds().some(function(id){ return best(id); }) ? ['Perso'] : [], m && m.ids.length ? ['Maudites'] : []); }
   function persoIds(){ var b = BINDERS.filter(function(x){ return x.k === 'perso'; })[0]; return b ? b.ids : []; }
   // extrait du style : l'hymne du style (premier morceau « À écouter »), lancé quand on touche le classeur du style
   var styleTap = false;
@@ -5076,7 +5094,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var tk = ONLINE ? state.tickets || 0 : 0, aa = document.getElementById('aa-tk');   // ticket prioritaire : on le voit là où il sert
     aa.hidden = !tk; aa.textContent = 'Ticket prioritaire' + (tk > 1 ? ' ×' + tk : '') + ' · ta demande passe en tête';
     if(!BINDERS.some(function(x){ return x.k === state.binder; })) state.binder = BINDERS[0].k;
-    var ks = kinds(), kind = ks.indexOf(state.binderKind) === -1 ? ks[0] : state.binderKind, solo = (kind === 'Collection' && soloCollection()) || (kind === 'Céleste' && binderOf('celeste')) || (kind === 'Perso' && binderOf('perso'));
+    var ks = kinds(), kind = ks.indexOf(state.binderKind) === -1 ? ks[0] : state.binderKind, solo = (kind === 'Collection' && soloCollection()) || (kind === 'Céleste' && binderOf('celeste')) || (kind === 'Perso' && binderOf('perso')) || (kind === 'Maudites' && binderOf('maudites'));
     if(solo){ state.binderOpen = true; state.binder = solo.k; }
     var kindsEl = document.getElementById('binder-kinds');
     kindsEl.classList.toggle('five', ks.length > 4);
@@ -5227,27 +5245,35 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openDetail(id, shown){
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
-    var side = r && !c.secret && !c.perso ? fuseSide(id, r) : '', head = r ? '<div class="gframe"><div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div></div>' :
+    var side = r && !c.secret && !c.perso && !c.cursed ? fuseSide(id, r) : '', head = r ? '<div class="gframe"><div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div></div>' :
       '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
     document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
       // maîtrise et sceaux juste sous la carte
       // carte secrète : ni maîtrise ni sceaux, une seule rareté
-      (c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · partagée ou troquée, son portrait est visible des autres joueurs</span></p><div class="seals"></div>' :
+      (c.cursed ? '<div class="cursed-facts"><p class="eyebrow">Carte maudite · ne se garde pas</p>' + (c.facts || []).map(function(f){ return '<div class="cf"><b>' + esc(f.head) + '</b><p>' + esc(f.text) + '</p></div>'; }).join('') +
+        '<p class="cf-src">Sources : ' + (c.sources || []).map(function(x){ return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + '</a>'; }).join(' · ') + '</p><p class="cf-src">Faits établis par la justice ou reconnus publiquement, jamais d\'accusation.</p></div>' :
+      c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · partagée ou troquée, son portrait est visible des autres joueurs</span></p><div class="seals"></div>' :
       c.secret ? '<p class="mst done"><span class="mst-l">Carte secrète · presque personne ne l\'a</span></p><div class="seals"></div>' :
       (r ? masteryHead(id) : '<p class="mst"><span class="mst-l">Raretés obtenues</span></p>') + '<div class="seals">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0, l = '<i>' + x.label.charAt(0) + '</i>';
         return n ? '<button type="button" class="seal' + (x.k === r ? ' cur' : '') + '" data-r="' + x.k + '" style="--sc:' + x.color + '" aria-label="' + x.label + ', ' + n + ' exemplaire' + (n > 1 ? 's' : '') + (x.k === r ? ', affichée' : '') + '">' + l + (n > 1 ? '<em class="num">×' + n + '</em>' : '') + '<small>' + x.label + '</small></button>'
                  : '<span class="seal off" style="--sc:' + x.color + '" aria-label="' + x.label + ', pas encore obtenue">' + l + '<small>' + x.label + '</small></span>';
       }).join('') + '</div>') +
-      '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? (c.secret ? 'Carte secrète' : rarity(r).label) + ' · Arcane ' + esc(c.num) : 'Pas encore obtenue') + '</p>' +
+      '<p class="d-rar"' + (r ? ' style="--sc:' + rarity(r).color + '"' : '') + '>' + (r ? (c.cursed ? 'Carte maudite' : c.secret ? 'Carte secrète' : rarity(r).label + ' · Arcane ' + esc(c.num)) : 'Pas encore obtenue') + '</p>' +
       // carte pas encore trouvée : ni nom, ni groupe, ni titre, seulement l'instrument
       // le nom se touche : il déplie la présentation de l'artiste (bio, coup spécial, fiche)
       (r ? '<details class="d-art"><summary><h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
              '<span class="d-more">Bio et coup spécial' + icon('<path d="M6 9l6 6l6 -6"/>', 16) + '</span></summary>' + artistBlock(c) + '</details>' +
            '<div class="listen" id="d-listen" hidden></div>'
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
-      (r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
-    if(r){
+      (r && c.cursed ? '<div class="detail-actions"><button type="button" class="relief curse-go" id="d-curse">Déchirer la carte<small>récompense surprise</small></button></div>' :
+       r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
+    if(r && c.cursed){
+      document.getElementById('d-curse').onclick = function(){ var b = this; b.disabled = true;
+        ONLINE.curseTear(id).then(function(res){ sheet.hidden = true; snd('tear'); return ONLINE.inventory().then(function(rows){ applyInventory(rows); renderBinder(); renderStats(); rewardArrived(res, 'Malédiction levée · ' + c.who); }); },
+          function(e){ b.disabled = false; toast(esc(e.message)); }); };
+    }
+    else if(r){
       showListen(document.getElementById('d-listen'), id);
       document.getElementById('d-share').onclick = function(){ shareCard(c, r); };
       document.getElementById('d-trade').onclick = function(){ secretWarn(id, function(){ openTradeStart({m:id, r:r}); }); };
