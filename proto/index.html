@@ -623,6 +623,7 @@
   .gig-photo{width:100%; min-height:96px; display:grid; place-items:center; border:1px dashed var(--border); border-radius:10px; background:var(--bg) center/cover no-repeat; color:var(--muted); font:600 .84rem var(--mono); cursor:pointer}
   .gig-photo.has{min-height:180px; border-style:solid; color:var(--text)} .gig-photo.has span{padding:6px 12px; border-radius:999px; background:rgba(5,4,4,.7)}
   .pub-empty{font:500 .84rem var(--mono); color:var(--muted); margin:0}
+  .pf-perso-st{color:var(--gold-hi) !important}
   .pf-card{padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); margin-bottom:12px}
   .pf-card-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
   .pf-card .eyebrow{margin:0 0 8px}
@@ -1297,6 +1298,12 @@
       <div class="pf-card-head"><p class="eyebrow">Ta capacité de metaleux</p><button type="button" class="link" id="pf-power-edit">Modifier</button></div>
       <p class="pf-power-text" id="pf-power-text"></p>
     </section>
+    <section class="pf-card pf-perso" id="pf-perso" hidden>
+      <p class="eyebrow">Ta carte perso</p>
+      <p class="pf-note">Ta propre carte Légendaire, gravée à partir de ta photo de profil, avec ton surnom. Elle rejoint ton classeur « Perso », et tu peux la partager ou la troquer.</p>
+      <p class="pf-note pf-perso-st" id="pf-perso-st" hidden></p>
+      <button type="button" class="btn block" id="pf-perso-go">Fabrique ma carte · 4,99 €</button>
+    </section>
     <section class="pf-card pf-cry">
       <p class="eyebrow">Ton cri</p>
       <p class="pf-unmask" id="pf-unmask" hidden></p>
@@ -1634,6 +1641,18 @@
   <button type="button" class="icon-btn trade-x" id="pit-x" aria-label="Quitter le circle pit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="pit-in" id="pit-in"></div>
 </div>
+<div class="bsheet" id="perso-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ps-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="ps-t">Ta carte perso</h2>
+    <p class="pf-note">Le Grand Architecte grave ta carte Légendaire à partir de ta photo de profil (de face, bien éclairée, c'est mieux), puis la vérifie avant de te l'envoyer. Compte quelques heures.</p>
+    <label class="pf-label" for="ps-nick">Ton surnom, en titre de la carte</label>
+    <input id="ps-nick" class="as-in" maxlength="24" autocomplete="off" placeholder="ex. Fabich'">
+    <label class="as-prio"><input type="checkbox" id="ps-ok"> <span>J'ai compris : ma carte se partage et se troque comme les autres, <b>les autres joueurs pourront voir mon portrait</b>.</span></label>
+    <p class="err" id="ps-err"></p>
+    <div class="pf-row"><button type="button" class="btn ghost" id="ps-cancel">Annuler</button><button type="button" class="btn" id="ps-go">Payer 4,99 €</button></div>
+  </div>
+</div>
 <div class="bsheet" id="listen-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ls-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1791,6 +1810,7 @@ const api = {
   async adminMode(){ return must(await sb.rpc('my_admin_mode')); },
   async setUnlimited(on){ return must(await sb.rpc('set_my_unlimited', { p_on: on })); },
   async persoCards(){ return must(await sb.rpc('my_perso_cards')) || []; },
+  async persoOrder(){ return must(await sb.rpc('my_perso_order')); },
   async messages(){ return must(await sb.rpc('my_messages')) || []; },
   async requestNews(){ return must(await sb.rpc('my_request_news')) || []; },
   async markGiftsSeen(ids){ must(await sb.rpc('mark_gifts_seen', { p_ids: ids })); },
@@ -2514,7 +2534,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !powerSheet.hidden) powerSheet.hidden = true; });
   // la page profil s'ouvre depuis l'avatar et revient à l'écran d'où l'on vient
   var profileFrom = 'packs';
-  function openProfile(){ pfErr.textContent = ''; refreshMedia(); paintUnmask(); paintName(); paintAvatar(); resetCry(); paintShowcase(); profileFrom = !document.getElementById('v-binder').hidden ? 'binder' : 'packs'; go('profile'); }
+  function openProfile(){ paintPersoOrder(); pfErr.textContent = ''; refreshMedia(); paintUnmask(); paintName(); paintAvatar(); resetCry(); paintShowcase(); profileFrom = !document.getElementById('v-binder').hidden ? 'binder' : 'packs'; go('profile'); }
   // ---------- Profil public : la veste à patchs ----------
   // titre gagné : un point par musicien, 4 par classeur complété (un patch), 6 par maîtrise (un pin's)
   var TITLES = [[0, 'Groupie'], [12, 'Roadie'], [30, 'Première partie'], [60, 'Tête d\'affiche'], [100, 'Légende du pit']];
@@ -2901,7 +2921,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function checkPurchases(){
     if(!ONLINE) return;
     Promise.resolve().then(function(){ return ONLINE.purchaseNews(); }).then(function(list){ if(!list.length) return; snd('gift');
-      list.forEach(function(x, i){ setTimeout(function(){ toast(x.offer === 'artist' ? 'Paiement reçu : <b>' + esc(x.artist) + '</b> passe en tête de la liste du Grand Architecte.' : 'Paiement reçu : ' + (x.offer === 'pack3' ? '<b>3 paquets</b> t\'attendent.' : '<b>un paquet</b> t\'attend.')); }, i * 4500); });
+      list.forEach(function(x, i){ setTimeout(function(){ toast(x.offer === 'perso' ? 'Paiement reçu : ta carte <b>' + esc(x.artist) + '</b> est en fabrication. Suis-la dans ton profil.' : x.offer === 'artist' ? 'Paiement reçu : <b>' + esc(x.artist) + '</b> passe en tête de la liste du Grand Architecte.' : 'Paiement reçu : ' + (x.offer === 'pack3' ? '<b>3 paquets</b> t\'attendent.' : '<b>un paquet</b> t\'attend.')); }, i * 4500); });
       refreshDaily(); }).catch(function(){});
   }
   function refreshDaily(){
@@ -4903,7 +4923,30 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         'cards/pack-serie.jpg');
     }).catch(function(){});
   }
-  // cartes perso (faites pour ce joueur, offertes par l'admin) : fiches et images privées, puis leur classeur « Perso »
+  // « Ta carte perso » (profil) : l'offre de la boutique, l'état de la commande, et la feuille d'achat avec l'accord du joueur
+  var persoSheet = document.getElementById('perso-sheet');
+  var PERSO_ST = {paid:'En fabrication : le Grand Architecte grave ta carte.', base:'En fabrication : dernière couche de feu.', error:'En fabrication : petit contretemps, le Grand Architecte s\'en occupe.',
+    ready:'Gravée : le Grand Architecte la vérifie avant de te l\'envoyer.', approved:'Ta carte t\'a été offerte : elle est dans ton classeur « Perso ».', rejected:'Ta photo n\'a pas permis de faire la carte : tu es remboursé. Essaie avec une photo de face, bien éclairée.'};
+  function paintPersoOrder(){
+    var sec = document.getElementById('pf-perso'); sec.hidden = !(ONLINE && shop && shop.perso && shop.perso.url); if(sec.hidden) return;
+    Promise.resolve().then(function(){ return ONLINE.persoOrder(); }).then(function(o){
+      var st = document.getElementById('pf-perso-st'), busy = o && ['paid', 'base', 'ready', 'error'].indexOf(o.status) >= 0;
+      st.hidden = !o; st.textContent = o ? '« ' + o.nickname + ' » · ' + PERSO_ST[o.status] : '';
+      document.getElementById('pf-perso-go').hidden = busy; }).catch(function(){});
+  }
+  document.getElementById('pf-perso-go').addEventListener('click', function(){
+    var e = document.getElementById('ps-err'); e.textContent = avatarSrc() ? '' : 'Mets d\'abord ta photo de profil (en haut de cette page) : ta carte part de ton visage.';
+    document.getElementById('ps-nick').value = state.username || ''; document.getElementById('ps-ok').checked = false; persoSheet.hidden = false; });
+  document.getElementById('ps-cancel').onclick = function(){ persoSheet.hidden = true; };
+  persoSheet.addEventListener('click', function(e){ if(e.target === persoSheet) persoSheet.hidden = true; });
+  document.getElementById('ps-go').onclick = function(){
+    var nick = document.getElementById('ps-nick').value.trim(), e = document.getElementById('ps-err'), b = this;
+    if(!avatarSrc()){ e.textContent = 'Mets d\'abord ta photo de profil : ta carte part de ton visage.'; return; }
+    if(nick.length < 2){ e.textContent = 'Ton surnom : deux caractères minimum.'; return; }
+    if(!document.getElementById('ps-ok').checked){ e.textContent = 'Coche la case : ta carte sera visible des autres joueurs.'; return; }
+    b.disabled = true; buy('perso', nick).then(function(){ b.disabled = false; });
+  };
+  // cartes perso (faites pour un joueur : offertes par l'admin ou achetées) : fiches et images du stockage privé, puis le classeur « Perso »
   function loadPerso(){
     if(!ONLINE) return Promise.resolve();
     return Promise.resolve().then(function(){ return ONLINE.persoCards(); }).then(function(list){
@@ -4914,8 +4957,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       list.forEach(function(m){ if(!card(m.id)) SECRET.push({id:m.id, who:m.who, band:m.band, title:m.title, num:m.num, inst:'Perso', genre:m.genre, perso:true}); });
       var b = BINDERS.filter(function(x){ return x.k === 'perso'; })[0];
       if(!b) BINDERS.push(b = {k:'perso', kind:'Perso', label:'Perso', ids:[], secret:true});
-      b.ids = list.map(function(m){ return m.id; });
-      return ONLINE.inventory().then(function(rows){ applyInventory(rows); renderBinder(); });
+      return ONLINE.inventory().then(function(rows){ applyInventory(rows); b.ids = list.map(function(m){ return m.id; }).filter(function(id){ return best(id); }); renderBinder(); });
     }).catch(function(){});
   }
   // réponse de l'admin à une demande d'artiste (« Il manque un artiste ? »), montrée une fois, même sans notifications
@@ -5190,7 +5232,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
       // maîtrise et sceaux juste sous la carte
       // carte secrète : ni maîtrise ni sceaux, une seule rareté
-      (c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · rien que pour toi</span></p><div class="seals"></div>' :
+      (c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · partagée ou troquée, son portrait est visible des autres joueurs</span></p><div class="seals"></div>' :
       c.secret ? '<p class="mst done"><span class="mst-l">Carte secrète · presque personne ne l\'a</span></p><div class="seals"></div>' :
       (r ? masteryHead(id) : '<p class="mst"><span class="mst-l">Raretés obtenues</span></p>') + '<div class="seals">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0, l = '<i>' + x.label.charAt(0) + '</i>';
@@ -5204,13 +5246,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
              '<span class="d-more">Bio et coup spécial' + icon('<path d="M6 9l6 6l6 -6"/>', 16) + '</span></summary>' + artistBlock(c) + '</details>' +
            '<div class="listen" id="d-listen" hidden></div>'
          : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
-      // carte perso : faite pour ce joueur, elle ne se troque ni ne se déchire
-      (r ? '<div class="detail-actions">' + (c.perso ? '' : '<button type="button" class="relief" id="d-trade">Troquer</button>') + '<button type="button" class="relief ink" id="d-share">Partager</button>' + (c.perso ? '' : '<button type="button" class="relief ink tear" id="d-tear">Déchirer</button>') + '</div>' : '');
+      (r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
     if(r){
       showListen(document.getElementById('d-listen'), id);
       document.getElementById('d-share').onclick = function(){ shareCard(c, r); };
-      if(!c.perso) document.getElementById('d-trade').onclick = function(){ secretWarn(id, function(){ openTradeStart({m:id, r:r}); }); };
-      if(!c.perso) document.getElementById('d-tear').onclick = function(){
+      document.getElementById('d-trade').onclick = function(){ secretWarn(id, function(){ openTradeStart({m:id, r:r}); }); };
+      document.getElementById('d-tear').onclick = function(){
         var n = state.owned[id+'|'+r] || 0;
         askConfirm({eyebrow:'Déchirer', title:'Déchirer ' + c.who + ' ?', text:(c.secret && n < 2 ? 'C\'est la carte secrète : presque personne ne l\'a, et rien ne dit qu\'elle repassera un jour par tes paquets.' : 'Un exemplaire ' + rarity(r).label + ' part en lambeaux' + (n > 1 ? ' (il t\'en restera ' + (n - 1) + ').' : '. C\'était le dernier : la case redevient vide.')) + ' Impossible de revenir en arrière.', yes:'Oui, déchirer', no:'Non, je la garde'},
           function(){ tearCard(id, r); });
