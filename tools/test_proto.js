@@ -545,6 +545,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.pogoMission = async k => { pogoMission = k; pogoMissions[1].claimed = true; return { kind:'points', points:2 }; };
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
   check('pogo : pote à terre, pogo ouvert, mission de la semaine', !d9.getElementById('pogo-sec').hidden && !!d9.querySelector('#pogos [data-lift="g1|f2"]') && !!d9.querySelector('#pogos [data-pogo="g1"]') && /Pogo de la semaine : 1\/3/.test(d9.getElementById('pogos').textContent));
+  check('fosse : « En ce moment » réunit les gestes en attente (relever, entrer, courir)', !d9.getElementById('now-sec').hidden && !!d9.querySelector('#now [data-now-lift="g1|f2"]') && !!d9.querySelector('#now [data-now-pogo="g1"]'));
+  check('danses : trois cartes illustrées, pastille sur le pogo', d9.querySelectorAll('#dance-row .dance-t').length === 3 && !!d9.querySelector('#dance-row [data-dance-go="pogo"] img[src="fosse/pogo.jpg"]') && !!d9.querySelector('#dance-row [data-dance-go="pogo"] .dance-n'));
+  d9.querySelector('#dance-row [data-dance-go="pit"]').click(); await sleep(20);
+  check('danses : la carte ouvre la salle du circle pit (illustration, pit seul visible)', !d9.getElementById('salle').hidden && /pit\.jpg$/.test(d9.getElementById('salle-img').src) && d9.getElementById('pit-sec').classList.contains('on') && !d9.getElementById('pogo-sec').classList.contains('on'));
+  d9.getElementById('salle-x').click(); await sleep(20);
+  check('danses : la salle se referme', d9.getElementById('salle').hidden);
   check('pogo : missions dans les épreuves (à ouvrir, puis en cours)', !d9.getElementById('pogo-quests-sec').hidden && !!d9.querySelector('#pogo-quests [data-pm="first"]') && /1\/3/.test(d9.getElementById('pogo-quests').textContent));
   d9.querySelector('#pogos [data-lift="g1|f2"]').click(); await sleep(60);
   check('pogo : relever un pote à terre', pogoLifted === 'f2');

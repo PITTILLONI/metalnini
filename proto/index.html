@@ -288,6 +288,26 @@
   .pogo-list li > span:not(.pit-av){flex:1; min-width:0} .pogo-list b{display:block; font-weight:700; font-size:.92rem; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .pogo-list small{font:500 .76rem/1.3 var(--mono); color:var(--muted)} .pogo-list li.down small{color:var(--accent-text)}
   .pogo-week{display:block; margin-top:6px; color:var(--gold-hi)}
   #pogo-run{margin-bottom:10px}
+  /* les danses : une carte illustrée par mini-jeu, trois sur une ligne, carrousel au-delà ; le nom posé sur l'illustration */
+  .dance-row{display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 -16px; padding:4px 16px 8px; scroll-padding:0 16px} .dance-row::-webkit-scrollbar{display:none}
+  .dance-t{position:relative; flex:0 0 calc((100% - 20px) / 3); min-width:100px; aspect-ratio:3 / 4; scroll-snap-align:start; padding:0; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:#120d0a; overflow:hidden; color:var(--text); text-align:left; cursor:pointer; box-shadow:0 10px 22px rgba(0,0,0,.5)}
+  .dance-t img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .3s ease} .dance-t:active img{transform:scale(1.04)}
+  .dance-t span{position:absolute; left:0; right:0; bottom:0; padding:28px 9px 9px; background:linear-gradient(180deg, rgba(12,10,9,0), rgba(12,10,9,.92) 55%)}
+  .dance-t b{display:block; font:900 1rem/1.05 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--gold-hi)} .dance-t small{display:block; margin-top:3px; font:600 .7rem/1.2 var(--mono); color:var(--text)}
+  .dance-n{position:absolute; top:6px; right:6px; min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:var(--accent); color:#fff; font:800 .72rem/22px var(--display); font-style:normal; text-align:center; box-shadow:0 0 0 2px var(--bg)}
+  .now-g{font-style:normal; color:var(--gold-hi)}
+  .now-more{display:block; width:100%; min-height:44px; margin:2px 0 0; border:0; background:none; color:var(--gold-hi); font:700 .86rem var(--mono); cursor:pointer}
+  /* salle d'une danse, plein écran : illustration en tête fondue dans le noir, puis le mini-jeu ; les règles en bas */
+  .salle{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
+  .salle-hero{position:relative; height:min(46dvh, 380px); overflow:hidden}
+  .salle-hero img{width:100%; height:100%; object-fit:cover; object-position:50% 35%}
+  .salle-hero::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(12,10,9,.25) 0%, rgba(12,10,9,0) 30%, rgba(12,10,9,.75) 75%, var(--bg) 100%)}
+  .salle-cap{position:absolute; left:0; right:0; bottom:0; z-index:1; max-width:520px; margin:0 auto; padding:0 16px 10px}
+  .salle-t{margin:0; font:400 2.6rem/1 var(--gothic); color:var(--text)} .salle-tag{margin:6px 0 0; font:500 .9rem/1.35 var(--mono); color:var(--muted)}
+  .salle-in{max-width:520px; margin:0 auto; padding:8px 16px calc(28px + env(safe-area-inset-bottom))}
+  .salle-p{display:none; flex-direction:column} .salle-p.on{display:flex} .salle-p .f-head{display:none}
+  .salle-p .fs-how, .salle-p .fs-how[hidden]{display:block; order:2; margin-top:18px; padding-top:14px; border-top:1px solid var(--border)} .salle-p .fs-how::before{content:"Les règles"; display:block; margin-bottom:6px; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .salle .trade-x{position:fixed; z-index:2; background:rgba(12,10,9,.55); border-radius:50%}
   @media (prefers-reduced-motion: reduce){ .pogo-arena.hit{animation:none} .pogo-me{transition:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
@@ -1269,16 +1289,9 @@
   <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open" aria-label="Ajouter un pote">+</button></div><div id="friends"></div></section>
   <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
   <section class="corner-sec" id="history-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Tes trocs</h2><button type="button" class="df add" id="trade-open" aria-label="Lancer un troc">+</button></div><div id="history"></div></section>
-  <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Tes concerts, les pogos et circle pits de tes potes, ton slam du jour.</p></section>
+  <section class="corner-sec" id="now-sec" data-ct="fosse" hidden><h2 class="g-sub">En ce moment</h2><div id="now"></div></section>
+  <section class="corner-sec" id="dance-sec" data-ct="fosse" hidden><h2 class="g-sub">Les danses</h2><div class="dance-row" id="dance-row"></div></section>
   <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
-  <section class="corner-sec" id="pogo-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Pogo</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pogo-how" aria-label="C'est quoi, le pogo ?">i</button></div>
-    <div class="fs-how" id="pogo-how" hidden><p>Tu ouvres un pogo et tu choisis la mise : chaque danseur y laisse une carte de cette rareté, tirée au hasard dans sa collection (même sa dernière). Tes potes ont 10 minutes pour entrer et danser 15 s : renvoie d'un coup d'épaule ceux qui foncent sur toi. Trop de coups pris, et tu tombes. Chaque manche rend le pogo plus violent.</p><p><b>Qui reste à terre perd sa carte</b>, sauf si un pote le relève avant la fin. Les cartes tombées sont ramassées par le premier tiers des danseurs. Il faut au moins 3 danseurs, sinon chacun récupère sa mise.</p></div>
-    <div id="pogos"></div></section>
-  <section class="corner-sec" id="pit-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Circle pit</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pit-how" aria-label="C'est quoi, le circle pit ?">i</button></div>
-    <div class="fs-how" id="pit-how" hidden><p>Tu lances un circle pit sur le morceau de ton choix : tes potes sont prévenus et ont 15 minutes pour venir. Chacun fait une course de 20 s quand il arrive : un repère tourne dans le cercle, garde le doigt dessus. Chaque course fait accélérer le cercle pour le suivant.</p><p><b>Plus il y a de courses et plus elles sont précises, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et aux paliers hauts, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
-    <div id="pits"></div></section>
-  <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Slam</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="slam-how" aria-label="C'est quoi, le slam ?">i</button></div>
-    <div class="fs-how" id="slam-how" hidden><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></div><div id="slam"></div></section>
   <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
   <section class="corner-sec" id="pogo-quests-sec" data-ct="epreuves" hidden><h2 class="g-sub">Missions de pogo</h2><div class="quest-list" id="pogo-quests"></div></section>
   <section class="corner-sec" id="prog-sec" data-ct="rang"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
@@ -1671,6 +1684,20 @@
 <div class="pit" id="pit" hidden role="dialog" aria-modal="true" aria-label="Circle pit">
   <button type="button" class="icon-btn trade-x" id="pit-x" aria-label="Quitter le circle pit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="pit-in" id="pit-in"></div>
+</div>
+<div class="salle" id="salle" hidden role="dialog" aria-modal="true" aria-labelledby="salle-t">
+  <button type="button" class="icon-btn trade-x" id="salle-x" aria-label="Revenir à la fosse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
+  <div class="salle-hero"><img id="salle-img" alt=""><div class="salle-cap"><h2 class="salle-t" id="salle-t"></h2><p class="salle-tag" id="salle-tag"></p></div></div>
+  <div class="salle-in">
+  <section class="salle-p" id="pogo-sec" data-dance="pogo" hidden><div class="f-head"><h2 class="g-sub">Pogo</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pogo-how" aria-label="C'est quoi, le pogo ?">i</button></div>
+    <div class="fs-how" id="pogo-how" hidden><p>Tu ouvres un pogo et tu choisis la mise : chaque danseur y laisse une carte de cette rareté, tirée au hasard dans sa collection (même sa dernière). Tes potes ont 10 minutes pour entrer et danser 15 s : renvoie d'un coup d'épaule ceux qui foncent sur toi. Trop de coups pris, et tu tombes. Chaque manche rend le pogo plus violent.</p><p><b>Qui reste à terre perd sa carte</b>, sauf si un pote le relève avant la fin. Les cartes tombées sont ramassées par le premier tiers des danseurs. Il faut au moins 3 danseurs, sinon chacun récupère sa mise.</p></div>
+    <div id="pogos"></div></section>
+  <section class="salle-p" id="pit-sec" data-dance="pit" hidden><div class="f-head"><h2 class="g-sub">Circle pit</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pit-how" aria-label="C'est quoi, le circle pit ?">i</button></div>
+    <div class="fs-how" id="pit-how" hidden><p>Tu lances un circle pit sur le morceau de ton choix : tes potes sont prévenus et ont 15 minutes pour venir. Chacun fait une course de 20 s quand il arrive : un repère tourne dans le cercle, garde le doigt dessus. Chaque course fait accélérer le cercle pour le suivant.</p><p><b>Plus il y a de courses et plus elles sont précises, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et aux paliers hauts, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
+    <div id="pits"></div></section>
+  <section class="salle-p" id="slam-sec" data-dance="slam" hidden><div class="f-head"><h2 class="g-sub">Slam</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="slam-how" aria-label="C'est quoi, le slam ?">i</button></div>
+    <div class="fs-how" id="slam-how" hidden><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></div><div id="slam"></div></section>
+  </div>
 </div>
 <div class="pit" id="pogo" hidden role="dialog" aria-modal="true" aria-label="Pogo">
   <button type="button" class="icon-btn trade-x" id="pogo-x" aria-label="Quitter le pogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
@@ -3612,9 +3639,65 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var wait = cornerWaits(), el = document.getElementById('corner-tabs');
     el.innerHTML = CORNER_TABS.map(function(x){ var n = wait[x[0]] || 0;
       return '<button type="button" role="tab" data-ct-go="' + x[0] + '" aria-selected="' + (x[0] === cur) + '"' + (n ? ' aria-label="' + x[1] + ', ' + n + ' en attente"' : '') + '>' + x[1] + (n ? '<i class="ct-dot" aria-hidden="true">' + n + '</i>' : '') + '</button>'; }).join('');
+    paintDances();
     [].forEach.call(el.children, function(b){ b.onclick = function(){ var t = b.getAttribute('data-ct-go'); cornerTab(t); if(t === 'epreuves') renderGoals(); window.scrollTo(0, 0); }; });
     paintCornerBadge();
   }
+  // Fosse : « En ce moment » réunit ce qui attend un geste chez les potes (tous jeux confondus), puis une carte illustrée par danse ;
+  // toucher une carte ouvre sa salle en plein écran (lancer, en cours, règles). Plus de trois danses : la rangée défile.
+  var DANCES = [['pogo', 'Pogo', 'Mise une carte, reste debout, ramasse celles des autres.'], ['pit', 'Circle pit', 'Tes potes courent en cercle : chaque course fait accélérer le pit.'], ['slam', 'Slam', 'Plonge dans la foule : tes potes te portent jusqu\'à l\'atterrissage.']];
+  var salleEl = document.getElementById('salle'), salleCur = null, nowOpen = false;
+  function danceInfo(k){
+    if(k === 'pogo'){ var g = pogoData; return {n:pogoWaiting(), txt:!g ? '' : g.live.length ? g.live.length + ' ouvert' + (g.live.length > 1 ? 's' : '') : 'À ouvrir'}; }
+    if(k === 'pit'){ var p = pitData && pitData.live ? pitData : null; return {n:p ? p.live.filter(function(x){ return !x.ran; }).length + p.done.length : 0, txt:!p ? '' : p.live.length ? p.live.length + ' en cours' : 'À lancer'}; }
+    var m = slamData && slamData.mine; return {n:slamWaiting(), txt:!slamData ? '' : m ? (m.crashed ? 'Écrasé' : m.landed ? 'Atterri' : 'En vol') : 'Plonger'};
+  }
+  // une ligne d'action : qui, quoi (jeu en tête), le geste
+  function nowRow(x, game, txt, act, attrs){ return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name || 'Toi') + '</b><small><em class="now-g">' + game + '</em> · ' + txt + '</small></span><span class="f-acts"><button type="button" ' + attrs + '>' + act + '</button></span></div>'; }
+  function paintNow(){
+    var sec = document.getElementById('now-sec'), g = pogoData, p = pitData && pitData.live ? pitData : null, sl = slamData, h = '';
+    sec.hidden = !(g || p || sl); if(sec.hidden) return;
+    if(g) h += g.down.map(function(x){ return nowRow(x, 'Pogo', 'à terre · relève-le avant la fin', 'Relever', 'data-now-lift="' + esc(x.pogo) + '|' + esc(x.id) + '"'); }).join('');
+    if(sl) h += (sl.crowd || []).map(function(x){ return nowRow(x, 'Slam', 'plane · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at), 'Porter', 'data-now-carry="' + esc(x.id) + '"'); }).join('');
+    if(g) h += g.live.filter(function(x){ return !x.ran; }).map(function(x){ return nowRow(x, 'Pogo', 'mise ' + esc(rarLabel(x.rarity)) + ' · ' + x.players + ' dans la fosse · ' + pitLeft(x.ends_at), x.in ? 'Danser' : 'Entrer', 'data-now-pogo="' + esc(x.id) + '"'); }).join('');
+    if(p) h += p.live.filter(function(x){ return !x.ran; }).map(function(x){ return nowRow(x, 'Circle pit', x.runners + ' course' + (x.runners > 1 ? 's' : '') + ' · ' + pitLeft(x.ends_at), 'Courir', 'data-now-pit="' + esc(x.id) + '"'); }).join('');
+    if(g) h += g.done.map(function(x){ return nowRow(x, 'Pogo', 'retombé · le ramassage t\'attend', 'Voir', 'data-now-pogo="' + esc(x.id) + '"'); }).join('');
+    if(p) h += p.done.map(function(x){ return nowRow(x, 'Circle pit', 'retombé · tes points t\'attendent', 'Voir', 'data-now-pit="' + esc(x.id) + '"'); }).join('');
+    if(sl) h += (sl.carried || []).filter(function(x){ return x.landed; }).map(function(x){ return nowRow(x, 'Slam', 'a atterri grâce à toi', 'Récompense', 'data-sclaim="' + esc(x.id) + '"'); }).join('');
+    if(sl && sl.mine && sl.mine.landed && !sl.mine.claimed) h += nowRow({name:'Toi'}, 'Slam', 'atterrissage réussi', 'Récupérer', 'data-now-salle="slam"');
+    // 3 lignes au plus, le reste d'un toucher : les danses restent à l'écran
+    var el = document.getElementById('now'), rows = h.split('<div class="invite">').slice(1).map(function(r){ return '<div class="invite">' + r; }), more = nowOpen ? 0 : Math.max(0, rows.length - 3);
+    el.innerHTML = rows.length ? rows.slice(0, rows.length - more).join('') + (more ? '<button type="button" class="now-more" id="now-more">Voir ' + (more > 1 ? 'les ' + more + ' autres' : 'l\'autre') + '</button>' : '')
+      : '<p class="corner-empty">Calme plat dans la fosse. Lance une danse : tes potes seront prévenus.</p>';
+    var mo = document.getElementById('now-more'); if(mo) mo.onclick = function(){ nowOpen = true; paintNow(); };
+    hydrateAvatars(el);
+    [].forEach.call(el.querySelectorAll('[data-now-lift]'), function(b){ b.onclick = function(){ var q = b.getAttribute('data-now-lift').split('|'); b.disabled = true; pogoLift(q[0], q[1], function(){ b.disabled = false; }); }; });
+    [].forEach.call(el.querySelectorAll('[data-now-carry]'), function(b){ b.onclick = function(){ slamCarry(sl.crowd.filter(function(c){ return c.id === b.getAttribute('data-now-carry'); })[0], b); }; });
+    [].forEach.call(el.querySelectorAll('[data-now-pogo]'), function(b){ b.onclick = function(){ pogoEnter(b.getAttribute('data-now-pogo')); }; });
+    [].forEach.call(el.querySelectorAll('[data-now-pit]'), function(b){ b.onclick = function(){ pitEnter(b.getAttribute('data-now-pit')); }; });
+    [].forEach.call(el.querySelectorAll('[data-sclaim]'), function(b){ b.onclick = function(){ slamClaim(b, 'Porteur de slam'); }; });
+    [].forEach.call(el.querySelectorAll('[data-now-salle]'), function(b){ b.onclick = function(){ openSalle(b.getAttribute('data-now-salle')); }; });
+  }
+  function paintDances(){
+    paintNow();
+    var sec = document.getElementById('dance-sec'), on = DANCES.some(function(x){ return danceInfo(x[0]).txt; });
+    sec.hidden = !on; if(!on) return;
+    var row = document.getElementById('dance-row');
+    row.innerHTML = DANCES.map(function(x){ var i = danceInfo(x[0]);
+      return '<button type="button" class="dance-t" data-dance-go="' + x[0] + '" aria-label="' + x[1] + (i.txt ? ', ' + esc(i.txt) : '') + (i.n ? ', ' + i.n + ' en attente' : '') + '">' +
+        '<img src="fosse/' + x[0] + '.jpg" alt="" loading="lazy"><span><b>' + x[1] + '</b><small>' + esc(i.txt) + '</small></span>' + (i.n ? '<i class="dance-n num" aria-hidden="true">' + i.n + '</i>' : '') + '</button>'; }).join('');
+    [].forEach.call(row.children, function(b){ b.onclick = function(){ openSalle(b.getAttribute('data-dance-go')); }; });
+  }
+  // salle d'une danse : illustration en tête, puis le mini-jeu (ce qui est en cours, lancer, règles)
+  function openSalle(k){
+    var d = DANCES.filter(function(x){ return x[0] === k; })[0]; if(!d) return;
+    salleCur = k;
+    document.getElementById('salle-img').src = 'fosse/' + k + '.jpg';
+    document.getElementById('salle-t').textContent = d[1]; document.getElementById('salle-tag').textContent = d[2];
+    [].forEach.call(salleEl.querySelectorAll('[data-dance]'), function(el){ el.classList.toggle('on', el.getAttribute('data-dance') === k); });
+    salleEl.hidden = false; salleEl.scrollTop = 0;
+  }
+  document.getElementById('salle-x').onclick = function(){ salleEl.hidden = true; salleCur = null; };
   function renderSocial(){
     if(!ONLINE) return;
     ONLINE.tradeInvites().then(function(list){ invitesList = list || []; paintInvites(); }).catch(function(){});
