@@ -458,6 +458,7 @@
   .q-art img{height:106px; aspect-ratio:2/3; object-fit:cover; border-radius:6px; box-shadow:0 10px 20px rgba(0,0,0,.65)}
   .q-art.fan img{position:absolute; top:11px; left:50%} .q-art.fan img:nth-child(1){transform:translateX(-112%) rotate(-10deg)} .q-art.fan img:nth-child(2){transform:translateX(-50%); z-index:1} .q-art.fan img:nth-child(3){transform:translateX(12%) rotate(10deg)}
   .q-art.fan.two img:nth-child(1){transform:translateX(-88%) rotate(-8deg)} .q-art.fan.two img:nth-child(2){transform:translateX(-12%) rotate(8deg)}
+  .q-art.scene{overflow:hidden} .q-art.scene img{position:absolute; inset:0; width:100%; height:100%; aspect-ratio:auto; object-fit:cover; object-position:40% 45%; border-radius:0; box-shadow:none}
   .q-art img.miss{filter:grayscale(1) brightness(.55)} .q-art > svg{width:58px; height:58px; color:var(--gold)}
   .q-body{flex:1; display:grid; grid-template-columns:1fr auto; align-items:center; align-content:start; gap:8px 10px; padding:10px 14px 14px}
   .goal.quest b{font:700 .95rem/1.25 var(--mono); letter-spacing:0; text-transform:none; color:var(--text)}
@@ -3170,7 +3171,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var cryPool = [];
   function quizzes(){
     if(!ONLINE || !state.claims) return [];
-    var out = (cryPool.length ? [{key:'cry', label:'Les cris de tes potes', cry:true, rows:cryPool, art:'cry'}] : []).concat(CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }).map(function(c){
+    var out = (cryPool.length ? [{key:'cry', label:'Les cris de tes potes', cry:true, rows:cryPool, art:'cry-quiz'}] : []).concat(CARDS.filter(function(c){ return mastered(c.id) && !state.claims['quiz:' + c.id]; }).map(function(c){
       return {key:'quiz:' + c.id, label:'Maîtrise de ' + c.who, seed:[c], art:'m:' + c.id, claim:function(sc){ return ONLINE.claimBlindtest(c.id, sc); }}; }));
     BINDERS.forEach(function(b){ if(b.secret) return; var ids = (b.ids || CARDS.map(function(c){ return c.id; })).filter(function(id){ return card(id); });
       if(ids.length && ids.every(function(id){ return placed(id); }) && !state.claims['quiz:b-' + b.k])
@@ -3274,6 +3275,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var pick = ids.slice().sort(function(x, y){ return (!!placed(y) - !!placed(x)) || rank(best(y) || 'commune') - rank(best(x) || 'commune'); }).slice(0, 3);
       return '<span class="q-art fan' + (pick.length === 2 ? ' two' : '') + '" aria-hidden="true">' + pick.map(function(x){ var r = placed(x); return r ? '<img src="' + img(x, r) + '" alt="" loading="lazy">' : '<img class="miss" src="cards/back.jpg" alt="" loading="lazy">'; }).join('') + '</span>';
     }
+    if(k === 'cry-quiz') return '<span class="q-art scene" aria-hidden="true"><img src="epreuves/cri.jpg" alt="" loading="lazy"></span>';   // gravure : le chanteur masqué
     if(k === 'cry') return '<span class="q-art" aria-hidden="true">' + ICON_MIC + '</span>';
     if(k === 'avatar') return '<span class="q-art" aria-hidden="true">' + ICON_USER + '</span>';
     if(/^(m|mastery|f):/.test(k)) id = k.split(':')[1].split('|')[0];
