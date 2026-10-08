@@ -9,14 +9,14 @@ const mailer = nodemailer.createTransport({ host: "smtp.gmail.com", port: 465, s
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 const APP = "https://pittilloni.github.io/metalnini/proto/";
 
-// e-mail aux couleurs du jeu : noir d'encre, or, os ; un bouton qui ouvre l'écran choisi ; comment couper ces e-mails
+// e-mail aux couleurs du jeu : noir d'encre, or, os ; paragraphes séparés par une ligne vide ; un bouton qui ouvre l'écran choisi ; comment couper ces e-mails
 function html(name: string | null, title: string, body: string, url: string) {
   return `<!doctype html><html lang="fr"><body style="margin:0;background:#0c0b0a;font-family:Helvetica,Arial,sans-serif;color:#f3f0ea">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0c0b0a"><tr><td align="center" style="padding:28px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#161412;border:1px solid #3a2c1c;border-radius:14px">
 <tr><td style="padding:26px 24px 8px;text-align:center"><p style="margin:0;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#e0605a">Metalnini</p>
 <h1 style="margin:10px 0 0;font-family:Georgia,serif;font-size:26px;line-height:1.2;color:#f4b243">${esc(title)}</h1></td></tr>
-<tr><td style="padding:12px 24px 4px;font-size:16px;line-height:1.55">${name ? `<p style="margin:0 0 10px">Salut ${esc(name)},</p>` : ""}<p style="margin:0">${esc(body)}</p></td></tr>
+<tr><td style="padding:12px 24px 4px;font-size:16px;line-height:1.55">${name ? `<p style="margin:0 0 10px">Salut ${esc(name)},</p>` : ""}<p style="margin:0">${esc(body).replace(/\n{2,}/g, '</p><p style="margin:12px 0 0">').replace(/\n/g, '<br>')}</p></td></tr>
 <tr><td align="center" style="padding:22px 24px 26px"><a href="${esc(url)}" style="display:inline-block;padding:14px 26px;border-radius:10px;background:#eb9a26;color:#1a0f05;font-weight:bold;font-size:15px;letter-spacing:1px;text-transform:uppercase;text-decoration:none">Ouvrir Metalnini</a></td></tr>
 </table>
 <p style="max-width:520px;margin:14px auto 0;font-size:12px;line-height:1.5;color:#a49e94">Tu reçois cet e-mail parce que tu joues à Metalnini. Pour ne plus en recevoir : dans l'app, Réglages, décoche « Recevoir les nouvelles par e-mail » (<a href="${APP}?vue=reglages" style="color:#a49e94">ouvrir les réglages</a>).</p>
