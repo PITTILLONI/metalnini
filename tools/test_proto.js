@@ -503,22 +503,25 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('slam : plongée lancée, compteur de porteurs', launched && /Tu planes/.test(d9.getElementById('slam').textContent) && d9.querySelectorAll('#slam .pit-crowd li').length === 5 && !!d9.querySelector('#slam .pit-rider.dive'));
   check('slam : « Appeler la foule » pendant le vol', !!d9.getElementById('slam-call'));
 
-  // 18 bis. Circle pit : rejoindre celui d'un pote, courir (touchers envoyés au serveur), fin du pit, points récupérés
-  let pitTaps = 0, pitClaimed = null; const pitEnd = new Date(Date.now() + 90e3).toISOString();
-  const pitSt = { id:'p1', track:'morello', ends_at:pitEnd, over:false, host:false, host_name:'Riffeuse', in:true, rewarded:true, claimed:false,
-    runners:[{ id:'f1', name:'Riffeuse', taps:20 }, { id:'u1', name:'Moi', taps:0, me:true }], tier:{ runners:2, taps:20, speed:.1, size:0, speed_tier:0, size_label:'Petit cercle', speed_label:'Tranquille', points:1 } };
-  fake9.pitFeed = async () => ({ live:[{ id:'p1', name:'Riffeuse', track:'morello', ends_at:pitEnd, runners:2, in:false }], done:[], opened_today:false, duration:120 });
-  fake9.pitJoin = async () => JSON.parse(JSON.stringify(pitSt));
-  fake9.pitRun = async (id, n) => { pitTaps += n; return JSON.parse(JSON.stringify(pitSt)); };
+  // 18 bis. Circle pit : rejoindre celui d'un pote, faire sa course (3, 2, 1, repère qui tourne), score envoyé, fin du pit, points récupérés
+  let pitStarted = 0, pitScore = null, pitClaimed = null; const pitEnd = new Date(Date.now() + 600e3).toISOString();
+  const pitSt = { id:'p1', track:'morello', ends_at:pitEnd, over:false, host:false, host_name:'Riffeuse', in:true, rewarded:true, claimed:false, rps:.35, run_s:1,
+    runners:[{ id:'f1', name:'Riffeuse', score:72, rps:.3 }, { id:'u1', name:'Moi', score:null, me:true }], tier:{ runners:1, aim:72, size:-1, aim_tier:1, size_label:null, aim_label:'Carré', points:0 } };
+  const pitCopy = () => JSON.parse(JSON.stringify(pitSt));
+  fake9.pitFeed = async () => ({ live:[{ id:'p1', name:'Riffeuse', track:'morello', ends_at:pitEnd, runners:1, in:false, ran:false }], done:[], opened_today:false, duration:900, run_s:20 });
+  fake9.pitJoin = async () => pitCopy();
+  fake9.pitRunStart = async () => { pitStarted++; pitSt.runners[1].rps = .35; return pitCopy(); };
+  fake9.pitRunFinish = async (id, sc) => { pitScore = sc; pitSt.runners[1].score = sc; pitSt.tier = { runners:2, aim:40, size:0, aim_tier:0, size_label:'Petit cercle', aim_label:'Brouillon', points:1 }; return pitCopy(); };
   fake9.pitClaim = async id => { pitClaimed = id; return { points:1, tier:pitSt.tier, loot:null }; };
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
   check('circle pit : le pit d\'un pote à rejoindre, et « Ouvrir le pit »', !d9.getElementById('pit-sec').hidden && !!d9.querySelector('#pits [data-pit="p1"]') && !!d9.getElementById('pit-go'));
   d9.querySelector('#pits [data-pit="p1"]').click(); await sleep(60);
-  check('circle pit : écran en direct, coureurs en cercle, compte à rebours', !d9.getElementById('pit').hidden && d9.querySelectorAll('#pit-orbit .pit-slot').length === 2 && /1:[23]\d/.test(d9.getElementById('pit-clock').textContent));
-  for(let i = 0; i < 7; i++) d9.getElementById('pit-run').dispatchEvent(new w9.Event('pointerdown', { cancelable:true }));
-  await sleep(1700);
-  check('circle pit : touchers comptés et envoyés', /7 tours/.test(d9.getElementById('pit-mine').textContent) && pitTaps === 7);
-  pitSt.over = true; pitSt.ends_at = new Date(Date.now() - 1000).toISOString(); fake9.pitJoin = async () => JSON.parse(JSON.stringify(pitSt));
+  check('circle pit : salle d\'attente, coureurs en cercle (pas encore couru en grisé), 15 minutes', !d9.getElementById('pit').hidden && d9.querySelectorAll('#pit-orbit .pit-slot').length === 2 && d9.querySelectorAll('#pit-orbit .pit-slot.wait').length === 1 && /^(9|10):\d\d$/.test(d9.getElementById('pit-clock').textContent) && /Courir/.test(d9.getElementById('pit-run').textContent));
+  d9.getElementById('pit-run').click(); await sleep(60);
+  check('circle pit : course lancée, décompte et repère', pitStarted === 1 && d9.getElementById('pit-count').textContent === '3' && !!d9.getElementById('pit-mark'));
+  await sleep(3400);
+  check('circle pit : score de précision envoyé, course faite', pitScore !== null && pitScore >= 0 && pitScore <= 100 && /ta course/.test(d9.getElementById('pit-run').textContent) && d9.getElementById('pit-run').disabled);
+  pitSt.over = true; pitSt.ends_at = new Date(Date.now() - 1000).toISOString();
   d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p1"]').click(); await sleep(60);
   d9.getElementById('pit-claim').click(); await sleep(60);
   check('circle pit : fin, points récupérés, écran fermé', pitClaimed === 'p1' && d9.getElementById('pit').hidden);

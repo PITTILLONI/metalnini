@@ -244,14 +244,13 @@
   .pit-song{font:600 .82rem/1.3 var(--mono); color:var(--muted)} .pit-song b{color:var(--text)}
   .pit-ring{position:relative; width:min(78vw, 300px); aspect-ratio:1; margin:8px auto 10px}
   .pit-ring::before{content:""; position:absolute; inset:9%; border-radius:50%; border:2px dashed rgba(244,178,67,.35)}
-  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite}
+  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite reverse}   /* un vrai pit tourne dans le sens inverse des aiguilles */
   .pit-slot{position:absolute; left:50%; top:50%; width:0; height:0; transform:rotate(var(--a)) translateY(calc(min(78vw, 300px) / -2 + 26px)) rotate(calc(-1 * var(--a)))}
-  .pit-slot .pit-av{position:absolute; left:-20px; top:-20px; animation:pit-spin var(--spin, 14s) linear infinite reverse}   /* le visage reste droit pendant que le cercle tourne */
+  .pit-slot .pit-av{position:absolute; left:-20px; top:-20px; animation:pit-spin var(--spin, 14s) linear infinite}   /* le visage reste droit pendant que le cercle tourne */
   .pit-slot .pit-av.me{left:-26px; top:-26px}
   .pit-run{position:absolute; left:50%; top:50%; width:46%; aspect-ratio:1; transform:translate(-50%, -50%); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; touch-action:manipulation; user-select:none; -webkit-user-select:none}
   .pit-run b{font:900 1.5rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase} .pit-run small{font:700 .8rem var(--mono)}
   .pit-run:active{transform:translate(-50%, -48%); box-shadow:0 2px 0 #8a5510}
-  .pit-run.tap{animation:pit-tap .18s ease-out}
   .pit-run:disabled{opacity:.5}
   .pit-gauges{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px; text-align:left}
   .pit-gauges div{padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
@@ -262,10 +261,15 @@
   .pit-win b{display:block; font:900 1.6rem/1.1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pit-win span{display:block; margin-top:4px; font:500 .86rem/1.4 var(--mono)}
   .pp-list{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; max-height:50dvh; overflow-y:auto} .pp-list .eyebrow{flex-basis:100%; margin:8px 0 0}
   #pit-pick .bsheet-in{max-height:88dvh; overflow-y:auto} #pit-pick #pp-go{margin-bottom:8px}
-  .pp-list [aria-pressed="true"]{border-color:var(--gold); background:rgba(235,154,38,.16)} .pp-list [aria-pressed="true"]::before{content:attr(data-n); display:inline-grid; place-items:center; width:20px; height:20px; border-radius:50%; background:var(--gold); color:#1a0f05; font:800 .72rem/1 var(--display)}
+  .pp-list [aria-pressed="true"]{border-color:var(--gold); background:rgba(235,154,38,.16)}
   @keyframes pit-spin{to{transform:rotate(360deg)}}
-  @keyframes pit-tap{50%{transform:translate(-50%, -50%) scale(.94)}}
-  @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av, .pit-run.tap{animation:none} }
+  .pit-slot.wait .pit-av{opacity:.45; filter:grayscale(1)}   /* rejoint, pas encore couru */
+  .pit-note{margin:0 0 10px; font:500 .84rem/1.4 var(--mono); color:var(--muted)}
+  .pit-ring.go{touch-action:none; user-select:none; -webkit-user-select:none} .pit-ring.go::before{border:10px solid rgba(244,178,67,.12); inset:6%}
+  .pit-mark{position:absolute; left:50%; top:50%; pointer-events:none}
+  .pit-mark .pit-av{position:absolute; left:-26px; top:-26px; transition:box-shadow .12s, border-color .12s} .pit-mark.on .pit-av{border-color:var(--gold-hi); box-shadow:0 0 0 6px rgba(244,178,67,.35), 0 0 26px rgba(244,178,67,.6)}
+  .pit-count{position:absolute; inset:0; display:grid; place-items:center; font:900 4rem/1 var(--display); color:var(--gold-hi); pointer-events:none}
+  @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av{animation:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
@@ -1249,7 +1253,7 @@
   <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Tes concerts, ton slam du jour et les circle pits de tes potes.</p></section>
   <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
   <section class="corner-sec" id="pit-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Circle pit</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pit-how" aria-label="C'est quoi, le circle pit ?">i</button></div>
-    <div class="fs-how" id="pit-how" hidden><p>Tu lances un cercle de 2 minutes sur le morceau de ton choix, et tes potes sont prévenus. Chacun tape « Courir » pour faire tourner le cercle, et rameute les siens pendant que ça tourne.</p><p><b>Plus le cercle est gros et rapide, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et à partir d'un vrai pit endiablé, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
+    <div class="fs-how" id="pit-how" hidden><p>Tu lances un circle pit sur le morceau de ton choix : tes potes sont prévenus et ont 15 minutes pour venir. Chacun fait une course de 20 s quand il arrive : un repère tourne dans le cercle, garde le doigt dessus. Chaque course fait accélérer le cercle pour le suivant.</p><p><b>Plus il y a de courses et plus elles sont précises, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et aux paliers hauts, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
     <div id="pits"></div></section>
   <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Slam</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="slam-how" aria-label="C'est quoi, le slam ?">i</button></div>
     <div class="fs-how" id="slam-how" hidden><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></div><div id="slam"></div></section>
@@ -1671,9 +1675,9 @@
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
     <h2 id="pp-t">Choisis le morceau</h2>
-    <p class="pf-note">2 minutes de circle pit : choisis jusqu'à 4 morceaux, leurs extraits s'enchaînent. Tes potes sont prévenus dès que tu lances.</p>
+    <p class="pf-note">Tes potes ont 15 minutes pour venir faire leur course sur ce morceau. Ils sont prévenus dès que tu lances.</p>
     <div class="pp-list" id="pp-list"></div>
-    <button type="button" class="btn block" id="pp-go" disabled>Choisis au moins un morceau</button>
+    <button type="button" class="btn block" id="pp-go" disabled>Choisis un morceau</button>
     <button type="button" class="btn ghost block" id="pp-cancel">Plus tard</button>
   </div>
 </div>
@@ -1868,10 +1872,11 @@ const api = {
   async slamPoints(id){ return must(await sb.rpc('slam_points', { p_user: id || null })) || 0; },
   async fosseAddFriend(id){ return must(await sb.rpc('fosse_add_friend', { p_friend: id })); },
   async pitFeed(){ return must(await sb.rpc('pit_feed')); },
-  async pitOpen(t){ return must(await sb.rpc('pit_open_tracks', { p_tracks: t })); },
+  async pitOpen(t){ return must(await sb.rpc('pit_open', { p_track: t })); },
   async pitCancel(id){ return must(await sb.rpc('pit_cancel', { p_pit: id })); },
   async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
-  async pitRun(id, n){ return must(await sb.rpc('pit_run', { p_pit: id, p_taps: n })); },
+  async pitRunStart(id){ return must(await sb.rpc('pit_run_start', { p_pit: id })); },
+  async pitRunFinish(id, score){ return must(await sb.rpc('pit_run_finish', { p_pit: id, p_score: score })); },
   async pitClaim(id){ return must(await sb.rpc('pit_claim', { p_pit: id })); },
   async slamCarry(id){ return must(await sb.rpc('slam_carry', { p_slam: id })); },
   async slamClaim(id){ return must(await sb.rpc('slam_claim', { p_slam: id })); },
@@ -3615,24 +3620,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (st === 'land' ? '<i class="pit-burst" aria-hidden="true"></i>' : '') +
       '<div class="pit-rider' + (dive ? ' dive' : '') + '" data-x="' + x + '" style="--x:' + x + '%">' + avDisc(me, 'me') + '</div>' +
       '<ol class="pit-crowd" style="--n:' + goal + '">' + slots + '</ol></div>'; }
-  // ---------- Circle pit : 2 minutes sur un extrait, on rameute, on court (touchers), gain selon les paliers ----------
-  var pitData = null, pit = null, pitPending = 0, pitMine = 0, pitTimer = 0, pitSync = 0, pitBusy = false;
+  // ---------- Circle pit : 15 minutes pour rameuter, une course de 20 s par coureur (garder le doigt sur le repère qui tourne) ----------
+  var pitData = null, pit = null, pitTimer = 0, pitSync = 0, pitGo = null;
   var pitEl = document.getElementById('pit'), pitIn = document.getElementById('pit-in'), pitPick = document.getElementById('pit-pick');
   function loadPits(){
     if(!ONLINE) return;
     Promise.resolve().then(function(){ return ONLINE.pitFeed(); }).then(function(d){ pitData = d; paintPits(); }).catch(function(){});
   }
   function pitLeft(iso){ var s = Math.max(0, Math.round((new Date(iso) - Date.now()) / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-  function trackName(id, more){ var c = card(id); return (c ? c.title + ' · ' + c.who : 'Un morceau') + (more > 0 ? ' + ' + more : ''); }
+  function trackName(id){ var c = card(id); return c ? c.title + ' · ' + c.who : 'Un morceau'; }
+  function rpsTxt(v){ return String(Math.round((v || 0) * 100) / 100).replace('.', ','); }
   // rubrique Fosse : pits en cours (à rejoindre), pits finis à récupérer, et lancer le mien
   function paintPits(){
     var d = pitData, sec = document.getElementById('pit-sec'); sec.hidden = !d; if(!d) return;
     var rows = d.live.map(function(x){
-      return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>circle pit sur ' + esc(trackName(x.track)) + ' · ' + x.runners + ' coureur' + (x.runners > 1 ? 's' : '') + ' · encore ' + pitLeft(x.ends_at) + '</small></span>' +
-        '<span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">' + (x.in ? 'Y retourner' : 'Courir') + '</button></span></div>'; }).join('') +
+      return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>circle pit sur ' + esc(trackName(x.track)) + ' · ' + x.runners + ' course' + (x.runners > 1 ? 's' : '') + ' · encore ' + pitLeft(x.ends_at) + '</small></span>' +
+        '<span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">' + (x.ran ? 'Voir' : 'Courir') + '</button></span></div>'; }).join('') +
       d.done.map(function(x){
         return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>le pit est retombé · tes points t\'attendent</small></span><span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">Voir</button></span></div>'; }).join('');
-    var box = d.opened_today ? (d.live.length ? '' : '<div class="slam-box"><b>Ton pit du jour est passé</b><small>Rejoins celui d\'un pote dès qu\'il en lance un (tu reçois une notification), ou relance le tien demain.</small></div>') : '<div class="slam-box"><b>Lance un circle pit</b><small>' + Math.round(d.duration / 60) + ' minutes sur le morceau de ton choix. Tes potes sont prévenus, chacun rameute les siens. Plus le cercle est gros et rapide, plus tout le monde gagne.</small>' +
+    var box = d.opened_today ? (d.live.length ? '' : '<div class="slam-box"><b>Ton pit du jour est passé</b><small>Rejoins celui d\'un pote dès qu\'il en lance un (tu reçois une notification), ou relance le tien demain.</small></div>') : '<div class="slam-box"><b>Lance un circle pit</b><small>' + Math.round(d.duration / 60) + ' minutes pour que tes potes viennent faire leur course de ' + (d.run_s || 20) + ' s sur le morceau de ton choix. Chaque course accélère le cercle : plus vous êtes nombreux et précis, plus tout le monde gagne.</small>' +
       (friendsList.length ? '<button type="button" class="btn block" id="pit-go">Ouvrir le pit</button>' : '<small>Il te faut des potes pour courir : ajoute-les avec ton code.</small>') + '</div>';
     document.getElementById('pits').innerHTML = rows + box;
     hydrateAvatars(document.getElementById('pits'));
@@ -3640,17 +3646,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var go = document.getElementById('pit-go'); if(go) go.onclick = openPitPick;
     cornerTab();
   }
-  // choix du morceau : les hymnes des styles, puis mes cartes qui ont un extrait
+  // choix du morceau (un seul) : les hymnes des styles, puis mes cartes qui ont un extrait
   function openPitPick(){
     var hymns = Object.keys(STYLE_INFO).map(function(k){ return styleTrack(k); }).filter(function(id, i, a){ return id && a.indexOf(id) === i && card(id); });
     var mine = CARDS.filter(function(c){ return TRACKS[c.id] && best(c.id) && hymns.indexOf(c.id) < 0; }).map(function(c){ return c.id; });
     var chip = function(id){ var c = card(id); return '<button type="button" class="df" aria-pressed="false" data-pp="' + id + '">' + esc(c.title) + ' <small>· ' + esc(c.who) + '</small></button>'; };
     document.getElementById('pp-list').innerHTML = '<p class="eyebrow">Les hymnes</p>' + hymns.map(chip).join('') + (mine.length ? '<p class="eyebrow">Tes cartes</p>' + mine.map(chip).join('') : '');
-    var picked = [], go = document.getElementById('pp-go');
-    var paint = function(){ go.disabled = !picked.length; go.textContent = picked.length ? 'Lancer le pit · ' + picked.length + ' morceau' + (picked.length > 1 ? 'x' : '') : 'Choisis au moins un morceau';
-      [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ var i = picked.indexOf(b.getAttribute('data-pp')); b.setAttribute('aria-pressed', String(i >= 0)); b.setAttribute('data-n', i >= 0 ? i + 1 : ''); }); };
-    [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ b.onclick = function(){ var id = b.getAttribute('data-pp'), i = picked.indexOf(id);
-      if(i >= 0) picked.splice(i, 1); else if(picked.length < 4) picked.push(id); else { toast('4 morceaux au plus.'); return; } paint(); }; });
+    var picked = null, go = document.getElementById('pp-go');
+    var paint = function(){ go.disabled = !picked; go.textContent = picked ? 'Lancer le pit' : 'Choisis un morceau';
+      [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-pp') === picked)); }); };
+    [].forEach.call(document.querySelectorAll('#pp-list [data-pp]'), function(b){ b.onclick = function(){ picked = b.getAttribute('data-pp'); paint(); }; });
     go.onclick = function(){ go.disabled = true;
       ONLINE.pitOpen(picked).then(function(st){ pitPick.hidden = true; snd('rumble'); pitShow(st); loadPits(); }, function(e){ go.disabled = false; toast(esc(e.message)); }); };
     paint();
@@ -3664,49 +3669,41 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.pitJoin(id).then(function(st){ pitShow(st); loadPits(); }, function(e){ toast(esc(e.message)); });
   }
   function pitShow(st){
-    var first = !pit || pit.id !== st.id; pit = st; pitEl.hidden = false;
-    if(first){ pitPending = 0; pitMine = (st.runners.filter(function(r){ return r.me; })[0] || {}).taps || 0; pitIn.innerHTML = ''; pitMusic(st); }
+    if(!pit || pit.id !== st.id) pitIn.innerHTML = '';
+    pit = st; pitEl.hidden = false;
     clearInterval(pitTimer); clearInterval(pitSync);
-    pitTimer = setInterval(pitTick, 250); pitSync = setInterval(pitPush, 1500);
+    pitTimer = setInterval(pitTick, 250); pitSync = setInterval(pitRefresh, 5000);
     pitPaint();
   }
-  // l'extrait du pit en boucle, musique du jeu coupée
-  function pitMusic(st){
-    if(st.over) return;
-    var list = (st.tracks || [st.track]).filter(function(id){ return TRACKS[id]; }), i = 0;
-    var play = function(){ if(!list.length) return; var id = list[i % list.length];
-      track(id).then(function(t){ if(!t || !pit || pit.id !== st.id || pitEl.hidden || pit.over) return;
-        stopListen(); audio = startAt(new Audio(t.url), t); audio.onended = function(){ i++; play(); }; duck(0); audio.play().then(fadeIn).catch(function(){}); }); };
-    play();   // les extraits s'enchaînent, puis reprennent au premier
-  }
-  function pitClose(){ clearInterval(pitTimer); clearInterval(pitSync); pitPush(); stopListen(); pitEl.hidden = true; pit = null; loadPits(); }
+  function pitClose(){ clearInterval(pitTimer); clearInterval(pitSync); pitStop(); pitEl.hidden = true; pit = null; loadPits(); }
   document.getElementById('pit-x').onclick = pitClose;
-  // touchers envoyés par lots ; le serveur renvoie l'état (coureurs, palier)
-  function pitPush(){
-    if(!pit || pitBusy) return;
-    var n = pitPending, id = pit.id; pitBusy = true; pitPending = 0;
-    ONLINE.pitRun(id, n).then(function(st){ pitBusy = false; if(pit && pit.id === id){ pit = st; pitPaint(); } },
-      function(){ pitBusy = false; pitPending += n; });
+  // les courses des autres arrivent : état relu toutes les 5 s (pas pendant ma course)
+  function pitRefresh(){
+    if(!pit || pitGo) return;
+    var id = pit.id;
+    ONLINE.pitJoin(id).then(function(st){ if(pit && pit.id === id && !pitGo){ pit = st; pitPaint(); } }).catch(function(){});
   }
   function pitTick(){
     if(!pit) return;
-    var c = document.getElementById('pit-clock'); if(c){ c.textContent = pitLeft(pit.ends_at); c.classList.toggle('low', new Date(pit.ends_at) - Date.now() < 20000); }
-    if(!pit.over && Date.now() >= new Date(pit.ends_at)){ pit.over = true; clearInterval(pitSync); stopListen(); snd('reward'); setTimeout(pitPush, 300); pitPaint(); }
+    var c = document.getElementById('pit-clock'); if(c && !pitGo){ c.textContent = pitLeft(pit.ends_at); c.classList.toggle('low', new Date(pit.ends_at) - Date.now() < 60000); }
+    if(!pit.over && !pitGo && Date.now() >= new Date(pit.ends_at)){ pit.over = true; snd('reward'); pitIn.innerHTML = ''; pitRefresh(); pitPaint(); }
+  }
+  function pitHead(st){
+    return '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">♪ <b>' + esc(trackName(st.track)) + '</b></p></div>';
   }
   function pitPaint(){
-    var st = pit, t = st.tier, cfgNext = function(arr, i){ return arr[i + 1]; };
-    var runners = st.runners, n = runners.length, spin = Math.max(2.2, 16 / (1 + (t.speed || 0) * 2.2));
-    var orbit = runners.map(function(r, i){ return '<i class="pit-slot" style="--a:' + Math.round(i / Math.max(1, n) * 360) + 'deg">' + avDisc(r, r.me ? 'me' : '') + '</i>'; }).join('');
-    var sizes = [[2, 'Petit cercle'], [5, 'Vrai pit'], [10, 'Cyclone'], [20, 'Ouragan']], speeds = [[1.5, 'Endiablé'], [3, 'Infernal']];
-    var nextSize = sizes.filter(function(x){ return n < x[0]; })[0], nextSpeed = speeds.filter(function(x){ return (t.speed || 0) < x[0]; })[0];
-    var gauges = '<div class="pit-gauges"><div><small>Coureurs</small><b class="num">' + n + '</b><span>' + esc(t.size_label || 'Pas encore un cercle') + (nextSize ? ' · ' + esc(nextSize[1]) + ' dès ' + nextSize[0] : '') + '</span></div>' +
-      '<div><small>Allure</small><b>' + esc(t.speed_label) + '</b><span><span class="num">' + String(t.speed || 0).replace('.', ',') + '</span> tour/s' + (nextSpeed ? ' · ' + esc(nextSpeed[1]) + ' dès ' + String(nextSpeed[0]).replace('.', ',') : '') + '</span></div></div>';
-    var head = '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">♪ <b>' + esc(trackName(st.track, (st.tracks || []).length - 1)) + '</b></p></div>';
+    if(pitGo) return;   // ma course occupe l'écran
+    var st = pit, t = st.tier, runners = st.runners, me = runners.filter(function(r){ return r.me; })[0], ran = me && me.score != null;
+    var orbit = runners.map(function(r, i){ return '<i class="pit-slot' + (r.score == null ? ' wait' : '') + '" style="--a:' + Math.round(i / Math.max(1, runners.length) * 360) + 'deg">' + avDisc(r, r.me ? 'me' : '') + '</i>'; }).join('');
+    var sizes = [[2, 'Petit cercle'], [5, 'Vrai pit'], [10, 'Cyclone'], [20, 'Ouragan']], aims = [[60, 'Carré'], [85, 'Implacable']];
+    var nextSize = sizes.filter(function(x){ return t.runners < x[0]; })[0], nextAim = aims.filter(function(x){ return (t.aim || 0) < x[0]; })[0];
+    var gauges = '<div class="pit-gauges"><div><small>Courses</small><b class="num">' + t.runners + '</b><span>' + esc(t.size_label || 'Pas encore un cercle') + (nextSize ? ' · ' + esc(nextSize[1]) + ' dès ' + nextSize[0] : '') + '</span></div>' +
+      '<div><small>Précision</small><b>' + esc(t.aim_label) + '</b><span><span class="num">' + (t.aim || 0) + '</span> % en moyenne' + (nextAim ? ' · ' + esc(nextAim[1]) + ' dès ' + nextAim[0] : '') + '</span></div></div>';
     if(st.over){
-      pitIn.innerHTML = head + '<div class="pit-ring"><div class="pit-orbit" style="--spin:40s">' + orbit + '</div></div>' +
+      pitIn.innerHTML = pitHead(st) + '<div class="pit-ring"><div class="pit-orbit" style="--spin:40s">' + orbit + '</div></div>' +
         fosseAdd(runners) + (st.cancelled ? '<div class="pit-win"><b>Pit annulé</b><span>' + (st.host ? 'Tu as arrêté le cercle. Tu peux en relancer un quand tu veux.' : esc(st.host_name) + ' a arrêté le cercle. Rien à gagner cette fois.') + '</span></div>' :
-        '<div class="pit-win"><b>' + esc(t.size_label ? t.size_label + ' · ' + t.speed_label : 'Pas assez de monde') + '</b><span>' + n + ' coureur' + (n > 1 ? 's' : '') + ', ' + String(t.speed || 0).replace('.', ',') + ' tour/s chacun · ' +
-          (t.points ? t.points + ' point' + (t.points > 1 ? 's' : '') + ' de rang pour chacun' + (st.host ? ', +1 pour toi qui l\'as lancé' : '') : 'il faut au moins 2 coureurs') + '.</span></div>') +
+        '<div class="pit-win"><b>' + esc(t.size_label ? t.size_label + ' · ' + t.aim_label : 'Pas assez de monde') + '</b><span>' + t.runners + ' course' + (t.runners > 1 ? 's' : '') + ', ' + (t.aim || 0) + ' % de précision en moyenne · ' +
+          (!ran ? 'tu n\'as pas fait ta course, rien à gagner cette fois' : t.points ? t.points + ' point' + (t.points > 1 ? 's' : '') + ' de rang pour chaque coureur' + (st.host ? ', +1 pour toi qui l\'as lancé' : '') : 'il faut au moins 2 courses') + '.</span></div>') +
         (st.in && !st.claimed && !st.cancelled ? '<button type="button" class="btn block" id="pit-claim">Récupérer</button>' : '<button type="button" class="btn block" id="pit-done">Fermer</button>');
       var cl = document.getElementById('pit-claim'); if(cl) cl.onclick = function(){ cl.disabled = true;
         ONLINE.pitClaim(st.id).then(function(r){ pit.claimed = true; loadSlam(); pitClose();
@@ -3715,27 +3712,88 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var dn = document.getElementById('pit-done'); if(dn) dn.onclick = pitClose;
       hydrateAvatars(pitIn); bindFosseAdd(pitIn); return;
     }
-    // en cours : on ne redessine que ce qui bouge (le bouton garde le doigt)
-    if(!document.getElementById('pit-run')){
-      pitIn.innerHTML = head + '<div class="pit-ring"><div class="pit-orbit" id="pit-orbit"></div><button type="button" class="pit-run relief" id="pit-run"><b>Courir</b><small class="num" id="pit-mine"></small></button></div>' +
-        '<div id="pit-gauges"></div><div id="pit-add"></div><div class="pit-acts"><button type="button" class="btn" id="pit-call">Rameuter</button><button type="button" class="btn ghost" id="pit-qr-b">Mon QR</button></div><div id="pit-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pit-qr" role="img" aria-label="QR code du circle pit"></div></div></div>' +
-        (st.host ? '<button type="button" class="band-leave" id="pit-stop">Annuler le pit</button>' : '');
-      var run = document.getElementById('pit-run');
-      run.addEventListener('pointerdown', function(e){ e.preventDefault(); if(!pit || pit.over) return; pitPending++; pitMine++; buzz(6);
-        document.getElementById('pit-mine').textContent = pitMine + ' tour' + (pitMine > 1 ? 's' : ''); run.classList.remove('tap'); void run.offsetWidth; run.classList.add('tap'); });
+    // en cours : la salle d'attente se construit une fois, puis on ne met à jour que ce qui bouge
+    if(!document.getElementById('pit-lobby')){
+      pitIn.innerHTML = '<div id="pit-lobby">' + pitHead(st) + '<div class="pit-ring"><div class="pit-orbit" id="pit-orbit"></div><button type="button" class="pit-run relief" id="pit-run"></button></div>' +
+        '<p class="pit-note" id="pit-note"></p><div id="pit-gauges"></div><div id="pit-add"></div><div class="pit-acts"><button type="button" class="btn" id="pit-call">Rameuter</button><button type="button" class="btn ghost" id="pit-qr-b">Mon QR</button></div><div id="pit-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pit-qr" role="img" aria-label="QR code du circle pit"></div></div></div>' +
+        (st.host ? '<button type="button" class="band-leave" id="pit-stop">Annuler le pit</button>' : '') + '</div>';
+      document.getElementById('pit-run').onclick = pitRunGo;
       var link = function(){ return location.origin + location.pathname + '?pit=' + pit.id + (poteCode ? '&pote=' + poteCode : ''); };
       if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
-      document.getElementById('pit-call').onclick = function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens courir !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
+      document.getElementById('pit-call').onclick = function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens faire ta course !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
       var stop = document.getElementById('pit-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le circle pit ? Personne ne gagne rien, et tu pourras en relancer un.')) return;
-        stop.disabled = true; ONLINE.pitCancel(pit.id).then(function(){ stopListen(); toast('Pit annulé. Le cercle se disperse.'); pitClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
+        stop.disabled = true; ONLINE.pitCancel(pit.id).then(function(){ toast('Pit annulé. Le cercle se disperse.'); pitClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
       document.getElementById('pit-qr-b').onclick = function(){ var b = document.getElementById('pit-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pit-qr', link()); };
     }
-    document.getElementById('pit-mine').textContent = pitMine + ' tour' + (pitMine > 1 ? 's' : '');
-    var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', spin.toFixed(1) + 's');
-    if(ob.getAttribute('data-sig') !== runners.map(function(r){ return r.id; }).join()){ ob.innerHTML = orbit; ob.setAttribute('data-sig', runners.map(function(r){ return r.id; }).join()); hydrateAvatars(ob); }
+    var run = document.getElementById('pit-run'), late = new Date(st.ends_at) - Date.now() < (st.run_s + 2) * 1000;
+    run.disabled = ran || late;
+    run.innerHTML = ran ? '<b class="num">' + me.score + ' %</b><small>ta course</small>' : late ? '<b>Trop tard</b><small>le pit retombe</small>' : '<b>Courir</b><small class="num">' + st.run_s + ' s · à toi</small>';
+    document.getElementById('pit-note').textContent = ran ? 'Ta course est faite. Rameute du monde : chaque course compte pour tout le cercle.' :
+      'Le cercle tourne à ' + rpsTxt(st.rps) + ' tour/s. Garde le doigt sur ton repère pendant ' + st.run_s + ' s ; chaque course le fait accélérer.';
+    var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', (1 / Math.max(.1, st.rps)).toFixed(1) + 's');
+    var sig = runners.map(function(r){ return r.id + ':' + (r.score == null ? '' : r.score); }).join();
+    if(ob.getAttribute('data-sig') !== sig){ ob.innerHTML = orbit; ob.setAttribute('data-sig', sig); hydrateAvatars(ob); }
     document.getElementById('pit-gauges').innerHTML = gauges;
     var pa = document.getElementById('pit-add'), ps = runners.map(function(r){ return r.id; }).join() + '|' + friendsList.length;
     if(pa.getAttribute('data-sig') !== ps){ pa.innerHTML = fosseAdd(runners); pa.setAttribute('data-sig', ps); bindFosseAdd(pa); }
+  }
+  // ma course : 3, 2, 1, puis le repère tourne (sens inverse des aiguilles, comme un vrai pit) en accélérant un peu ;
+  // la précision est la part du temps où le doigt reste dessus
+  function pitRunGo(){
+    var b = document.getElementById('pit-run'); b.disabled = true;
+    ONLINE.pitRunStart(pit.id).then(function(st){
+      pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
+      pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, x:0, y:0, ang:0};
+      pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><i class="pit-mark" id="pit-mark">' + avDisc(me, 'me') + '</i><b class="pit-count num" id="pit-count">3</b></div>' +
+        '<div class="pit-gauges"><div><small>Précision</small><b class="num" id="pit-acc">0 %</b></div><div><small>Vitesse</small><b class="num">' + rpsTxt(rps) + '</b><span>tour/s</span></div></div>' +
+        '<p class="pit-note">Pose le doigt sur ton avatar et suis-le dans le cercle.</p>';
+      hydrateAvatars(pitIn);
+      var ring = document.getElementById('pit-track'), mark = document.getElementById('pit-mark'), cnt = document.getElementById('pit-count'), acc = document.getElementById('pit-acc'), go = pitGo;
+      var pos = function(e){ go.down = true; go.x = e.clientX; go.y = e.clientY; };
+      ring.addEventListener('pointerdown', function(e){ e.preventDefault(); try { ring.setPointerCapture(e.pointerId); } catch(_){} pos(e); });
+      ring.addEventListener('pointermove', function(e){ if(go.down) pos(e); });
+      ring.addEventListener('pointerup', function(){ go.down = false; }); ring.addEventListener('pointercancel', function(){ go.down = false; });
+      var place = function(a){ var R = ring.offsetWidth / 2 * .94 - 5; mark.style.transform = 'rotate(' + a + 'deg) translateY(' + (-R) + 'px) rotate(' + (-a) + 'deg)'; };
+      place(0);
+      // le repère est-il sous le doigt : écart d'angle de 28° au plus, dans la bande de l'anneau
+      var onMark = function(){
+        if(!go.down) return false;
+        var r = ring.getBoundingClientRect(), dx = go.x - (r.left + r.width / 2), dy = go.y - (r.top + r.height / 2), d = Math.sqrt(dx * dx + dy * dy) / (r.width / 2);
+        if(d < .5 || d > 1.3) return false;
+        var a = Math.atan2(dx, -dy) * 180 / Math.PI, diff = Math.abs(((a - go.ang) % 360 + 540) % 360 - 180);
+        return diff <= 28;
+      };
+      var n = 3, tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); return; }
+        clearInterval(tick); cnt.textContent = ''; buzz(20); pitTrack(st.track);
+        go.t0 = go.last = performance.now();
+        (function frame(now){
+          if(pitGo !== go) return;
+          var t = Math.min(T, now - go.t0), s = t / 1000;
+          go.ang = -360 * rps * (.85 * s + .3 * s * s / (2 * T / 1000));   // de 0,85 à 1,15 fois la vitesse du cercle
+          place(go.ang);
+          var hit = onMark(); if(hit) go.on += now - go.last; go.last = now;
+          mark.classList.toggle('on', hit);
+          acc.textContent = Math.round(go.on / Math.max(1, t) * 100) + ' %';
+          var c = document.getElementById('pit-clock'); if(c) c.textContent = '0:' + String(Math.ceil((T - t) / 1000)).padStart(2, '0');
+          if(t >= T) return pitRunEnd(Math.round(go.on / T * 100));
+          go.raf = requestAnimationFrame(frame);
+        })(go.t0);
+      }, 700);
+      go.tick = tick;
+    }, function(e){ b.disabled = false; toast(esc(e.message)); });
+  }
+  function pitRunEnd(score){
+    var id = pitGo.id; pitStop(); snd('reward'); pitIn.innerHTML = '';
+    ONLINE.pitRunFinish(id, score).then(function(st){ if(pit && pit.id === id){ pit = st; pitPaint(); } toast('Ta course : <b>' + score + ' %</b> de précision.'); },
+      function(e){ toast(esc(e.message)); pitRefresh(); });
+  }
+  // fin ou abandon de ma course : animation, décompte et extrait coupés
+  function pitStop(){ if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
+  // l'extrait du morceau du pit pendant la course, musique du jeu coupée
+  function pitTrack(id){
+    var go = pitGo;
+    track(id).then(function(t){ if(!t || pitGo !== go) return;
+      stopListen(); audio = startAt(new Audio(t.url), t); duck(0); audio.play().then(fadeIn).catch(function(){}); });
   }
   // nouvelles du slam toutes les 30 s et au retour dans l'app : porteurs de mon slam, slams des potes à porter (pastille)
   setInterval(function(){ if(ONLINE && !document.hidden) loadSlam(); }, 30000);
