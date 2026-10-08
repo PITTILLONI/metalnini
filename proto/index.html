@@ -2359,6 +2359,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   function stopListen(){
     if(audio){ audio.pause(); audio = null; if(typeof duck === 'function') duck(revealEl && !revealEl.hidden ? .35 : 1); }
+    try{ if(navigator.mediaSession){ navigator.mediaSession.playbackState = 'none'; navigator.mediaSession.metadata = null; } }catch(e){}   // plus de lecteur en cours pour iOS
     if(listenEl){ var b = listenEl.querySelector('.lp'); if(b){ b.style.setProperty('--pg', 0); b.setAttribute('aria-pressed', 'false'); b.firstChild.outerHTML = PLAY; } listenEl = null; }
   }
   // remplit un conteneur .listen pour une carte ; il reste masqué si aucun extrait n'est trouvé ;
@@ -4725,7 +4726,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   SFX.rumble = function(ms){ buzz([ms]); snd('rumble'); };
   // ---------- Son : musique de fond, jingles de rareté, sons de jeu et d'interface ----------
   // Web Audio pour tout (volume réglable aussi sur iPhone) ; rien ne sonne avant le premier geste (règle des navigateurs)
-  var SOUNDS = window.METALNINI_SOUNDS || {}, sndCtx = null, sfxBus = null, musicBus = null, sndBuf = {}, musicEl = null, musicDuck = 1;
+  var SOUNDS = window.METALNINI_SOUNDS || {}, sndCtx = null, sfxBus = null, musicBus = null, sndBuf = {}, musicSrc = null, musicDuck = 1;
   function sndOn(){ return state.sfx !== false; }
   function sndInit(){
     if(sndCtx) { if(sndCtx.state === 'suspended') sndCtx.resume(); return sndCtx; }
@@ -4757,13 +4758,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // musique : une boucle, baissée pendant une révélation, coupée pendant un extrait audio ou quand l'app passe en arrière-plan
   function musicLevel(){ return state.music === false || document.hidden ? 0 : .32 * musicDuck; }
-  function musicApply(){ if(!musicBus) return; var t = sndCtx.currentTime; musicBus.gain.cancelScheduledValues(t); musicBus.gain.setTargetAtTime(musicLevel(), t, .25);
-    if(musicEl){ if(musicLevel() > 0 && musicEl.paused) musicEl.play().catch(function(){}); } }
+  function musicApply(){ if(!musicBus) return; var t = sndCtx.currentTime; musicBus.gain.cancelScheduledValues(t); musicBus.gain.setTargetAtTime(musicLevel(), t, .25); }
+  // la boucle passe par Web Audio, pas par un élément <audio> : iOS n'en fait pas un lecteur (pas de bouton lecture natif enclenché)
   function musicStart(){
-    if(!SOUNDS['music-main'] || musicEl || !sndInit()) return;
-    musicEl = new Audio('sounds/' + SOUNDS['music-main']); musicEl.loop = true; musicEl.preload = 'auto';
-    try{ sndCtx.createMediaElementSource(musicEl).connect(musicBus); }catch(e){}
-    musicEl.play().catch(function(){}); musicApply();
+    if(!SOUNDS['music-main'] || musicSrc || !sndInit()) return;
+    musicSrc = true;
+    sndLoad('music-main').then(function(buf){ if(!buf){ musicSrc = null; return; }
+      var src = sndCtx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(musicBus); src.start(); musicSrc = src; musicApply(); });
   }
   function duck(v){ musicDuck = v; musicApply(); }
   // un cri coupe la musique le temps qu'il résonne, puis elle reprend à son niveau (coupée en blind test, baissée en révélation)
@@ -4777,7 +4778,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!sndInit()) return;
     musicStart(); musicApply();
     if(!sndPreloaded){ sndPreloaded = true; ['tap', 'flip', 'tear', 'place', 'deal', 'reveal-commune', 'reveal-rare'].forEach(sndLoad); }
-    if(sndCtx.state === 'running' && (!musicEl || !musicEl.paused || !musicLevel())) SND_GESTURES.forEach(function(t){ removeEventListener(t, sndUnlock, true); });
+    if(sndCtx.state === 'running' && musicSrc) SND_GESTURES.forEach(function(t){ removeEventListener(t, sndUnlock, true); });
   }
   SND_GESTURES.forEach(function(t){ addEventListener(t, sndUnlock, true); });
   document.addEventListener('visibilitychange', musicApply);
