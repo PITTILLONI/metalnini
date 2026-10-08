@@ -75,3 +75,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | m-schaffer (carte maudite) | [Jon_Schaffer_2013.jpg](https://commons.wikimedia.org/wiki/File:Jon_Schaffer_2013.jpg) | dr_zoidberg | CC BY-SA 2.0 |
 | m-glitter (carte maudite) | [Gary_Glitter_-_TopPop_1974_1.png](https://commons.wikimedia.org/wiki/File:Gary_Glitter_-_TopPop_1974_1.png) | AVRO | CC BY-SA 3.0 nl |
 | m-anselmo (carte maudite) | [Phil_Anselmo_2011_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Phil_Anselmo_2011_%28cropped%29.jpg) | MarkScottAustinTX | CC BY-SA 2.0 |
+| durst | [13-06-07_RaR_LB_Fred_Durst_09.jpg](https://commons.wikimedia.org/wiki/File:13-06-07_RaR_LB_Fred_Durst_09.jpg) | Achim Raschka | CC BY-SA 4.0 |

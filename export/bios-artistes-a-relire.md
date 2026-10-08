@@ -158,6 +158,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **flynn** — Passé par Vio-lence, figure du thrash de la baie de San Francisco, il fonde Machine Head à Oakland en 1991. Burn My Eyes (1994), avec Davidian et son refrain « Let freedom ring with a shotgun blast », impose le groupe ; The Blackening (2007) en fait un classique moderne. Il chante et joue de la guitare, et prend position contre le racisme dans la scène metal.
 
+**durst** — Il fonde Limp Bizkit à Jacksonville, en Floride, en 1994, et recrute le guitariste Wes Borland, dont les tenues font partie du spectacle. Significant Other (1999), avec Nookie et Break Stuff, puis Chocolate Starfish and the Hot Dog Flavored Water (2000), avec Rollin', en font l'un des groupes les plus vendus du nu metal. Il y mêle rap, riffs saturés et scratchs. Il réalise aussi des films, dont The Education of Charlie Banks (2007).
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
