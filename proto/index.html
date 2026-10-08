@@ -269,6 +269,14 @@
   .pit-mark{position:absolute; left:50%; top:50%; pointer-events:none}
   .pit-mark .pit-av{position:absolute; left:-26px; top:-26px; transition:box-shadow .12s, border-color .12s} .pit-mark.on .pit-av{border-color:var(--gold-hi); box-shadow:0 0 0 6px rgba(244,178,67,.35), 0 0 26px rgba(244,178,67,.6)}
   .pit-count{position:absolute; inset:0; display:grid; place-items:center; font:900 4rem/1 var(--display); color:var(--gold-hi); pointer-events:none}
+  /* course : l'illustration du pit en fond de piste, compteur de tours au centre, jauge de vitesse dessous */
+  .pit-bg{position:absolute; inset:6%; width:88%; height:88%; border-radius:50%; object-fit:cover; opacity:.28; filter:saturate(.8); pointer-events:none}
+  .pit-mid{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none}
+  .pit-mid .pit-count{position:static; display:block} .pit-laps{font:900 3.4rem/1 var(--display); color:var(--text); text-shadow:0 4px 18px rgba(0,0,0,.8)} #pit-combo{font:700 .8rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-hi)}
+  .pit-dust{position:absolute; width:10px; height:10px; margin:-5px; border-radius:50%; background:radial-gradient(circle, rgba(232,214,180,.7), rgba(232,214,180,0) 70%); pointer-events:none; z-index:1}
+  .pit-speed{position:relative; height:12px; margin:4px 8px 6px; border-radius:6px; background:rgba(255,255,255,.08)} .pit-zone{position:absolute; left:37.5%; width:27.5%; top:0; bottom:0; border-radius:6px; background:rgba(74,222,128,.35); box-shadow:0 0 0 1px rgba(74,222,128,.5)}
+  .pit-needle{position:absolute; top:-5px; width:4px; height:22px; margin-left:-2px; border-radius:2px; background:var(--accent-text); transition:background .15s} .pit-needle.ok{background:#4ade80}
+  .pit-cue{margin:0 0 10px; font:800 1rem var(--display); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)} .pit-cue.ok{color:#4ade80}
   @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av{animation:none} }
   /* pogo : arène de la manche, danseurs qui foncent, équilibre, mise et ramassage */
   .pogo-arena{position:relative; height:min(46dvh, 340px); margin:4px -16px 12px; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; background:radial-gradient(90% 70% at 50% 45%, #2a1a10 0%, #0c0a09 75%)}
@@ -1708,7 +1716,7 @@
   <div class="salle-in">
   <section class="salle-p" id="pogo-sec" data-dance="pogo" hidden><div class="fs-how how" id="pogo-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304z"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/></svg></i><span><b>Choisis la mise</b>Chaque danseur y laisse une carte de cette rareté, tirée au hasard. Même sa dernière.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg></i><span><b>Danse 15 s</b>Touche le côté d’où ils foncent pour les renvoyer. 4 coups pris et tu tombes.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Relève tes potes</b>À terre, tu perds ta carte, sauf si un pote te relève avant la fin.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21l8 0"/><path d="M12 17l0 4"/><path d="M7 4l10 0"/><path d="M17 4v8a5 5 0 0 1 -10 0v-8"/><path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/></svg></i><span><b>Ramasse</b>Le premier tiers ramasse les cartes tombées. 3 danseurs au moins.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Cartes ramassées</span><span>Points de rang</span><span>Missions de pogo</span></p></div>
     <div id="pogos"></div></section>
-  <section class="salle-p" id="pit-sec" data-dance="pit" hidden><div class="fs-how how" id="pit-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M9 17v-13h10v13"/><path d="M9 8h10"/></svg></i><span><b>Lance sur un morceau</b>Tes potes sont prévenus : ils ont 15 minutes pour venir.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Cours 20 s</b>Garde le doigt sur ton avatar qui tourne dans le cercle.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"/></svg></i><span><b>Le cercle accélère</b>Chaque course rend le pit plus rapide pour le suivant.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg></i><span><b>Gagnez ensemble</b>Plus de courses, plus de précision : meilleur palier pour tous.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Points de rang</span><span>Carte ou paquet aux hauts paliers</span><span>3 pits récompensés par jour</span></p></div>
+  <section class="salle-p" id="pit-sec" data-dance="pit" hidden><div class="fs-how how" id="pit-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M9 17v-13h10v13"/><path d="M9 8h10"/></svg></i><span><b>Lance sur un morceau</b>Tes potes sont prévenus : ils ont 15 minutes pour venir.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Fais tourner le pit</b>Dessine des cercles du doigt pendant 20 s, à la bonne vitesse.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"/></svg></i><span><b>Le cercle accélère</b>Chaque course rend le pit plus rapide pour le suivant.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg></i><span><b>Gagnez ensemble</b>Plus de courses, plus de précision : meilleur palier pour tous.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Points de rang</span><span>Carte ou paquet aux hauts paliers</span><span>3 pits récompensés par jour</span></p></div>
     <div id="pits"></div></section>
   <section class="salle-p" id="slam-sec" data-dance="slam" hidden><div class="fs-how how" id="slam-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M4 17l5 1l.75 -1.5"/><path d="M15 21l0 -4l-4 -3l1 -6"/><path d="M7 12l0 -3l5 -1l3 3l3 1"/></svg></i><span><b>Plonge</b>Une fois par jour, tu sautes dans la foule.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Tes potes te portent</b>Chacun d’un toucher. Il en faut 5 en 2 heures.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M8.7 10.7l6.6 -3.4"/><path d="M8.7 13.3l6.6 3.4"/></svg></i><span><b>La foule grossit</b>Tes porteurs relaient ton slam à leurs propres potes.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2 -7h-4l-2 2h-3l2 -4l-2 -4h3l2 2h4l-2 -7h3z"/></svg></i><span><b>Atterris</b>Sinon, tu t’écrases dans la fosse et personne ne gagne.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Carte Rare, paquet ou ticket pour toi</span><span>Carte ou paquet pour chaque porteur</span><span>Points de rang</span></p></div><div id="slam"></div></section>
   </div>
@@ -3918,7 +3926,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     run.disabled = ran || late;
     run.innerHTML = ran ? '<b class="num">' + me.score + ' %</b><small>ta course</small>' : late ? '<b>Trop tard</b><small>le pit retombe</small>' : '<b>Courir</b><small class="num">' + st.run_s + ' s · à toi</small>';
     document.getElementById('pit-note').textContent = ran ? 'Ta course est faite. Rameute du monde : chaque course compte pour tout le cercle.' :
-      'Le cercle tourne à ' + rpsTxt(st.rps) + ' tour/s. Garde le doigt sur ton repère pendant ' + st.run_s + ' s ; chaque course le fait accélérer.';
+      'Fais tourner le pit : dessine des cercles du doigt pendant ' + st.run_s + ' s, à la vitesse du cercle. Chaque course le fait accélérer.';
     var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', (1 / Math.max(.1, st.rps)).toFixed(1) + 's');
     var sig = runners.map(function(r){ return r.id + ':' + (r.score == null ? '' : r.score); }).join();
     if(ob.getAttribute('data-sig') !== sig){ ob.innerHTML = orbit; ob.setAttribute('data-sig', sig); hydrateAvatars(ob); }
@@ -3927,44 +3935,58 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(pa.getAttribute('data-sig') !== ps){ pa.innerHTML = fosseAdd(runners); pa.setAttribute('data-sig', ps); bindFosseAdd(pa); }
     phaseIn(pitIn, 'lobby-' + st.id + (ran ? '-ran' : ''));
   }
-  // ma course : 3, 2, 1, puis le repère tourne (sens inverse des aiguilles, comme un vrai pit) en accélérant un peu ;
-  // la précision est la part du temps où le doigt reste dessus
+  // ma course : 3, 2, 1, puis je fais tourner le pit : je dessine des cercles du doigt, dans le sens inverse des aiguilles,
+  // à la vitesse du cercle (zone de la jauge) ; la foule court à ma vitesse ; précision = part du temps passée dans la zone
   function pitRunGo(){
     var b = document.getElementById('pit-run'); b.disabled = true;
     ONLINE.pitRunStart(pit.id).then(function(st){
       pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
-      pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, x:0, y:0, ang:0};
-      pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><div class="pit-orbit-c">' + crowdHtml(10).replace('class="crowd"', 'class="crowd pit-runners"') + '</div><i class="pit-mark" id="pit-mark">' + avDisc(me, 'me') + '</i><b class="pit-count num" id="pit-count">3</b></div>' +
-        '<div class="pit-gauges"><div><small>Précision</small><b class="num" id="pit-acc">0 %</b></div><div><small>Vitesse</small><b class="num">' + rpsTxt(rps) + '</b><span>tour/s</span></div></div>' +
-        '<p class="pit-note">Pose le doigt sur ton avatar et suis-le dans le cercle.</p>';
+      var target = .5 + rps * 1.5;   // tours de doigt par seconde visés : de 0,95 (premier coureur) à 2 (cercle au plus vite)
+      pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, ang:null, lastMove:0, v:0, spin:0, laps:0, combo:0, lapOk:true, dust:0};
+      pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><img class="pit-bg" src="fosse/pit.jpg" alt=""><div class="pit-orbit-c">' + crowdHtml(10).replace('class="crowd"', 'class="crowd pit-runners"') + '</div>' +
+          '<i class="pit-mark" id="pit-mark">' + avDisc(me, 'me') + '</i><div class="pit-mid"><b class="pit-count num" id="pit-count">3</b><b class="pit-laps num" id="pit-laps"></b><small id="pit-combo"></small></div></div>' +
+        '<div class="pit-speed" aria-hidden="true"><i class="pit-zone"></i><i class="pit-needle" id="pit-needle"></i></div><p class="pit-cue" id="pit-cue">Dessine des cercles, sens inverse des aiguilles</p>' +
+        '<div class="pit-gauges"><div><small>Précision</small><b class="num" id="pit-acc">0 %</b></div><div><small>Tours</small><b class="num" id="pit-lapn">0</b><span>vise ' + String(Math.round(target * 10) / 10).replace('.', ',') + ' tour/s</span></div></div>';
       hydrateAvatars(pitIn);
-      crowdOrbit(document.querySelector('#pit-track .pit-runners'), document.getElementById('pit-track'), rps);
       var ring = document.getElementById('pit-track'), mark = document.getElementById('pit-mark'), cnt = document.getElementById('pit-count'), acc = document.getElementById('pit-acc'), go = pitGo;
-      var pos = function(e){ go.down = true; go.x = e.clientX; go.y = e.clientY; };
-      ring.addEventListener('pointerdown', function(e){ e.preventDefault(); try { ring.setPointerCapture(e.pointerId); } catch(_){} pos(e); });
-      ring.addEventListener('pointermove', function(e){ if(go.down) pos(e); });
-      ring.addEventListener('pointerup', function(){ go.down = false; }); ring.addEventListener('pointercancel', function(){ go.down = false; });
-      var place = function(a){ var R = ring.offsetWidth / 2 * .94 - 5; mark.style.transform = 'rotate(' + a + 'deg) translateY(' + (-R) + 'px) rotate(' + (-a) + 'deg)'; };
+      var laps = document.getElementById('pit-laps'), combo = document.getElementById('pit-combo'), needle = document.getElementById('pit-needle'), cue = document.getElementById('pit-cue'), lapn = document.getElementById('pit-lapn');
+      crowdOrbit(document.querySelector('#pit-track .pit-runners'), ring, function(){ return rps * Math.min(1.6, go.v / 360 / target); }, function(){ return go.v / 360 / target < .75; });
+      var R = function(){ return ring.offsetWidth / 2 * .94 - 5; };
+      var place = function(a){ mark.style.transform = 'rotate(' + a + 'deg) translateY(' + (-R()) + 'px) rotate(' + (-a) + 'deg)'; };
       place(0);
-      // le repère est-il sous le doigt : écart d'angle de 28° au plus, dans la bande de l'anneau
-      var onMark = function(){
-        if(!go.down) return false;
-        var r = ring.getBoundingClientRect(), dx = go.x - (r.left + r.width / 2), dy = go.y - (r.top + r.height / 2), d = Math.sqrt(dx * dx + dy * dy) / (r.width / 2);
-        if(d < .5 || d > 1.3) return false;
-        var a = Math.atan2(dx, -dy) * 180 / Math.PI, diff = Math.abs(((a - go.ang) % 360 + 540) % 360 - 180);
-        return diff <= 28;
-      };
-      pop(document.getElementById('pit-count'), 2.2);
+      // angle du doigt autour du centre (0 en haut, sens des aiguilles positif) ; un tour dans le sens inverse fait monter spin
+      var move = function(e){ if(!go.t0) return; var r = ring.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        if(Math.sqrt(dx * dx + dy * dy) < r.width * .12) return;   // trop près du centre : l'angle n'a plus de sens
+        var a = Math.atan2(dx, -dy) * 180 / Math.PI, now = performance.now();
+        if(go.ang != null){ var d = ((a - go.ang + 540) % 360) - 180, dt = Math.max(8, now - go.lastMove);
+          go.v += ((-d) / dt * 1000 - go.v) * .25; go.spin += -d; }
+        go.ang = a; go.lastMove = now; place(a); };
+      ring.addEventListener('pointerdown', function(e){ e.preventDefault(); try { ring.setPointerCapture(e.pointerId); } catch(_){} go.down = true; go.ang = null; move(e); });
+      ring.addEventListener('pointermove', function(e){ if(go.down) move(e); });
+      ring.addEventListener('pointerup', function(){ go.down = false; }); ring.addEventListener('pointercancel', function(){ go.down = false; });
+      // poussière soulevée par la foule quand le pit tourne dans le rythme
+      var dust = function(a){ anim(function(g){ var d = document.createElement('i'), rr = R() * (.92 + Math.random() * .16), rad = a * Math.PI / 180;
+        d.className = 'pit-dust'; d.style.left = (ring.offsetWidth / 2 + Math.sin(rad) * rr) + 'px'; d.style.top = (ring.offsetWidth / 2 - Math.cos(rad) * rr) + 'px'; ring.appendChild(d);
+        g.fromTo(d, {scale:.4, opacity:.7}, {scale:2.2 + Math.random(), opacity:0, x:(Math.random() - .5) * 30, y:-10 - Math.random() * 20, duration:.9, ease:'power1.out', onComplete:function(){ d.remove(); }}); }); };
+      pop(cnt, 2.2);
       var n = 3, tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); pop(cnt, 2.2); return; }
         clearInterval(tick); cnt.textContent = ''; buzz(20); pitTrack(st.track);
-        go.t0 = go.last = performance.now();
+        go.t0 = go.last = performance.now(); laps.textContent = '0'; combo.textContent = 'tour';
         (function frame(now){
           if(pitGo !== go) return;
-          var t = Math.min(T, now - go.t0), s = t / 1000;
-          go.ang = -360 * rps * (.85 * s + .3 * s * s / (2 * T / 1000));   // de 0,85 à 1,15 fois la vitesse du cercle
-          place(go.ang);
-          var hit = onMark(); if(hit) go.on += now - go.last; go.last = now;
-          mark.classList.toggle('on', hit);
+          var t = Math.min(T, now - go.t0), dt = now - go.last; go.last = now;
+          if(now - go.lastMove > 90) go.v *= Math.pow(.9, dt / 16);   // doigt immobile ou levé : le pit ralentit
+          var k = go.v / 360 / target, ok = k >= .75 && k <= 1.3;
+          if(ok) go.on += dt; else go.lapOk = false;
+          needle.style.left = Math.max(0, Math.min(100, k / 2 * 100)) + '%'; needle.classList.toggle('ok', ok);
+          var cueTxt = !go.down && k < .2 ? 'Dessine des cercles, sens inverse des aiguilles' : k < .75 ? 'Plus vite !' : k > 1.3 ? 'Moins vite !' : 'Dans le rythme';
+          if(cue.textContent !== cueTxt){ cue.textContent = cueTxt; cue.classList.toggle('ok', ok); }
+          mark.classList.toggle('on', ok);
+          if(ok && now - go.dust > 110 && go.ang != null){ go.dust = now; dust(go.ang); }
+          // un tour complet : vibration, « tour » qui claque ; tours enchaînés dans la zone = combo
+          if(go.spin >= 360){ go.spin -= 360; go.laps++; go.combo = go.lapOk ? go.combo + 1 : 1; go.lapOk = true; buzz(go.combo > 2 ? 25 : 12); snd('select', .5);
+            laps.textContent = go.laps; lapn.textContent = go.laps; combo.textContent = go.combo > 1 ? 'combo ×' + go.combo : 'tour'; pop(laps, 1.7); if(go.combo > 1) pop(combo, 1.4); }
+          if(go.spin < -360) go.spin = -360;
           var pc = Math.round(go.on / Math.max(1, t) * 100); if(Math.floor(pc / 10) !== go.dec){ if(go.dec != null && pc > go.dec * 10) pop(acc, 1.3); go.dec = Math.floor(pc / 10); } acc.textContent = pc + ' %';
           var c = document.getElementById('pit-clock'); if(c) c.textContent = '0:' + String(Math.ceil((T - t) / 1000)).padStart(2, '0');
           if(t >= T) return pitRunEnd(Math.round(go.on / T * 100));
@@ -4887,10 +4909,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         g.to(al, {rotation:'-=' + (14 + r() * 12), svgOrigin:'13 33', duration:.6 + r() * .4, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .5});
         g.to(ar, {rotation:'+=' + (14 + r() * 12), svgOrigin:'27 33', duration:.6 + r() * .4, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .5}); } }); }); }
   // circle pit : des coureurs tournent autour de l'anneau, à la vitesse du cercle, dans le sens inverse des aiguilles
-  function crowdOrbit(c, ring, rps){ anim(function(g){ if(!c) return; var fans = [].slice.call(c.querySelectorAll('.fan-w')), n = fans.length, t0 = performance.now();
-    c._tick = function(){ var w = ring.offsetWidth, R = w * .62, t = (performance.now() - t0) / 1000;   // ellipse aplatie : la piste vue en perspective
-      fans.forEach(function(f, i){ var a = (-rps * 360 * t + i * 360 / n) * Math.PI / 180, x = Math.sin(a) * R, y = -Math.cos(a) * R * .55 + w * .06, k = .6 + (-Math.cos(a) + 1) * .2;
-        f.style.transform = 'translate(' + (x + w / 2).toFixed(1) + 'px,' + (y + w / 2 - Math.abs(Math.sin(t * 9 + i)) * 4).toFixed(1) + 'px) translate(-50%, -100%) scale(' + k.toFixed(2) + ')'; f.style.zIndex = y > 0 ? 3 : 0; }); };
+  function crowdOrbit(c, ring, rps, slow){ anim(function(g){ if(!c) return; var fans = [].slice.call(c.querySelectorAll('.fan-w')), n = fans.length, last = performance.now(), ph = 0;
+    c._tick = function(){ var now = performance.now(), w = ring.offsetWidth, R = w * .62, v = typeof rps === 'function' ? rps() : rps, wob = slow && slow() ? Math.sin(now / 90) * 12 : 0;   // ellipse aplatie : la piste vue en perspective
+      ph += v * 360 * (now - last) / 1000; last = now;
+      fans.forEach(function(f, i){ var a = (-ph + i * 360 / n) * Math.PI / 180, x = Math.sin(a) * R, y = -Math.cos(a) * R * .55 + w * .06, k = .6 + (-Math.cos(a) + 1) * .2;
+        f.style.transform = 'translate(' + (x + w / 2).toFixed(1) + 'px,' + (y + w / 2 - Math.abs(Math.sin(now / 110 + i)) * 4 * Math.min(1.5, v * 3)).toFixed(1) + 'px) translate(-50%, -100%) scale(' + k.toFixed(2) + ') rotate(' + (wob * (i % 2 ? 1 : -1)).toFixed(1) + 'deg)'; f.style.zIndex = y > 0 ? 3 : 0; }); };
     g.ticker.add(c._tick); }); }
   // un chiffre ou un texte qui « claque » (compteur, décompte)
   function pop(el, k){ anim(function(g){ if(el) g.fromTo(el, {scale:k || 1.6, opacity:.4}, {scale:1, opacity:1, duration:.32, ease:'back.out(2.2)', clearProps:'transform,opacity'}); }); }
@@ -5013,6 +5036,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     wheelTimer = setTimeout(function(){ var v = wheelTear; wheelTear = 0; if(v > .6) tearOpen(); else { animateTear(v, 0, 220); setTimeout(packParallax, 400); } }, 180);
   }, {passive:false});
   function animateTear(from, to, ms, done){
+    if(G && !reduce){ var o = {v:from}; G.to(o, {v:to, duration:ms / 1000, ease:'power3.out', onUpdate:function(){ setTear(o.v); }, onComplete:function(){ if(done) done(); }}); return; }
     var t0 = performance.now();
     (function f(t){ var k = Math.min(1, (t - t0) / ms); setTear(from + (to - from) * (1 - Math.pow(1 - k, 3))); if(k < 1) requestAnimationFrame(f); else if(done) done(); })(t0);
   }
@@ -5077,6 +5101,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('glow').setAttribute('data-r', x.r);
     document.getElementById('sheen').setAttribute('data-r', x.r);
     document.getElementById('ci-r').textContent = ''; document.getElementById('ci-n').innerHTML = ''; document.getElementById('ci-bio').textContent = ''; hideListen(document.getElementById('ci-listen'));
+    anim(function(g){ g.fromTo(stage, {y:46, scale:.92, opacity:0}, {y:0, scale:1, opacity:1, duration:.42, ease:'back.out(1.5)', clearProps:'transform,opacity'}); });
   }
   var LINES = {
     commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Commune. Même le roadie en a une.', 'Commune. Tiède comme une bière de festival.', 'Wallah, c\'est une Commune.', 'C\'est carré. Mais c\'est gris.', 'Le public applaudit. Poliment.', 'Askip ça vaut rien. Askip.', 'Ma gueule, c\'est la base. On respecte.', 'Première partie, au mieux.'],
@@ -5367,13 +5392,21 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(dealing) SFX.deal();
       var fl = document.createElement('div'); fl.className = 'flyer'; fl.innerHTML = '<img src="' + img(id, r) + '" alt="">';
       fl.style.left = to.left + 'px'; fl.style.top = to.top + 'px'; fl.style.width = to.width + 'px'; fl.style.height = to.height + 'px';
-      fl.style.transform = 'translate(' + (fr.left + fr.width/2 - to.left - to.width/2) + 'px,' + (fr.top + fr.height/2 - to.top - to.height/2) + 'px) scale(' + Math.max(.3, fr.width / to.width) + ') rotate(-8deg)';
-      fl.style.transition = 'none'; document.body.appendChild(fl); void fl.offsetWidth;
-      fl.style.transition = dealing ? 'transform .32s cubic-bezier(.3,.7,.2,1)' : ''; fl.style.transform = 'none';
+      var dx = fr.left + fr.width/2 - to.left - to.width/2, dy = fr.top + fr.height/2 - to.top - to.height/2, sc = Math.max(.3, fr.width / to.width);
+      fl.style.transition = 'none'; document.body.appendChild(fl);
+      if(G && !reduce){   // en arc : l'horizontale glisse, la verticale plonge, la carte se redresse et rapetisse
+        var dur = dealing ? .32 : .55;
+        G.set(fl, {x:dx, y:dy, scale:sc, rotation:-8});
+        G.to(fl, {x:0, duration:dur, ease:'power2.inOut'}); G.to(fl, {y:0, duration:dur, ease:'power3.in'}); G.to(fl, {scale:1, rotation:0, duration:dur, ease:'power2.out'});
+      } else {
+        fl.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sc + ') rotate(-8deg)'; void fl.offsetWidth;
+        fl.style.transition = dealing ? 'transform .32s cubic-bezier(.3,.7,.2,1)' : ''; fl.style.transform = 'none';
+      }
       setTimeout(function(){
         fl.remove(); finishPlace(k);
         var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]'), up = !!before && rank(r) > rank(before);
         if(dealing){ (!before ? dealLog.fresh : up ? dealLog.up : dealLog.dup).push(k); }
+        if(s2) anim(function(g){ g.fromTo(s2.querySelector('.img'), {scale:1.14}, {scale:1, duration:.6, ease:'elastic.out(1, .45)', clearProps:'transform'}); });
         if(s2 && !before){ s2.classList.add('landed'); SFX.land(); }
         else if(s2){
           var shown = up ? r : before;
