@@ -272,10 +272,9 @@
   @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av{animation:none} }
   /* pogo : arène de la manche, danseurs qui foncent, équilibre, mise et ramassage */
   .pogo-arena{position:relative; height:min(46dvh, 340px); margin:4px -16px 12px; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; background:radial-gradient(90% 70% at 50% 45%, #2a1a10 0%, #0c0a09 75%)}
-  .pogo-arena::after{content:""; position:absolute; left:0; right:0; bottom:0; height:46px; background:radial-gradient(circle at 10px 12px, #000 9px, transparent 10px) 0 0/34px 46px repeat-x, radial-gradient(ellipse at 17px 46px, #000 16px, transparent 17px) 0 0/34px 46px repeat-x; opacity:.85; pointer-events:none}
   .pogo-z{position:absolute; top:0; bottom:0; width:50%; display:flex; align-items:center; padding:0 14px; font:900 3rem/1 var(--display); color:rgba(244,178,67,.14); font-style:normal; pointer-events:none} .pogo-z.l{left:0} .pogo-z.r{right:0; justify-content:flex-end}
-  .pogo-me{position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); transition:transform .4s cubic-bezier(.5,0,.6,1.4), filter .4s} .pogo-me .pit-av.me{width:64px; height:64px}
-  .pogo-body{position:absolute; left:50%; top:50%; width:54px; height:54px; margin:-27px 0 0 -27px; border-radius:50%; background:#1b1512; border:2px solid rgba(255,255,255,.22); box-shadow:0 8px 16px rgba(0,0,0,.6); will-change:transform}
+  .pogo-me{position:absolute; z-index:2; left:50%; top:50%; transform:translate(-50%, -50%); transition:transform .4s cubic-bezier(.5,0,.6,1.4), filter .4s} .pogo-me .pit-av.me{width:64px; height:64px}
+  .pogo-body{position:absolute; z-index:3; left:50%; top:50%; width:54px; height:54px; margin:-27px 0 0 -27px; border-radius:50%; background:#1b1512; border:2px solid rgba(255,255,255,.22); box-shadow:0 8px 16px rgba(0,0,0,.6); will-change:transform}
   .pogo-body.hot{border-color:var(--gold-hi); box-shadow:0 0 0 4px rgba(244,178,67,.25), 0 8px 16px rgba(0,0,0,.6)} .pogo-body.back{border-color:var(--accent-text)}
   .pogo-arena.hit{animation:pogo-shake .3s} .pogo-arena.fall .pogo-me{transform:translate(-50%, 10%) rotate(80deg); filter:grayscale(1) brightness(.7)}
   @keyframes pogo-shake{20%{transform:translate(-8px, 3px)} 40%{transform:translate(7px, -4px)} 60%{transform:translate(-5px, 2px)} 80%{transform:translate(3px, -1px)}}
@@ -296,6 +295,15 @@
   .dance-t b{display:block; font:900 1rem/1.05 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--gold-hi)} .dance-t small{display:block; margin-top:3px; font:600 .7rem/1.2 var(--mono); color:var(--text)}
   .dance-n{position:absolute; top:6px; right:6px; min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:var(--accent); color:#fff; font:800 .72rem/22px var(--display); font-style:normal; text-align:center; box-shadow:0 0 0 2px var(--bg)}
   .now-g{font-style:normal; color:var(--gold-hi)}
+  #call-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} .call-list{margin:8px 0 16px}
+  .call-row{display:flex; align-items:center; gap:12px; min-height:56px; border-bottom:1px solid var(--border)} .call-row b{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700}
+  .call-row .df{min-height:40px} .call-ok{font:600 .8rem var(--mono); color:var(--muted)}
+  /* foule des mini-jeux : silhouettes noires à liseré or, rang arrière plus petit et plus sombre */
+  .crowd{position:absolute; left:0; right:0; bottom:0; height:100%; pointer-events:none; z-index:0}
+  .fan-w{position:absolute; bottom:-6px; display:block; width:38px; height:68px; margin-left:-19px; will-change:transform} .fan-w.back{bottom:14px; transform:scale(.72); opacity:.5; z-index:-1}
+  .fan{display:block; width:100%; height:100%; overflow:visible} .fan circle, .fan path:not(.fan-a){fill:#070505; stroke:rgba(244,178,67,.3); stroke-width:1.4} .fan-a{fill:none; stroke:#070505; stroke-width:5; stroke-linecap:round}
+  .pit-orbit-c{position:absolute; inset:0; pointer-events:none} .pit-orbit-c .fan-w{left:0 !important; top:0; bottom:auto; margin:0; opacity:.55}
+  .pit-stage .crowd{z-index:0; opacity:.75} .pit-stage .fan-w{width:30px; height:54px}
   .now-more{display:block; width:100%; min-height:44px; margin:2px 0 0; border:0; background:none; color:var(--gold-hi); font:700 .86rem var(--mono); cursor:pointer}
   /* salle d'une danse, plein écran : illustration en tête fondue dans le noir, puis le mini-jeu ; les règles en bas */
   .salle{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
@@ -305,8 +313,16 @@
   .salle-cap{position:absolute; left:0; right:0; bottom:0; z-index:1; max-width:520px; margin:0 auto; padding:0 16px 10px}
   .salle-t{margin:0; font:400 2.6rem/1 var(--gothic); color:var(--text)} .salle-tag{margin:6px 0 0; font:500 .9rem/1.35 var(--mono); color:var(--muted)}
   .salle-in{max-width:520px; margin:0 auto; padding:8px 16px calc(28px + env(safe-area-inset-bottom))}
-  .salle-p{display:none; flex-direction:column} .salle-p.on{display:flex} .salle-p .f-head{display:none}
-  .salle-p .fs-how, .salle-p .fs-how[hidden]{display:block; order:2; margin-top:18px; padding-top:14px; border-top:1px solid var(--border)} .salle-p .fs-how::before{content:"Les règles"; display:block; margin-bottom:6px; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .salle-p{display:none; flex-direction:column} .salle-p.on{display:flex}
+  .salle-p .fs-how{display:block; order:2; margin:26px 0 0; padding:0; border:0} .salle-p .fs-how::before{content:"Comment ça marche"; display:block; margin-bottom:14px; font:400 1.6rem/1 var(--gothic); color:var(--text)}
+  /* règles en étapes : médaillon gravé, titre court, une ligne ; puis ce qu'on gagne en pastilles */
+  .how-steps{display:grid; gap:12px; margin:0; padding:0; list-style:none; counter-reset:hs}
+  .how-steps li{display:flex; align-items:flex-start; gap:14px; padding:14px; border:1px solid var(--border); border-radius:14px; background:var(--surface); counter-increment:hs}
+  .hs-ic{position:relative; flex:none; display:grid; place-items:center; width:46px; height:46px; border-radius:50%; border:1px solid rgba(235,154,38,.55); background:radial-gradient(circle at 50% 35%, #3a2612, #160f0a); color:var(--gold-hi)} .hs-ic svg{width:24px; height:24px}
+  .hs-ic::after{content:counter(hs); position:absolute; right:-4px; bottom:-4px; min-width:20px; height:20px; border-radius:10px; background:var(--gold); color:var(--ink); font:800 .72rem/20px var(--display); text-align:center; box-shadow:0 0 0 2px var(--surface)}
+  .how-steps b{display:block; margin-bottom:3px; font:800 1rem/1.15 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--text)} .how-steps span{font:500 .86rem/1.45 var(--mono); color:var(--muted)}
+  .how-gain{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0} .how-gain small{flex-basis:100%; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .how-gain span{padding:8px 12px; border:1px solid rgba(235,154,38,.45); border-radius:999px; font:600 .8rem var(--mono); color:var(--gold-hi)}
   .salle .trade-x{position:fixed; z-index:2; background:rgba(12,10,9,.55); border-radius:50%}
   @media (prefers-reduced-motion: reduce){ .pogo-arena.hit{animation:none} .pogo-me{transition:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
@@ -617,6 +633,7 @@
   .df-opt em{flex:none; display:grid; justify-items:end; font:600 .64rem var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
   .df-opt em .num{font:800 1.4rem var(--display); letter-spacing:0; color:var(--gold-hi)}
   #gigs > .pf-row{margin-top:4px}
+  #gigs .talons{gap:30px}   /* chaque concert et ses défis respirent avant le suivant */
   .df.band{border-color:rgba(235,154,38,.45); color:var(--gold-hi)}
   .slam-box{margin:0 0 8px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .slam-box.land{border-color:var(--gold); background:rgba(235,154,38,.08)}
   .slam-box b{display:block; font:600 .95rem/1.3 var(--mono)} .slam-box small{display:block; margin-top:2px; color:var(--muted); font:500 .78rem/1.45 var(--mono)} .slam-box .btn{margin-top:12px}
@@ -1689,14 +1706,11 @@
   <button type="button" class="icon-btn trade-x" id="salle-x" aria-label="Revenir à la fosse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="salle-hero"><img id="salle-img" alt=""><div class="salle-cap"><h2 class="salle-t" id="salle-t"></h2><p class="salle-tag" id="salle-tag"></p></div></div>
   <div class="salle-in">
-  <section class="salle-p" id="pogo-sec" data-dance="pogo" hidden><div class="f-head"><h2 class="g-sub">Pogo</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pogo-how" aria-label="C'est quoi, le pogo ?">i</button></div>
-    <div class="fs-how" id="pogo-how" hidden><p>Tu ouvres un pogo et tu choisis la mise : chaque danseur y laisse une carte de cette rareté, tirée au hasard dans sa collection (même sa dernière). Tes potes ont 10 minutes pour entrer et danser 15 s : renvoie d'un coup d'épaule ceux qui foncent sur toi. Trop de coups pris, et tu tombes. Chaque manche rend le pogo plus violent.</p><p><b>Qui reste à terre perd sa carte</b>, sauf si un pote le relève avant la fin. Les cartes tombées sont ramassées par le premier tiers des danseurs. Il faut au moins 3 danseurs, sinon chacun récupère sa mise.</p></div>
+  <section class="salle-p" id="pogo-sec" data-dance="pogo" hidden><div class="fs-how how" id="pogo-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304z"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/></svg></i><span><b>Choisis la mise</b>Chaque danseur y laisse une carte de cette rareté, tirée au hasard. Même sa dernière.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg></i><span><b>Danse 15 s</b>Touche le côté d’où ils foncent pour les renvoyer. 4 coups pris et tu tombes.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Relève tes potes</b>À terre, tu perds ta carte, sauf si un pote te relève avant la fin.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21l8 0"/><path d="M12 17l0 4"/><path d="M7 4l10 0"/><path d="M17 4v8a5 5 0 0 1 -10 0v-8"/><path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/></svg></i><span><b>Ramasse</b>Le premier tiers ramasse les cartes tombées. 3 danseurs au moins.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Cartes ramassées</span><span>Points de rang</span><span>Missions de pogo</span></p></div>
     <div id="pogos"></div></section>
-  <section class="salle-p" id="pit-sec" data-dance="pit" hidden><div class="f-head"><h2 class="g-sub">Circle pit</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pit-how" aria-label="C'est quoi, le circle pit ?">i</button></div>
-    <div class="fs-how" id="pit-how" hidden><p>Tu lances un circle pit sur le morceau de ton choix : tes potes sont prévenus et ont 15 minutes pour venir. Chacun fait une course de 20 s quand il arrive : un repère tourne dans le cercle, garde le doigt dessus. Chaque course fait accélérer le cercle pour le suivant.</p><p><b>Plus il y a de courses et plus elles sont précises, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et aux paliers hauts, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
+  <section class="salle-p" id="pit-sec" data-dance="pit" hidden><div class="fs-how how" id="pit-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M9 17v-13h10v13"/><path d="M9 8h10"/></svg></i><span><b>Lance sur un morceau</b>Tes potes sont prévenus : ils ont 15 minutes pour venir.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Cours 20 s</b>Garde le doigt sur ton avatar qui tourne dans le cercle.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"/></svg></i><span><b>Le cercle accélère</b>Chaque course rend le pit plus rapide pour le suivant.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg></i><span><b>Gagnez ensemble</b>Plus de courses, plus de précision : meilleur palier pour tous.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Points de rang</span><span>Carte ou paquet aux hauts paliers</span><span>3 pits récompensés par jour</span></p></div>
     <div id="pits"></div></section>
-  <section class="salle-p" id="slam-sec" data-dance="slam" hidden><div class="f-head"><h2 class="g-sub">Slam</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="slam-how" aria-label="C'est quoi, le slam ?">i</button></div>
-    <div class="fs-how" id="slam-how" hidden><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></div><div id="slam"></div></section>
+  <section class="salle-p" id="slam-sec" data-dance="slam" hidden><div class="fs-how how" id="slam-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M4 17l5 1l.75 -1.5"/><path d="M15 21l0 -4l-4 -3l1 -6"/><path d="M7 12l0 -3l5 -1l3 3l3 1"/></svg></i><span><b>Plonge</b>Une fois par jour, tu sautes dans la foule.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Tes potes te portent</b>Chacun d’un toucher. Il en faut 5 en 2 heures.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M8.7 10.7l6.6 -3.4"/><path d="M8.7 13.3l6.6 3.4"/></svg></i><span><b>La foule grossit</b>Tes porteurs relaient ton slam à leurs propres potes.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2 -7h-4l-2 2h-3l2 -4l-2 -4h3l2 2h4l-2 -7h3z"/></svg></i><span><b>Atterris</b>Sinon, tu t’écrases dans la fosse et personne ne gagne.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Carte Rare, paquet ou ticket pour toi</span><span>Carte ou paquet pour chaque porteur</span><span>Points de rang</span></p></div><div id="slam"></div></section>
   </div>
 </div>
 <div class="pit" id="pogo" hidden role="dialog" aria-modal="true" aria-label="Pogo">
@@ -1723,6 +1737,16 @@
     <p class="pf-note" id="ls-for"></p>
     <div class="ls-list" id="ls-list"></div>
     <button type="button" class="btn ghost block" id="ls-close">Fermer</button>
+  </div>
+</div>
+<div class="bsheet" id="call-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="call-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="call-t">Rameuter</h2>
+    <p class="pf-note" id="call-note"></p>
+    <div class="call-list" id="call-list"></div>
+    <button type="button" class="btn block" id="call-share">Partager le lien</button>
+    <button type="button" class="btn ghost block" id="call-close">Fermer</button>
   </div>
 </div>
 <div class="bsheet" id="pogo-pick" hidden role="dialog" aria-modal="true" aria-labelledby="pg-t">
@@ -1941,6 +1965,8 @@ const api = {
   async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
   async pitRunStart(id){ return must(await sb.rpc('pit_run_start', { p_pit: id })); },
   async pitRunFinish(id, score){ return must(await sb.rpc('pit_run_finish', { p_pit: id, p_score: score })); },
+  async fosseCall(k, id, to){ return must(await sb.rpc('fosse_call', { p_kind: k, p_event: id, p_to: to })); },
+  async fosseCalled(k, id){ return must(await sb.rpc('fosse_called', { p_kind: k, p_event: id })); },
   async pogoFeed(){ return must(await sb.rpc('pogo_feed')); },
   async pogoState(id){ return must(await sb.rpc('pogo_state', { p_pogo: id })); },
   async pogoOpen(r, t){ return must(await sb.rpc('pogo_open', { p_rarity: r, p_track: t })); },
@@ -3697,16 +3723,38 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('salle-t').textContent = d[1]; document.getElementById('salle-tag').textContent = d[2];
     [].forEach.call(salleEl.querySelectorAll('[data-dance]'), function(el){ el.classList.toggle('on', el.getAttribute('data-dance') === k); });
     salleEl.hidden = false; salleEl.scrollTop = 0;
+    crowdStop(document.getElementById('slam')); if(k === 'slam') crowdGo(document.querySelector('#slam .pit-stage .crowd'), 'wave');
     anim(function(g){ g.timeline({defaults:{ease:'power3.out'}})
       .fromTo(salleEl, {opacity:0}, {opacity:1, duration:.2, clearProps:'opacity'})
       .fromTo('#salle-img', {scale:1.14}, {scale:1, duration:.9, clearProps:'transform'}, 0)
       .fromTo('.salle-cap > *', {opacity:0, y:18}, {opacity:1, y:0, duration:.4, stagger:.07, clearProps:'opacity,transform'}, .1)
       .fromTo('.salle-p.on > :not(.f-head)', {opacity:0, y:20}, {opacity:1, y:0, duration:.4, stagger:.06, clearProps:'opacity,transform'}, .2); });
   }
-  function closeSalle(){ salleCur = null;
+  function closeSalle(){ salleCur = null; crowdStop(document.getElementById('slam'));
     if(!G || reduce){ salleEl.hidden = true; return; }
     G.to(salleEl, {opacity:0, y:40, duration:.22, ease:'power2.in', onComplete:function(){ salleEl.hidden = true; G.set(salleEl, {clearProps:'opacity,transform'}); }}); }
   document.getElementById('salle-x').onclick = closeSalle;
+  // Rameuter : appeler un à un ses potes de l'app (notification directe, une fois par pote), ou partager le lien à ceux qui n'y sont pas
+  var callSheet = document.getElementById('call-sheet');
+  function openCall(kind, id, here, shareFn){
+    var called = [], paint = function(){
+      var list = friendsList.slice().sort(function(a, b){ return (here.indexOf(a.friend_id) >= 0) - (here.indexOf(b.friend_id) >= 0); });
+      document.getElementById('call-list').innerHTML = list.length ? list.map(function(f){ var inn = here.indexOf(f.friend_id) >= 0, done = called.indexOf(f.friend_id) >= 0;
+        return '<div class="call-row">' + avDisc({name:f.username, avatar:f.avatar_path}, '') + '<b>' + esc(f.username || 'Un pote') + '</b>' +
+          (inn ? '<span class="call-ok">Déjà là</span>' : done ? '<span class="call-ok">Appelé ✓</span>' : '<button type="button" class="df go" data-call="' + esc(f.friend_id) + '">Appeler</button>') + '</div>'; }).join('')
+        : '<p class="corner-empty">Pas encore de potes dans l\'app. Partage le lien.</p>';
+      hydrateAvatars(document.getElementById('call-list'));
+      [].forEach.call(document.querySelectorAll('#call-list [data-call]'), function(b){ b.onclick = function(){ var to = b.getAttribute('data-call'); b.disabled = true;
+        ONLINE.fosseCall(kind, id, to).then(function(){ called.push(to); buzz(10); snd('select'); paint(); }, function(e){ b.disabled = false; toast(esc(e.message)); if(/Déjà/.test(e.message)){ called.push(to); paint(); } }); }; });
+      rise('#call-list .call-row', {stagger:.03});
+    };
+    document.getElementById('call-note').textContent = 'Appelle tes potes de l\'app : ils reçoivent une notification. Pour les autres, partage le lien.';
+    document.getElementById('call-share').onclick = function(){ callSheet.hidden = true; shareFn(); };
+    paint(); callSheet.hidden = false;
+    ONLINE.fosseCalled(kind, id).then(function(l){ called = l || []; paint(); }).catch(function(){});
+  }
+  document.getElementById('call-close').onclick = function(){ callSheet.hidden = true; };
+  callSheet.addEventListener('click', function(e){ if(e.target === callSheet) callSheet.hidden = true; });
   function renderSocial(){
     if(!ONLINE) return;
     ONLINE.tradeInvites().then(function(list){ invitesList = list || []; paintInvites(); }).catch(function(){});
@@ -3757,7 +3805,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
                  : '<li class="off">' + avDisc({name:'?'}) + '<small>Libre</small></li>'; }
     var x = st === 'ready' ? 0 : st === 'land' || st === 'crash' ? 100 : Math.round(Math.min(n, goal) / goal * 86 + 7);
     var label = st === 'ready' ? 'Prêt à plonger' : st === 'land' ? 'Atterri, porté par ' + n : st === 'crash' ? 'Écrasé dans la fosse, ' + n + ' porteur' + (n > 1 ? 's' : '') + ' sur ' + goal : 'Porté par ' + n + ' sur ' + goal;
-    return '<div class="pit-stage st-' + st + '" role="img" aria-label="' + label + '"><i class="pit-beam" aria-hidden="true"></i><i class="pit-beam r" aria-hidden="true"></i>' +
+    return '<div class="pit-stage st-' + st + '" role="img" aria-label="' + label + '">' + crowdHtml(12) + '<i class="pit-beam" aria-hidden="true"></i><i class="pit-beam r" aria-hidden="true"></i>' +
       (st === 'land' ? '<i class="pit-burst" aria-hidden="true"></i>' : '') +
       '<div class="pit-rider' + (dive ? ' dive' : '') + '" data-x="' + x + '" style="--x:' + x + '%">' + avDisc(me, 'me') + '</div>' +
       '<ol class="pit-crowd" style="--n:' + goal + '">' + slots + '</ol></div>'; }
@@ -3861,7 +3909,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       document.getElementById('pit-run').onclick = pitRunGo;
       var link = function(){ return location.origin + location.pathname + '?pit=' + pit.id + (poteCode ? '&pote=' + poteCode : ''); };
       if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
-      document.getElementById('pit-call').onclick = function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens faire ta course !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
+      document.getElementById('pit-call').onclick = function(){ openCall('pit', pit.id, pit.runners.map(function(r){ return r.id; }), function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens faire ta course !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); }); };
       var stop = document.getElementById('pit-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le circle pit ? Personne ne gagne rien, et tu pourras en relancer un.')) return;
         stop.disabled = true; ONLINE.pitCancel(pit.id).then(function(){ toast('Pit annulé. Le cercle se disperse.'); pitClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
       document.getElementById('pit-qr-b').onclick = function(){ var b = document.getElementById('pit-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pit-qr', link()); };
@@ -3886,10 +3934,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.pitRunStart(pit.id).then(function(st){
       pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
       pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, x:0, y:0, ang:0};
-      pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><i class="pit-mark" id="pit-mark">' + avDisc(me, 'me') + '</i><b class="pit-count num" id="pit-count">3</b></div>' +
+      pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><div class="pit-orbit-c">' + crowdHtml(10).replace('class="crowd"', 'class="crowd pit-runners"') + '</div><i class="pit-mark" id="pit-mark">' + avDisc(me, 'me') + '</i><b class="pit-count num" id="pit-count">3</b></div>' +
         '<div class="pit-gauges"><div><small>Précision</small><b class="num" id="pit-acc">0 %</b></div><div><small>Vitesse</small><b class="num">' + rpsTxt(rps) + '</b><span>tour/s</span></div></div>' +
         '<p class="pit-note">Pose le doigt sur ton avatar et suis-le dans le cercle.</p>';
       hydrateAvatars(pitIn);
+      crowdOrbit(document.querySelector('#pit-track .pit-runners'), document.getElementById('pit-track'), rps);
       var ring = document.getElementById('pit-track'), mark = document.getElementById('pit-mark'), cnt = document.getElementById('pit-count'), acc = document.getElementById('pit-acc'), go = pitGo;
       var pos = function(e){ go.down = true; go.x = e.clientX; go.y = e.clientY; };
       ring.addEventListener('pointerdown', function(e){ e.preventDefault(); try { ring.setPointerCapture(e.pointerId); } catch(_){} pos(e); });
@@ -3931,7 +3980,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       function(e){ toast(esc(e.message)); pitRefresh(); });
   }
   // fin ou abandon de ma course : animation, décompte et extrait coupés
-  function pitStop(){ if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
+  function pitStop(){ crowdStop(pitIn); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
   // l'extrait du morceau du pit pendant la course, musique du jeu coupée
   function pitTrack(id){
     var go = pitGo;
@@ -4078,7 +4127,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var run = document.getElementById('pogo-run'); if(run) run.onclick = pogoRunGo;
     var link = function(){ return location.origin + location.pathname + '?pogo=' + pogo.id + (poteCode ? '&pote=' + poteCode : ''); };
     if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
-    document.getElementById('pogo-call').onclick = function(){ share((ran && me.fell && !me.lifted ? 'Je suis à terre dans le pogo, viens me relever !' : 'Pogo sur Metalnini, mise ' + rarLabel(st.rarity) + ', il reste ' + pitLeft(pogo.ends_at) + ' : viens te faire bousculer !') + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
+    document.getElementById('pogo-call').onclick = function(){ openCall('pogo', pogo.id, pogo.players.map(function(x){ return x.id; }), function(){ share((ran && me.fell && !me.lifted ? 'Je suis à terre dans le pogo, viens me relever !' : 'Pogo sur Metalnini, mise ' + rarLabel(st.rarity) + ', il reste ' + pitLeft(pogo.ends_at) + ' : viens te faire bousculer !') + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); }); };
     document.getElementById('pogo-qr-b').onclick = function(){ var b = document.getElementById('pogo-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pogo-qr', link()); };
     var stop = document.getElementById('pogo-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le pogo ? Chacun retrouve sa carte.')) return;
       stop.disabled = true; ONLINE.pogoCancel(pogo.id).then(function(){ pogoInv(); toast('Pogo annulé. Chacun reprend sa carte.'); pogoClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
@@ -4109,10 +4158,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       pogoGo = {id:st.id, raf:0, t0:0, next:0, bodies:[], energy:0, hits:0, done:false};
       var go = pogoGo, maxHits = st.hits;
       pogoIn.innerHTML = '<div class="pit-top"><p class="eyebrow">Pogo · reste debout</p><b class="pit-clock num" id="pogo-clock">0:' + String(st.run_s).padStart(2, '0') + '</b><p class="pit-song">Coups d\'épaule <b class="num" id="pogo-en">0</b></p></div>' +
-        '<div class="pogo-arena" id="pogo-arena"><i class="pogo-z l" aria-hidden="true">‹</i><i class="pogo-z r" aria-hidden="true">›</i><span class="pogo-me">' + avDisc(me, 'me') + '</span><b class="pit-count num" id="pogo-count">3</b></div>' +
+        '<div class="pogo-arena" id="pogo-arena">' + crowdHtml(14) + '<i class="pogo-z l" aria-hidden="true">‹</i><i class="pogo-z r" aria-hidden="true">›</i><span class="pogo-me">' + avDisc(me, 'me') + '</span><b class="pit-count num" id="pogo-count">3</b></div>' +
         '<div class="pogo-bal" id="pogo-bal" aria-label="Équilibre"></div><p class="pit-note">Touche le côté d\'où ils arrivent, quand ils sont sur toi. Un coup dans le vide te déséquilibre.</p>';
       hydrateAvatars(pogoIn);
       var arena = document.getElementById('pogo-arena'), bal = document.getElementById('pogo-bal'), en = document.getElementById('pogo-en');
+      crowdGo(arena.querySelector('.crowd'), 'jump', h);
       var paintBal = function(){ var left = Math.max(0, maxHits - go.hits), h2 = ''; for(var i = 0; i < maxHits; i++) h2 += '<i' + (i < Math.ceil(left - 1e-9) ? '' : ' class="off"') + '></i>'; bal.innerHTML = h2; };
       paintBal();
       var W = function(){ return arena.offsetWidth / 2; };
@@ -4162,7 +4212,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         function(e){ toast(esc(e.message)); pogoRefresh(); }); }, fell ? 900 : 300);
   }
   // fin ou abandon de ma manche
-  function pogoStop(){ if(pogoGo){ cancelAnimationFrame(pogoGo.raf); clearInterval(pogoGo.tick); if(pogoGo.key) document.removeEventListener('keydown', pogoGo.key); pogoGo = null; } stopListen(); }
+  function pogoStop(){ crowdStop(pogoIn); if(pogoGo){ cancelAnimationFrame(pogoGo.raf); clearInterval(pogoGo.tick); if(pogoGo.key) document.removeEventListener('keydown', pogoGo.key); pogoGo = null; } stopListen(); }
   function pogoTrack(id){
     var go = pogoGo;
     track(id).then(function(t){ if(!t || pogoGo !== go) return;
@@ -4199,7 +4249,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return x.landed ? '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>a atterri grâce à toi</small></span><span class="f-acts"><button type="button" data-sclaim="' + esc(x.id) + '">Récompense</button></span></div>'
           : '<div class="friend">' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>tu le portes · ' + x.count + '/' + x.goal + ' · encore ' + slamLeft(x.ends_at) + '</small></span>' +
             (x.count < x.goal ? '<span class="f-acts"><button type="button" data-reinf="' + esc(x.id) + '">Renfort</button></span>' : '') + '</div>'; }).join('');
+    crowdStop(document.getElementById('slam'));
     document.getElementById('slam').innerHTML = rows + mine;
+    if(salleCur === 'slam') crowdGo(document.querySelector('#slam .pit-stage .crowd'), 'wave');
     hydrateAvatars(document.getElementById('slam')); bindFosseAdd(document.getElementById('slam'));
     // le slammeur avance au-dessus de la foule depuis sa dernière position
     var ride = document.querySelector('#slam .pit-rider'), to = ride && +ride.getAttribute('data-x');
@@ -4211,9 +4263,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var sp = document.getElementById('slam-potes'); if(sp) sp.onclick = openPote;
     if(!poteCode && (document.getElementById('slam-call') || document.querySelector('#slam [data-reinf]'))) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
     var call = document.getElementById('slam-call'); if(call){
-      call.onclick = function(){   // le code de pote voyage avec le lien : ouvert hors de l'app, il se tape dans « + Pote »
+      call.onclick = function(){ openCall('slam', m.id, m.carrier_ids || [], function(){   // le code de pote voyage avec le lien : ouvert hors de l'app, il se tape dans « + Pote »
         share('Je plonge dans la foule sur Metalnini : porte-moi avant ' + new Date(m.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + ' !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''),
-          location.origin + location.pathname + '?slam=' + m.id + (poteCode ? '&pote=' + poteCode : ''), 'Lien copié. Envoie-le à la foule.'); }; }
+          location.origin + location.pathname + '?slam=' + m.id + (poteCode ? '&pote=' + poteCode : ''), 'Lien copié. Envoie-le à la foule.'); }); }; }
     var cl = document.getElementById('slam-claim'); if(cl) cl.onclick = function(){ slamClaim(cl, 'Slam réussi'); };
     // renfort : un porteur relaie le lien du slam hors de ses potes ; qui l'ouvre rejoint la foule et peut porter à son tour (boule de neige)
     [].forEach.call(document.querySelectorAll('#slam [data-reinf]'), function(b){ b.onclick = function(){
@@ -4815,6 +4867,31 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // écran de jeu (circle pit, pogo) : à chaque nouvelle phase (attente, manche finie, fin), son contenu arrive en cascade, une seule fois
   function phaseIn(root, key){ if(root.getAttribute('data-phase') === key) return; root.setAttribute('data-phase', key);
     var kids = root.firstElementChild && root.firstElementChild.id === 'pit-lobby' ? root.firstElementChild.children : root.children; rise(kids, {stagger:.05}); }
+  // foule en arrière-plan des mini-jeux : silhouettes vectorielles (tête, corps, bras animés à part), deux rangs pour la profondeur ;
+  // GSAP les fait sauter (pogo), lever les bras (slam) ou courir autour du cercle (circle pit) ; sans GSAP, elles restent immobiles
+  function fanSvg(){ return '<svg class="fan" viewBox="0 0 40 72" aria-hidden="true"><path class="fan-a l" d="M13 33 L5 17"/><path class="fan-a r" d="M27 33 L35 17"/><circle cx="20" cy="13" r="8"/><path d="M7 72 C7 44 11 28 20 25 C29 28 33 44 33 72 Z"/></svg>'; }
+  function crowdHtml(n){ var h = ''; for(var i = 0; i < n; i++){ var back = i % 2, x = ((i + .2 + Math.random() * .6) / n * 108 - 4).toFixed(1);
+      h += '<i class="fan-w' + (back ? ' back' : '') + '" style="left:' + x + '%">' + fanSvg() + '</i>'; }
+    return '<div class="crowd" aria-hidden="true">' + h + '</div>'; }
+  function crowdStop(root){ if(!root || !G) return; [].forEach.call(root.querySelectorAll('.crowd'), function(c){ if(c._tick){ G.ticker.remove(c._tick); c._tick = null; } });
+    G.killTweensOf(root.querySelectorAll('.fan-w, .fan-a')); }
+  // mode 'jump' (pogo, level 1 à 8), 'wave' (slam)
+  function crowdGo(c, mode, level){ anim(function(g){ if(!c) return; var r = Math.random, lv = level || 1;
+    [].forEach.call(c.querySelectorAll('.fan-w'), function(f){
+      var al = f.querySelector('.fan-a.l'), ar = f.querySelector('.fan-a.r');
+      if(mode === 'jump'){ g.to(f, {y:-(6 + r() * 10 + lv * 2.2), duration:Math.max(.18, .36 - lv * .02 + r() * .08), ease:'power1.out', yoyo:true, repeat:-1, delay:r() * .4});
+        g.to(al, {rotation:20 + r() * 40, svgOrigin:'13 33', duration:.3 + r() * .2, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .3});
+        g.to(ar, {rotation:-(20 + r() * 40), svgOrigin:'27 33', duration:.3 + r() * .2, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .3}); }
+      else { g.set(al, {rotation:-25 - r() * 15, svgOrigin:'13 33'}); g.set(ar, {rotation:25 + r() * 15, svgOrigin:'27 33'});
+        g.to(f, {x:(r() < .5 ? -1 : 1) * (3 + r() * 4), rotation:(r() < .5 ? -1 : 1) * 4, transformOrigin:'50% 100%', duration:.9 + r() * .6, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r()});
+        g.to(al, {rotation:'-=' + (14 + r() * 12), svgOrigin:'13 33', duration:.6 + r() * .4, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .5});
+        g.to(ar, {rotation:'+=' + (14 + r() * 12), svgOrigin:'27 33', duration:.6 + r() * .4, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .5}); } }); }); }
+  // circle pit : des coureurs tournent autour de l'anneau, à la vitesse du cercle, dans le sens inverse des aiguilles
+  function crowdOrbit(c, ring, rps){ anim(function(g){ if(!c) return; var fans = [].slice.call(c.querySelectorAll('.fan-w')), n = fans.length, t0 = performance.now();
+    c._tick = function(){ var w = ring.offsetWidth, R = w * .62, t = (performance.now() - t0) / 1000;   // ellipse aplatie : la piste vue en perspective
+      fans.forEach(function(f, i){ var a = (-rps * 360 * t + i * 360 / n) * Math.PI / 180, x = Math.sin(a) * R, y = -Math.cos(a) * R * .55 + w * .06, k = .6 + (-Math.cos(a) + 1) * .2;
+        f.style.transform = 'translate(' + (x + w / 2).toFixed(1) + 'px,' + (y + w / 2 - Math.abs(Math.sin(t * 9 + i)) * 4).toFixed(1) + 'px) translate(-50%, -100%) scale(' + k.toFixed(2) + ')'; f.style.zIndex = y > 0 ? 3 : 0; }); };
+    g.ticker.add(c._tick); }); }
   // un chiffre ou un texte qui « claque » (compteur, décompte)
   function pop(el, k){ anim(function(g){ if(el) g.fromTo(el, {scale:k || 1.6, opacity:.4}, {scale:1, opacity:1, duration:.32, ease:'back.out(2.2)', clearProps:'transform,opacity'}); }); }
   var FINE = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;   // souris : clic au lieu du glissé

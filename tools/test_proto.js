@@ -558,6 +558,10 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('pogo : avant d\'entrer, la mise est annoncée', !d9.getElementById('pogo').hidden && /miser une Commune/.test(d9.getElementById('pogo-join').textContent) && pogoJoined === 0);
   d9.getElementById('pogo-join').click(); await sleep(60);
   check('pogo : entré, carte dans la poche, bouton Danser', pogoJoined === 1 && /Dans ta poche/.test(d9.getElementById('pogo-in').textContent) && !!d9.getElementById('pogo-run'));
+  let called9 = null; fake9.fosseCalled = async () => []; fake9.fosseCall = async (k, id, to) => { called9 = k + '|' + id + '|' + to; return true; };
+  d9.getElementById('pogo-call').click(); await sleep(60);
+  check('rameuter : la feuille liste les potes de l\'app, ceux déjà dans le pogo marqués « Déjà là »', !d9.getElementById('call-sheet').hidden && d9.querySelectorAll('#call-list .call-row').length === 1 && /Déjà là/.test(d9.getElementById('call-list').textContent) && !d9.querySelector('#call-list [data-call]'));
+  d9.getElementById('call-close').click(); await sleep(20);
   d9.getElementById('pogo-run').click(); await sleep(60);
   check('pogo : manche lancée, arène et décompte', !!d9.getElementById('pogo-arena') && d9.getElementById('pogo-count').textContent === '3' && d9.querySelectorAll('#pogo-bal i').length === 4);
   await sleep(3700);
