@@ -49,6 +49,7 @@
   .pill{display:inline-block; font:500 .64rem var(--mono); letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--border); border-radius:4px; padding:2px 6px}
   .r-commune{color:var(--r-commune)} .r-rare{color:var(--r-rare)} .r-holo{color:var(--r-holo)} .r-signature{color:var(--r-signature)} .r-legendaire{color:var(--r-legendaire)}
   .grid-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px}
+  .perso-all{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))} .perso-all figure{font-size:.82rem}
   /* classeur d'un joueur : replié par défaut sous les options */
   .pl-inv{margin:20px 0 4px; border:1px solid var(--border); border-radius:10px; padding:0 12px}
   .pl-inv > summary{cursor:pointer; padding:12px 0; font-weight:700; list-style:none; display:flex; align-items:center; gap:8px} .pl-inv > summary::-webkit-details-marker{display:none}
@@ -363,7 +364,18 @@ async function persoTab(el){
   const [orders, players] = await Promise.all([sb.rpc('admin_perso_orders').then(must), sb.rpc('admin_list_players').then(must)]);
   const urls = {};
   await Promise.all(orders.filter(o => o.image).map(async o => { const r = await sb.storage.from('perso').createSignedUrl(o.image, 3600); if(r.data) urls[o.id] = r.data.signedUrl; }));
-  el.innerHTML = `<div class="card"><h3>Commandes de cartes perso</h3>
+  // toutes les cartes perso du jeu (commandées ou faites à la main) : image, rareté, qui l'a
+  const ids = catalog.musicians.filter(m => m.perso).map(m => m.id);
+  const [cards, owned] = ids.length ? await Promise.all([sb.from('cards').select('musician_id, rarity, image_path').in('musician_id', ids).then(must),
+    sb.from('inventory').select('user_id, musician_id, rarity, copies').in('musician_id', ids).gt('copies', 0).then(must)]) : [[], []];
+  const curl = {}, who = id => (players.find(p => p.id === id) || {}).username || 'sans pseudo';
+  await Promise.all(cards.map(async c => { const r = await sb.storage.from('perso').createSignedUrl(c.image_path, 3600); if(r.data) curl[c.musician_id + '|' + c.rarity] = r.data.signedUrl; }));
+  el.innerHTML = `<div class="card"><h3>Toutes les cartes perso (${cards.length})</h3>
+    ${cards.length ? `<div class="grid-cards perso-all">${cards.map(c => { const k = c.musician_id + '|' + c.rarity, own = owned.filter(o => o.musician_id === c.musician_id && o.rarity === c.rarity);
+      return `<figure>${curl[k] ? `<a href="${curl[k]}" target="_blank" rel="noopener"><img src="${curl[k]}" alt="${esc(musicianName(c.musician_id))}"></a>` : '<img alt="">'}
+        <b>${esc(musicianName(c.musician_id))}</b><br><span class="r-${c.rarity}">${RLABEL[c.rarity]}</span><br><span class="muted">${own.length ? own.map(o => esc(who(o.user_id)) + (o.copies > 1 ? ' ×' + o.copies : '')).join(', ') : 'personne'}</span></figure>`; }).join('')}</div>`
+      : '<p class="muted">Aucune carte perso pour l\'instant.</p>'}</div>
+    <div class="card"><h3>Commandes de cartes perso</h3>
     <p class="muted" style="font-size:.85rem; margin:0 0 6px">Générées automatiquement à partir de la photo de profil (quelques minutes). « Valider » l'offre au joueur ; « Relancer » refait une génération ; « Refuser » prévient le joueur (rembourse-le dans Stripe s'il a payé).</p>
     ${orders.length ? orders.map(o => `<div class="po">${urls[o.id] ? `<img src="${urls[o.id]}" alt="Carte de ${esc(o.username)}">` : '<img alt="">'}<div>
       <b>${esc(o.nickname)}</b> <span class="muted">· ${esc(o.username)} · ${new Date(o.created_at).toLocaleString('fr-FR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}</span>
@@ -403,6 +415,7 @@ async function players(el){
     </table></div></div><div id="player-detail"></div>`;
   el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => player(list.find(p => p.id === tr.dataset.id)));
 }
+const isPerso = id => !!(catalog.musicians.find(m => m.id === id) || {}).perso;
 let invOpen = false, invFor = null;   // le classeur reste ouvert après une correction
 async function player(p){
   if(invFor !== p.id){ invOpen = false; invFor = p.id; }
@@ -428,7 +441,7 @@ async function player(p){
       <div class="fit"><button id="adj-go">Appliquer</button></div></div>
     <p class="muted" style="font-size:.8rem; margin:6px 0 0">« Prévenir le joueur » : la carte lui est révélée comme un cadeau du Grand Architecte et attend d'être rangée. Décoché (et avec les boutons − / +), c'est une correction silencieuse.</p>
     <details class="pl-inv" id="pl-inv"${invOpen ? ' open' : ''}><summary>Classeur · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s), ${inv.length} variante(s)</summary>
-    <div class="grid-cards">${inv.map(i => `<figure><img src="../proto/cards/${esc(i.musician_id)}-${i.rarity}.jpg" alt="" loading="lazy">
+    <div class="grid-cards">${inv.map(i => `<figure>${isPerso(i.musician_id) ? `<img data-perso="${esc(i.musician_id)}|${i.rarity}" alt="">` : `<img src="../proto/cards/${esc(i.musician_id)}-${i.rarity}.jpg" alt="" loading="lazy">`}
       <span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}
       <span class="row" style="gap:4px; margin-top:4px"><button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="-1" style="padding:4px 10px" aria-label="Retirer un exemplaire">−</button>
       <button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="1" style="padding:4px 10px" aria-label="Ajouter un exemplaire">+</button></span></figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div></details>
@@ -439,6 +452,11 @@ async function player(p){
         <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>
     <div class="card"><h3>Ses échanges</h3><div id="pl-trades" class="muted">Chargement…</div></div>`;
   $('pl-inv').ontoggle = () => { invOpen = $('pl-inv').open; };
+  // cartes perso : l'image n'est pas dans le dépôt, elle est lue dans le stockage privé « perso » par lien signé (1 h)
+  const pimgs = [...d.querySelectorAll('img[data-perso]')];
+  if(pimgs.length) (async () => { const { data: pc } = await sb.from('cards').select('musician_id, rarity, image_path').in('musician_id', pimgs.map(im => im.dataset.perso.split('|')[0]));
+    pimgs.forEach(async im => { const [m, r] = im.dataset.perso.split('|'), c = (pc || []).find(x => x.musician_id === m && x.rarity === r); if(!c) return;
+      const { data } = await sb.storage.from('perso').createSignedUrl(c.image_path, 3600); if(data) im.src = data.signedUrl; }); })();
   d.scrollIntoView({ behavior: 'smooth' });
   sb.rpc('admin_trades', { p_user: p.id, p_limit: 50 }).then(r => { $('pl-trades').className = ''; $('pl-trades').innerHTML = r.error ? esc(r.error.message) : tradesTable(r.data); });
   // photo et cri : fichiers privés, lus par lien signé (1 h)
