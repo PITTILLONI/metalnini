@@ -4025,7 +4025,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Pogo : on mise une carte au hasard d'une rareté, 15 s pour rester debout, les potes relèvent, le premier tiers ramasse ----------
   var pogoData = null, pogo = null, pogoTimer = 0, pogoSync = 0, pogoGo = null;
   var pogoEl = document.getElementById('pogo'), pogoIn = document.getElementById('pogo-in'), pogoPick = document.getElementById('pogo-pick');
-  var ICON_POGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M12 7v7l-3 6M12 14l3 6M12 10l-5 -5M12 10l5 -5"/></svg>';
   function loadPogos(){
     if(!ONLINE) return;
     Promise.resolve().then(function(){ return ONLINE.pogoFeed(); }).then(function(d){ if(!d || !d.live) return; pogoData = d; paintPogos(); paintPogoMissions(); }).catch(function(){});
@@ -4061,7 +4060,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var list = d.missions.filter(function(m){ return !m.claimed; }).sort(function(a, b){ return (b.n >= b.goal) - (a.n >= a.goal); });
     var el = document.getElementById('pogo-quests');
     el.innerHTML = list.length ? list.map(function(m){
-      var ok = m.n >= m.goal, art = '<span class="q-art" aria-hidden="true">' + ICON_POGO + '</span>';
+      var ok = m.n >= m.goal, art = '<span class="q-art scene" aria-hidden="true"><img src="fosse/pogo.jpg" alt="" loading="lazy"></span>';
       return ok ? '<button type="button" class="goal quest claim" data-pm="' + esc(m.key) + '"><i class="new-dot" aria-hidden="true"></i>' + art + '<span class="q-body"><b>' + esc(m.title) + '</b><span class="pc">' + ICON_CHEST + 'Ouvrir</span><small>' + esc(m.reward) + '</small></span></button>'
         : '<button type="button" class="goal quest" data-pm-go="1">' + art + '<span class="q-body"><b>' + esc(m.title) + '</b><span class="pc num">' + m.n + '/' + m.goal + '</span>' + notch(m.n / m.goal * 100, 5) + '<small>' + esc(m.hint) + ' · ' + esc(m.reward) + '</small></span></button>'; }).join('')
       : '<p class="corner-empty">Toutes les missions de pogo sont pliées. Respect.</p>';
