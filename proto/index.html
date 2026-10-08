@@ -270,6 +270,25 @@
   .pit-mark .pit-av{position:absolute; left:-26px; top:-26px; transition:box-shadow .12s, border-color .12s} .pit-mark.on .pit-av{border-color:var(--gold-hi); box-shadow:0 0 0 6px rgba(244,178,67,.35), 0 0 26px rgba(244,178,67,.6)}
   .pit-count{position:absolute; inset:0; display:grid; place-items:center; font:900 4rem/1 var(--display); color:var(--gold-hi); pointer-events:none}
   @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av{animation:none} }
+  /* pogo : arène de la manche, danseurs qui foncent, équilibre, mise et ramassage */
+  .pogo-arena{position:relative; height:min(46dvh, 340px); margin:4px -16px 12px; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; background:radial-gradient(90% 70% at 50% 45%, #2a1a10 0%, #0c0a09 75%)}
+  .pogo-arena::after{content:""; position:absolute; left:0; right:0; bottom:0; height:46px; background:radial-gradient(circle at 10px 12px, #000 9px, transparent 10px) 0 0/34px 46px repeat-x, radial-gradient(ellipse at 17px 46px, #000 16px, transparent 17px) 0 0/34px 46px repeat-x; opacity:.85; pointer-events:none}
+  .pogo-z{position:absolute; top:0; bottom:0; width:50%; display:flex; align-items:center; padding:0 14px; font:900 3rem/1 var(--display); color:rgba(244,178,67,.14); font-style:normal; pointer-events:none} .pogo-z.l{left:0} .pogo-z.r{right:0; justify-content:flex-end}
+  .pogo-me{position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); transition:transform .4s cubic-bezier(.5,0,.6,1.4), filter .4s} .pogo-me .pit-av.me{width:64px; height:64px}
+  .pogo-body{position:absolute; left:50%; top:50%; width:54px; height:54px; margin:-27px 0 0 -27px; border-radius:50%; background:#1b1512; border:2px solid rgba(255,255,255,.22); box-shadow:0 8px 16px rgba(0,0,0,.6); will-change:transform}
+  .pogo-body.hot{border-color:var(--gold-hi); box-shadow:0 0 0 4px rgba(244,178,67,.25), 0 8px 16px rgba(0,0,0,.6)} .pogo-body.back{border-color:var(--accent-text)}
+  .pogo-arena.hit{animation:pogo-shake .3s} .pogo-arena.fall .pogo-me{transform:translate(-50%, 10%) rotate(80deg); filter:grayscale(1) brightness(.7)}
+  @keyframes pogo-shake{20%{transform:translate(-8px, 3px)} 40%{transform:translate(7px, -4px)} 60%{transform:translate(-5px, 2px)} 80%{transform:translate(3px, -1px)}}
+  .pogo-bal{display:flex; justify-content:center; gap:6px; margin:0 0 8px} .pogo-bal i{width:30px; height:8px; border-radius:4px; background:var(--gold)} .pogo-bal i.off{background:rgba(255,255,255,.14)}
+  .pogo-stake{display:flex; align-items:center; gap:12px; margin:4px 0 12px; padding:10px 12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); text-align:left}
+  .pogo-stake small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-stake b{display:block; font:900 1.15rem/1.15 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pogo-stake span span{font:500 .8rem/1.3 var(--mono); color:var(--muted)}
+  .pogo-c{flex:none; display:block; width:64px} .pogo-c img{display:block; width:100%; border-radius:6px}
+  .pogo-loot{display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:0 0 16px} .pogo-loot .pogo-c{width:96px} .pogo-c.lost img{filter:grayscale(1) brightness(.5)} .pogo-c.won{box-shadow:0 0 22px rgba(244,178,67,.45)}
+  .pogo-list{margin:0 0 12px; padding:0; list-style:none; text-align:left} .pogo-list li{display:flex; align-items:center; gap:10px; min-height:52px; padding:6px 0; border-bottom:1px solid var(--border)}
+  .pogo-list li > span:not(.pit-av){flex:1; min-width:0} .pogo-list b{display:block; font-weight:700; font-size:.92rem; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .pogo-list small{font:500 .76rem/1.3 var(--mono); color:var(--muted)} .pogo-list li.down small{color:var(--accent-text)}
+  .pogo-week{display:block; margin-top:6px; color:var(--gold-hi)}
+  #pogo-run{margin-bottom:10px}
+  @media (prefers-reduced-motion: reduce){ .pogo-arena.hit{animation:none} .pogo-me{transition:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
@@ -1250,14 +1269,18 @@
   <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open" aria-label="Ajouter un pote">+</button></div><div id="friends"></div></section>
   <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
   <section class="corner-sec" id="history-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Tes trocs</h2><button type="button" class="df add" id="trade-open" aria-label="Lancer un troc">+</button></div><div id="history"></div></section>
-  <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Tes concerts, ton slam du jour et les circle pits de tes potes.</p></section>
+  <section class="corner-sec" data-ct="fosse"><p class="corner-lead">Tes concerts, les pogos et circle pits de tes potes, ton slam du jour.</p></section>
   <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
+  <section class="corner-sec" id="pogo-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Pogo</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pogo-how" aria-label="C'est quoi, le pogo ?">i</button></div>
+    <div class="fs-how" id="pogo-how" hidden><p>Tu ouvres un pogo et tu choisis la mise : chaque danseur y laisse une carte de cette rareté, tirée au hasard dans sa collection (même sa dernière). Tes potes ont 10 minutes pour entrer et danser 15 s : renvoie d'un coup d'épaule ceux qui foncent sur toi. Trop de coups pris, et tu tombes. Chaque manche rend le pogo plus violent.</p><p><b>Qui reste à terre perd sa carte</b>, sauf si un pote le relève avant la fin. Les cartes tombées sont ramassées par le premier tiers des danseurs. Il faut au moins 3 danseurs, sinon chacun récupère sa mise.</p></div>
+    <div id="pogos"></div></section>
   <section class="corner-sec" id="pit-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Circle pit</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="pit-how" aria-label="C'est quoi, le circle pit ?">i</button></div>
     <div class="fs-how" id="pit-how" hidden><p>Tu lances un circle pit sur le morceau de ton choix : tes potes sont prévenus et ont 15 minutes pour venir. Chacun fait une course de 20 s quand il arrive : un repère tourne dans le cercle, garde le doigt dessus. Chaque course fait accélérer le cercle pour le suivant.</p><p><b>Plus il y a de courses et plus elles sont précises, plus tout le monde gagne</b> : des points de rang pour chaque coureur (+1 pour qui l'a lancé), et aux paliers hauts, une carte ou un paquet. Un pit lancé par jour, 3 pits récompensés par jour.</p></div>
     <div id="pits"></div></section>
   <section class="corner-sec" id="slam-sec" data-ct="fosse" hidden><div class="f-head"><h2 class="g-sub">Slam</h2><button type="button" class="info-b" aria-expanded="false" aria-controls="slam-how" aria-label="C'est quoi, le slam ?">i</button></div>
     <div class="fs-how" id="slam-how" hidden><p>Le slam, c'est l'entraide de la fosse. Une fois par jour, tu plonges dans la foule et tes potes te portent, chacun d'un toucher. Ils font passer ton slam à leurs propres potes : la foule grossit.</p><p><b>5 porteurs en 2 heures et tu atterris</b> : une récompense pour toi (une carte Rare au moins, un paquet ou un ticket), et pour chaque porteur une carte ou un paquet, plus des points de rang. Sinon, tu t'écrases dans la fosse et personne ne gagne rien.</p></div><div id="slam"></div></section>
   <section class="corner-sec" data-ct="epreuves"><h2 class="ribbon">Les épreuves</h2><div class="quest-list" id="quest-list"></div></section>
+  <section class="corner-sec" id="pogo-quests-sec" data-ct="epreuves" hidden><h2 class="g-sub">Missions de pogo</h2><div class="quest-list" id="pogo-quests"></div></section>
   <section class="corner-sec" id="prog-sec" data-ct="rang"><h2 class="g-sub">Ta progression</h2><div id="corner-prog"></div></section>
 </main>
 
@@ -1649,6 +1672,10 @@
   <button type="button" class="icon-btn trade-x" id="pit-x" aria-label="Quitter le circle pit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="pit-in" id="pit-in"></div>
 </div>
+<div class="pit" id="pogo" hidden role="dialog" aria-modal="true" aria-label="Pogo">
+  <button type="button" class="icon-btn trade-x" id="pogo-x" aria-label="Quitter le pogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
+  <div class="pit-in" id="pogo-in"></div>
+</div>
 <div class="bsheet" id="perso-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ps-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1669,6 +1696,16 @@
     <p class="pf-note" id="ls-for"></p>
     <div class="ls-list" id="ls-list"></div>
     <button type="button" class="btn ghost block" id="ls-close">Fermer</button>
+  </div>
+</div>
+<div class="bsheet" id="pogo-pick" hidden role="dialog" aria-modal="true" aria-labelledby="pg-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="pg-t">Choisis la mise</h2>
+    <p class="pf-note">Chaque danseur mise une carte de cette rareté, tirée au hasard dans sa collection. Qui reste à terre la perd. Tes potes sont prévenus dès que tu ouvres.</p>
+    <div class="pp-list" id="pg-list"></div>
+    <button type="button" class="btn block" id="pg-go" disabled>Choisis la mise</button>
+    <button type="button" class="btn ghost block" id="pg-cancel">Plus tard</button>
   </div>
 </div>
 <div class="bsheet" id="pit-pick" hidden role="dialog" aria-modal="true" aria-labelledby="pp-t">
@@ -1877,6 +1914,16 @@ const api = {
   async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
   async pitRunStart(id){ return must(await sb.rpc('pit_run_start', { p_pit: id })); },
   async pitRunFinish(id, score){ return must(await sb.rpc('pit_run_finish', { p_pit: id, p_score: score })); },
+  async pogoFeed(){ return must(await sb.rpc('pogo_feed')); },
+  async pogoState(id){ return must(await sb.rpc('pogo_state', { p_pogo: id })); },
+  async pogoOpen(r, t){ return must(await sb.rpc('pogo_open', { p_rarity: r, p_track: t })); },
+  async pogoJoin(id){ return must(await sb.rpc('pogo_join', { p_pogo: id })); },
+  async pogoRunStart(id){ return must(await sb.rpc('pogo_run_start', { p_pogo: id })); },
+  async pogoRunFinish(id, e, f){ return must(await sb.rpc('pogo_run_finish', { p_pogo: id, p_energy: e, p_fell: f })); },
+  async pogoLift(id, u){ return must(await sb.rpc('pogo_lift', { p_pogo: id, p_user: u })); },
+  async pogoClaim(id){ return must(await sb.rpc('pogo_claim', { p_pogo: id })); },
+  async pogoCancel(id){ return must(await sb.rpc('pogo_cancel', { p_pogo: id })); },
+  async pogoMission(k){ return must(await sb.rpc('pogo_mission_claim', { p_key: k })); },
   async pitClaim(id){ return must(await sb.rpc('pit_claim', { p_pit: id })); },
   async slamCarry(id){ return must(await sb.rpc('slam_carry', { p_slam: id })); },
   async slamClaim(id){ return must(await sb.rpc('slam_claim', { p_slam: id })); },
@@ -2457,7 +2504,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('potes'); go('corner'); tradeJoin(troc); }, 600); }
       if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('fosse'); go('corner'); bandJoin(bd); }, 600); }
-      if(pendingSlam || pendingPote || pendingPit || pendingVue){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || '') + '&vue=' + (pendingVue || ''); pendingSlam = pendingPote = pendingPit = pendingVue = null; setTimeout(function(){ openLink(lk); }, 600); }
+      if(pendingSlam || pendingPote || pendingPit || pendingPogo || pendingVue){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || '') + '&pogo=' + (pendingPogo || '') + '&vue=' + (pendingVue || ''); pendingSlam = pendingPote = pendingPit = pendingPogo = pendingVue = null; setTimeout(function(){ openLink(lk); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -3031,8 +3078,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     lootEl.hidden = false; b.focus();
   }
   async function rewardArrived(res, label){
-    if(res.kind === 'points'){ snd('reward'); refreshDaily();
-      showLoot(label, '<span class="gframe"><img src="cards/pack-serie.jpg" alt="Un paquet"></span>', ['<b>+1 paquet</b>'], 'Un paquet au choix t\'attend dans tes cartes du jour.', 'Choisir mon paquet', function(){ go('packs'); }); return; }
+    if(res.kind === 'points'){ snd('reward'); refreshDaily(); var np = Math.max(1, Math.round((res.points || 2) / 2));
+      showLoot(label, '<span class="gframe"><img src="cards/pack-serie.jpg" alt="Un paquet"></span>', ['<b>+' + np + ' paquet' + (np > 1 ? 's' : '') + '</b>'], np > 1 ? np + ' paquets au choix t\'attendent dans tes cartes du jour.' : 'Un paquet au choix t\'attend dans tes cartes du jour.', 'Choisir mon paquet', function(){ go('packs'); }); return; }
     if(res.kind === 'ticket'){ snd('reward'); state.tickets = (state.tickets || 0) + 1; save();
       showLoot(label, '<div class="loot-ticket"><span><small>Ticket · 1 entrée</small><b>Artiste prioritaire</b></span><em>N°1</em></div>', ['<b>+1 ticket</b>'], 'Ta prochaine demande d\'artiste passe en tête chez le Grand Architecte.', 'Proposer un artiste', function(){ go('binder'); document.getElementById('ask-artist').click(); document.getElementById('as-prio-in').checked = true; }); return; }
     if(res.kind !== 'card') return;
@@ -3220,6 +3267,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var pendingBand = (/[?&]bande=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien d'une bande de concert, rejointe une fois en ligne
   var pendingSlam = (/[?&]slam=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
   var pendingPit = (/[?&]pit=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
+  var pendingPogo = (/[?&]pogo=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // lien ou notification d'un pogo : ouvert une fois en ligne
   var pendingVue = (/[?&]vue=([a-z]+)/.exec(location.search) || [])[1] || null;   // notification de l'admin : l'écran à ouvrir   // lien ou notification d'un circle pit : on rejoint le cercle une fois en ligne   // lien ou notification d'un slam : rejoint la foule une fois en ligne
   var pendingPote = (/[?&]pote=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien de pote : ajouté une fois en ligne
   // lien de slam ou de pote ouvert sans être connecté (sur iPhone, un lien s'ouvre dans Safari, pas dans l'app installée)
@@ -3230,7 +3278,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
          text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Troc, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
          yes:'Me connecter ici', no:'OK'}, function(){ showAuth('login'); });
   }
-  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit || pendingVue) history.replaceState(null, '', location.pathname + location.hash);
+  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit || pendingPogo || pendingVue) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
   function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
@@ -3340,7 +3388,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // QR lu (ou code tapé) : troc, pote, bande ou slam selon le lien ; un code nu suit le choix du joueur (scanAs)
   var scanAs = 'troc';
   function scanRoute(txt){
-    var as = /[?&]troc=/.test(txt) ? 'troc' : /[?&](slam|pote|pit)=/.test(txt) ? 'lien' : /[?&]bande=/.test(txt) ? 'bande' : scanAs;
+    var as = /[?&]troc=/.test(txt) ? 'troc' : /[?&](slam|pote|pit|pogo)=/.test(txt) ? 'lien' : /[?&]bande=/.test(txt) ? 'bande' : scanAs;
     if(as === 'troc'){ var code = codeFrom(txt); if(!code) return false; tradeJoin(code); return true; }
     if(as === 'lien' || as === 'pote'){ if(as === 'pote' && !/^\s*[A-Za-z0-9]{3}[\s-]?[A-Za-z0-9]{3}\s*$/.test(txt)) return false;
       tradeClose(); if(as === 'lien') openLink(txt); else { cornerTab('potes'); addPote(txt); } return true; }
@@ -3549,7 +3597,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return gigPast(c) && (!c.claimed || (gigOpen(c) && (c.concert_picks || []).some(function(p){ return !p.done_at; }))); }).length; }
   // ce qui attend dans chaque rubrique ; la pastille de l'onglet Metal Corner en est la somme
   var epreuvesWait = 0;
-  function cornerWaits(){ return {potes:(invitesList || []).length, fosse:slamWaiting() + gigsWaiting(), epreuves:epreuvesWait}; }
+  function cornerWaits(){ return {potes:(invitesList || []).length, fosse:slamWaiting() + gigsWaiting() + pogoWaiting(), epreuves:epreuvesWait + pogoClaimable()}; }
   function paintCornerBadge(){
     var w = cornerWaits(), c = w.potes + w.fosse + w.epreuves, n = document.getElementById('quest-n');
     n.hidden = !c; n.textContent = c; n.classList.toggle('claim', !!c);
@@ -3795,6 +3843,232 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     track(id).then(function(t){ if(!t || pitGo !== go) return;
       stopListen(); audio = startAt(new Audio(t.url), t); duck(0); audio.play().then(fadeIn).catch(function(){}); });
   }
+  // ---------- Pogo : on mise une carte au hasard d'une rareté, 15 s pour rester debout, les potes relèvent, le premier tiers ramasse ----------
+  var pogoData = null, pogo = null, pogoTimer = 0, pogoSync = 0, pogoGo = null;
+  var pogoEl = document.getElementById('pogo'), pogoIn = document.getElementById('pogo-in'), pogoPick = document.getElementById('pogo-pick');
+  var ICON_POGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M12 7v7l-3 6M12 14l3 6M12 10l-5 -5M12 10l5 -5"/></svg>';
+  function loadPogos(){
+    if(!ONLINE) return;
+    Promise.resolve().then(function(){ return ONLINE.pogoFeed(); }).then(function(d){ if(!d || !d.live) return; pogoData = d; paintPogos(); paintPogoMissions(); }).catch(function(){});
+  }
+  function pogoWaiting(){ return pogoData ? pogoData.done.length + pogoData.down.length : 0; }
+  function pogoClaimable(){ return pogoData ? pogoData.missions.filter(function(m){ return !m.claimed && m.n >= m.goal; }).length : 0; }
+  function rarLabel(r){ return rarity(r).label; }
+  // cartes misables d'une rareté (ni maudites, ni perso, ni Céline : le serveur fait le même tri)
+  function stakeable(r){ return CARDS.filter(function(c){ return !c.perso && !/^m-/.test(c.id) && c.id !== 'celine' && state.owned[c.id + '|' + r]; }).length; }
+  // rubrique Fosse : potes à terre, pogos ouverts, pogos finis à récupérer, ouvrir le mien
+  function paintPogos(){
+    var d = pogoData, sec = document.getElementById('pogo-sec'); sec.hidden = !d; if(!d) return;
+    var rows = d.down.map(function(x){
+      return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>à terre dans un pogo · relève-le avant la fin, sinon il perd sa carte</small></span>' +
+        '<span class="f-acts"><button type="button" data-lift="' + esc(x.pogo) + '|' + esc(x.id) + '">Relever</button></span></div>'; }).join('') +
+      d.live.map(function(x){
+        return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>pogo · mise ' + esc(rarLabel(x.rarity)) + ' · ' + x.players + ' dans la fosse · encore ' + pitLeft(x.ends_at) + '</small></span>' +
+          '<span class="f-acts"><button type="button" data-pogo="' + esc(x.id) + '">' + (!x.in ? 'Entrer' : x.ran ? 'Voir' : 'Danser') + '</button></span></div>'; }).join('') +
+      d.done.map(function(x){
+        return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>le pogo est retombé · le ramassage t\'attend</small></span><span class="f-acts"><button type="button" data-pogo="' + esc(x.id) + '">Voir</button></span></div>'; }).join('');
+    var wk = d.missions.filter(function(m){ return m.weekly; })[0];
+    var box = d.limit_reached ? '' : '<div class="slam-box"><b>Ouvre un pogo</b><small>Choisis la mise : chacun y laisse une carte de cette rareté, tirée au hasard. ' + Math.round(d.duration / 60) + ' minutes pour entrer et danser ' + d.run_s + ' s. Qui reste à terre perd sa carte, les meilleurs la ramassent.</small>' +
+      (wk ? '<small class="pogo-week">' + esc(wk.title) + ' : <span class="num">' + wk.n + '/' + wk.goal + '</span>' + (wk.claimed ? ' · récupérée' : ' · ' + esc(wk.reward)) + '</small>' : '') +
+      (friendsList.length ? '<button type="button" class="btn block" id="pogo-go">Ouvrir un pogo</button>' : '<small>Il te faut des potes pour pogoter : ajoute-les avec ton code.</small>') + '</div>';
+    document.getElementById('pogos').innerHTML = rows + box;
+    hydrateAvatars(document.getElementById('pogos'));
+    [].forEach.call(document.querySelectorAll('#pogos [data-pogo]'), function(b){ b.onclick = function(){ pogoEnter(b.getAttribute('data-pogo')); }; });
+    [].forEach.call(document.querySelectorAll('#pogos [data-lift]'), function(b){ b.onclick = function(){ var p = b.getAttribute('data-lift').split('|'); b.disabled = true; pogoLift(p[0], p[1], function(){ b.disabled = false; }); }; });
+    var go = document.getElementById('pogo-go'); if(go) go.onclick = openPogoPick;
+    cornerTab();
+  }
+  // missions de pogo, dans les épreuves : à ouvrir d'abord, puis la progression
+  function paintPogoMissions(){
+    var sec = document.getElementById('pogo-quests-sec'), d = pogoData; sec.hidden = !d; if(!d) return;
+    var list = d.missions.filter(function(m){ return !m.claimed; }).sort(function(a, b){ return (b.n >= b.goal) - (a.n >= a.goal); });
+    var el = document.getElementById('pogo-quests');
+    el.innerHTML = list.length ? list.map(function(m){
+      var ok = m.n >= m.goal, art = '<span class="q-art" aria-hidden="true">' + ICON_POGO + '</span>';
+      return ok ? '<button type="button" class="goal quest claim" data-pm="' + esc(m.key) + '"><i class="new-dot" aria-hidden="true"></i>' + art + '<span class="q-body"><b>' + esc(m.title) + '</b><span class="pc">' + ICON_CHEST + 'Ouvrir</span><small>' + esc(m.reward) + '</small></span></button>'
+        : '<button type="button" class="goal quest" data-pm-go="1">' + art + '<span class="q-body"><b>' + esc(m.title) + '</b><span class="pc num">' + m.n + '/' + m.goal + '</span>' + notch(m.n / m.goal * 100, 5) + '<small>' + esc(m.hint) + ' · ' + esc(m.reward) + '</small></span></button>'; }).join('')
+      : '<p class="corner-empty">Toutes les missions de pogo sont pliées. Respect.</p>';
+    [].forEach.call(el.querySelectorAll('[data-pm]'), function(b){ b.onclick = function(){ var m = list.filter(function(x){ return x.key === b.getAttribute('data-pm'); })[0]; b.disabled = true;
+      ONLINE.pogoMission(m.key).then(function(res){ loadPogos(); if(m.key === 'top3') state.tickets = (state.tickets || 0) + 1; rewardArrived(res, 'Mission · ' + m.title); }, function(e){ b.disabled = false; toast(esc(e.message)); }); }; });
+    [].forEach.call(el.querySelectorAll('[data-pm-go]'), function(b){ b.onclick = function(){ cornerTab('fosse'); window.scrollTo(0, 0); }; });
+    paintCornerBadge();
+  }
+  // ouvrir : la rareté de la mise (seulement celles dont j'ai une carte), l'extrait tiré parmi les hymnes
+  function openPogoPick(){
+    var picked = null, go = document.getElementById('pg-go');
+    document.getElementById('pg-list').innerHTML = RARITIES.map(function(r){ var n = stakeable(r.k);
+      return '<button type="button" class="df" aria-pressed="false" data-pg="' + r.k + '"' + (n ? '' : ' disabled') + ' style="--lc:' + r.color + '">' + esc(r.label) + ' <small>· ' + n + ' carte' + (n > 1 ? 's' : '') + '</small></button>'; }).join('');
+    var paint = function(){ go.disabled = !picked; go.textContent = picked ? 'Ouvrir · mise ' + rarLabel(picked) : 'Choisis la mise';
+      [].forEach.call(document.querySelectorAll('#pg-list [data-pg]'), function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-pg') === picked)); }); };
+    [].forEach.call(document.querySelectorAll('#pg-list [data-pg]'), function(b){ b.onclick = function(){ picked = b.getAttribute('data-pg'); paint(); }; });
+    go.onclick = function(){ go.disabled = true;
+      var hymns = Object.keys(STYLE_INFO).map(function(k){ return styleTrack(k); }).filter(function(id){ return id && card(id); });
+      ONLINE.pogoOpen(picked, hymns[Math.floor(Math.random() * hymns.length)]).then(function(st){ pogoPick.hidden = true; snd('rumble'); pogoInv(); pogoShow(st); loadPogos(); },
+        function(e){ go.disabled = false; toast(esc(e.message)); }); };
+    paint();
+    pogoPick.hidden = false;
+  }
+  document.getElementById('pg-cancel').onclick = function(){ pogoPick.hidden = true; };
+  pogoPick.addEventListener('click', function(e){ if(e.target === pogoPick) pogoPick.hidden = true; });
+  function pogoInv(){ ONLINE.inventory().then(function(rows){ applyInventory(rows); renderStats(); }).catch(function(){}); }
+  // ouvrir l'écran d'un pogo (lien, notification, rubrique) : on regarde d'abord, on entre en misant
+  function pogoEnter(id){
+    if(!needOnline()) return;
+    ONLINE.pogoState(id).then(pogoShow, function(e){ toast(esc(e.message)); });
+  }
+  function pogoLift(id, uid, fail){
+    ONLINE.pogoLift(id, uid).then(function(st){ snd('reward'); buzz(20); toast('Relevé ! Sa carte est sauvée.'); if(pogo && pogo.id === id){ pogo = st; pogoPaint(); } loadPogos(); },
+      function(e){ toast(esc(e.message)); if(fail) fail(); loadPogos(); });
+  }
+  function pogoShow(st){
+    if(!pogo || pogo.id !== st.id) pogoIn.innerHTML = '';
+    pogo = st; pogoEl.hidden = false;
+    clearInterval(pogoTimer); clearInterval(pogoSync);
+    pogoTimer = setInterval(pogoTick, 250); pogoSync = setInterval(pogoRefresh, 5000);
+    pogoPaint();
+  }
+  function pogoClose(){ clearInterval(pogoTimer); clearInterval(pogoSync); pogoStop(); pogoEl.hidden = true; pogo = null; loadPogos(); }
+  document.getElementById('pogo-x').onclick = pogoClose;
+  function pogoRefresh(){
+    if(!pogo || pogoGo) return;
+    var id = pogo.id;
+    ONLINE.pogoState(id).then(function(st){ if(pogo && pogo.id === id && !pogoGo){ pogo = st; pogoPaint(); } }).catch(function(){});
+  }
+  function pogoTick(){
+    if(!pogo || pogoGo) return;
+    var c = document.getElementById('pogo-clock'); if(c){ c.textContent = pitLeft(pogo.ends_at); c.classList.toggle('low', new Date(pogo.ends_at) - Date.now() < 60000); }
+    if(!pogo.over && Date.now() >= new Date(pogo.ends_at)){ pogo.over = true; snd('reward'); pogoRefresh(); pogoPaint(); }
+  }
+  function pogoHead(st){
+    return '<div class="pit-top"><p class="eyebrow">Pogo · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pogo-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">Mise <b style="color:' + rarity(st.rarity).color + '">' + esc(rarLabel(st.rarity)) + '</b> · ♪ <b>' + esc(trackName(st.track)) + '</b></p></div>';
+  }
+  // les danseurs : où ils en sont, et « Relever » pour qui est à terre (si je suis son pote ou dans la fosse)
+  function pogoPlayers(st){
+    return '<ul class="pogo-list">' + st.players.map(function(p){
+      var down = p.fell && !p.lifted, can = down && !p.me && !st.over && (p.friend || st.in);
+      var txt = p.energy == null ? 'pas encore dansé' : p.fell ? (p.lifted ? 'tombé, relevé par ' + esc(p.lifter || 'un pote') : 'à terre') : p.energy + ' coup' + (p.energy > 1 ? 's' : '') + ' d\'épaule, debout';
+      return '<li class="' + (down ? 'down' : '') + '">' + avDisc(p, '') + '<span><b>' + esc(p.name) + (p.me ? ' (toi)' : '') + '</b><small>' + txt + '</small></span>' +
+        (can ? '<button type="button" class="df" data-up="' + esc(p.id) + '">Relever</button>' : '') + '</li>'; }).join('') + '</ul>';
+  }
+  function pogoCard(m, r, cls){ return card(m) ? '<span class="gframe pogo-c' + (cls ? ' ' + cls : '') + '" style="--lc:' + rarity(r).color + '"><img src="' + img(m, r) + '" alt="' + esc(card(m).who + ', ' + rarLabel(r)) + '"></span>' : ''; }
+  function pogoPaint(){
+    if(pogoGo) return;   // ma manche occupe l'écran
+    var st = pogo, me = st.players.filter(function(p){ return p.me; })[0], late = new Date(st.ends_at) - Date.now() < (st.run_s + 2) * 1000, acts = '';
+    if(st.over){
+      var n = st.players.filter(function(p){ return p.energy != null; }).length;
+      pogoIn.innerHTML = pogoHead(st) + '<div class="pit-win"><b>' + (st.cancelled ? 'Pogo annulé' : 'Le pogo est retombé') + '</b><span>' + (st.cancelled ? 'Chacun a retrouvé sa carte.' : n < st.min_players ? 'Moins de ' + st.min_players + ' danseurs : chacun récupère sa mise.' : n + ' danseurs. Les cartes tombées sont ramassées.') + '</span></div>' +
+        pogoPlayers(st) + (st.in && !st.claimed ? '<button type="button" class="btn block" id="pogo-claim">Voir le ramassage</button>' : '<button type="button" class="btn block" id="pogo-done">Fermer</button>');
+      var cl = document.getElementById('pogo-claim'); if(cl) cl.onclick = function(){ cl.disabled = true; ONLINE.pogoClaim(st.id).then(pogoResult, function(e){ cl.disabled = false; toast(esc(e.message)); }); };
+      var dn = document.getElementById('pogo-done'); if(dn) dn.onclick = pogoClose;
+      hydrateAvatars(pogoIn); return;
+    }
+    if(!st.in){
+      var n2 = stakeable(st.rarity);
+      pogoIn.innerHTML = pogoHead(st) + '<div class="pit-win"><b>Saute dans la fosse</b><span>Tu mises une carte <b>' + esc(rarLabel(st.rarity)) + '</b> tirée au hasard dans ta collection, même ta dernière. Danse ' + st.run_s + ' s sans tomber, ou fais-toi relever par un pote : sinon ta carte reste par terre.</span></div>' +
+        pogoPlayers(st) + (n2 ? '<button type="button" class="btn block" id="pogo-join">Entrer · miser une ' + esc(rarLabel(st.rarity)) + '</button>' : '<p class="pit-note">Tu n\'as aucune carte ' + esc(rarLabel(st.rarity)) + ' à miser.</p>') + '<button type="button" class="btn ghost block" id="pogo-done">Plus tard</button>';
+      var jn = document.getElementById('pogo-join'); if(jn) jn.onclick = function(){ jn.disabled = true;
+        ONLINE.pogoJoin(st.id).then(function(s){ snd('rumble'); pogoInv(); pogo = s; pogoPaint(); loadPogos(); }, function(e){ jn.disabled = false; toast(esc(e.message)); }); };
+      document.getElementById('pogo-done').onclick = pogoClose;
+      hydrateAvatars(pogoIn); bindPogoUp(); return;
+    }
+    var ran = me && me.energy != null;
+    var top = ran ? '<div class="pit-win"><b>' + (me.fell ? (me.lifted ? 'Relevé par ' + esc(me.lifter || 'un pote') : 'À terre') : 'Debout jusqu\'au bout') + '</b><span>' + me.energy + ' coup' + (me.energy > 1 ? 's' : '') + ' d\'épaule. ' +
+        (me.fell && !me.lifted ? 'Rameute tes potes : s\'ils te relèvent avant la fin, ta carte est sauvée.' : 'Ta carte est sauve pour l\'instant. Le ramassage se fait à la fin du pogo.') + '</span></div>'
+      : '<div class="pogo-stake">' + pogoCard(st.stake, st.rarity) + '<span><small>Dans ta poche</small><b>' + esc(card(st.stake) ? card(st.stake).who : 'Une carte') + '</b><span>Reste debout pour la garder.</span></span></div>' +
+        '<button type="button" class="btn block" id="pogo-run"' + (late ? ' disabled' : '') + '>' + (late ? 'Trop tard, le pogo retombe' : 'Danser · ' + st.run_s + ' s') + '</button>' +
+        '<p class="pit-note">Violence du pogo : ' + st.heat + '/8. Chaque manche jouée la fait monter.</p>';
+    pogoIn.innerHTML = pogoHead(st) + top + pogoPlayers(st) +
+      '<div class="pit-acts"><button type="button" class="btn" id="pogo-call">Rameuter</button><button type="button" class="btn ghost" id="pogo-qr-b">Mon QR</button></div><div id="pogo-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pogo-qr" role="img" aria-label="QR code du pogo"></div></div></div>' +
+      (st.host ? '<button type="button" class="band-leave" id="pogo-stop">Annuler le pogo</button>' : '');
+    var run = document.getElementById('pogo-run'); if(run) run.onclick = pogoRunGo;
+    var link = function(){ return location.origin + location.pathname + '?pogo=' + pogo.id + (poteCode ? '&pote=' + poteCode : ''); };
+    if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
+    document.getElementById('pogo-call').onclick = function(){ share((ran && me.fell && !me.lifted ? 'Je suis à terre dans le pogo, viens me relever !' : 'Pogo sur Metalnini, mise ' + rarLabel(st.rarity) + ', il reste ' + pitLeft(pogo.ends_at) + ' : viens te faire bousculer !') + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); };
+    document.getElementById('pogo-qr-b').onclick = function(){ var b = document.getElementById('pogo-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pogo-qr', link()); };
+    var stop = document.getElementById('pogo-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le pogo ? Chacun retrouve sa carte.')) return;
+      stop.disabled = true; ONLINE.pogoCancel(pogo.id).then(function(){ pogoInv(); toast('Pogo annulé. Chacun reprend sa carte.'); pogoClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
+    hydrateAvatars(pogoIn); bindPogoUp();
+  }
+  function bindPogoUp(){ [].forEach.call(pogoIn.querySelectorAll('[data-up]'), function(b){ b.onclick = function(){ b.disabled = true; pogoLift(pogo.id, b.getAttribute('data-up'), function(){ b.disabled = false; }); }; }); }
+  // ramassage : ma mise (gardée ou perdue) et les cartes ramassées
+  function pogoResult(r){
+    pogoInv(); loadSlam(); loadPogos();
+    var lost = r.result === 'lost', won = r.won || [];
+    snd(lost ? 'tear' : 'reward');
+    pogoIn.innerHTML = pogoHead(pogo) + '<div class="pit-win"><b>' + (won.length ? 'Tu ramasses ' + won.length + ' carte' + (won.length > 1 ? 's' : '') : lost ? 'Ta carte est restée par terre' : 'Carte sauvée') + '</b><span>' +
+        (lost ? 'Personne ne t\'a relevé à temps.' : r.lifter ? 'Relevé par ' + esc(r.lifter) + '.' : r.energy == null ? 'Tu n\'as pas dansé : ta mise t\'est rendue.' : 'Tu es resté debout.') + (r.points ? ' +' + r.points + ' point' + (r.points > 1 ? 's' : '') + ' de rang.' : '') + '</span></div>' +
+      '<div class="pogo-loot">' + pogoCard(r.stake.m, r.stake.r, lost ? 'lost' : '') + won.map(function(c){ return pogoCard(c.m, c.r, 'won'); }).join('') + '</div>' +
+      '<button type="button" class="btn block" id="pogo-done">Fermer</button>';
+    document.getElementById('pogo-done').onclick = pogoClose;
+  }
+  // ma manche : des danseurs foncent de gauche ou de droite ; toucher le bon côté au bon moment les renvoie (énergie),
+  // un coup pris ou un coup dans le vide fait perdre l'équilibre ; à zéro, je tombe
+  function pogoRunGo(){
+    var b = document.getElementById('pogo-run'); b.disabled = true;
+    ONLINE.pogoRunStart(pogo.id).then(function(st){
+      pogo = st; var me = st.players.filter(function(p){ return p.me; })[0] || {}, h = st.heat, T = st.run_s * 1000;
+      var every = 1000 - 60 * h, travel = 1300 - 70 * h, both = .05 * h;
+      pogoGo = {id:st.id, raf:0, t0:0, next:0, bodies:[], energy:0, hits:0, done:false};
+      var go = pogoGo, maxHits = st.hits;
+      pogoIn.innerHTML = '<div class="pit-top"><p class="eyebrow">Pogo · reste debout</p><b class="pit-clock num" id="pogo-clock">0:' + String(st.run_s).padStart(2, '0') + '</b><p class="pit-song">Coups d\'épaule <b class="num" id="pogo-en">0</b></p></div>' +
+        '<div class="pogo-arena" id="pogo-arena"><i class="pogo-z l" aria-hidden="true">‹</i><i class="pogo-z r" aria-hidden="true">›</i><span class="pogo-me">' + avDisc(me, 'me') + '</span><b class="pit-count num" id="pogo-count">3</b></div>' +
+        '<div class="pogo-bal" id="pogo-bal" aria-label="Équilibre"></div><p class="pit-note">Touche le côté d\'où ils arrivent, quand ils sont sur toi. Un coup dans le vide te déséquilibre.</p>';
+      hydrateAvatars(pogoIn);
+      var arena = document.getElementById('pogo-arena'), bal = document.getElementById('pogo-bal'), en = document.getElementById('pogo-en');
+      var paintBal = function(){ var left = Math.max(0, maxHits - go.hits), h2 = ''; for(var i = 0; i < maxHits; i++) h2 += '<i' + (i < Math.ceil(left - 1e-9) ? '' : ' class="off"') + '></i>'; bal.innerHTML = h2; };
+      paintBal();
+      var W = function(){ return arena.offsetWidth / 2; };
+      var spawn = function(side, now){ var el = document.createElement('i'); el.className = 'pogo-body'; arena.appendChild(el); go.bodies.push({side:side, t0:now, el:el, back:0}); };
+      var hurt = function(n){ go.hits += n; buzz(40); arena.classList.remove('hit'); void arena.offsetWidth; arena.classList.add('hit'); paintBal(); };
+      var shove = function(side){
+        if(!go.t0 || go.done) return;
+        var now = performance.now(), hit = go.bodies.filter(function(x){ return x.side === side && !x.back && (now - x.t0) / travel >= .7; })[0];
+        if(hit){ hit.back = now; go.energy++; en.textContent = go.energy; buzz(10); hit.el.classList.add('back'); }
+        else hurt(.5);   // coup dans le vide
+      };
+      arena.addEventListener('pointerdown', function(e){ e.preventDefault(); var r = arena.getBoundingClientRect(); shove(e.clientX < r.left + r.width / 2 ? -1 : 1); });
+      go.key = function(e){ if(e.key === 'ArrowLeft') shove(-1); else if(e.key === 'ArrowRight') shove(1); };
+      document.addEventListener('keydown', go.key);
+      var cnt = document.getElementById('pogo-count'), n = 3;
+      go.tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); return; }
+        clearInterval(go.tick); cnt.textContent = ''; buzz(20); pogoTrack(st.track);
+        go.t0 = go.next = performance.now();
+        (function frame(now){
+          if(pogoGo !== go) return;
+          var t = now - go.t0;
+          if(t < T - travel && now >= go.next){ var s = Math.random() < .5 ? -1 : 1; spawn(s, now); if(Math.random() < both) spawn(-s, now + 120); go.next = now + every * (.75 + Math.random() * .5); }
+          var w = W(), stop = 44;
+          go.bodies = go.bodies.filter(function(x){
+            var k = (now - x.t0) / travel, d;
+            if(x.back){ d = stop + (now - x.back) / 250 * (w + 40); if(d > w + 60){ x.el.remove(); return false; } }
+            else if(k >= 1){ x.el.remove(); hurt(1); return false; }
+            else d = w + 40 - k * (w + 40 - stop);
+            x.el.classList.toggle('hot', !x.back && k >= .7);
+            x.el.style.transform = 'translateX(' + (x.side * d).toFixed(1) + 'px)';
+            return true; });
+          var c = document.getElementById('pogo-clock'); if(c) c.textContent = '0:' + String(Math.max(0, Math.ceil((T - t) / 1000))).padStart(2, '0');
+          if(go.hits >= maxHits){ arena.classList.add('fall'); return pogoRunEnd(true); }
+          if(t >= T) return pogoRunEnd(false);
+          go.raf = requestAnimationFrame(frame);
+        })(go.t0);
+      }, 700);
+    }, function(e){ b.disabled = false; toast(esc(e.message)); });
+  }
+  function pogoRunEnd(fell){
+    var go = pogoGo, id = go.id, energy = go.energy; go.done = true; cancelAnimationFrame(go.raf); stopListen();
+    buzz(fell ? [60, 40, 120] : 30); snd(fell ? 'tear' : 'reward');
+    setTimeout(function(){ pogoStop(); pogoIn.innerHTML = '';
+      ONLINE.pogoRunFinish(id, energy, fell).then(function(st){ if(pogo && pogo.id === id){ pogo = st; pogoPaint(); }
+        toast(fell ? 'À terre ! Rameute tes potes pour qu\'ils te relèvent.' : 'Debout jusqu\'au bout : <b>' + energy + '</b> coups d\'épaule.'); },
+        function(e){ toast(esc(e.message)); pogoRefresh(); }); }, fell ? 900 : 300);
+  }
+  // fin ou abandon de ma manche
+  function pogoStop(){ if(pogoGo){ cancelAnimationFrame(pogoGo.raf); clearInterval(pogoGo.tick); if(pogoGo.key) document.removeEventListener('keydown', pogoGo.key); pogoGo = null; } stopListen(); }
+  function pogoTrack(id){
+    var go = pogoGo;
+    track(id).then(function(t){ if(!t || pogoGo !== go) return;
+      stopListen(); audio = startAt(new Audio(t.url), t); duck(0); audio.play().then(fadeIn).catch(function(){}); });
+  }
   // nouvelles du slam toutes les 30 s et au retour dans l'app : porteurs de mon slam, slams des potes à porter (pastille)
   setInterval(function(){ if(ONLINE && !document.hidden) loadSlam(); }, 30000);
   document.addEventListener('visibilitychange', function(){ if(ONLINE && !document.hidden) loadSlam(); });
@@ -3804,7 +4078,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!ONLINE) return;
     Promise.resolve().then(function(){ return ONLINE.slamPoints(); }).then(function(n){ if(n !== slamPts){ slamPts = n; renderCorner(); } }).catch(function(){});
     Promise.resolve().then(function(){ return ONLINE.slamFeed(); }).then(function(d){ slamData = d; paintSlam(); }).catch(function(){});
-    loadPits();
+    loadPits(); loadPogos();
   }
   // porteurs de mon slam : avec photo (people) ; anciens serveurs : les seuls noms
   function slamPeople(m){ return m.people || (m.carriers || []).map(function(nm){ return {name:nm}; }); }
@@ -3887,8 +4161,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // lien de slam ou de pote (au démarrage, ou notification touchée alors que l'app était ouverte)
   function openLink(q){
-    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1], pt = (/[?&]pit=([0-9a-f-]{36})/.exec(q) || [])[1];
-    var vu = (/[?&]vue=([a-z]+)/.exec(q) || [])[1]; if(vu && !sl && !pc && !pt){ openVue(vu); return; }
+    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1], pt = (/[?&]pit=([0-9a-f-]{36})/.exec(q) || [])[1], pg = (/[?&]pogo=([0-9a-f-]{36})/.exec(q) || [])[1];
+    var vu = (/[?&]vue=([a-z]+)/.exec(q) || [])[1]; if(vu && !sl && !pc && !pt && !pg){ openVue(vu); return; }
+    if(pg){ cornerTab('fosse'); go('corner'); pogoEnter(pg); if(pc) ONLINE.addFriend(pc).catch(function(){}); return; }
     if(pt){ cornerTab('fosse'); go('corner'); pitEnter(pt); if(pc) ONLINE.addFriend(pc).catch(function(){}); return; }
     if(!sl && !pc) return;
     cornerTab(sl ? 'fosse' : 'potes'); go('corner');

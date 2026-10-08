@@ -51,3 +51,18 @@ __fake.pitFeed = async function(){ return {live:[{id:'p1', name:'Riffeuse', trac
 __fake.pitJoin = async function(){ return __pitState; }; __fake.pitOpen = async function(){ return __pitState; };
 __fake.pitRunStart = async function(){ __pitState.runners[3].rps = .4; return __pitState; }; __fake.pitRunFinish = async function(id, sc){ __pitState.runners[3].score = sc; return __pitState; };
 __fake.pitClaim = async function(){ return {points:2, tier:__pitState.tier, loot:null}; }; })();
+// pogo : celui de Riffeuse (mise Rare), Bob à terre à relever, missions en cours
+(function(){ var end = new Date(Date.now() + 412e3).toISOString();
+__pogoState = {id:'g1', rarity:'rare', track:'morello', ends_at:end, over:false, cancelled:false, host:false, host_name:'Riffeuse', heat:3, run_s:15, hits:4, min_players:3, in:true, stake:'morello', result:null, won:[], claimed:false,
+  players:[{id:'f1', name:'Riffeuse', url:'cards/amy-lee-base.jpg', energy:14, fell:false, lifted:false, friend:true}, {id:'f2', name:'Bob le Slammeur', url:'cards/hetfield-base.jpg', energy:4, fell:true, lifted:false, friend:true},
+           {id:'x9', name:'Moshzilla', energy:9, fell:true, lifted:true, lifter:'Riffeuse', friend:false}, {id:'u1', name:'Antoine', energy:null, fell:null, lifted:false, me:true}]};
+var missions = [{key:'week:2026-41', title:'Pogo de la semaine', hint:'Danse 3 pogos cette semaine', reward:'1 paquet', goal:3, n:1, weekly:true, claimed:false},
+  {key:'first', title:'Premier pogo', hint:'Danse ta première manche de pogo', reward:'Une Commune pas encore trouvée', goal:1, n:1, claimed:false},
+  {key:'lift5', title:'On relève les copains', hint:'Relève 5 potes à terre', reward:'Une carte Rare ou mieux', goal:5, n:2, claimed:false},
+  {key:'king', title:'Roi du pogo', hint:'Danse 25 pogos', reward:'3 paquets', goal:25, n:1, claimed:false}];
+__fake.pogoFeed = async function(){ return {live:[{id:'g1', name:'Riffeuse', rarity:'rare', ends_at:end, players:4, in:true, ran:false}], done:[], down:[{pogo:'g1', id:'f2', name:'Bob le Slammeur', url:'cards/hetfield-base.jpg', ends_at:end}],
+  limit_reached:false, missions:missions, duration:600, run_s:15}; };
+__fake.pogoState = async function(){ return __pogoState; }; __fake.pogoJoin = async function(){ return __pogoState; }; __fake.pogoRunStart = async function(){ return __pogoState; };
+__fake.pogoRunFinish = async function(id, e, f){ __pogoState.players[3].energy = e; __pogoState.players[3].fell = f; return __pogoState; };
+__fake.pogoLift = async function(){ return __pogoState; }; __fake.pogoMission = async function(){ return {kind:'points', points:2}; };
+__fake.pogoClaim = async function(){ return {result:'won', stake:{m:'morello', r:'rare'}, won:[{m:'hetfield', r:'rare'}, {m:'amy-lee', r:'rare'}], points:3, energy:16, fell:false, lifter:null}; }; })();
