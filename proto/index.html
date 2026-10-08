@@ -293,7 +293,6 @@
   .pogo-loot{display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:0 0 16px} .pogo-loot .pogo-c{width:96px} .pogo-c.lost img{filter:grayscale(1) brightness(.5)} .pogo-c.won{box-shadow:0 0 22px rgba(244,178,67,.45)}
   .pogo-list{margin:0 0 12px; padding:0; list-style:none; text-align:left} .pogo-list li{display:flex; align-items:center; gap:10px; min-height:52px; padding:6px 0; border-bottom:1px solid var(--border)}
   .pogo-list li > span:not(.pit-av){flex:1; min-width:0} .pogo-list b{display:block; font-weight:700; font-size:.92rem; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .pogo-list small{font:500 .76rem/1.3 var(--mono); color:var(--muted)} .pogo-list li.down small{color:var(--accent-text)}
-  .pogo-week{display:block; margin-top:6px; color:var(--gold-hi)}
   #pogo-run{margin-bottom:10px}
   /* les danses : une carte illustrée par mini-jeu, trois sur une ligne, carrousel au-delà ; le nom posé sur l'illustration */
   .dance-row{display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 -16px; padding:4px 16px 8px; scroll-padding:0 16px} .dance-row::-webkit-scrollbar{display:none}
@@ -322,16 +321,21 @@
   .salle-t{margin:0; font:400 2.6rem/1 var(--gothic); color:var(--text)} .salle-tag{margin:6px 0 0; font:500 .9rem/1.35 var(--mono); color:var(--muted)}
   .salle-in{max-width:520px; margin:0 auto; padding:8px 16px calc(28px + env(safe-area-inset-bottom))}
   .salle-p{display:none; flex-direction:column} .salle-p.on{display:flex}
-  .salle-p .fs-how{display:block; order:2; margin:26px 0 0; padding:0; border:0} .salle-p .fs-how::before{content:"Comment ça marche"; display:block; margin-bottom:14px; font:400 1.6rem/1 var(--gothic); color:var(--text)}
+  .salle-p .fs-how{display:block; order:2; margin:26px 0 0} .salle-p .fs-how::before{content:"Comment ça marche"; display:block; margin-bottom:14px; font:400 1.6rem/1 var(--gothic); color:var(--text)}
   /* règles en étapes : médaillon gravé, titre court, une ligne ; puis ce qu'on gagne en pastilles */
-  .how-steps{display:grid; gap:12px; margin:0; padding:0; list-style:none; counter-reset:hs}
-  .how-steps li{display:flex; align-items:flex-start; gap:14px; padding:14px; border:1px solid var(--border); border-radius:14px; background:var(--surface); counter-increment:hs}
+  .how{padding:18px 16px 16px; border:1px solid var(--border); border-radius:16px; background:var(--surface)}
+  .salle-p .fs-how.how{padding:18px 16px 16px; border:1px solid var(--border)} .salle-p .fs-how.how::before{margin-bottom:16px}
+  .how-steps{display:grid; gap:0; margin:0; padding:0; list-style:none; counter-reset:hs}
+  .how-steps li{display:flex; align-items:flex-start; gap:14px; padding:14px 0; counter-increment:hs} .how-steps li + li{border-top:1px solid var(--border)} .how-steps li:first-child{padding-top:0}
   .hs-ic{position:relative; flex:none; display:grid; place-items:center; width:46px; height:46px; border-radius:50%; border:1px solid rgba(235,154,38,.55); background:radial-gradient(circle at 50% 35%, #3a2612, #160f0a); color:var(--gold-hi)} .hs-ic svg{width:24px; height:24px}
   .hs-ic::after{content:counter(hs); position:absolute; right:-4px; bottom:-4px; min-width:20px; height:20px; border-radius:10px; background:var(--gold); color:var(--ink); font:800 .72rem/20px var(--display); text-align:center; box-shadow:0 0 0 2px var(--surface)}
   .how-steps b{display:block; margin-bottom:3px; font:800 1rem/1.15 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--text)} .how-steps span{font:500 .86rem/1.45 var(--mono); color:var(--muted)}
   .how-gain{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0} .how-gain small{flex-basis:100%; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .how-gain span{padding:8px 12px; border:1px solid rgba(235,154,38,.45); border-radius:999px; font:600 .8rem var(--mono); color:var(--gold-hi)}
   .salle .trade-x{position:fixed; z-index:2; background:rgba(12,10,9,.55); border-radius:50%}
+  .salle-in{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+  .cta-bar{position:fixed; left:0; right:0; bottom:0; z-index:3; padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(12,10,9,0), var(--bg) 30%); text-align:center}
+  .cta-bar > *{max-width:488px; margin-left:auto; margin-right:auto} .cta-bar small{display:block; margin-bottom:8px; font:600 .8rem var(--mono); color:var(--gold-hi)}
   @media (prefers-reduced-motion: reduce){ .pogo-arena.hit{animation:none} .pogo-me{transition:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
@@ -3687,6 +3691,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(k === 'pit'){ var p = pitData && pitData.live ? pitData : null; return {n:p ? p.live.filter(function(x){ return !x.ran; }).length + p.done.length : 0, txt:!p ? '' : p.live.length ? p.live.length + ' en cours' : 'À lancer'}; }
     var m = slamData && slamData.mine; return {n:slamWaiting(), txt:!slamData ? '' : m ? (m.crashed ? 'Écrasé' : m.landed ? 'Atterri' : 'En vol') : 'Plonger'};
   }
+  // salle : le bouton principal d'une danse, fixé en bas de l'écran ; sans potes, il propose d'en ajouter
+  function ctaBar(note, id, label){ return '<div class="cta-bar">' + (note ? '<small>' + note + '</small>' : '') +
+    (friendsList.length ? '<button type="button" class="btn block" id="' + id + '">' + label + '</button>' : '<button type="button" class="btn block" data-cta-potes="1">Ajouter des potes pour danser</button>') + '</div>'; }
+  document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('[data-cta-potes]')) openPote(); });
   // une ligne d'action : qui, quoi (jeu en tête), le geste
   function nowRow(x, game, txt, act, attrs){ return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name || 'Toi') + '</b><small><em class="now-g">' + game + '</em> · ' + txt + '</small></span><span class="f-acts"><button type="button" ' + attrs + '>' + act + '</button></span></div>'; }
   function paintNow(){
@@ -3835,8 +3843,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">' + (x.ran ? 'Voir' : 'Courir') + '</button></span></div>'; }).join('') +
       d.done.map(function(x){
         return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>le pit est retombé · tes points t\'attendent</small></span><span class="f-acts"><button type="button" data-pit="' + esc(x.id) + '">Voir</button></span></div>'; }).join('');
-    var box = d.opened_today ? (d.live.length ? '' : '<div class="slam-box"><b>Ton pit du jour est passé</b><small>Rejoins celui d\'un pote dès qu\'il en lance un (tu reçois une notification), ou relance le tien demain.</small></div>') : '<div class="slam-box"><b>Lance un circle pit</b><small>' + Math.round(d.duration / 60) + ' minutes pour que tes potes viennent faire leur course de ' + (d.run_s || 20) + ' s sur le morceau de ton choix. Chaque course accélère le cercle : plus vous êtes nombreux et précis, plus tout le monde gagne.</small>' +
-      (friendsList.length ? '<button type="button" class="btn block" id="pit-go">Ouvrir le pit</button>' : '<small>Il te faut des potes pour courir : ajoute-les avec ton code.</small>') + '</div>';
+    var box = d.opened_today ? (d.live.length ? '' : '<p class="pit-note">Plus de pit à lancer aujourd\'hui : rejoins celui d\'un pote dès qu\'il en lance un.</p>') : ctaBar('', 'pit-go', 'Ouvrir un circle pit');
     document.getElementById('pits').innerHTML = rows + box;
     hydrateAvatars(document.getElementById('pits'));
     [].forEach.call(document.querySelectorAll('#pits [data-pit]'), function(b){ b.onclick = function(){ pitEnter(b.getAttribute('data-pit')); }; });
@@ -4034,9 +4041,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       d.done.map(function(x){
         return '<div class="invite"><i class="new-dot" aria-hidden="true"></i>' + avDisc(x, 'f-av') + '<span><b>' + esc(x.name) + '</b><small>le pogo est retombé · le ramassage t\'attend</small></span><span class="f-acts"><button type="button" data-pogo="' + esc(x.id) + '">Voir</button></span></div>'; }).join('');
     var wk = d.missions.filter(function(m){ return m.weekly; })[0];
-    var box = d.limit_reached ? '' : '<div class="slam-box"><b>Ouvre un pogo</b><small>Choisis la mise : chacun y laisse une carte de cette rareté, tirée au hasard. ' + Math.round(d.duration / 60) + ' minutes pour entrer et danser ' + d.run_s + ' s. Qui reste à terre perd sa carte, les meilleurs la ramassent.</small>' +
-      (wk ? '<small class="pogo-week">' + esc(wk.title) + ' : <span class="num">' + wk.n + '/' + wk.goal + '</span>' + (wk.claimed ? ' · récupérée' : ' · ' + esc(wk.reward)) + '</small>' : '') +
-      (friendsList.length ? '<button type="button" class="btn block" id="pogo-go">Ouvrir un pogo</button>' : '<small>Il te faut des potes pour pogoter : ajoute-les avec ton code.</small>') + '</div>';
+    var box = d.limit_reached ? '' : ctaBar(wk ? esc(wk.title) + ' : <span class="num">' + wk.n + '/' + wk.goal + '</span>' + (wk.claimed ? ' · récupérée' : ' · ' + esc(wk.reward)) : '', 'pogo-go', 'Ouvrir un pogo');
     document.getElementById('pogos').innerHTML = rows + box;
     hydrateAvatars(document.getElementById('pogos'));
     [].forEach.call(document.querySelectorAll('#pogos [data-pogo]'), function(b){ b.onclick = function(){ pogoEnter(b.getAttribute('data-pogo')); }; });
@@ -4256,8 +4261,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function paintSlam(dive){
     var d = slamData, sec = document.getElementById('slam-sec'); sec.hidden = !d; if(!d) return;
     var m = d.mine, hours = Math.round(d.window / 6) / 10, mine;
-    if(!m) mine = '<div class="slam-box">' + slamScene('ready', [], d.goal) + '<b>Plonge dans la foule</b><small>' + d.goal + ' potes doivent te porter en ' + String(hours).replace('.', ',') + ' h. Atterrissage réussi : une récompense pour toi et pour chaque porteur.</small>' +
-      (friendsList.length ? '<button type="button" class="btn block" id="slam-go">Slammer</button>' : '<small>Il te faut une foule : ajoute tes potes avec ton code.</small><button type="button" class="btn block" id="slam-potes">Ajouter des potes</button>') + '</div>';
+    if(!m) mine = slamScene('ready', [], d.goal) + ctaBar(d.goal + ' porteurs en ' + String(hours).replace('.', ',') + ' h pour atterrir', 'slam-go', 'Slammer');
     else if(m.landed && !m.claimed) mine = '<div class="slam-box land">' + slamScene('land', slamPeople(m), m.goal) + '<b>Atterrissage réussi</b><small>Porté par ' + esc(m.carriers.join(', ')) + '.</small>' + fosseAdd(slamPeople(m)) +
       '<button type="button" class="btn block" id="slam-claim" data-id="' + esc(m.id) + '">Récupérer ma récompense</button></div>';
     else if(m.landed) mine = '<div class="slam-box">' + slamScene('land', slamPeople(m), m.goal) + '<b>Slam réussi</b><small>La foule reprend son souffle. Remets ça demain.</small></div>';
@@ -4282,7 +4286,6 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var go = document.getElementById('slam-go'); if(go) go.onclick = function(){ go.disabled = true;
       ONLINE.slamLaunch().then(function(f){ slamData = f; snd('rumble'); paintSlam(true); cornerTab(); toast('Tu plonges ! Tes potes sont prévenus : ' + f.goal + ' porteurs avant ' + new Date(f.mine.ends_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) + '.'); },
         function(e){ go.disabled = false; toast(esc(e.message)); }); };
-    var sp = document.getElementById('slam-potes'); if(sp) sp.onclick = openPote;
     if(!poteCode && (document.getElementById('slam-call') || document.querySelector('#slam [data-reinf]'))) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
     var call = document.getElementById('slam-call'); if(call){
       call.onclick = function(){ openCall('slam', m.id, m.carrier_ids || [], function(){   // le code de pote voyage avec le lien : ouvert hors de l'app, il se tape dans « + Pote »
