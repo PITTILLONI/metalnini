@@ -1,18 +1,31 @@
 #!/usr/bin/env python3
 """Prépare les images légères (proto/cards/, utilisées par le prototype et la galerie) et la liste des musiciens complets.
 
-Usage : python3 tools/build_proto_cards.py   (depuis la racine du dépôt)
+Usage : python3 tools/build_proto_cards.py   (depuis la racine du dépôt, sur Mac : sips)
+        python3 tools/build_proto_cards.py --musician <id>   (un seul musicien, sans toucher aux paquets ; marche aussi sous Linux avec Pillow)
 Un musicien n'entre dans le prototype que si ses 5 raretés existent dans assets/da/creas/.
 """
-import json, os, subprocess
+import json, os, re, shutil, subprocess, sys
 
 CREAS, OUT = "assets/da/creas", "proto/cards"
 RARITIES = ["commune", "rare", "holo", "signature", "legendaire"]
 OVERRIDES = {("knocked-loose", "holo"): "knocked-loose-holo-v2",
              ("knocked-loose", "legendaire"): "knocked-loose-legendaire-v2"}
 
+
+def shrink(src, dst, size=720, quality=74):
+    # côté le plus long ramené à « size », JPEG ; sips sur Mac, Pillow ailleurs (agent cloud)
+    if shutil.which("sips"):
+        subprocess.run(["sips", "-Z", str(size), "-s", "format", "jpeg", "-s", "formatOptions", str(quality), src, "--out", dst],
+                       check=True, stdout=subprocess.DEVNULL)
+    else:
+        from PIL import Image
+        im = Image.open(src).convert("RGB"); im.thumbnail((size, size), Image.LANCZOS); im.save(dst, "JPEG", quality=quality)
+
+
 os.makedirs(OUT, exist_ok=True)
-ids = sorted({f.rsplit("-", 1)[0] for f in os.listdir(CREAS) if f.endswith("-commune.jpg")})
+only = sys.argv[sys.argv.index("--musician") + 1] if "--musician" in sys.argv else None
+ids = [only] if only else sorted({f.rsplit("-", 1)[0] for f in os.listdir(CREAS) if f.endswith("-commune.jpg")})
 ready = []
 for aid in ids:
     src = {r: f"{CREAS}/{OVERRIDES.get((aid, r), f'{aid}-{r}')}.jpg" for r in RARITIES}
@@ -24,14 +37,21 @@ for aid in ids:
     for r, p in src.items():
         dst = f"{OUT}/{aid}-{r}.jpg"
         if not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(p):
-            subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst],
-                           check=True, stdout=subprocess.DEVNULL)
+            shrink(p, dst)
     ready.append(aid)
+# un seul musicien : il rejoint la liste des musiciens complets, les paquets restent tels quels
+if only:
+    if only not in ready: sys.exit(f"{only} : il manque des raretés dans {CREAS}")
+    m = open(f"{OUT}/manifest.js").read()
+    cur = json.loads(re.search(r"METALNINI_READY = (\[.*?\]);", m).group(1))
+    m = m.replace(re.search(r"METALNINI_READY = \[.*?\];", m).group(0), "METALNINI_READY = " + json.dumps(sorted(set(cur) | {only})) + ";")
+    open(f"{OUT}/manifest.js", "w").write(m)
+    sys.exit(f"{only} prêt")
 # cartes secrètes (une seule image, hors liste des musiciens complets) : Céline Dion
 for sid in ("celine",):
     p, dst = f"{CREAS}/{sid}-legendaire.jpg", f"{OUT}/{sid}-legendaire.jpg"
     if os.path.exists(p) and (not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(p)):
-        subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", p, "--out", dst], check=True, stdout=subprocess.DEVNULL)
+        shrink(p, dst)
 # paquets : rognés automatiquement au ras du sachet (bords non noirs), puis allégés
 def crop_pack(src, dst):
     import struct, tempfile
@@ -64,11 +84,9 @@ for key, name in (("serie", "pack-mosh" if os.path.exists(f"{CREAS}/pack-mosh.jp
     if os.path.exists(f"{CREAS}/{name}-mini.jpg"):
         minis[key] = crop_pack(f"{CREAS}/{name}-mini.jpg", f"{OUT}/pack-{key}-mini.jpg")
 if os.path.exists(f"{CREAS}/flames.jpg"):
-    subprocess.run(["sips", "-Z", "1400", "-s", "format", "jpeg", "-s", "formatOptions", "76", f"{CREAS}/flames.jpg",
-                    "--out", f"{OUT}/flames.jpg"], check=True, stdout=subprocess.DEVNULL)
+    shrink(f"{CREAS}/flames.jpg", f"{OUT}/flames.jpg", 1400, 76)
 if os.path.exists(f"{CREAS}/card-back.jpg"):
-    subprocess.run(["sips", "-Z", "720", "-s", "format", "jpeg", "-s", "formatOptions", "74", f"{CREAS}/card-back.jpg",
-                    "--out", f"{OUT}/back.jpg"], check=True, stdout=subprocess.DEVNULL)
+    shrink(f"{CREAS}/card-back.jpg", f"{OUT}/back.jpg")
 open(f"{OUT}/manifest.js", "w").write("window.METALNINI_READY = " + repr(ready).replace("'", '"') + ";\n"
                                       + "window.METALNINI_PACKS = " + json.dumps(packs) + ";\n"
                                       + "window.METALNINI_MINIS = " + json.dumps(minis) + ";\n")

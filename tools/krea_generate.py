@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Génère une image via l'API REST Krea et l'enregistre localement.
 
-La clé est lue dans le Trousseau macOS (service « krea-api-perso »), jamais en argument ni en clair.
+La clé est lue dans le Trousseau macOS (service « krea-api-perso »), ou dans la variable d'environnement KREA_API_KEY
+(agent cloud), jamais en argument ni en clair.
 
 Usage :
   python3 tools/krea_generate.py --out assets/da/creas/artiste-commune.jpg \
@@ -13,6 +14,8 @@ API = "https://api.krea.ai"
 
 
 def api_key():
+    if os.environ.get("KREA_API_KEY"):
+        return os.environ["KREA_API_KEY"]
     try:
         return subprocess.check_output(
             ["security", "find-generic-password", "-s", "krea-api-perso", "-w"], text=True

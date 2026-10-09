@@ -309,19 +309,23 @@ const must = r => { if(r.error) throw r.error; return r.data; };
 const musicianName = id => (catalog.musicians.find(m => m.id === id) || {}).name || id;
 
 // ---------------------------------------------------------------- accueil
-// ce qui attend une action ; la pastille de l'onglet Accueil compte les demandes d'artistes et les cartes perso à valider ou en erreur
+// ce qui attend une action ; la pastille de l'onglet Accueil compte tout sauf les preuves de concert (validées d'office)
 async function pending(){
   const since = new Date(Date.now() - 7 * 864e5).toISOString();
-  const [r, o, pr] = await Promise.all([sb.rpc('admin_requests'), sb.rpc('admin_perso_orders'),
-    sb.from('concert_picks').select('done_at', { count: 'exact', head: true }).gte('done_at', since).eq('cancelled', false)]);
-  const orders = o.data || [], n = { req: r.error ? 0 : reqGroups(r.data).length, ready: orders.filter(x => x.status === 'ready').length,
+  const [r, o, pr, jb] = await Promise.all([sb.rpc('admin_requests'), sb.rpc('admin_perso_orders'),
+    sb.from('concert_picks').select('done_at', { count: 'exact', head: true }).gte('done_at', since).eq('cancelled', false), sb.rpc('admin_jobs')]);
+  const orders = o.data || [], n = { ready: orders.filter(x => x.status === 'ready').length,
     err: orders.filter(x => x.status === 'error').length, proofs: pr.count || 0 };
-  todoN = n.req + n.ready + n.err; paintNav();
+  const jobs = jb.data || [], open = new Set(jobs.filter(j => !['published', 'refused'].includes(j.status)).flatMap(j => j.request_ids));
+  n.req = r.error ? 0 : reqGroups(r.data.filter(x => !open.has(x.id))).length;
+  n.jobs = jobs.filter(j => ['review', 'ready', 'error'].includes(j.status)).length;
+  todoN = n.req + n.ready + n.err + n.jobs; paintNav();
   return n;
 }
 async function todo(el){
   const n = await pending(), pl = (k, one, many) => n[k] > 1 ? many : one;
   const rows = [['req', pl('req', 'demande d\'artiste en attente', 'demandes d\'artistes en attente'), 'catalogue/demandes'],
+    ['jobs', pl('jobs', 'artiste préparé par l\'agent t\'attend', 'artistes préparés par l\'agent t\'attendent') + ' <span class="muted">(à trancher, à publier ou en erreur)</span>', 'catalogue/demandes'],
     ['ready', pl('ready', 'carte perso à valider', 'cartes perso à valider'), 'envoyer/perso'],
     ['err', pl('err', 'carte perso en erreur', 'cartes perso en erreur'), 'envoyer/perso'],
     ['proofs', pl('proofs', 'preuve de concert cette semaine', 'preuves de concert cette semaine') + ' <span class="muted">(validées d\'office, à regarder)</span>', 'joueurs/preuves']].filter(x => n[x[0]]);
@@ -745,20 +749,61 @@ async function catalogTab(el){
 const reqKey = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
 const reqGroups = rows => Object.values(rows.reduce((g, x) => { const k = reqKey(x.artist); (g[k] = g[k] || { name: x.artist, rows: [] }).rows.push(x); return g; }, {}))
   .sort((a, b) => (b.rows.some(x => x.priority) - a.rows.some(x => x.priority)) || b.rows.length - a.rows.length);
+// préparation par l'agent cloud (routine 9 h, 13 h, 18 h) : file, cas limites à trancher, branches prêtes à publier
+const JSTATUS = {queued:'En file (prochain passage de l\'agent)', working:'En préparation', review:'À trancher', ready:'Prête à publier', published:'Publiée', refused:'Refusée', error:'Erreur'};
+const GH = 'https://github.com/PITTILLONI/metalnini', RAW = 'https://raw.githubusercontent.com/PITTILLONI/metalnini/';
+function jobCard(j){
+  const live = ['review', 'ready', 'error'].includes(j.status);
+  const pics = j.status === 'ready' && j.musician_id && j.branch ? `<div class="grid-cards" style="margin:10px 0">${RARITIES.map(r =>
+    `<figure><a href="${RAW}${esc(j.branch)}/proto/cards/${esc(j.musician_id)}-${r}.jpg" target="_blank" rel="noopener"><img src="${RAW}${esc(j.branch)}/proto/cards/${esc(j.musician_id)}-${r}.jpg" alt="" loading="lazy"></a><span class="r-${r}">${RLABEL[r]}</span></figure>`).join('')}</div>` : '';
+  return `<div class="po" style="grid-template-columns:1fr" data-job="${j.id}"><div>
+    <b>${esc(j.artist)}</b> <span class="pill${j.status === 'review' || j.status === 'error' ? ' warn-pill' : ''}">${JSTATUS[j.status]}</span>
+    <span class="muted" style="font-size:.8rem">· ${fmt(j.updated_at)}${j.branch ? ` · <a href="${GH}/compare/main...${esc(j.branch)}" target="_blank" rel="noopener" style="color:var(--gold)">voir les changements</a>` : ''}</span>
+    ${j.note ? `<details style="margin:6px 0"${j.status === 'review' ? ' open' : ''}><summary class="muted" style="cursor:pointer">Compte rendu de l'agent</summary><p style="white-space:pre-wrap; font-size:.85rem; margin:6px 0">${esc(j.note)}</p></details>` : ''}
+    ${pics}
+    ${live ? `<label for="jn-${j.id}">${j.status === 'review' ? 'Ta décision (consigne pour l\'agent)' : 'Consigne pour une reprise (facultatif)'}</label><input id="jn-${j.id}" maxlength="500">
+    <div class="row" style="margin:8px 0 0">${j.status === 'ready' ? '<button class="fit" data-ja="publish">Publier</button>' : ''}
+      <button class="ghost fit" data-ja="go">${j.status === 'review' ? 'Continuer' : j.status === 'ready' ? 'Retoucher' : 'Relancer'}</button>
+      <button class="ghost fit" data-ja="refuse">Refuser</button></div><p class="msg"></p>` : ''}</div></div>`;
+}
 async function requests(el){
-  const groups = reqGroups(await sb.rpc('admin_requests').then(must));
-  if(!groups.length){ el.innerHTML = '<div class="card"><h3>Demandes d\'artistes</h3><p class="muted" style="margin:0">Aucune demande en attente.</p></div>'; return; }
-  el.innerHTML = `<div class="card"><h3>Demandes d'artistes (${groups.length})</h3><div class="table-wrap"><table><tr><th>Artiste</th><th>Demandé par</th><th>Dernière</th><th></th></tr>
-    ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''}</td>
-      <td style="font-size:.85rem">${g.rows.map(x => `<div><b>${esc(x.username)}</b>${x.priority ? ' <span class="ok">★ ticket</span>' : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</td>
-      <td>${fmt(g.rows[0].created_at)}</td>
-      <td style="white-space:nowrap"><button data-req="${i}" data-out="added">Ajouté</button> <button class="ghost" data-req="${i}" data-out="refused">Refusé</button></td></tr>`).join('')}</table></div>
-    <p class="muted" style="font-size:.85rem">Ajouté : à faire une fois les cartes en ligne, le demandeur est prévenu tout de suite. Refusé : le ticket prioritaire est rendu.</p></div>`;
+  const [rows, jobs] = await Promise.all([sb.rpc('admin_requests').then(must), sb.rpc('admin_jobs').then(must)]);
+  const groups = reqGroups(rows), active = jobs.filter(j => !['published', 'refused'].includes(j.status));
+  const jobOf = g => active.find(j => g.rows.some(x => j.request_ids.includes(x.id)));
+  el.innerHTML = `<div class="card"><h3>Demandes d'artistes (${groups.length})</h3>${groups.length ? groups.map((g, i) => `<div class="po" style="grid-template-columns:1fr"><div>
+      <b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''} <span class="muted" style="font-size:.8rem">· ${fmt(g.rows[0].created_at)}</span>
+      <div style="font-size:.85rem; margin:4px 0 8px">${g.rows.map(x => `<div>${esc(x.username)}${x.priority ? ' <span class="ok">★ ticket</span>' : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</div>
+      <div class="row" style="margin:0">${jobOf(g) ? `<span class="pill fit">${JSTATUS[jobOf(g).status]}</span>` : `<button class="fit" data-req="${i}" data-out="launch">Lancer</button><button class="ghost fit" data-req="${i}" data-out="added">Ajouté</button><button class="ghost fit" data-req="${i}" data-out="refused">Refusé</button>`}</div></div></div>`).join('') + `
+    <p class="muted" style="font-size:.85rem">Lancer : l'agent cloud vérifie l'artiste, génère les cartes et prépare le catalogue à son prochain passage (9 h, 13 h, 18 h), puis la demande revient ci-dessous. Ajouté : si tu l'as ajouté toi-même, le demandeur est prévenu tout de suite. Refusé : le ticket prioritaire est rendu.</p>`
+    : '<p class="muted" style="margin:0">Aucune demande en attente.</p>'}</div>
+    ${jobs.length ? `<div class="card"><h3>Préparées par l'agent</h3>${jobs.map(jobCard).join('')}</div>` : ''}`;
   el.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
-    const g = groups[+b.dataset.req], added = b.dataset.out === 'added';
-    if(!confirm((added ? 'Marquer « ' + g.name + ' » comme ajouté' : 'Refuser « ' + g.name + ' »') + ' et prévenir ' + g.rows.length + ' joueur' + (g.rows.length > 1 ? 's' : '') + ' ?')) return;
-    const res = await sb.rpc('admin_request_handle', { p_ids: g.rows.map(x => x.id), p_outcome: b.dataset.out });
-    if(res.error) say(b, res.error.message); else { requests(el); pending(); }
+    const g = groups[+b.dataset.req], out = b.dataset.out, n = g.rows.length + ' joueur' + (g.rows.length > 1 ? 's' : '');
+    if(out === 'launch'){
+      const res = await sb.rpc('admin_job_launch', { p_ids: g.rows.map(x => x.id), p_artist: g.name });
+      if(res.error) return say(b, res.error.message);
+    } else {
+      if(!confirm((out === 'added' ? 'Marquer « ' + g.name + ' » comme ajouté' : 'Refuser « ' + g.name + ' »') + ' et prévenir ' + n + ' ?')) return;
+      const res = await sb.rpc('admin_request_handle', { p_ids: g.rows.map(x => x.id), p_outcome: out });
+      if(res.error) return say(b, res.error.message);
+    }
+    requests(el); pending();
+  });
+  el.querySelectorAll('[data-ja]').forEach(b => b.onclick = async () => {
+    const box = b.closest('[data-job]'), j = jobs.find(x => x.id === +box.dataset.job), note = $('jn-' + j.id).value.trim(), msg = box.querySelector('.msg'), a = b.dataset.ja;
+    if(a === 'go' && j.status === 'review' && !note) return say(msg, 'Écris ta décision pour l\'agent (ex. « OK, on l\'ajoute » ou « classe-le en Thrash »).');
+    if(a === 'refuse' && !confirm('Refuser « ' + j.artist + ' » et prévenir les demandeurs ?')) return;
+    if(a === 'publish' && !confirm('Publier « ' + j.artist + ' » : fusion dans main, seed appliquée, demandeurs prévenus ?')) return;
+    b.disabled = true;
+    if(a === 'publish'){
+      const { data, error } = await sb.functions.invoke('artist-publish', { body: { job: j.id } });
+      if(error){ let m = error.message; try { m = (await error.context.json()).error || m; } catch(_){} b.disabled = false; return say(msg, m); }
+      say(msg, `Publiée : en ligne dans une minute ou deux, ${data.told} joueur${data.told > 1 ? 's' : ''} prévenu${data.told > 1 ? 's' : ''}.`, true);
+    } else {
+      const res = await sb.rpc('admin_job_decide', { p_job: j.id, p_action: a, p_note: note || null });
+      if(res.error){ b.disabled = false; return say(msg, res.error.message); }
+    }
+    setTimeout(() => { requests(el); pending(); }, a === 'publish' ? 1500 : 0);
   });
 }
 
