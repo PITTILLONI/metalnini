@@ -248,10 +248,10 @@
   .pit-slot{position:absolute; left:50%; top:50%; width:0; height:0; transform:rotate(var(--a)) translateY(calc(min(78vw, 300px) / -2 + 26px)) rotate(calc(-1 * var(--a)))}
   .pit-slot .pit-av{position:absolute; left:-20px; top:-20px; animation:pit-spin var(--spin, 14s) linear infinite}   /* le visage reste droit pendant que le cercle tourne */
   .pit-slot .pit-av.me{left:-26px; top:-26px}
-  .pit-run{position:absolute; left:50%; top:50%; width:46%; aspect-ratio:1; transform:translate(-50%, -50%); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; touch-action:manipulation; user-select:none; -webkit-user-select:none}
+  .pit-run{position:absolute; left:50%; top:50%; width:46%; aspect-ratio:1; transform:translate(-50%, -50%); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; user-select:none; -webkit-user-select:none}
   .pit-run b{font:900 1.5rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase} .pit-run small{font:700 .8rem var(--mono)}
-  .pit-run:active{transform:translate(-50%, -48%); box-shadow:0 2px 0 #8a5510}
-  .pit-run:disabled{opacity:.5}
+  .pit-run{border:2px solid var(--gold); background:rgba(232,154,40,.1); color:var(--gold-hi)} .pit-run.off{opacity:.5}
+  #pit-lobby.with-cta{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
   .pit-gauges{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px; text-align:left}
   .pit-gauges div{padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
   .pit-gauges small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
@@ -3924,10 +3924,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }
     // en cours : la salle d'attente se construit une fois, puis on ne met à jour que ce qui bouge
     if(!document.getElementById('pit-lobby')){
-      pitIn.innerHTML = '<div id="pit-lobby">' + pitHead(st) + '<div class="pit-ring"><div class="pit-orbit" id="pit-orbit"></div><button type="button" class="pit-run relief" id="pit-run"></button></div>' +
+      pitIn.innerHTML = '<div id="pit-lobby">' + pitHead(st) + '<div class="pit-ring"><div class="pit-orbit" id="pit-orbit"></div><div class="pit-run" id="pit-run"></div></div>' +
         '<p class="pit-note" id="pit-note"></p><div id="pit-gauges"></div><div id="pit-add"></div><div class="pit-acts"><button type="button" class="btn" id="pit-call">Rameuter</button><button type="button" class="btn ghost" id="pit-qr-b">Mon QR</button></div><div id="pit-qr-box" hidden><div class="gframe tr-qr-f"><div class="tr-qr" id="pit-qr" role="img" aria-label="QR code du circle pit"></div></div></div>' +
-        (st.host ? '<button type="button" class="band-leave" id="pit-stop">Annuler le pit</button>' : '') + '</div>';
-      document.getElementById('pit-run').onclick = pitRunGo;
+        (st.host ? '<button type="button" class="band-leave" id="pit-stop">Annuler le pit</button>' : '') + '<div id="pit-cta"></div></div>';
       var link = function(){ return location.origin + location.pathname + '?pit=' + pit.id + (poteCode ? '&pote=' + poteCode : ''); };
       if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
       document.getElementById('pit-call').onclick = function(){ openCall('pit', pit.id, pit.runners.map(function(r){ return r.id; }), function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens faire ta course !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); }); };
@@ -3936,8 +3935,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       document.getElementById('pit-qr-b').onclick = function(){ var b = document.getElementById('pit-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pit-qr', link()); };
     }
     var run = document.getElementById('pit-run'), late = new Date(st.ends_at) - Date.now() < (st.run_s + 2) * 1000;
-    run.disabled = ran || late;
-    run.innerHTML = ran ? '<b class="num">' + me.score + ' %</b><small>ta course</small>' : late ? '<b>Trop tard</b><small>le pit retombe</small>' : '<b>Courir</b><small class="num">' + st.run_s + ' s · à toi</small>';
+    run.classList.toggle('off', ran || late);
+    run.innerHTML = ran ? '<b class="num">' + me.score + ' %</b><small>ta course</small>' : late ? '<b>Trop tard</b><small>le pit retombe</small>' : '<b>À toi</b><small class="num">' + st.run_s + ' s de course</small>';
+    // le bouton principal, fixé en bas comme dans les autres salles : seulement tant que ma course reste à faire
+    var cta = document.getElementById('pit-cta'), can = !ran && !late;
+    if(cta.getAttribute('data-on') !== String(can)){
+      cta.setAttribute('data-on', String(can)); document.getElementById('pit-lobby').classList.toggle('with-cta', can);
+      cta.innerHTML = can ? '<div class="cta-bar"><small>' + st.run_s + ' s pour faire tourner le pit</small><button type="button" class="btn block" id="pit-start">Démarrer</button></div>' : '';
+      if(can) document.getElementById('pit-start').onclick = pitRunGo;
+    }
     document.getElementById('pit-note').textContent = ran ? 'Ta course est faite. Rameute du monde : chaque course compte pour tout le cercle.' :
       'Fais tourner le pit : dessine des cercles du doigt pendant ' + st.run_s + ' s, à la vitesse du cercle. Chaque course le fait accélérer.';
     var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', (1 / Math.max(.1, st.rps)).toFixed(1) + 's');
@@ -3951,7 +3957,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ma course : 3, 2, 1, puis je fais tourner le pit : je dessine des cercles du doigt, dans le sens inverse des aiguilles,
   // à la vitesse du cercle (zone de la jauge) ; la foule court à ma vitesse ; précision = part du temps passée dans la zone
   function pitRunGo(){
-    var b = document.getElementById('pit-run'); b.disabled = true;
+    var b = document.getElementById('pit-start'); b.disabled = true;
     ONLINE.pitRunStart(pit.id).then(function(st){
       pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
       var target = .5 + rps * 1.5;   // tours de doigt par seconde visés : de 0,95 (premier coureur) à 2 (cercle au plus vite)

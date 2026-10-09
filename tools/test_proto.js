@@ -516,11 +516,11 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
   check('circle pit : le pit d\'un pote à rejoindre, et « Ouvrir le pit »', !d9.getElementById('pit-sec').hidden && !!d9.querySelector('#pits [data-pit="p1"]') && !!d9.getElementById('pit-go'));
   d9.querySelector('#pits [data-pit="p1"]').click(); await sleep(60);
-  check('circle pit : salle d\'attente, coureurs en cercle (pas encore couru en grisé), 15 minutes', !d9.getElementById('pit').hidden && d9.querySelectorAll('#pit-orbit .pit-slot').length === 2 && d9.querySelectorAll('#pit-orbit .pit-slot.wait').length === 1 && /^(9|10):\d\d$/.test(d9.getElementById('pit-clock').textContent) && /Courir/.test(d9.getElementById('pit-run').textContent));
-  d9.getElementById('pit-run').click(); await sleep(60);
+  check('circle pit : salle d\'attente, coureurs en cercle (pas encore couru en grisé), 15 minutes', !d9.getElementById('pit').hidden && d9.querySelectorAll('#pit-orbit .pit-slot').length === 2 && d9.querySelectorAll('#pit-orbit .pit-slot.wait').length === 1 && /^(9|10):\d\d$/.test(d9.getElementById('pit-clock').textContent) && /À toi/.test(d9.getElementById('pit-run').textContent) && /Démarrer/.test(d9.getElementById('pit-start').textContent));
+  d9.getElementById('pit-start').click(); await sleep(60);
   check('circle pit : course lancée, décompte et repère', pitStarted === 1 && d9.getElementById('pit-count').textContent === '3' && !!d9.getElementById('pit-mark'));
   await sleep(3400);
-  check('circle pit : score de précision envoyé, course faite', pitScore !== null && pitScore >= 0 && pitScore <= 100 && /ta course/.test(d9.getElementById('pit-run').textContent) && d9.getElementById('pit-run').disabled);
+  check('circle pit : score de précision envoyé, course faite, plus de bouton Démarrer', pitScore !== null && pitScore >= 0 && pitScore <= 100 && /ta course/.test(d9.getElementById('pit-run').textContent) && d9.getElementById('pit-run').classList.contains('off') && !d9.getElementById('pit-start'));
   pitSt.over = true; pitSt.ends_at = new Date(Date.now() - 1000).toISOString();
   d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p1"]').click(); await sleep(60);
   d9.getElementById('pit-claim').click(); await sleep(60);
