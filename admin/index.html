@@ -189,7 +189,7 @@ const views = ['v-login','v-invite','v-mfa-enroll','v-mfa-verify','v-noadmin','v
 function show(v){ views.forEach(x => $(x).hidden = x !== v); }
 function say(el, text, ok){ el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
 const fmt = d => d ? new Date(d).toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'}) : '—';
-let catalog = {musicians:[], packs:[], odds:[]};
+let catalog = {musicians:[], packs:[], odds:[], cards:[]};
 
 // ---------------------------------------------------------------- parcours de connexion
 async function route(){
@@ -324,8 +324,9 @@ document.addEventListener('click', e => {
   go(...a.dataset.go.split('/'));
 });
 async function loadCatalog(){
-  const [m, p, o] = await Promise.all([sb.from('musicians').select('*').order('name'), sb.from('pack_types').select('*'), sb.from('pack_odds').select('*')]);
-  catalog = { musicians: m.data || [], packs: p.data || [], odds: o.data || [] };
+  const [m, p, o, c] = await Promise.all([sb.from('musicians').select('*').order('name'), sb.from('pack_types').select('*'), sb.from('pack_odds').select('*'),
+    sb.from('cards').select('musician_id, rarity, image_path')]);
+  catalog = { musicians: m.data || [], packs: p.data || [], odds: o.data || [], cards: c.data || [] };
 }
 const must = r => { if(r.error) throw r.error; return r.data; };
 const musicianName = id => (catalog.musicians.find(m => m.id === id) || {}).name || id;
@@ -490,6 +491,20 @@ async function players(el){
   el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => go('joueurs', tr.dataset.id));
 }
 const isPerso = id => !!(catalog.musicians.find(m => m.id === id) || {}).perso;
+// visuels : l'adresse vient de la table des cartes (maudites : une image, Céline : sa Légendaire, perso : stockage privé, lien signé par signPerso)
+const variants = id => RARITIES.filter(r => catalog.cards.some(c => c.musician_id === id && c.rarity === r));
+const rarLabel = (id, r) => (catalog.musicians.find(m => m.id === id) || {}).cursed ? 'Maudite' : RLABEL[r];
+function cardImg(id, r, attrs = ''){
+  const c = catalog.cards.find(x => x.musician_id === id && x.rarity === r);
+  if(!c) return `<img alt=""${attrs}>`;
+  return isPerso(id) ? `<img data-perso="${esc(c.image_path)}" alt=""${attrs}>` : `<img src="../proto/${esc(c.image_path)}" alt="" loading="lazy"${attrs}>`;
+}
+const signedUrls = {};
+function signPerso(root){
+  root.querySelectorAll('img[data-perso]:not([src])').forEach(async im => { const path = im.dataset.perso;
+    signedUrls[path] ||= sb.storage.from('perso').createSignedUrl(path, 3600).then(r => r.data && r.data.signedUrl);
+    const url = await signedUrls[path]; if(url) im.src = url; });
+}
 let invOpen = false, invFor = null;   // le classeur reste ouvert après une correction
 async function player(p){
   if(invFor !== p.id){ invOpen = false; invFor = p.id; }
@@ -515,7 +530,7 @@ async function player(p){
       <div class="fit"><button id="adj-go">Appliquer</button></div></div>
     <p class="muted" style="font-size:.8rem; margin:6px 0 0">« Prévenir le joueur » : la carte lui est révélée comme un cadeau du Grand Architecte et attend d'être rangée. Décoché (et avec les boutons − / +), c'est une correction silencieuse.</p>
     <details class="pl-inv" id="pl-inv"${invOpen ? ' open' : ''}><summary>Classeur · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s), ${inv.length} variante(s)</summary>
-    <div class="grid-cards">${inv.map(i => `<figure>${isPerso(i.musician_id) ? `<img data-perso="${esc(i.musician_id)}|${i.rarity}" alt="">` : `<img src="../proto/cards/${esc(i.musician_id)}-${i.rarity}.jpg" alt="" loading="lazy">`}
+    <div class="grid-cards">${inv.map(i => `<figure>${cardImg(i.musician_id, i.rarity)}
       <span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}
       <span class="row" style="gap:4px; margin-top:4px"><button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="-1" style="padding:4px 10px" aria-label="Retirer un exemplaire">−</button>
       <button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="1" style="padding:4px 10px" aria-label="Ajouter un exemplaire">+</button></span></figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div></details>
@@ -526,11 +541,7 @@ async function player(p){
         <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>
     <div class="card"><h3>Ses échanges</h3><div id="pl-trades" class="muted">Chargement…</div></div>`;
   $('pl-inv').ontoggle = () => { invOpen = $('pl-inv').open; };
-  // cartes perso : l'image n'est pas dans le dépôt, elle est lue dans le stockage privé « perso » par lien signé (1 h)
-  const pimgs = [...d.querySelectorAll('img[data-perso]')];
-  if(pimgs.length) (async () => { const { data: pc } = await sb.from('cards').select('musician_id, rarity, image_path').in('musician_id', pimgs.map(im => im.dataset.perso.split('|')[0]));
-    pimgs.forEach(async im => { const [m, r] = im.dataset.perso.split('|'), c = (pc || []).find(x => x.musician_id === m && x.rarity === r); if(!c) return;
-      const { data } = await sb.storage.from('perso').createSignedUrl(c.image_path, 3600); if(data) im.src = data.signedUrl; }); })();
+  signPerso(d);
   d.scrollIntoView({ behavior: 'smooth' });
   sb.rpc('admin_trades', { p_user: p.id, p_limit: 50 }).then(r => { $('pl-trades').className = ''; $('pl-trades').innerHTML = r.error ? esc(r.error.message) : tradesTable(r.data); });
   // photo et cri : fichiers privés, lus par lien signé (1 h)
@@ -691,7 +702,9 @@ async function catalogTab(el){
   await loadCatalog();
   const [bd, bm] = await Promise.all([sb.from('binders').select('*').order('sort'), sb.from('binder_members').select('*')]);
   const binders = bd.data || [], members = bm.data || [];
-  const all = catalog.musicians.slice().sort((a, b) => romanValue(a.arcana_number) - romanValue(b.arcana_number));
+  // ordre de l'album, puis les cartes à part : secrète, maudites, perso
+  const rank = m => (m.perso ? 3e4 : m.cursed ? 2e4 : romanValue(m.arcana_number) ? 0 : 1e4) + romanValue(m.arcana_number);
+  const all = catalog.musicians.slice().sort((a, b) => rank(a) - rank(b));
   let list = all;
   const uniq = xs => [...new Set(xs.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
   const opts = (xs, lab) => `<option value="">${lab}</option>` + xs.map(x => `<option value="${esc(x.v ?? x)}">${esc(x.l ?? x)}</option>`).join('');
@@ -708,13 +721,13 @@ async function catalogTab(el){
     </div>
     <div class="card viewer"><h3>Visuels des cartes</h3>
       <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
-        <figure class="vw-card"><img id="vw-img" alt=""><figcaption id="vw-cap"></figcaption></figure>
+        <figure class="vw-card"><span id="vw-pic"></span><figcaption id="vw-cap"></figcaption></figure>
         <button class="vw-arrow" id="vw-next" aria-label="Musicien suivant">›</button></div>
       <div class="vw-rars" id="vw-rars"></div>
       <p class="muted" style="font-size:.8rem; text-align:center; margin:8px 0 0">Flèches du clavier ← → pour changer de musicien, ↑ ↓ pour changer de rareté.</p></div>
     <div class="card"><h3>Musiciens <span class="muted" id="cat-count"></span></h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
     <div class="table-wrap"><table><tr><th></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
-    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}"><img src="../proto/cards/${esc(m.id)}-commune.jpg" alt="" style="width:40px;border-radius:4px"></button></td>
+    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}">${cardImg(m.id, variants(m.id)[0], ' style="width:40px;border-radius:4px"')}</button></td>
       <td><input data-f="name" value="${esc(m.name)}"></td><td><input data-f="band" value="${esc(m.band)}"></td><td><input data-f="arcana_title" value="${esc(m.arcana_title)}"></td>
       <td style="width:80px"><input data-f="arcana_number" value="${esc(m.arcana_number)}"></td><td><input data-f="subgenre" value="${esc(m.subgenre)}"></td>
       <td><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} style="width:auto"></td><td><button class="ghost save">OK</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
@@ -738,16 +751,18 @@ async function catalogTab(el){
   // visionneuse : un musicien à la fois, ses 5 raretés en dessous
   const show = () => {
     const m = list[at]; shown = m || null; el.querySelector('.viewer').hidden = !m; if(!m) return;
-    $('vw-img').src = `../proto/cards/${m.id}-${rar}.jpg`; $('vw-img').alt = `${m.name}, ${RLABEL[rar]}`;
-    $('vw-cap').innerHTML = `<b>N° ${esc(m.arcana_number)} · ${esc(m.name)}</b> · ${esc(m.band)} · <span class="r-${rar}">${RLABEL[rar]}</span>${m.active ? '' : ' · <span class="err">inactif</span>'}<br><span class="muted">${at + 1} / ${list.length}</span>`;
-    $('vw-rars').innerHTML = RARITIES.map(r => `<button class="vw-rar${r === rar ? ' on' : ''}" data-r="${r}" aria-label="${RLABEL[r]}"><img src="../proto/cards/${m.id}-${r}.jpg" alt="" loading="lazy"><span class="r-${r}">${RLABEL[r]}</span></button>`).join('');
+    const vs = variants(m.id); if(!vs.includes(rar)) rar = vs[0] || 'commune';
+    $('vw-pic').innerHTML = cardImg(m.id, rar); signPerso($('vw-pic'));
+    $('vw-cap').innerHTML = `<b>N° ${esc(m.arcana_number)} · ${esc(m.name)}</b> · ${esc(m.band)} · <span class="r-${rar}">${rarLabel(m.id, rar)}</span>${m.active ? '' : ' · <span class="err">inactif</span>'}<br><span class="muted">${at + 1} / ${list.length}</span>`;
+    $('vw-rars').innerHTML = vs.length > 1 ? vs.map(r => `<button class="vw-rar${r === rar ? ' on' : ''}" data-r="${r}" aria-label="${RLABEL[r]}">${cardImg(m.id, r)}<span class="r-${r}">${RLABEL[r]}</span></button>`).join('') : '';
+    signPerso($('vw-rars'));
     $('vw-rars').querySelectorAll('[data-r]').forEach(b => b.onclick = () => { rar = b.dataset.r; show(); });
     $('vw-prev').disabled = at === 0; $('vw-next').disabled = at === list.length - 1;
   };
   const go = d => { at = Math.max(0, Math.min(list.length - 1, at + d)); show(); };
   $('vw-prev').onclick = () => go(-1); $('vw-next').onclick = () => go(1);
   document.onkeydown = e => {
-    if(!$('vw-img') || ['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if(!$('vw-pic') || ['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
     if(e.key === 'ArrowLeft') go(-1); else if(e.key === 'ArrowRight') go(1);
     else if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){ e.preventDefault(); const i = RARITIES.indexOf(rar) + (e.key === 'ArrowDown' ? 1 : -1); rar = RARITIES[Math.max(0, Math.min(RARITIES.length - 1, i))]; show(); }
   };
@@ -756,7 +771,7 @@ async function catalogTab(el){
   st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
   el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
-  filter();
+  filter(); signPerso(el);
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
