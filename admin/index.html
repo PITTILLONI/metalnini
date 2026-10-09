@@ -48,7 +48,7 @@
   /* sections d'une page : ancres en tête, la barre d'onglets ne les recouvre pas */
   .anchors{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 0}
   .anchors button{background:none; border:1px solid var(--border); color:var(--muted); font:500 .7rem var(--mono); letter-spacing:.06em; padding:6px 11px}
-  .part{scroll-margin-top:70px}
+  .part, #player-detail{scroll-margin-top:70px}
   .todo{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border)} .todo b{font:700 1.3rem var(--display); color:var(--gold); margin-right:8px}
   /* menu du compte, en haut à droite */
   .menu{position:relative} .menu > summary{cursor:pointer; list-style:none; padding:6px 0} .menu > summary::-webkit-details-marker{display:none} .menu > summary::after{content:" ▾"; color:var(--gold)}
@@ -88,6 +88,19 @@
   [hidden]{display:none!important}
   .bc-list{max-height:220px; overflow-y:auto; display:grid; gap:4px; margin:6px 0 4px; padding:6px; border:1px solid var(--border, #333); border-radius:8px}
   .bc-p{display:flex; gap:8px; align-items:center; font-size:.88rem} .bc-p input{width:auto} .bc-p[hidden]{display:none}
+  /* téléphone : chaque ligne de tableau devient une fiche (libellé de colonne devant chaque valeur), champs à 16 px (pas de zoom iOS) */
+  @media (max-width:640px){
+    body{font-size:16px} input,select,textarea{font-size:16px}
+    header h1{font-size:1.6rem} .card{padding:14px} .row > .fit{max-width:100%}
+    table.cards-m tr:first-child{display:none}
+    table.cards-m, table.cards-m tbody, table.cards-m tr, table.cards-m td{display:block; width:auto}
+    table.cards-m tr{border:1px solid var(--border); border-radius:10px; padding:6px 10px; margin:0 0 10px}
+    table.cards-m td{border:0; padding:5px 0; display:flex; gap:10px; align-items:baseline}
+    table.cards-m td[data-l]::before{content:attr(data-l); flex:0 0 38%; font:500 .66rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+    table.cards-m td:empty{display:none} table.cards-m td > input:not([type=checkbox]), table.cards-m td > select{flex:1; min-width:0}
+    .table-wrap{overflow:visible}
+    .pl-t td:nth-child(6), .pl-t td:nth-child(8), .pl-t td:nth-child(9){display:none}   /* liste des joueurs : création, variantes et paquets restent sur la fiche ordinateur */
+  }
 </style>
 </head>
 <body>
@@ -294,6 +307,15 @@ async function render(){
   if(s && $('s-' + s)) $('s-' + s).scrollIntoView({ behavior: 'smooth' });
 }
 window.addEventListener('popstate', () => { if(!$('v-app').hidden) render(); });
+function labelTables(root){
+  root.querySelectorAll('table:not(.cards-m)').forEach(t => {
+    const head = t.rows[0] && [...t.rows[0].cells].every(c => c.tagName === 'TH') ? [...t.rows[0].cells].map(c => c.textContent.trim()) : null;
+    if(!head) return;
+    [...t.rows].slice(1).forEach(r => [...r.cells].forEach((c, i) => { if(head[i] && c.colSpan === 1) c.dataset.l = head[i]; }));
+    t.classList.add('cards-m');
+  });
+}
+new MutationObserver(() => labelTables($('page'))).observe($('page'), { childList: true, subtree: true });
 // liens internes (onglets, ancres, « À traiter », menu du compte) ; un clic ailleurs referme le menu
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-go]');
@@ -457,7 +479,7 @@ async function persoOrders(el){
 // ---------------------------------------------------------------- joueurs
 async function players(el){
   const list = await allPlayers();
-  el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
+  el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table class="pl-t">
     <tr><th>Pseudo</th><th>Compte</th><th>Dernière visite</th><th>App</th><th>Notifs</th><th>Créé</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
     ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b>${p.cry_path ? ' <span class="pill" title="A enregistré un cri">cri</span>' : ''}</td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
       <td title="Dernière connexion par mot de passe : ${fmt(p.last_sign_in_at)}">${fmt(p.last_seen_at || p.last_sign_in_at)}${p.last_platform ? ' <span class="muted">· ' + p.last_platform + '</span>' : ''}</td>
