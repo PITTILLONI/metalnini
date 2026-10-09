@@ -280,12 +280,18 @@
   @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av{animation:none} }
   /* pogo : arène de la manche, danseurs qui foncent, équilibre, mise et ramassage */
   .pogo-arena{position:relative; height:min(46dvh, 340px); margin:4px -16px 12px; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; background:radial-gradient(90% 70% at 50% 45%, #2a1a10 0%, #0c0a09 75%)}
-  .pogo-z{position:absolute; top:0; bottom:0; width:50%; display:flex; align-items:center; padding:0 14px; font:900 3rem/1 var(--display); color:rgba(244,178,67,.14); font-style:normal; pointer-events:none} .pogo-z.l{left:0} .pogo-z.r{right:0; justify-content:flex-end}
+  .pogo-zone{position:absolute; top:50%; height:76px; margin-top:-38px; border:2px dashed rgba(244,178,67,.35); border-radius:40px; pointer-events:none; transition:background-color .1s, border-color .1s}
+  .pogo-zone.on{background:rgba(244,178,67,.22); border:2px solid var(--gold-hi)}
+  .pogo-fx{position:absolute; z-index:4; left:50%; top:calc(50% - 64px); transform:translate(-50%, 0); font:900 1.3rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; opacity:0; pointer-events:none}
+  .pogo-fx.good{color:var(--gold-hi)} .pogo-fx.bad{color:var(--accent-text)}
+  .pogo-pads{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 10px} .pogo-pad{min-height:76px; border-radius:16px; border:2px solid var(--border); background:var(--surface); color:var(--text); font:900 1.15rem var(--display); letter-spacing:.08em; text-transform:uppercase; touch-action:none; user-select:none; -webkit-user-select:none; transition:background-color .1s, border-color .1s}
+  .pogo-pad.on{background:var(--gold); border-color:var(--gold-hi); color:#1a0f05}
   .pogo-me{position:absolute; z-index:2; left:50%; top:50%; transform:translate(-50%, -50%); transition:transform .4s cubic-bezier(.5,0,.6,1.4), filter .4s} .pogo-me .pit-av.me{width:64px; height:64px}
-  .pogo-body{position:absolute; z-index:3; left:50%; top:50%; width:54px; height:54px; margin:-27px 0 0 -27px; border-radius:50%; background:#1b1512; border:2px solid rgba(255,255,255,.22); box-shadow:0 8px 16px rgba(0,0,0,.6); will-change:transform}
-  .pogo-body.hot{border-color:var(--gold-hi); box-shadow:0 0 0 4px rgba(244,178,67,.25), 0 8px 16px rgba(0,0,0,.6)} .pogo-body.back{border-color:var(--accent-text)}
-  .pogo-arena.hit{animation:pogo-shake .3s} .pogo-arena.fall .pogo-me{transform:translate(-50%, 10%) rotate(80deg); filter:grayscale(1) brightness(.7)}
-  @keyframes pogo-shake{20%{transform:translate(-8px, 3px)} 40%{transform:translate(7px, -4px)} 60%{transform:translate(-5px, 2px)} 80%{transform:translate(3px, -1px)}}
+  /* danseur qui arrive : silhouette tournée vers le joueur ; renvoyé, il bascule et pâlit */
+  .pogo-body{position:absolute; z-index:3; left:50%; top:50%; width:40px; height:72px; margin:-40px 0 0 -20px; will-change:transform; pointer-events:none}
+  .pogo-body .fan{transition:transform .2s, opacity .25s} .pogo-body.l .fan{transform:scaleX(-1)} .pogo-body.back .fan{transform:rotate(35deg); opacity:.45} .pogo-body.l.back .fan{transform:scaleX(-1) rotate(35deg)}
+  .pogo-body .fan circle, .pogo-body .fan path:not(.fan-a){fill:#2a1d15; stroke:var(--gold-hi); stroke-width:1.6} .pogo-body .fan-a{stroke:#2a1d15}
+  .pogo-arena.fall .pogo-me{transform:translate(-50%, 10%) rotate(80deg); filter:grayscale(1) brightness(.7)}
   .pogo-bal{display:flex; justify-content:center; gap:6px; margin:0 0 8px} .pogo-bal i{width:30px; height:8px; border-radius:4px; background:var(--gold)} .pogo-bal i.off{background:rgba(255,255,255,.14)}
   .pogo-stake{display:flex; align-items:center; gap:12px; margin:4px 0 12px; padding:10px 12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); text-align:left}
   .pogo-stake small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-stake b{display:block; font:900 1.15rem/1.15 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pogo-stake span span{font:500 .8rem/1.3 var(--mono); color:var(--muted)}
@@ -336,7 +342,7 @@
   .salle-in{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
   .cta-bar{position:fixed; left:0; right:0; bottom:0; z-index:3; padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(12,10,9,0), var(--bg) 30%); text-align:center}
   .cta-bar > *{max-width:488px; margin-left:auto; margin-right:auto} .cta-bar small{display:block; margin-bottom:8px; font:600 .8rem var(--mono); color:var(--gold-hi)}
-  @media (prefers-reduced-motion: reduce){ .pogo-arena.hit{animation:none} .pogo-me{transition:none} }
+  @media (prefers-reduced-motion: reduce){ .pogo-me{transition:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
@@ -4200,24 +4206,36 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       pogoGo = {id:st.id, raf:0, t0:0, next:0, bodies:[], energy:0, hits:0, done:false};
       var go = pogoGo, maxHits = st.hits;
       pogoIn.innerHTML = '<div class="pit-top"><p class="eyebrow">Pogo · reste debout</p><b class="pit-clock num" id="pogo-clock">0:' + String(st.run_s).padStart(2, '0') + '</b><p class="pit-song">Coups d\'épaule <b class="num" id="pogo-en">0</b></p></div>' +
-        '<div class="pogo-arena" id="pogo-arena">' + crowdHtml(14) + '<i class="pogo-z l" aria-hidden="true">‹</i><i class="pogo-z r" aria-hidden="true">›</i><span class="pogo-me">' + avDisc(me, 'me') + '</span><b class="pit-count num" id="pogo-count">3</b></div>' +
-        '<div class="pogo-bal" id="pogo-bal" aria-label="Équilibre"></div><p class="pit-note">Touche le côté d\'où ils arrivent, quand ils sont sur toi. Un coup dans le vide te déséquilibre.</p>';
+        '<div class="pogo-arena" id="pogo-arena">' + crowdHtml(8) + '<i class="pogo-zone l" id="pogo-zl"></i><i class="pogo-zone r" id="pogo-zr"></i><span class="pogo-me">' + avDisc(me, 'me') + '</span>' +
+          '<b class="pogo-fx" id="pogo-fx" aria-live="polite"></b><b class="pit-count num" id="pogo-count">3</b></div>' +
+        '<div class="pogo-bal" id="pogo-bal" aria-label="Équilibre"></div>' +
+        '<div class="pogo-pads"><button type="button" class="pogo-pad" data-side="-1" id="pogo-pl">‹ Gauche</button><button type="button" class="pogo-pad" data-side="1" id="pogo-pr">Droite ›</button></div>' +
+        '<p class="pit-note">Un danseur entre dans la zone dorée : coup d\'épaule de ce côté. Frapper dans le vide te déséquilibre, ' + maxHits + ' coups pris et tu es à terre.</p>';
       hydrateAvatars(pogoIn);
-      var arena = document.getElementById('pogo-arena'), bal = document.getElementById('pogo-bal'), en = document.getElementById('pogo-en');
-      crowdGo(arena.querySelector('.crowd'), 'jump', h);
+      var arena = document.getElementById('pogo-arena'), bal = document.getElementById('pogo-bal'), en = document.getElementById('pogo-en'), fx = document.getElementById('pogo-fx');
+      var zone = {'-1':[document.getElementById('pogo-zl'), document.getElementById('pogo-pl')], '1':[document.getElementById('pogo-zr'), document.getElementById('pogo-pr')]}, hot = {'-1':false, '1':false};
+      crowdGo(arena.querySelector('.crowd'), 'hop', h);
+      // largeur lue une fois (pas à chaque image) ; la zone dorée = le dernier tiers du trajet, là où le coup d'épaule compte
+      var w = arena.offsetWidth / 2, stop = 44, far = w + 40, inZone = .7, dz = stop + (1 - inZone) * (far - stop);
+      zone['-1'][0].style.cssText = 'right:calc(50% + ' + (stop - 27) + 'px); width:' + (dz - stop + 54) + 'px';
+      zone['1'][0].style.cssText = 'left:calc(50% + ' + (stop - 27) + 'px); width:' + (dz - stop + 54) + 'px';
+      var say = function(t, cls){ fx.textContent = t; fx.className = 'pogo-fx ' + cls; if(fx.animate) fx.animate([{opacity:0, transform:'translate(-50%, 0) scale(.7)'}, {opacity:1, transform:'translate(-50%, -14px) scale(1)', offset:.25}, {opacity:0, transform:'translate(-50%, -30px) scale(1)'}], {duration:650, easing:'ease-out'}); };
       var paintBal = function(){ var left = Math.max(0, maxHits - go.hits), h2 = ''; for(var i = 0; i < maxHits; i++) h2 += '<i' + (i < Math.ceil(left - 1e-9) ? '' : ' class="off"') + '></i>'; bal.innerHTML = h2; };
       paintBal();
-      var W = function(){ return arena.offsetWidth / 2; };
-      var spawn = function(side, now){ var el = document.createElement('i'); el.className = 'pogo-body'; arena.appendChild(el); go.bodies.push({side:side, t0:now, el:el, back:0}); };
-      var hurt = function(n){ go.hits += n; buzz(40); arena.classList.remove('hit'); void arena.offsetWidth; arena.classList.add('hit'); paintBal();
-        anim(function(g){ g.fromTo('#pogo-arena .pogo-me .pit-av', {scale:.8}, {scale:1, duration:.5, ease:'elastic.out(1, .4)', clearProps:'transform'}); }); };
+      var spawn = function(side, now){ var el = document.createElement('i'); el.className = 'pogo-body' + (side < 0 ? ' l' : ''); el.innerHTML = fanSvg(); arena.appendChild(el); go.bodies.push({side:side, t0:now, el:el, back:0}); };
+      var meAv = arena.querySelector('.pogo-me .pit-av');
+      var hurt = function(n, t){ go.hits += n; buzz(40); paintBal(); say(t, 'bad');
+        if(meAv && meAv.animate) meAv.animate([{transform:'translateX(0)'}, {transform:'translateX(-7px) rotate(-6deg)'}, {transform:'translateX(6px) rotate(5deg)'}, {transform:'translateX(0)'}], {duration:300}); };
       var shove = function(side){
         if(!go.t0 || go.done) return;
         var now = performance.now(), hit = go.bodies.filter(function(x){ return x.side === side && !x.back && (now - x.t0) / travel >= .7; })[0];
-        if(hit){ hit.back = now; go.energy++; en.textContent = go.energy; buzz(10); hit.el.classList.add('back'); pop(en, 1.8); }
-        else hurt(.5);   // coup dans le vide
+        var pad = zone[side][1]; if(pad.animate) pad.animate([{transform:'scale(.94)'}, {transform:'scale(1)'}], {duration:140});
+        if(hit){ hit.back = now; go.energy++; en.textContent = go.energy; buzz(10); hit.el.classList.add('back'); pop(en, 1.8); say('Renvoyé !', 'good'); }
+        else hurt(.5, 'Dans le vide');
       };
-      arena.addEventListener('pointerdown', function(e){ e.preventDefault(); var r = arena.getBoundingClientRect(); shove(e.clientX < r.left + r.width / 2 ? -1 : 1); });
+      // les boutons du bas, ou la moitié de l'arène de ce côté
+      arena.addEventListener('pointerdown', function(e){ e.preventDefault(); shove(e.clientX < arena.getBoundingClientRect().left + w ? -1 : 1); });
+      [].forEach.call(pogoIn.querySelectorAll('.pogo-pad'), function(b){ b.addEventListener('pointerdown', function(e){ e.preventDefault(); shove(+b.getAttribute('data-side')); }); });
       go.key = function(e){ if(e.key === 'ArrowLeft') shove(-1); else if(e.key === 'ArrowRight') shove(1); };
       document.addEventListener('keydown', go.key);
       var cnt = document.getElementById('pogo-count'), n = 3; pop(cnt, 2.2);
@@ -4228,17 +4246,18 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
           if(pogoGo !== go) return;
           var t = now - go.t0;
           if(t < T - travel && now >= go.next){ var s = Math.random() < .5 ? -1 : 1; spawn(s, now); if(Math.random() < both) spawn(-s, now + 120); go.next = now + every * (.75 + Math.random() * .5); }
-          var w = W(), stop = 44;
+          var on = {'-1':false, '1':false};
           go.bodies = go.bodies.filter(function(x){
             var k = (now - x.t0) / travel, d;
-            if(x.back){ d = stop + (now - x.back) / 250 * (w + 40); if(d > w + 60){ x.el.remove(); return false; } }
-            else if(k >= 1){ x.el.remove(); hurt(1); return false; }
-            else d = w + 40 - k * (w + 40 - stop);
-            x.el.classList.toggle('hot', !x.back && k >= .7);
-            x.el.style.transform = 'translateX(' + (x.side * d).toFixed(1) + 'px)';
+            if(x.back){ d = stop + (now - x.back) / 250 * far; if(d > far + 20){ x.el.remove(); return false; } }
+            else if(k >= 1){ x.el.remove(); hurt(1, 'Percuté'); return false; }
+            else { d = far - k * (far - stop); if(k >= inZone) on[x.side] = true; }
+            x.el.style.transform = 'translate3d(' + (x.side * d).toFixed(1) + 'px,0,0)';
             return true; });
+          // zone et bouton s'allument quand un danseur est à portée (classe changée seulement quand l'état change)
+          ['-1', '1'].forEach(function(k){ if(on[k] !== hot[k]){ hot[k] = on[k]; zone[k][0].classList.toggle('on', on[k]); zone[k][1].classList.toggle('on', on[k]); } });
           var c = document.getElementById('pogo-clock'); if(c) c.textContent = '0:' + String(Math.max(0, Math.ceil((T - t) / 1000))).padStart(2, '0');
-          if(go.hits >= maxHits){ arena.classList.add('fall'); return pogoRunEnd(true); }
+          if(go.hits >= maxHits){ arena.classList.add('fall'); say('À terre !', 'bad'); return pogoRunEnd(true); }
           if(t >= T) return pogoRunEnd(false);
           go.raf = requestAnimationFrame(frame);
         })(go.t0);
@@ -4915,11 +4934,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return '<div class="crowd" aria-hidden="true">' + h + '</div>'; }
   function crowdStop(root){ if(!root || !G) return; [].forEach.call(root.querySelectorAll('.crowd'), function(c){ if(c._tick){ G.ticker.remove(c._tick); c._tick = null; } });
     G.killTweensOf(root.querySelectorAll('.fan-w, .fan-a')); }
-  // mode 'jump' (pogo, level 1 à 8), 'wave' (slam)
+  // mode 'jump' (pogo, level 1 à 8), 'hop' (sauts seuls, sans bras : pendant une manche), 'wave' (slam)
   function crowdGo(c, mode, level){ anim(function(g){ if(!c) return; var r = Math.random, lv = level || 1;
     [].forEach.call(c.querySelectorAll('.fan-w'), function(f){
       var al = f.querySelector('.fan-a.l'), ar = f.querySelector('.fan-a.r');
-      if(mode === 'jump'){ g.to(f, {y:-(6 + r() * 10 + lv * 2.2), duration:Math.max(.18, .36 - lv * .02 + r() * .08), ease:'power1.out', yoyo:true, repeat:-1, delay:r() * .4});
+      if(mode === 'jump' || mode === 'hop'){ g.to(f, {y:-(6 + r() * 10 + lv * 2.2), duration:Math.max(.18, .36 - lv * .02 + r() * .08), ease:'power1.out', yoyo:true, repeat:-1, delay:r() * .4});
+        if(mode === 'hop') return;
         g.to(al, {rotation:20 + r() * 40, svgOrigin:'13 33', duration:.3 + r() * .2, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .3});
         g.to(ar, {rotation:-(20 + r() * 40), svgOrigin:'27 33', duration:.3 + r() * .2, yoyo:true, repeat:-1, ease:'sine.inOut', delay:r() * .3}); }
       else { g.set(al, {rotation:-25 - r() * 15, svgOrigin:'13 33'}); g.set(ar, {rotation:25 + r() * 15, svgOrigin:'27 33'});

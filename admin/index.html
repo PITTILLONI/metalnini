@@ -549,7 +549,7 @@ async function player(p){
     const url = async (bucket, path) => path ? ((await sb.storage.from(bucket).createSignedUrl(path, 3600)).data || {}).signedUrl : null;
     const [av, cry] = await Promise.all([url('avatars', p.avatar_path), url('cries', p.cry_path)]);
     $('pl-media').innerHTML = `<div class="row" style="align-items:center; gap:14px">
-        ${av ? `<img src="${esc(av)}" alt="Photo de ${esc(p.username || 'ce joueur')}" style="width:72px; height:72px; border-radius:50%; object-fit:cover; border:1px solid var(--gold)">` : ''}
+        ${av ? `<img class="fit" src="${esc(av)}" alt="Photo de ${esc(p.username || 'ce joueur')}" style="flex:0 0 72px; width:72px; height:72px; border-radius:50%; object-fit:cover; border:1px solid var(--gold)">` : ''}
         <div style="flex:1; min-width:200px">${p.metal_power ? `<p style="margin:0 0 8px"><span class="muted" style="font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Capacité de metaleux</span><br>${esc(p.metal_power)}</p>` : ''}
           ${cry ? `<p class="muted" style="margin:0 0 4px; font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Son cri</p><audio controls preload="none" src="${esc(cry)}" style="width:100%"></audio>` : ''}</div></div>`;
   }
