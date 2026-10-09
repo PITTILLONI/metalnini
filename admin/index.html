@@ -38,14 +38,21 @@
   th{font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
   tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
   .table-wrap{overflow-x:auto}
-  .tabs.groups{padding-bottom:4px; border-bottom:0} .tabs.groups button{font-size:.8rem; padding:9px 14px} .tabs.groups button[aria-selected="true"]{background:var(--accent); color:#fff}
-  .tabs.sub{top:46px; padding-top:6px}
   .pk-list{max-height:240px; overflow-y:auto; display:grid; gap:4px; margin:6px 0 4px; padding:6px; border:1px solid var(--border); border-radius:8px}
   .pk-list label{display:flex; gap:8px; align-items:center; font-size:.88rem} .pk-list input{width:auto} .pk-list label[hidden]{display:none}
   .po{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; padding:10px 0; border-top:1px solid var(--border)} .po img{width:96px; aspect-ratio:2/3; object-fit:cover; border-radius:6px; background:var(--surface-2)}
-  .tabs{display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding:10px 0; position:sticky; top:0; background:var(--bg); z-index:2}
-  .tabs button{background:var(--surface); border:1px solid var(--border); color:var(--muted); font:500 .72rem var(--mono); letter-spacing:.08em; padding:8px 12px}
-  .tabs button[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:rgba(178,58,58,.16)}
+  .tabs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border); padding:10px 0; position:sticky; top:0; background:var(--bg); z-index:2}
+  .tabs button{flex:0 0 auto; white-space:nowrap; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-size:.8rem; padding:9px 14px; display:inline-flex; align-items:center; gap:6px}
+  .tabs button[aria-current="page"]{color:#fff; border-color:var(--accent); background:var(--accent)}
+  .badge{min-width:18px; height:18px; padding:0 5px; border-radius:99px; background:var(--gold); color:#000; font:700 .68rem/18px var(--mono); text-align:center}
+  /* sections d'une page : ancres en tête, la barre d'onglets ne les recouvre pas */
+  .anchors{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 0}
+  .anchors button{background:none; border:1px solid var(--border); color:var(--muted); font:500 .7rem var(--mono); letter-spacing:.06em; padding:6px 11px}
+  .part{scroll-margin-top:70px}
+  .todo{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border)} .todo b{font:700 1.3rem var(--display); color:var(--gold); margin-right:8px}
+  /* menu du compte, en haut à droite */
+  .menu{position:relative} .menu > summary{cursor:pointer; list-style:none; padding:6px 0} .menu > summary::-webkit-details-marker{display:none} .menu > summary::after{content:" ▾"; color:var(--gold)}
+  .menu-list{position:absolute; right:0; top:100%; z-index:5; display:grid; gap:6px; min-width:180px; padding:10px; background:var(--surface); border:1px solid var(--border); border-radius:10px}
   .pill{display:inline-block; font:500 .64rem var(--mono); letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--border); border-radius:4px; padding:2px 6px}
   .r-commune{color:var(--r-commune)} .r-rare{color:var(--r-rare)} .r-holo{color:var(--r-holo)} .r-signature{color:var(--r-signature)} .r-legendaire{color:var(--r-legendaire)}
   .grid-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px}
@@ -142,26 +149,14 @@
   <!-- ============ COMPTE SANS DROIT ADMIN ============ -->
   <section id="v-noadmin" class="card" hidden style="max-width:620px">
     <h2>Compte sans droit admin</h2>
-    <p class="muted">Ce compte est bien connecté, mais il n'est pas admin. Demande au Propriétaire de t'inviter depuis l'onglet Admins, avec l'adresse <b id="my-mail"></b>.</p>
+    <p class="muted">Ce compte est bien connecté, mais il n'est pas admin. Demande au Propriétaire de t'inviter (menu du compte, Admins), avec l'adresse <b id="my-mail"></b>.</p>
     <button id="btn-recheck" class="ghost">Vérifier à nouveau</button>
   </section>
 
   <!-- ============ APP ============ -->
   <main id="v-app" hidden>
-    <nav class="tabs groups" id="tab-groups" aria-label="Rubriques"></nav>
-    <nav class="tabs sub" id="tab-sub" role="tablist" aria-label="Pages"></nav>
-    <section data-p="dash"></section>
-    <section data-p="players" hidden></section>
-    <section data-p="packs" hidden></section>
-    <section data-p="catalog" hidden></section>
-    <section data-p="trades" hidden></section>
-    <section data-p="concerts" hidden></section>
-    <section data-p="log" hidden></section>
-    <section data-p="notify" hidden></section>
-    <section data-p="gifts" hidden></section>
-    <section data-p="perso" hidden></section>
-    <section data-p="team" hidden></section>
-    <section data-p="account" hidden></section>
+    <nav class="tabs" id="tabs" aria-label="Rubriques"></nav>
+    <div id="page"></div>
   </main>
   <footer class="muted" style="font-size:.78rem; padding:30px 0 50px">Toutes les actions passent par des fonctions serveur qui vérifient le rôle admin et la double authentification, et sont inscrites au journal.</footer>
 </div>
@@ -181,14 +176,13 @@ const views = ['v-login','v-invite','v-mfa-enroll','v-mfa-verify','v-noadmin','v
 function show(v){ views.forEach(x => $(x).hidden = x !== v); }
 function say(el, text, ok){ el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
 const fmt = d => d ? new Date(d).toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'}) : '—';
-let catalog = {musicians:[], packs:[], odds:[], settings:[]};
+let catalog = {musicians:[], packs:[], odds:[]};
 
 // ---------------------------------------------------------------- parcours de connexion
 async function route(){
   const { data: { session } } = await sb.auth.getSession();
   if(!session){ $('who').textContent = ''; show('v-login'); return; }
-  $('who').innerHTML = esc(session.user.email || 'compte') + ' · <a href="#" id="logout" style="color:var(--gold)">déconnexion</a>';
-  $('logout').onclick = async e => { e.preventDefault(); await sb.auth.signOut(); route(); };
+  paintWho(session.user.email || 'compte', false);
   if(invited){ show('v-invite'); $('inv-pw1').focus(); return; }
   const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
   if(aal.currentLevel !== 'aal2'){
@@ -199,7 +193,14 @@ async function route(){
   }
   const { data: isAdmin } = await sb.rpc('is_admin');
   if(!isAdmin){ $('my-mail').textContent = session.user.email || ''; show('v-noadmin'); return; }
-  show('v-app'); await loadCatalog(); openTab('dash');
+  show('v-app'); paintWho(session.user.email || 'compte', true); await loadCatalog(); cur = null; render();
+  if(parseHash()[0] !== 'accueil') pending();
+}
+// menu du compte : Mon compte et Admins une fois dans l'admin, déconnexion partout
+function paintWho(email, app){
+  $('who').innerHTML = `<details class="menu"><summary>${esc(email)}</summary><div class="menu-list">
+    ${app ? '<button class="ghost" data-go="compte">Mon compte</button><button class="ghost" data-go="equipe">Admins</button>' : ''}<button class="ghost" id="logout">Déconnexion</button></div></details>`;
+  $('logout').onclick = async () => { await sb.auth.signOut(); history.replaceState(null, '', location.pathname); route(); };
 }
 
 $('btn-login').onclick = async () => {
@@ -251,44 +252,88 @@ $('invite-form').addEventListener('submit', async e => {
 });
 $('code-enroll').addEventListener('keydown', e => { if(e.key === 'Enter') $('btn-enroll').click(); });
 
-// ---------------------------------------------------------------- onglets
-// rubriques puis pages : Suivi, Joueurs, Envois, Jeu, Équipe
-const GROUPS = [
-  {k:'suivi', label:'Suivi', tabs:[['dash', 'Tableau de bord'], ['log', 'Journal']]},
-  {k:'joueurs', label:'Joueurs', tabs:[['players', 'Joueurs'], ['trades', 'Échanges'], ['concerts', 'Concerts']]},
-  {k:'envois', label:'Envois', tabs:[['notify', 'Prévenir les joueurs'], ['gifts', 'Offrir des cartes'], ['perso', 'Cartes perso']]},
-  {k:'jeu', label:'Jeu', tabs:[['catalog', 'Catalogue'], ['packs', 'Paquets & probabilités']]},
-  {k:'equipe', label:'Équipe', tabs:[['team', 'Admins'], ['account', 'Mon compte']]}];
-const groupOf = t => GROUPS.find(g => g.tabs.some(x => x[0] === t)) || GROUPS[0];
-function paintNav(t){
-  const g = groupOf(t);
-  $('tab-groups').innerHTML = GROUPS.map(x => `<button data-g="${x.k}" aria-selected="${x === g}">${x.label}</button>`).join('');
-  $('tab-sub').innerHTML = g.tabs.map(x => `<button role="tab" data-t="${x[0]}" aria-selected="${x[0] === t}">${x[1]}</button>`).join('');
-  $('tab-groups').querySelectorAll('[data-g]').forEach(b => b.onclick = () => openTab(GROUPS.find(x => x.k === b.dataset.g).tabs[0][0]));
-  $('tab-sub').querySelectorAll('[data-t]').forEach(b => b.onclick = () => openTab(b.dataset.t));
+// ---------------------------------------------------------------- navigation
+// une rangée d'onglets ; une page empile ses sections (ancres en tête) ; l'adresse suit : #page, #page/section, #joueurs/<id>
+const PAGES = {
+  accueil: {label:'Accueil', parts:[['todo', 'À traiter', todo], ['chiffres', 'Chiffres', dash]]},
+  joueurs: {label:'Joueurs', parts:[['liste', 'Liste', players], ['echanges', 'Échanges', trades], ['preuves', 'Preuves de concert', proofs], ['favoris', 'Groupes favoris', favBands]]},
+  envoyer: {label:'Envoyer', parts:[['prevenir', 'Prévenir les joueurs', notify], ['offrir', 'Offrir des cartes', gifts], ['perso', 'Cartes perso', persoOrders]]},
+  catalogue: {label:'Catalogue', parts:[['demandes', 'Demandes d\'artistes', requests], ['musiciens', 'Musiciens', catalogTab], ['perso', 'Cartes perso', persoAll], ['defis', 'Défis de concert', challenges]]},
+  reglages: {label:'Réglages', parts:[['paquets', 'Paquets & probabilités', packs], ['jeu', 'Réglages de jeu', gameSettings]]},
+  journal: {label:'Journal', parts:[['log', 'Journal', log]]},
+  compte: {menu:true, parts:[['moi', 'Mon compte', account]]},
+  equipe: {menu:true, parts:[['admins', 'Admins', team]]}};
+let cur = null, playersP = null, todoN = 0;
+// liste des joueurs lue une fois par page (plusieurs sections s'en servent)
+const allPlayers = () => playersP ||= sb.rpc('admin_list_players').then(must);
+const parseHash = () => { const [p, s] = location.hash.slice(1).split('/'); return PAGES[p] ? [p, s || ''] : ['accueil', '']; };
+function paintNav(){
+  $('tabs').innerHTML = Object.entries(PAGES).filter(([, x]) => !x.menu).map(([k, x]) =>
+    `<button data-go="${k}"${k === cur ? ' aria-current="page"' : ''}>${x.label}${k === 'accueil' && todoN ? ` <span class="badge" aria-label="${todoN} à traiter">${todoN}</span>` : ''}</button>`).join('');
 }
-async function openTab(t){
-  paintNav(t);
-  document.querySelectorAll('[data-p]').forEach(p => p.hidden = p.dataset.p !== t);
-  const el = document.querySelector(`[data-p="${t}"]`); el.innerHTML = '<p class="muted">Chargement…</p>';
-  try { await ({dash, players, packs, catalogTab, trades, concerts, log, team, account, notify, gifts, persoTab})[t === 'catalog' ? 'catalogTab' : t === 'perso' ? 'persoTab' : t](el); }
-  catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; }
+function go(p, s = '', force = false){
+  const h = '#' + p + (s ? '/' + s : '');
+  if(location.hash !== h) history.pushState(null, '', h);
+  if(force) cur = null;
+  return render();
 }
+async function render(){
+  const [p, s] = parseHash(), parts = PAGES[p].parts;
+  if(cur !== p){
+    cur = p; playersP = null; paintNav();
+    const page = $('page');
+    page.innerHTML = (parts.length > 1 ? `<nav class="anchors" aria-label="Sections">${parts.map(x => `<button data-go="${p}/${x[0]}">${x[1]}</button>`).join('')}</nav>` : '')
+      + parts.map(x => `<div class="part" id="s-${x[0]}"><p class="muted">Chargement…</p></div>`).join('');
+    window.scrollTo(0, 0);
+    await Promise.all(parts.map(async ([k, , f]) => { const el = $('s-' + k);
+      try { await f(el); } catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; } }));
+    if(cur !== p) return;
+  }
+  if(p === 'joueurs' && s && !parts.some(x => x[0] === s)){ const pl = (await allPlayers()).find(x => x.id === s); if(pl) return player(pl); }
+  if(p === 'joueurs' && $('player-detail')) $('player-detail').innerHTML = '';
+  if(s && $('s-' + s)) $('s-' + s).scrollIntoView({ behavior: 'smooth' });
+}
+window.addEventListener('popstate', () => { if(!$('v-app').hidden) render(); });
+// liens internes (onglets, ancres, « À traiter », menu du compte) ; un clic ailleurs referme le menu
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-go]');
+  document.querySelectorAll('details.menu[open]').forEach(d => { if(a || !d.contains(e.target)) d.open = false; });
+  if(!a) return;
+  go(...a.dataset.go.split('/'));
+});
 async function loadCatalog(){
-  const [m, p, o, s] = await Promise.all([
-    sb.from('musicians').select('*').order('name'), sb.from('pack_types').select('*'), sb.from('pack_odds').select('*'), sb.from('settings').select('*')]);
-  catalog = { musicians: m.data || [], packs: p.data || [], odds: o.data || [], settings: s.data || [] };
+  const [m, p, o] = await Promise.all([sb.from('musicians').select('*').order('name'), sb.from('pack_types').select('*'), sb.from('pack_odds').select('*')]);
+  catalog = { musicians: m.data || [], packs: p.data || [], odds: o.data || [] };
 }
 const must = r => { if(r.error) throw r.error; return r.data; };
 const musicianName = id => (catalog.musicians.find(m => m.id === id) || {}).name || id;
 
-// ---------------------------------------------------------------- tableau de bord
+// ---------------------------------------------------------------- accueil
+// ce qui attend une action ; la pastille de l'onglet Accueil compte les demandes d'artistes et les cartes perso à valider ou en erreur
+async function pending(){
+  const since = new Date(Date.now() - 7 * 864e5).toISOString();
+  const [r, o, pr] = await Promise.all([sb.rpc('admin_requests'), sb.rpc('admin_perso_orders'),
+    sb.from('concert_picks').select('done_at', { count: 'exact', head: true }).gte('done_at', since).eq('cancelled', false)]);
+  const orders = o.data || [], n = { req: r.error ? 0 : reqGroups(r.data).length, ready: orders.filter(x => x.status === 'ready').length,
+    err: orders.filter(x => x.status === 'error').length, proofs: pr.count || 0 };
+  todoN = n.req + n.ready + n.err; paintNav();
+  return n;
+}
+async function todo(el){
+  const n = await pending(), pl = (k, one, many) => n[k] > 1 ? many : one;
+  const rows = [['req', pl('req', 'demande d\'artiste en attente', 'demandes d\'artistes en attente'), 'catalogue/demandes'],
+    ['ready', pl('ready', 'carte perso à valider', 'cartes perso à valider'), 'envoyer/perso'],
+    ['err', pl('err', 'carte perso en erreur', 'cartes perso en erreur'), 'envoyer/perso'],
+    ['proofs', pl('proofs', 'preuve de concert cette semaine', 'preuves de concert cette semaine') + ' <span class="muted">(validées d\'office, à regarder)</span>', 'joueurs/preuves']].filter(x => n[x[0]]);
+  el.innerHTML = `<div class="card"><h3>À traiter</h3>${rows.length ? rows.map(([k, t, to]) => `<div class="todo"><span><b>${n[k]}</b>${t}</span><button class="ghost fit" data-go="${to}">Ouvrir</button></div>`).join('')
+    : '<p class="muted" style="margin:0">Rien en attente. La fosse est calme.</p>'}</div>`;
+}
 async function dash(el){
-  const [stats, players] = await Promise.all([sb.rpc('admin_stats', { p_days: 30 }).then(must), sb.rpc('admin_list_players').then(must)]);
+  const [stats, players] = await Promise.all([sb.rpc('admin_stats', { p_days: 30 }).then(must), allPlayers()]);
   const byPack = {}; stats.forEach(s => (byPack[s.pack_type_id] ||= []).push(s));
   const totalOpen = Object.values(byPack).reduce((a, rows) => a + Number(rows[0].openings), 0);
   el.innerHTML = `
-    <div class="row" style="margin:14px 0">
+    <div class="row" style="margin:14px 0; align-items:stretch">
       <div class="card" style="margin:0"><p class="eyebrow">Joueurs</p><h2 style="margin:0">${players.length}</h2><p class="muted" style="margin:0">${players.filter(p => p.is_anonymous).length} anonymes</p></div>
       <div class="card" style="margin:0"><p class="eyebrow">Paquets ouverts (30 j)</p><h2 style="margin:0">${totalOpen}</h2></div>
       <div class="card" style="margin:0"><p class="eyebrow">Cartes distribuées</p><h2 style="margin:0">${players.reduce((a, p) => a + Number(p.cards), 0)}</h2></div>
@@ -316,10 +361,10 @@ document.addEventListener('click', e => { const a = e.target.dataset && (e.targe
   document.querySelectorAll(`#${a} label:not([hidden]) input`).forEach(i => { i.checked = !!e.target.dataset.all; }); });
 
 async function notify(el){
-  const players = await sb.rpc('admin_list_players').then(must);
+  const players = await allPlayers();
   el.innerHTML = `
     <div class="card"><h3>Prévenir les joueurs</h3>
-      <p class="muted" style="font-size:.85rem; margin:0 0 10px">Choisis la cible : ceux qui ont activé les notifications la reçoivent (dans la limite de notifications par jour réglée plus bas, sauf si tu coches « Ignorer la limite »), les autres trouvent le message dans l'app à leur prochaine ouverture. « Aussi par e-mail » : en plus, aux adresses confirmées qui n'ont pas coupé les e-mails (Gmail, 500 par jour au plus). Inscrit au journal.</p>
+      <p class="muted" style="font-size:.85rem; margin:0 0 10px">Choisis la cible : ceux qui ont activé les notifications la reçoivent (dans la limite de notifications par jour réglée dans Réglages, sauf si tu coches « Ignorer la limite »), les autres trouvent le message dans l'app à leur prochaine ouverture. « Aussi par e-mail » : en plus, aux adresses confirmées qui n'ont pas coupé les e-mails (Gmail, 500 par jour au plus). Inscrit au journal.</p>
       <div class="row">
         <div><label for="bc-who">Cible</label><select id="bc-who"><option value="all">Tous les joueurs</option><option value="inst">App installée</option><option value="noinst">App pas installée</option><option value="push">Notifications activées</option><option value="nopush">Notifications pas activées</option><option value="pick">Joueurs choisis</option></select></div>
         <div><label for="bc-plat">Appareil</label><select id="bc-plat"><option value="">Tous</option><option value="iphone">iPhone</option><option value="android">Android</option><option value="ordinateur">Ordinateur</option></select></div>
@@ -339,7 +384,7 @@ async function notify(el){
 
 // offrir la même carte à plusieurs joueurs (cadeau découvert à la prochaine ouverture)
 async function gifts(el){
-  const players = await sb.rpc('admin_list_players').then(must);
+  const players = await allPlayers();
   const mus = catalog.musicians.slice().sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   el.innerHTML = `<div class="card"><h3>Offrir des cartes</h3>
     <p class="muted" style="font-size:.85rem; margin:0 0 10px">La même carte à chaque joueur coché. Il la découvre à sa prochaine ouverture (« Le Grand Architecte t'offre… »), avec une notification s'il les a activées. Inscrit au journal.</p>
@@ -360,11 +405,9 @@ async function gifts(el){
 
 // cartes perso : commandes (achetées ou lancées par l'admin) à valider, et création pour plusieurs joueurs
 const PSTATUS = {paid:'En fabrication (base)', base:'En fabrication (Légendaire)', ready:'À valider', approved:'Offerte', rejected:'Refusée', error:'Erreur'};
-async function persoTab(el){
-  const [orders, players] = await Promise.all([sb.rpc('admin_perso_orders').then(must), sb.rpc('admin_list_players').then(must)]);
-  const urls = {};
-  await Promise.all(orders.filter(o => o.image).map(async o => { const r = await sb.storage.from('perso').createSignedUrl(o.image, 3600); if(r.data) urls[o.id] = r.data.signedUrl; }));
-  // toutes les cartes perso du jeu (commandées ou faites à la main) : image, rareté, qui l'a
+// toutes les cartes perso du jeu (commandées ou faites à la main) : image, rareté, qui l'a
+async function persoAll(el){
+  const players = await allPlayers();
   const ids = catalog.musicians.filter(m => m.perso).map(m => m.id);
   const [cards, owned] = ids.length ? await Promise.all([sb.from('cards').select('musician_id, rarity, image_path').in('musician_id', ids).then(must),
     sb.from('inventory').select('user_id, musician_id, rarity, copies').in('musician_id', ids).gt('copies', 0).then(must)]) : [[], []];
@@ -374,8 +417,13 @@ async function persoTab(el){
     ${cards.length ? `<div class="grid-cards perso-all">${cards.map(c => { const k = c.musician_id + '|' + c.rarity, own = owned.filter(o => o.musician_id === c.musician_id && o.rarity === c.rarity);
       return `<figure>${curl[k] ? `<a href="${curl[k]}" target="_blank" rel="noopener"><img src="${curl[k]}" alt="${esc(musicianName(c.musician_id))}"></a>` : '<img alt="">'}
         <b>${esc(musicianName(c.musician_id))}</b><br><span class="r-${c.rarity}">${RLABEL[c.rarity]}</span><br><span class="muted">${own.length ? own.map(o => esc(who(o.user_id)) + (o.copies > 1 ? ' ×' + o.copies : '')).join(', ') : 'personne'}</span></figure>`; }).join('')}</div>`
-      : '<p class="muted">Aucune carte perso pour l\'instant.</p>'}</div>
-    <div class="card"><h3>Commandes de cartes perso</h3>
+      : '<p class="muted">Aucune carte perso pour l\'instant.</p>'}</div>`;
+}
+async function persoOrders(el){
+  const [orders, players] = await Promise.all([sb.rpc('admin_perso_orders').then(must), allPlayers()]);
+  const urls = {};
+  await Promise.all(orders.filter(o => o.image).map(async o => { const r = await sb.storage.from('perso').createSignedUrl(o.image, 3600); if(r.data) urls[o.id] = r.data.signedUrl; }));
+  el.innerHTML = `<div class="card"><h3>Commandes de cartes perso</h3>
     <p class="muted" style="font-size:.85rem; margin:0 0 6px">Générées automatiquement à partir de la photo de profil (quelques minutes). « Valider » l'offre au joueur ; « Relancer » refait une génération ; « Refuser » prévient le joueur (rembourse-le dans Stripe s'il a payé).</p>
     ${orders.length ? orders.map(o => `<div class="po">${urls[o.id] ? `<img src="${urls[o.id]}" alt="Carte de ${esc(o.username)}">` : '<img alt="">'}<div>
       <b>${esc(o.nickname)}</b> <span class="muted">· ${esc(o.username)} · ${new Date(o.created_at).toLocaleString('fr-FR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}</span>
@@ -390,7 +438,7 @@ async function persoTab(el){
   el.querySelectorAll('[data-po]').forEach(b => b.onclick = async () => {
     if(b.dataset.a === 'reject' && !confirm('Refuser cette carte ? Le joueur est prévenu (rembourse-le dans Stripe s\'il a payé).')) return;
     b.disabled = true; const r = await sb.rpc('admin_perso_decide', { p_order: b.dataset.po, p_action: b.dataset.a });
-    if(r.error){ b.disabled = false; return say($('po-msg'), r.error.message); } persoTab(el); });
+    if(r.error){ b.disabled = false; return say($('po-msg'), r.error.message); } persoOrders(el); pending(); });
   $('pc-go').onclick = async () => {
     const users = picked('pc-list'), why = $('pc-why').value.trim();
     if(!users.length) return say($('pc-msg'), 'Coche au moins un joueur.');
@@ -398,13 +446,13 @@ async function persoTab(el){
     const r = await sb.rpc('admin_perso_create', { p_users: users, p_nickname: $('pc-nick').value.trim() || null, p_reason: why });
     if(r.error) return say($('pc-msg'), r.error.message);
     say($('pc-msg'), `${r.data.started} carte${r.data.started > 1 ? 's' : ''} lancée${r.data.started > 1 ? 's' : ''}` + (r.data.skipped.length ? ` · sautés (sans photo ou déjà en cours) : ${r.data.skipped.join(', ')}` : '') + '.', true);
-    setTimeout(() => persoTab(el), 1500);
+    setTimeout(() => persoOrders(el), 1500);
   };
 }
 
 // ---------------------------------------------------------------- joueurs
 async function players(el){
-  const list = await sb.rpc('admin_list_players').then(must);
+  const list = await allPlayers();
   el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table>
     <tr><th>Pseudo</th><th>Compte</th><th>Dernière visite</th><th>App</th><th>Notifs</th><th>Créé</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
     ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b>${p.cry_path ? ' <span class="pill" title="A enregistré un cri">cri</span>' : ''}</td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
@@ -413,7 +461,7 @@ async function players(el){
       <td>${fmt(p.created_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
       <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
     </table></div></div><div id="player-detail"></div>`;
-  el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => player(list.find(p => p.id === tr.dataset.id)));
+  el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => go('joueurs', tr.dataset.id));
 }
 const isPerso = id => !!(catalog.musicians.find(m => m.id === id) || {}).perso;
 let invOpen = false, invFor = null;   // le classeur reste ouvert après une correction
@@ -516,15 +564,14 @@ async function player(p){
     if($('del-confirm').value.trim() !== 'SUPPRIMER') return say($('adj-msg'), 'Tape SUPPRIMER dans le champ de confirmation.');
     const r = await sb.rpc('admin_delete_player', { p_user: p.id, p_reason: why() });
     if(r.error) return say($('adj-msg'), r.error.message);
-    await openTab('players'); const m = document.createElement('p'); m.className = 'msg ok'; m.textContent = 'Joueur supprimé et inscrit au journal.';
-    document.querySelector('[data-p="players"]').prepend(m);
+    await go('joueurs', '', true); const m = document.createElement('p'); m.className = 'msg ok'; m.textContent = 'Joueur supprimé et inscrit au journal.';
+    $('page').prepend(m);
   };
 }
 
 // ---------------------------------------------------------------- paquets et probabilités
 async function packs(el){
   await loadCatalog();
-  const setting = k => ((catalog.settings.find(s => s.key === k) || {}).value);
   el.innerHTML = catalog.packs.map(p => {
     const w = r => (catalog.odds.find(o => o.pack_type_id === p.id && o.rarity === r) || {}).weight ?? 0;
     return `<div class="card" data-pack="${esc(p.id)}"><h3>${esc(p.label)} <span class="muted" style="font:500 .7rem var(--mono)">${p.size} cartes · ${p.binder_id ? 'classeur ' + esc(p.binder_id) : 'tous les musiciens'}</span></h3>
@@ -532,16 +579,7 @@ async function packs(el){
         <div class="fit"><label>Total</label><p class="total" style="margin:8px 0 0"></p></div></div>
       <label>Motif (obligatoire)</label><input class="why" placeholder="ex. test d'un taux de Légendaire plus généreux">
       <div class="row" style="margin-top:10px"><button class="save fit">Enregistrer</button></div><p class="msg"></p></div>`;
-  }).join('') + `<div class="card"><h3>Réglages de jeu</h3>
-    <p class="muted" style="font-size:.85rem; margin:0 0 6px">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
-    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
-    <div class="row"><div class="fit"><label>Points de paquet par jour (un paquet, standard ou mini, = 2)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
-      <div class="fit"><label>Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
-    <div class="row"><div class="fit"><label>Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
-      <div class="fit"><label>Jours de paquets gardés en réserve pendant une absence (1 = pas de report)</label><input id="set-catchup" type="number" min="1" max="30" value="${esc(setting('pack_catchup_days'))}"></div>
-      <div class="fit"><label>Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
-    <label>Motif (obligatoire)</label><input id="set-why">
-    <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
+  }).join('');
   el.querySelectorAll('[data-pack]').forEach(card => {
     const inputs = [...card.querySelectorAll('input[data-r]')], tot = card.querySelector('.total');
     const upd = () => { const t = inputs.reduce((a, i) => a + (parseFloat(i.value) || 0), 0); tot.textContent = t + ' %'; tot.className = 'total ' + (Math.abs(t - 100) < .01 ? 'ok' : 'err'); };
@@ -552,6 +590,19 @@ async function packs(el){
       say(card.querySelector('.msg'), r.error ? r.error.message : 'Probabilités enregistrées et inscrites au journal.', !r.error);
     };
   });
+}
+async function gameSettings(el){
+  const settings = await sb.from('settings').select('*').then(must), setting = k => (settings.find(s => s.key === k) || {}).value;
+  el.innerHTML = `<div class="card"><h3>Réglages de jeu</h3>
+    <p class="muted" style="font-size:.85rem; margin:0 0 6px">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
+    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
+    <div class="row"><div class="fit"><label>Points de paquet par jour (un paquet, standard ou mini, = 2)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
+      <div class="fit"><label>Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
+    <div class="row"><div class="fit"><label>Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
+      <div class="fit"><label>Jours de paquets gardés en réserve pendant une absence (1 = pas de report)</label><input id="set-catchup" type="number" min="1" max="30" value="${esc(setting('pack_catchup_days'))}"></div>
+      <div class="fit"><label>Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
+    <label>Motif (obligatoire)</label><input id="set-why">
+    <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
   $('set-go').onclick = async () => {
     const why = $('set-why').value;
     let a = { error: null };
@@ -629,8 +680,6 @@ async function catalogTab(el){
       <div class="fit"><button class="ghost" id="cat-reset">Effacer</button></div>
     </div>
     </div>
-    <div class="card" id="req-card"><h3>Demandes d'artistes</h3><div id="req-list" class="muted">Chargement…</div></div>
-    <div class="card" id="fav-card"><h3>Groupes favoris des joueurs</h3><p class="muted" style="font-size:.85rem">Déclarés à l'onboarding (5 au plus par joueur).</p><div id="fav-list" class="muted">Chargement…</div></div>
     <div class="card viewer"><h3>Visuels des cartes</h3>
       <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
         <figure class="vw-card"><img id="vw-img" alt=""><figcaption id="vw-cap"></figcaption></figure>
@@ -681,7 +730,7 @@ async function catalogTab(el){
   st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
   el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
-  filter(); requests(); favBands();
+  filter();
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
@@ -693,38 +742,32 @@ async function catalogTab(el){
 
 // demandes d'artistes des joueurs, regroupées par nom (sans accents ni majuscules), tickets prioritaires puis les plus demandés d'abord ;
 // « Ajouté » ou « Refusé » prévient chaque demandeur (un ticket prioritaire est rendu en cas de refus)
-async function requests(){
-  const box = $('req-list'); if(!box) return;
-  const r = await sb.rpc('admin_requests');
-  if(r.error){ box.textContent = 'Indisponible (migration 0049 à appliquer ?) : ' + r.error.message; return; }
-  const key = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
-  const groups = Object.values(r.data.reduce((g, x) => { const k = key(x.artist); (g[k] = g[k] || { name: x.artist, rows: [] }).rows.push(x); return g; }, {}))
-    .sort((a, b) => (b.rows.some(x => x.priority) - a.rows.some(x => x.priority)) || b.rows.length - a.rows.length);
-  if(!groups.length){ box.textContent = 'Aucune demande en attente.'; return; }
-  box.className = '';
-  box.innerHTML = `<div class="table-wrap"><table><tr><th>Artiste</th><th>Demandé par</th><th>Dernière</th><th></th></tr>
+const reqKey = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const reqGroups = rows => Object.values(rows.reduce((g, x) => { const k = reqKey(x.artist); (g[k] = g[k] || { name: x.artist, rows: [] }).rows.push(x); return g; }, {}))
+  .sort((a, b) => (b.rows.some(x => x.priority) - a.rows.some(x => x.priority)) || b.rows.length - a.rows.length);
+async function requests(el){
+  const groups = reqGroups(await sb.rpc('admin_requests').then(must));
+  if(!groups.length){ el.innerHTML = '<div class="card"><h3>Demandes d\'artistes</h3><p class="muted" style="margin:0">Aucune demande en attente.</p></div>'; return; }
+  el.innerHTML = `<div class="card"><h3>Demandes d'artistes (${groups.length})</h3><div class="table-wrap"><table><tr><th>Artiste</th><th>Demandé par</th><th>Dernière</th><th></th></tr>
     ${groups.map((g, i) => `<tr><td><b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''}</td>
       <td style="font-size:.85rem">${g.rows.map(x => `<div><b>${esc(x.username)}</b>${x.priority ? ' <span class="ok">★ ticket</span>' : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</td>
       <td>${fmt(g.rows[0].created_at)}</td>
       <td style="white-space:nowrap"><button data-req="${i}" data-out="added">Ajouté</button> <button class="ghost" data-req="${i}" data-out="refused">Refusé</button></td></tr>`).join('')}</table></div>
-    <p class="muted" style="font-size:.85rem">Ajouté : à faire une fois les cartes en ligne, le demandeur est prévenu tout de suite. Refusé : le ticket prioritaire est rendu.</p>`;
-  box.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
+    <p class="muted" style="font-size:.85rem">Ajouté : à faire une fois les cartes en ligne, le demandeur est prévenu tout de suite. Refusé : le ticket prioritaire est rendu.</p></div>`;
+  el.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
     const g = groups[+b.dataset.req], added = b.dataset.out === 'added';
     if(!confirm((added ? 'Marquer « ' + g.name + ' » comme ajouté' : 'Refuser « ' + g.name + ' »') + ' et prévenir ' + g.rows.length + ' joueur' + (g.rows.length > 1 ? 's' : '') + ' ?')) return;
     const res = await sb.rpc('admin_request_handle', { p_ids: g.rows.map(x => x.id), p_outcome: b.dataset.out });
-    if(res.error) say(b, res.error.message); else requests();
+    if(res.error) say(b, res.error.message); else { requests(el); pending(); }
   });
 }
 
 // groupes favoris déclarés à l'onboarding, les plus cités d'abord
-async function favBands(){
-  const box = $('fav-list'); if(!box) return;
-  const r = await sb.rpc('admin_fav_bands');
-  if(r.error){ box.textContent = 'Indisponible (migration 0027 à appliquer ?) : ' + r.error.message; return; }
-  if(!r.data.length){ box.textContent = 'Aucun groupe déclaré pour l\'instant.'; return; }
-  box.className = '';
-  box.innerHTML = `<div class="table-wrap"><table><tr><th>Groupe ou artiste</th><th>Joueurs</th><th>Catalogue</th></tr>
-    ${r.data.map(x => `<tr><td><b>${esc(x.band)}</b></td><td>${x.fans}</td><td class="muted">${x.in_catalog ? 'déjà dedans' : '—'}</td></tr>`).join('')}</table></div>`;
+async function favBands(el){
+  const rows = await sb.rpc('admin_fav_bands').then(must);
+  el.innerHTML = `<div class="card"><h3>Groupes favoris des joueurs</h3><p class="muted" style="font-size:.85rem">Déclarés à l'onboarding (5 au plus par joueur).</p>
+    ${rows.length ? `<div class="table-wrap"><table><tr><th>Groupe ou artiste</th><th>Joueurs</th><th>Catalogue</th></tr>
+    ${rows.map(x => `<tr><td><b>${esc(x.band)}</b></td><td>${x.fans}</td><td class="muted">${x.in_catalog ? 'déjà dedans' : '—'}</td></tr>`).join('')}</table></div>` : '<p class="muted" style="margin:0">Aucun groupe déclaré pour l\'instant.</p>'}</div>`;
 }
 
 // ---------------------------------------------------------------- échanges
@@ -759,32 +802,34 @@ function challengeRow(c){
     <td><input class="ch-active" type="checkbox"${n || c.active ? ' checked' : ''} aria-label="Actif"></td>
     <td><button class="ghost fit" data-save>${n ? 'Ajouter' : 'Enregistrer'}</button><span class="msg"></span></td></tr>`;
 }
-async function concerts(el){
-  const [chs, picks] = await Promise.all([
-    sb.from('concert_challenges').select('*').order('sort').then(must),
-    sb.from('concert_picks').select('concert_id, challenge_id, user_id, picked_early, proof_path, done_at, cancelled, concerts(artist, played_on), concert_challenges(title, points)')
-      .not('done_at', 'is', null).order('done_at', { ascending: false }).limit(100).then(must)]);
-  const ids = [...new Set(picks.map(p => p.user_id))], names = {};
-  if(ids.length) (await sb.from('profiles').select('id, username').in('id', ids).then(must)).forEach(p => { names[p.id] = p.username || 'sans pseudo'; });
+async function challenges(el){
+  const chs = await sb.from('concert_challenges').select('*').order('sort').then(must);
   el.innerHTML = `<div class="card"><h3>Défis de concert</h3><p class="muted">Jusqu'à 3 par concert, un point de plus si le défi est choisi avant le jour J. Preuve le jour du concert ou dans les 2 jours, validée tout de suite. « En bande » : réservé aux bandes (bientôt).</p>
     <div class="table-wrap"><table><tr><th>Ordre</th><th>Défi</th><th>Consigne</th><th>Preuve</th><th>Points</th><th>En bande</th><th>Actif</th><th></th></tr>
-    ${chs.map(challengeRow).join('')}${challengeRow({})}</table></div></div>
-    <div class="card"><h3>Preuves récentes · ${picks.length}</h3>${picks.length ? `<div class="table-wrap"><table><tr><th>Date</th><th>Joueur</th><th>Concert</th><th>Défi</th><th>Preuve</th><th></th></tr>
-      ${picks.map((p, i) => `<tr data-i="${i}"><td>${fmt(p.done_at)}</td><td><b>${esc(names[p.user_id] || '—')}</b></td>
-        <td>${esc(p.concerts && p.concerts.artist)} <span class="muted">${esc(p.concerts && p.concerts.played_on)}</span></td>
-        <td>${esc(p.concert_challenges && p.concert_challenges.title)} <span class="muted">+${((p.concert_challenges && p.concert_challenges.points) || 0) + (p.picked_early ? 1 : 0)}</span></td>
-        <td><button class="ghost fit" data-proof>Voir</button></td>
-        <td>${p.cancelled ? '<span class="err">annulée</span> <button class="ghost fit" data-cancel="0">Rétablir</button>' : '<button class="ghost fit" data-cancel="1">Annuler</button>'}<span class="msg"></span></td></tr>`).join('')}</table></div>`
-      : '<p class="muted">Aucune preuve pour l\'instant.</p>'}</div>`;
+    ${chs.map(challengeRow).join('')}${challengeRow({})}</table></div></div>`;
   el.querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {
     const tr = b.closest('tr'), id = tr.dataset.ch, v = c => tr.querySelector(c), msg = tr.querySelector('.msg');
     const row = { title: v('.ch-title').value.trim(), hint: v('.ch-hint').value.trim() || null, proof: v('.ch-proof').value,
       points: +v('.ch-points').value || 0, band_only: v('.ch-band').checked, active: v('.ch-active').checked, sort: +v('.ch-sort').value || (chs.length + 1) };
     if(row.title.length < 2){ msg.textContent = ' Titre trop court'; return; }
     b.disabled = true;
-    try { await (id === 'new' ? sb.from('concert_challenges').insert(row) : sb.from('concert_challenges').update(row).eq('id', id)).then(must); await concerts(el); }
+    try { await (id === 'new' ? sb.from('concert_challenges').insert(row) : sb.from('concert_challenges').update(row).eq('id', id)).then(must); await challenges(el); }
     catch(e){ b.disabled = false; msg.textContent = ' ' + (e.message || e); }
   });
+}
+// preuves envoyées par les joueurs, validées d'office : on peut les voir et les annuler
+async function proofs(el){
+  const picks = await sb.from('concert_picks').select('concert_id, challenge_id, user_id, picked_early, proof_path, done_at, cancelled, concerts(artist, played_on), concert_challenges(title, points)')
+      .not('done_at', 'is', null).order('done_at', { ascending: false }).limit(100).then(must);
+  const ids = [...new Set(picks.map(p => p.user_id))], names = {};
+  if(ids.length) (await sb.from('profiles').select('id, username').in('id', ids).then(must)).forEach(p => { names[p.id] = p.username || 'sans pseudo'; });
+  el.innerHTML = `<div class="card"><h3>Preuves de concert récentes · ${picks.length}</h3>${picks.length ? `<div class="table-wrap"><table><tr><th>Date</th><th>Joueur</th><th>Concert</th><th>Défi</th><th>Preuve</th><th></th></tr>
+      ${picks.map((p, i) => `<tr data-i="${i}"><td>${fmt(p.done_at)}</td><td><b>${esc(names[p.user_id] || '—')}</b></td>
+        <td>${esc(p.concerts && p.concerts.artist)} <span class="muted">${esc(p.concerts && p.concerts.played_on)}</span></td>
+        <td>${esc(p.concert_challenges && p.concert_challenges.title)} <span class="muted">+${((p.concert_challenges && p.concert_challenges.points) || 0) + (p.picked_early ? 1 : 0)}</span></td>
+        <td><button class="ghost fit" data-proof>Voir</button></td>
+        <td>${p.cancelled ? '<span class="err">annulée</span> <button class="ghost fit" data-cancel="0">Rétablir</button>' : '<button class="ghost fit" data-cancel="1">Annuler</button>'}<span class="msg"></span></td></tr>`).join('')}</table></div>`
+      : '<p class="muted">Aucune preuve pour l\'instant.</p>'}</div>`;
   el.querySelectorAll('[data-proof]').forEach(b => b.onclick = async () => {
     const p = picks[+b.closest('tr').dataset.i], w = window.open('', '_blank');
     try { const r = await sb.storage.from('concerts').createSignedUrl(p.proof_path, 600).then(must); w.location = r.signedUrl; }
@@ -792,7 +837,7 @@ async function concerts(el){
   });
   el.querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => {
     const p = picks[+b.closest('tr').dataset.i]; b.disabled = true;
-    try { await sb.rpc('admin_cancel_challenge', { p_concert: p.concert_id, p_challenge: p.challenge_id, p_cancel: b.dataset.cancel === '1' }).then(must); await concerts(el); }
+    try { await sb.rpc('admin_cancel_challenge', { p_concert: p.concert_id, p_challenge: p.challenge_id, p_cancel: b.dataset.cancel === '1' }).then(must); await proofs(el); }
     catch(e){ b.disabled = false; b.closest('tr').querySelector('.msg').textContent = ' ' + (e.message || e); }
   });
 }
@@ -850,7 +895,6 @@ async function log(el){
     </table></div></div>`;
 }
 
-// ne jamais appeler Supabase directement dans ce rappel (risque de blocage) : on diffère
 // ---------------------------------------------------------------- mon compte
 async function account(el){
   const { data: { user } } = await sb.auth.getUser();
@@ -913,6 +957,7 @@ async function account(el){
   $('all-out').onclick = async () => { await sb.auth.signOut({ scope: 'global' }); route(); };
 }
 
+// ne jamais appeler Supabase directement dans ce rappel (risque de blocage) : on diffère
 sb.auth.onAuthStateChange((event) => { if(event === 'SIGNED_IN' || event === 'SIGNED_OUT') setTimeout(route, 0); });
 route();
 </script>
