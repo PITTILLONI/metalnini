@@ -280,6 +280,7 @@
   @media (prefers-reduced-motion: reduce){ .pit-orbit, .pit-slot .pit-av{animation:none} }
   /* pogo : arène de la manche, danseurs qui foncent, équilibre, mise et ramassage */
   .pogo-arena{position:relative; height:min(46dvh, 340px); margin:4px -16px 12px; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; background:radial-gradient(90% 70% at 50% 45%, #2a1a10 0%, #0c0a09 75%)}
+  body.playing > main.view, body.playing > .tabbar, body.playing .salle{visibility:hidden}
   .pogo-zone{position:absolute; top:50%; height:76px; margin-top:-38px; border:2px dashed rgba(244,178,67,.35); border-radius:40px; pointer-events:none; transition:background-color .1s, border-color .1s}
   .pogo-zone.on{background:rgba(244,178,67,.22); border:2px solid var(--gold-hi)}
   .pogo-fx{position:absolute; z-index:4; left:50%; top:calc(50% - 64px); transform:translate(-50%, 0); font:900 1.3rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; opacity:0; pointer-events:none}
@@ -3971,7 +3972,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.pitRunStart(pit.id).then(function(st){
       pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
       var target = .5 + rps * 1.5;   // tours de doigt par seconde visés : de 0,95 (premier coureur) à 2 (cercle au plus vite)
-      pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, ang:null, lastMove:0, v:0, spin:0, laps:0, combo:0, lapOk:true, dust:0};
+      pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, ang:null, lastMove:0, v:0, spin:0, laps:0, combo:0, lapOk:true, dust:0}; document.body.classList.add('playing');
       pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><img class="pit-bg" src="fosse/pit.jpg" alt=""><div class="pit-orbit-c">' + crowdHtml(10).replace('class="crowd"', 'class="crowd pit-runners"') + '</div>' +
           '<i class="pit-mark" id="pit-mark">' + avDisc(me, 'me') + '</i><div class="pit-mid"><b class="pit-count num" id="pit-count">3</b><b class="pit-laps num" id="pit-laps"></b><small id="pit-combo"></small></div></div>' +
         '<div class="pit-speed" aria-hidden="true"><i class="pit-zone"></i><i class="pit-needle" id="pit-needle"></i></div><p class="pit-cue" id="pit-cue">Dessine des cercles, sens inverse des aiguilles</p>' +
@@ -4017,7 +4018,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
             laps.textContent = go.laps; lapn.textContent = go.laps; combo.textContent = go.combo > 1 ? 'combo ×' + go.combo : 'tour'; pop(laps, 1.7); if(go.combo > 1) pop(combo, 1.4); }
           if(go.spin < -360) go.spin = -360;
           var pc = Math.round(go.on / Math.max(1, t) * 100); if(Math.floor(pc / 10) !== go.dec){ if(go.dec != null && pc > go.dec * 10) pop(acc, 1.3); go.dec = Math.floor(pc / 10); } acc.textContent = pc + ' %';
-          var c = document.getElementById('pit-clock'); if(c) c.textContent = '0:' + String(Math.ceil((T - t) / 1000)).padStart(2, '0');
+          var sec = Math.ceil((T - t) / 1000); if(sec !== go.sec){ go.sec = sec; var c = document.getElementById('pit-clock'); if(c) c.textContent = '0:' + String(sec).padStart(2, '0'); }
           if(t >= T) return pitRunEnd(Math.round(go.on / T * 100));
           go.raf = requestAnimationFrame(frame);
         })(go.t0);
@@ -4031,7 +4032,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       function(e){ toast(esc(e.message)); pitRefresh(); });
   }
   // fin ou abandon de ma course : animation, décompte et extrait coupés
-  function pitStop(){ crowdStop(pitIn); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
+  function pitStop(){ crowdStop(pitIn); document.body.classList.remove('playing'); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
   // l'extrait du morceau du pit pendant la course, musique du jeu coupée
   function pitTrack(id){
     var go = pitGo;
@@ -4203,7 +4204,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.pogoRunStart(pogo.id).then(function(st){
       pogo = st; var me = st.players.filter(function(p){ return p.me; })[0] || {}, h = st.heat, T = st.run_s * 1000;
       var every = 1000 - 60 * h, travel = 1300 - 70 * h, both = .05 * h;
-      pogoGo = {id:st.id, raf:0, t0:0, next:0, bodies:[], energy:0, hits:0, done:false};
+      pogoGo = {id:st.id, raf:0, t0:0, next:0, bodies:[], energy:0, hits:0, done:false}; document.body.classList.add('playing');
       var go = pogoGo, maxHits = st.hits;
       pogoIn.innerHTML = '<div class="pit-top"><p class="eyebrow">Pogo · reste debout</p><b class="pit-clock num" id="pogo-clock">0:' + String(st.run_s).padStart(2, '0') + '</b><p class="pit-song">Coups d\'épaule <b class="num" id="pogo-en">0</b></p></div>' +
         '<div class="pogo-arena" id="pogo-arena">' + crowdHtml(8) + '<i class="pogo-zone l" id="pogo-zl"></i><i class="pogo-zone r" id="pogo-zr"></i><span class="pogo-me">' + avDisc(me, 'me') + '</span>' +
@@ -4256,7 +4257,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
             return true; });
           // zone et bouton s'allument quand un danseur est à portée (classe changée seulement quand l'état change)
           ['-1', '1'].forEach(function(k){ if(on[k] !== hot[k]){ hot[k] = on[k]; zone[k][0].classList.toggle('on', on[k]); zone[k][1].classList.toggle('on', on[k]); } });
-          var c = document.getElementById('pogo-clock'); if(c) c.textContent = '0:' + String(Math.max(0, Math.ceil((T - t) / 1000))).padStart(2, '0');
+          var sec = Math.max(0, Math.ceil((T - t) / 1000)); if(sec !== go.sec){ go.sec = sec; var c = document.getElementById('pogo-clock'); if(c) c.textContent = '0:' + String(sec).padStart(2, '0'); }
           if(go.hits >= maxHits){ arena.classList.add('fall'); say('À terre !', 'bad'); return pogoRunEnd(true); }
           if(t >= T) return pogoRunEnd(false);
           go.raf = requestAnimationFrame(frame);
@@ -4273,7 +4274,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         function(e){ toast(esc(e.message)); pogoRefresh(); }); }, fell ? 900 : 300);
   }
   // fin ou abandon de ma manche
-  function pogoStop(){ crowdStop(pogoIn); if(pogoGo){ cancelAnimationFrame(pogoGo.raf); clearInterval(pogoGo.tick); if(pogoGo.key) document.removeEventListener('keydown', pogoGo.key); pogoGo = null; } stopListen(); }
+  function pogoStop(){ crowdStop(pogoIn); document.body.classList.remove('playing'); if(pogoGo){ cancelAnimationFrame(pogoGo.raf); clearInterval(pogoGo.tick); if(pogoGo.key) document.removeEventListener('keydown', pogoGo.key); pogoGo = null; } stopListen(); }
   function pogoTrack(id){
     var go = pogoGo;
     track(id).then(function(t){ if(!t || pogoGo !== go) return;

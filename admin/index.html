@@ -551,8 +551,11 @@ async function player(p){
     $('pl-media').innerHTML = `<div class="row" style="align-items:center; gap:14px">
         ${av ? `<img class="fit" src="${esc(av)}" alt="Photo de ${esc(p.username || 'ce joueur')}" style="flex:0 0 72px; width:72px; height:72px; border-radius:50%; object-fit:cover; border:1px solid var(--gold)">` : ''}
         <div style="flex:1; min-width:200px">${p.metal_power ? `<p style="margin:0 0 8px"><span class="muted" style="font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Capacité de metaleux</span><br>${esc(p.metal_power)}</p>` : ''}
-          ${cry ? `<p class="muted" style="margin:0 0 4px; font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Son cri</p><audio controls preload="none" src="${esc(cry)}" style="width:100%"></audio>` : ''}</div></div>`;
+          ${cry ? `<p class="muted" style="margin:0 0 4px; font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Son cri</p><button type="button" class="ghost fit" id="pl-cry" data-src="${esc(cry)}">▶ Écouter</button>` : ''}</div></div>`;
   }
+  // le cri : un bouton lecture / arrêt, sans lecteur
+  if($('pl-cry')){ const b = $('pl-cry'), a = new Audio(b.dataset.src), idle = () => { b.textContent = '▶ Écouter'; };
+    a.onended = idle; b.onclick = () => { if(a.paused){ a.currentTime = 0; a.play().then(() => { b.textContent = '■ Arrêter'; }).catch(idle); } else { a.pause(); idle(); } }; }
   const why = () => $('why').value.trim();
   const needWhy = () => { if(!why()){ say($('adj-msg'), 'Indique d\'abord un motif.'); $('why').focus(); return true; } return false; };
   const adjust = async (m, r, delta, notify = false) => {
