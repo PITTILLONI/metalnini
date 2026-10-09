@@ -500,7 +500,7 @@
   .btn.ghost{color:var(--gold-hi); background:#15110f; box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 6px 0 #000}
   .btn.ghost:hover{background:#1e1812} .btn.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 2px 0 #000}
   .btn.danger{color:#fff; background:var(--accent); box-shadow:0 6px 0 #5a1414} .btn.danger:hover{background:#c44545} .btn.danger:active{box-shadow:0 2px 0 #5a1414}
-  .btn.block{width:100%}
+  .btn.block{width:100%} .btn.block + .btn.block{margin-top:16px}   /* deux boutons empilés ne se touchent jamais */
   .modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
   .modal[hidden]{display:none}
   .modal-in{width:100%; max-width:380px; background:linear-gradient(180deg,#1b1511,#110d0a); border-radius:16px; padding:22px 20px 18px; text-align:center;
