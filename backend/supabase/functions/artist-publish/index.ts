@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
   // seed de main (rejouable : fiches, cartes, classeurs ; ne touche ni aux collections ni à l'activation)
   const s = await gh("/contents/backend/supabase/seed.sql?ref=main", { headers: { Accept: "application/vnd.github.raw+json" } });
   if (!s.ok) return reply({ error: `seed introuvable (GitHub ${s.status})` }, 502);
-  const db = postgres(Deno.env.get("SUPABASE_DB_URL")!, { prepare: false });
+  const db = postgres(Deno.env.get("SUPABASE_DB_URL")!, { prepare: false, max: 1 });   // une seule connexion : la seed ouvre sa propre transaction
   try { await db.unsafe(await s.text()); } catch (e) { return reply({ error: "seed : " + String((e as Error).message ?? e).slice(0, 300) }, 500); }
   finally { await db.end(); }
 
