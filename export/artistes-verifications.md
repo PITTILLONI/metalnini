@@ -142,6 +142,12 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : accusations de violences de sa fille aînée, qu'il dément ; trouvées seulement sur des sites peu fiables, aucune reprise dans la presse sérieuse.
 - Rien relevant du racisme, du sexisme, de l'homophobie, de l'antisémitisme, des agressions sexuelles ni de liens avec l'extrême droite. **Décision du propriétaire (2026-10-08) : ajouté** (carte « Rollin' », LXXXI, Nu metal).
 
+## Demande de joueurs (2026-10-09) : Buckethead
+- Demande : « Buckethead » (précision du joueur : « KFC »). Guitariste solo (Brian Carroll), dans Guns N' Roses de 2000 à 2004.
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée ; aucun lien avec des groupes haineux. Seul fait judiciaire relevé : il est la victime d'un vol de dix guitares en 2022 ([Blabbermouth](https://blabbermouth.net/news/ex-guns-n-roses-guitarist-buckethead-says-10-of-his-most-important-guitars-have-been-stolen)).
+- Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
+
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).
 - **Varg Vikernes** (Burzum) : condamné en 1994 en Norvège à 21 ans de prison pour le meurtre d'Øystein « Euronymous » Aarseth et des incendies d'églises ; condamné en 2014 en France pour incitation à la haine raciale (6 mois avec sursis et amende) ([Wikipedia](https://en.wikipedia.org/wiki/Varg_Vikernes), [Loudwire](https://loudwire.com/burzum-varg-vikernes-guilty-inciting-racial-hatred-exalting-war-crimes/)).
