@@ -8,7 +8,7 @@ Usage :
   python3 tools/krea_generate.py --out assets/da/creas/artiste-commune.jpg \
       --prompt "..." [--model krea/krea-2/medium] [--ratio 2:3] [--resolution 1K]
 """
-import argparse, json, os, subprocess, sys, time, urllib.error, urllib.request
+import argparse, json, os, shutil, subprocess, sys, time, urllib.error, urllib.request
 
 API = "https://api.krea.ai"
 
@@ -102,8 +102,12 @@ def main():
                     time.sleep(10)
             else:
                 sys.exit(f"Image prête mais impossible à télécharger : {urls[0]}")
-            subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "92", tmp, "--out", a.out],
-                           check=True, stdout=subprocess.DEVNULL)
+            if shutil.which("sips"):
+                subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "92", tmp, "--out", a.out],
+                               check=True, stdout=subprocess.DEVNULL)
+            else:  # Linux (agent cloud) : Pillow
+                from PIL import Image
+                Image.open(tmp).convert("RGB").save(a.out, "JPEG", quality=92)
             os.remove(tmp)
             print(f"Image enregistrée : {a.out} (source Krea : {urls[0]})")
             return

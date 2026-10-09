@@ -160,6 +160,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **durst** — Il fonde Limp Bizkit à Jacksonville, en Floride, en 1994, et recrute le guitariste Wes Borland, dont les tenues font partie du spectacle. Significant Other (1999), avec Nookie et Break Stuff, puis Chocolate Starfish and the Hot Dog Flavored Water (2000), avec Rollin', en font l'un des groupes les plus vendus du nu metal. Il y mêle rap, riffs saturés et scratchs. Il réalise aussi des films, dont The Education of Charlie Banks (2007).
 
+**buckethead** — Né Brian Carroll en Californie en 1969, il joue caché derrière un masque blanc inspiré d'Halloween 4 et un seau de poulet frit. Après Bucketheadland (1992) et des projets avec Praxis ou Les Claypool, il tient la guitare de Guns N' Roses de 2000 à 2004. Soothsayer (Crime Slunk Scene, 2006) et Jordan, rendu célèbre par Guitar Hero II, sont ses morceaux les plus connus. Sa série des Pikes, lancée en 2011, dépasse les 800 albums.
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
