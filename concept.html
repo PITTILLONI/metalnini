@@ -9,293 +9,322 @@
 <link rel="manifest" href="icons/site.webmanifest">
 <title>Metalnini — Concept</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
+  /* jetons : ceux du prototype (design-system/metalnini/MASTER.md) */
   :root{
-    --bg:#0c0b0a;
-    --surface:#161412;
-    --surface-2:#1e1b18;
-    --text:#f3f0ea;
-    --text-muted:#a49e94;
-    --border:rgba(255,255,255,0.09);
-
-    --accent:#b23a3a;
-    --accent-soft:rgba(178,58,58,0.14);
-
-    --t-action:#5b8fd6;
-    --t-decision:#cda44e;
-    --t-system:#7d7871;
-
-    --r-commune:#71717a;
-    --r-rare:#3b82f6;
-    --r-signature:#d4af37;
-    --r-legendaire:#7f1d1d;
-
-    --font-display:'Oswald','Arial Narrow',sans-serif;
-    --font-body:'Inter',-apple-system,sans-serif;
-    --font-mono:'JetBrains Mono','Courier New',monospace;
+    --bg:#0c0b0a; --ink:#0d0a08;
+    --surface:#161412; --surface-2:#1e1b18;
+    --text:#f3f0ea; --muted:#a49e94;
+    --border:rgba(255,255,255,.1);
+    --gold:#eb9a26; --gold-hi:#f4b243; --gold-lo:#b56c16;
+    --accent:#b23a3a; --accent-text:#e0605a;
+    --r-commune:#c9c3b8; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#f5c542; --r-legendaire:#ef4444;
+    --gothic:"Pirata One","Big Shoulders Display",serif;
+    --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+    --body:"Barlow",system-ui,sans-serif;
+    --code:ui-monospace,SFMono-Regular,Menlo,monospace;
   }
 
   *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
   html{color-scheme:dark; scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
   body{
     margin:0; background:var(--bg); color:var(--text);
-    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    font-family:var(--body); font-size:16px; line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
   body::before{
     content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:0.035;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
-  a{color:var(--t-decision);}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--t-decision); outline-offset:3px;}
+  a{color:var(--gold);}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,main:focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px;}
+
+  /* lien d'évitement : visible seulement au focus */
+  .skip{
+    position:fixed; left:12px; top:12px; z-index:60; transform:translateY(-200%);
+    display:inline-flex; align-items:center; min-height:44px; padding:0 16px; border-radius:12px;
+    font:800 .9rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+    color:#1a0f05; background:var(--gold);
+  }
+  .skip:focus{transform:none;}
 
   .wrap{max-width:860px; margin:0 auto; padding:0 20px; position:relative; z-index:2;}
-  h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:0.01em; text-wrap:balance;}
+  h1,h2,h3,h4{margin:0; text-wrap:balance;}
+  h1,h2,h4{font-family:var(--gothic); font-weight:400; letter-spacing:0;}
+  h3{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.06em; line-height:1.05;}
 
+  /* surtitres : Big Shoulders capitales, rouge */
   .eyebrow{
-    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--accent); margin:0 0 12px;
+    font:800 .82rem/1.2 var(--display); letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent-text); margin:0 0 10px;
   }
 
-  /* ---------- Header ---------- */
-  .head{padding:clamp(56px,11vw,90px) 0 32px;}
-  .head h1{font-size:clamp(2.2rem,7vw,3.4rem); font-weight:700; line-height:1; text-transform:uppercase;}
-  .tagline{margin-top:14px; color:var(--text-muted); max-width:60ch;}
+  /* ---------- En-tête ---------- */
+  .head{padding-top:clamp(56px,11vw,90px); padding-bottom:32px;}
+  .head h1{font-size:clamp(2.8rem,9vw,4.2rem); line-height:1;}
+  .tagline{margin-top:14px; color:var(--muted); max-width:60ch;}
   .head .meta{
-    margin-top:22px; font-family:var(--font-mono); font-size:0.78rem;
-    color:var(--text-muted); letter-spacing:0.04em;
+    margin-top:22px; font-size:.78rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted);
   }
 
-  /* ---------- Tabs ---------- */
+  /* ---------- Onglets (navigation par ancres) ---------- */
   .tabs{
     position:sticky; top:0; z-index:5;
-    background:rgba(12,11,10,0.92); backdrop-filter:blur(8px);
+    background:rgba(12,11,10,0.94); backdrop-filter:blur(8px);
     border-top:1px solid var(--border); border-bottom:1px solid var(--border);
   }
   .tabs-inner{display:flex; gap:6px; overflow-x:auto; padding:10px 20px; max-width:860px; margin:0 auto; scrollbar-width:none;}
   .tabs-inner::-webkit-scrollbar{display:none;}
+  /* dégradés de bord : la barre défile */
+  .tabs::before,.tabs::after{content:""; position:absolute; top:0; bottom:0; width:36px; pointer-events:none; opacity:0; transition:opacity .2s;}
+  .tabs::before{left:0; background:linear-gradient(90deg,var(--bg),transparent);}
+  .tabs::after{right:0; background:linear-gradient(270deg,var(--bg),transparent);}
+  .tabs.fade-l::before,.tabs.fade-r::after{opacity:1;}
   .tab{
-    flex:0 0 auto; font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.08em;
-    text-transform:uppercase; text-decoration:none; color:var(--text-muted);
-    padding:8px 12px; border:1px solid var(--border); border-radius:3px; white-space:nowrap;
+    flex:0 0 auto; display:inline-flex; align-items:center; min-height:44px;
+    font:800 .95rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase;
+    text-decoration:none; color:var(--muted);
+    padding:0 14px; border:1px solid var(--border); border-radius:10px; white-space:nowrap;
   }
   .tab:hover{color:var(--text); border-color:rgba(255,255,255,0.25);}
-  .tab[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:var(--accent-soft);}
+  .tab[aria-current="true"]{color:var(--gold-hi); border-color:var(--gold); background:rgba(235,154,38,.1);}
   .tab.ext{margin-left:auto; border-style:dashed;}
 
-  /* ---------- Panel ---------- */
+  /* ---------- Panneaux ---------- */
+  main{scroll-margin-top:72px;}
+  main:focus{outline:none;}
   .panel-head{padding:clamp(36px,6vw,56px) 0 8px;}
-  .panel-title{font-size:clamp(1.7rem,4.4vw,2.4rem); font-weight:700; text-transform:uppercase; line-height:1.05;}
+  .panel-title{font-size:clamp(2.2rem,6vw,3rem); line-height:1;}
 
-  .toc{margin:26px 0 8px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:6px;}
-  .toc .eyebrow{margin-bottom:8px; color:var(--text-muted);}
-  .toc ol{margin:0; padding-left:20px; columns:2 220px; column-gap:28px;}
-  .toc li{font-size:0.88rem; margin-bottom:4px; break-inside:avoid;}
-  .toc a{color:var(--text); text-decoration:none;}
-  .toc a:hover{color:var(--t-decision);}
+  .toc{margin:26px 0 8px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:12px;}
+  .toc .eyebrow{margin-bottom:8px; color:var(--muted);}
+  .toc ol{margin:0; padding-left:22px; columns:2 220px; column-gap:28px;}
+  .toc li{font-size:.92rem; break-inside:avoid;}
+  .toc li::marker{color:var(--gold); font:800 .9rem var(--display);}
+  .toc a{display:block; padding:9px 0; color:var(--text); text-decoration:none;}
+  .toc a:hover{color:var(--gold);}
 
-  /* ---------- Document body ---------- */
-  .doc-sec{padding:clamp(34px,6vw,52px) 0; border-bottom:1px solid var(--border); scroll-margin-top:60px;}
+  /* ---------- Corps du document ---------- */
+  .doc-sec{padding:clamp(34px,6vw,52px) 0; border-bottom:1px solid var(--border); scroll-margin-top:72px;}
   .doc-sec.sub{padding-top:28px;}
   .doc-intro{padding-top:20px;}
-  .doc h2{font-size:clamp(1.35rem,3.2vw,1.8rem); font-weight:600; text-transform:uppercase; margin-bottom:14px;}
-  .doc h3{font-size:1.12rem; font-weight:500; text-transform:uppercase; margin:30px 0 10px; color:var(--text);}
-  .doc h4{font-size:1rem; font-weight:500; text-transform:uppercase; margin:0 0 6px;}
+  .doc h2{font-size:clamp(1.9rem,4.6vw,2.4rem); line-height:1.05; margin-bottom:14px;}
+  .doc h3{font-size:1.2rem; margin:30px 0 10px; color:var(--text);}
+  .doc h4{font-size:1.45rem; line-height:1.1; margin:0 0 6px;}
   .doc p, .doc li{max-width:68ch;}
   .doc p{margin:0 0 14px;}
   .doc ul, .doc ol{padding-left:20px; margin:0 0 16px;}
   .doc li{margin-bottom:7px;}
-  .doc li::marker{color:var(--text-muted);}
+  .doc li::marker{color:var(--gold);}
   .doc strong, .doc b{color:#fff; font-weight:600;}
   .doc em{color:var(--text);}
-  .lead{color:var(--text-muted); font-size:1rem;}
-  .note{font-family:var(--font-mono); font-size:0.74rem; color:var(--text-muted); letter-spacing:0.02em;}
+  .lead{color:var(--muted); font-size:1rem;}
+  .note{font-size:.84rem; color:var(--muted);}
   code{
-    font-family:var(--font-mono); font-size:0.84em; background:var(--surface-2);
-    border:1px solid var(--border); border-radius:3px; padding:1px 5px;
+    font-family:var(--code); font-size:.84em; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:4px; padding:1px 5px;
   }
-  a.xref{
-    font-family:var(--font-mono); font-size:0.82em; text-decoration:none;
-    border-bottom:1px dotted var(--t-decision); padding-bottom:1px;
-  }
-  .sw{display:inline-block; width:0.8em; height:0.8em; border-radius:2px; background:var(--c); margin:0 5px 0 2px; vertical-align:-0.05em; box-shadow:0 0 0 1px rgba(255,255,255,0.25);}
+  a.xref{font-weight:600; text-decoration:none; border-bottom:1px dotted var(--gold); padding-bottom:1px;}
+  .sw{display:inline-block; width:22px; height:22px; border-radius:6px; background:var(--c); vertical-align:middle; box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);}
 
-  .table-wrap{overflow-x:auto; margin:10px 0 20px; border:1px solid var(--border); border-radius:6px;}
-  table{border-collapse:collapse; width:100%; font-size:0.86rem; min-width:560px;}
+  .table-wrap{overflow-x:auto; margin:10px 0 20px; border:1px solid var(--border); border-radius:12px;}
+  table{border-collapse:collapse; width:100%; font-size:.88rem; min-width:560px;}
   th, td{text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid var(--border);}
-  th{font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); background:var(--surface); font-weight:500;}
+  th{font-size:.72rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); background:var(--surface);}
   tr:last-child td{border-bottom:none;}
-  td{color:var(--text-muted);}
+  td{color:var(--muted);}
   td:first-child{color:var(--text);}
 
-  /* ---------- DA : édito ---------- */
+  /* ---------- Frise de la roadmap ---------- */
   .doc .timeline{list-style:none; margin:20px 0 10px; padding:0; position:relative}
   .timeline::before{content:""; position:absolute; left:9px; top:8px; bottom:8px; width:2px; background:var(--border)}
   .tl-item{position:relative; padding:0 0 26px 38px}
   .tl-item:last-child{padding-bottom:0}
-  .tl-dot{position:absolute; left:2px; top:5px; width:16px; height:16px; border-radius:50%; border:2px solid var(--text-muted); background:var(--bg)}
-  .tl-item.done .tl-dot{background:var(--t-decision); border-color:var(--t-decision)}
-  .tl-item.now .tl-dot{border-color:var(--t-decision); box-shadow:0 0 0 5px rgba(205,164,78,0.18)}
+  .tl-dot{position:absolute; left:2px; top:5px; width:16px; height:16px; border-radius:50%; border:2px solid var(--muted); background:var(--bg)}
+  .tl-item.done .tl-dot{background:var(--gold); border-color:var(--gold)}
+  .tl-item.now .tl-dot{border-color:var(--gold); box-shadow:0 0 0 5px rgba(235,154,38,.2)}
   .tl-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; margin-bottom:6px}
   .tl-head h3{margin:0}
-  .tl-status{font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:2px 9px; border-radius:999px; border:1px solid var(--border); color:var(--text-muted)}
-  .tl-item.done .tl-status, .tl-item.now .tl-status{color:var(--t-decision); border-color:rgba(205,164,78,0.45)}
+  .tl-status{font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; padding:2px 9px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
+  .tl-item.done .tl-status, .tl-item.now .tl-status{color:var(--gold); border-color:rgba(235,154,38,.45)}
   .tl-item p{margin:0 0 6px} .tl-item ul{margin:4px 0 0}
-  .decision{margin:0 0 18px; padding:14px 18px; border-left:3px solid var(--t-decision); background:var(--surface);}
-  .decision p:last-child{margin:0; font-size:0.92rem;}
-  .promise{margin:26px 0 8px; padding:20px 22px; border-left:3px solid var(--accent); background:var(--surface);}
-  .promise p:nth-child(2){font-family:var(--font-display); font-size:clamp(1.2rem,3vw,1.5rem); text-transform:uppercase; line-height:1.25; margin:0 0 10px; color:#fff;}
-  .pillars{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
-  .pillar{background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:14px 16px;}
-  .pillar p{font-size:0.88rem; color:var(--text-muted); margin:0;}
-  .dodont{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
-  .dodont > div{background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:14px 16px 4px;}
-  .dodont .do{border-top:2px solid var(--t-decision);}
-  .dodont .dont{border-top:2px solid var(--accent);}
-  .dodont .do .eyebrow{color:var(--t-decision);}
-  .dodont li{font-size:0.88rem; color:var(--text-muted);}
 
-  /* ---------- DA : emplacements d'images ---------- */
+  /* ---------- Encarts ---------- */
+  .decision{margin:0 0 18px; padding:14px 18px; border-left:3px solid var(--gold); background:var(--surface);}
+  .decision p:last-child{margin:0; font-size:.92rem;}
+  /* la promesse : un seul filet or */
+  .promise{margin:26px 0 8px; padding:20px 22px; border:1px solid var(--gold); border-radius:12px;}
+  .promise p:nth-child(2){font-family:var(--gothic); font-size:clamp(1.6rem,4vw,2rem); line-height:1.15; margin:0 0 10px; color:#fff;}
+  .promise .note{margin:0;}
+  .pillars{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+  .pillar{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px;}
+  .pillar h4{color:var(--gold-hi);}
+  .pillar p{font-size:.9rem; color:var(--muted); margin:0;}
+  .dodont{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .dodont > div{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px 4px;}
+  .dodont .do .eyebrow{color:var(--gold);}
+  .dodont li{font-size:.9rem; color:var(--muted);}
+
+  /* ---------- Système visuel ---------- */
+  /* palette : tient sans défilement sur téléphone */
+  table.palette{min-width:0;}
+  .palette code{white-space:nowrap;}
+  @media (max-width:520px){ .palette th, .palette td{padding:10px 8px;} .palette td{font-size:.82rem;} }
+  .type-specimen{display:grid; gap:12px; margin:10px 0 20px;}
+  .type-specimen > div{padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:12px;}
+  .type-specimen .sample{margin:0 0 6px; color:var(--text);}
+  .type-specimen p:last-child{margin:0; color:var(--muted); font-size:.9rem;}
+  .s-gothic{font:400 2rem/1 var(--gothic);}
+  .s-display{font:900 1.6rem/.95 var(--display); text-transform:uppercase; letter-spacing:.06em;}
+  .s-body{font:500 1.05rem/1.4 var(--body);}
+  .s-body span{display:block; margin-top:4px; font-size:.78rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);}
+  .btn-demo{display:flex; flex-wrap:wrap; gap:14px 12px; margin:6px 0 24px;}
+
+  /* boutons en relief (recette .btn du prototype) */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
+    font:900 1.1rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:#1a0f05; background:var(--gold);
+    box-shadow:0 6px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease, background .15s ease;}
+  .btn:hover{background:var(--gold-hi);}
+  .btn:active{transform:translateY(4px); box-shadow:0 2px 0 #8a5510;}
+  .btn:disabled{opacity:.45; cursor:default; transform:none;}
+  .btn.ghost{color:var(--gold-hi); background:#15110f; box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 6px 0 #000;}
+  .btn.danger{color:#fff; background:var(--accent); box-shadow:0 6px 0 #5e1c1c;}
+  .btn-demo .btn{cursor:default;}
+  @media (prefers-reduced-motion:reduce){ .btn{transition:none;} }
+
+  /* ---------- Images ---------- */
   .slots{display:grid; gap:14px; margin:18px 0 16px;}
   .slots.mood{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
   .mood.tall .slot-img{aspect-ratio:2/3;}
   .mood.tall .slot-img img{object-fit:contain; background:#000;}
   .slots.creas{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
   .slot{margin:0; display:flex; flex-direction:column;}
-  .slot-img{
-    position:relative; border-radius:10px; overflow:hidden; background:var(--surface);
-    border:1px dashed rgba(255,255,255,0.18);
-  }
+  .slot-img{position:relative; border-radius:10px; overflow:hidden; background:var(--surface); border:1px solid var(--border);}
   .mood .slot-img{aspect-ratio:4/3;}
   .creas .slot-img{aspect-ratio:2/3;}
   .slot-img img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-  .slot-img.has-img{border-style:solid; border-color:var(--border);}
-  .slot-img .ph{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:12px;
-    font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); text-align:center; word-break:break-all;
-  }
-  .slot-img.has-img .ph{display:none;}
-  .slot figcaption{padding:10px 2px 0; font-size:0.84rem; color:var(--text-muted);}
-  .slot figcaption strong{display:block; font-family:var(--font-display); font-weight:500; text-transform:uppercase; font-size:0.95rem; color:var(--text); margin-bottom:3px;}
+  .slot figcaption{padding:10px 2px 0; font-size:.86rem; color:var(--muted);}
+  .slot figcaption strong{display:block; font:800 1rem/1.1 var(--display); letter-spacing:.06em; text-transform:uppercase; color:var(--text); margin-bottom:4px;}
   .slot figcaption span{display:block;}
-  .slot figcaption .groupe{font-family:var(--font-mono); font-size:0.7rem; margin-top:4px;}
-  .creas .slot[data-rarity] .slot-img{border-top:3px solid var(--r-commune);}
+  /* liseré de rareté en haut de l'image */
+  .creas .slot[data-rarity] .slot-img{border-top:3px solid var(--muted);}
+  .creas .slot[data-rarity="commune"] .slot-img{border-top-color:var(--r-commune);}
   .creas .slot[data-rarity="rare"] .slot-img{border-top-color:var(--r-rare);}
-  .creas .slot[data-rarity="holo"] .slot-img{border-top-color:transparent; border-image:linear-gradient(90deg,#2dd4bf,#8b5cf6,#ec4899) 1; border-image-width:3px 0 0 0;}
+  .creas .slot[data-rarity="holo"] .slot-img{border-top-color:var(--r-holo);}
   .creas .slot[data-rarity="signature"] .slot-img{border-top-color:var(--r-signature);}
-  .creas .slot[data-rarity="legendaire"] .slot-img{border-top-color:#b91c1c;}
-  .creas .slot[data-rarity="archive"] .slot-img{border-top-color:var(--t-system);}
+  .creas .slot[data-rarity="legendaire"] .slot-img{border-top-color:var(--r-legendaire);}
+  /* moodboard hors dépôt : encart par défaut, grille montrée si les images sont là */
+  .offline-box{margin:18px 0 16px; padding:16px 18px; border:1px dashed rgba(255,255,255,.25); border-radius:12px; color:var(--muted);}
+  .offline-box strong{display:block; font:800 1rem/1.2 var(--display); letter-spacing:.08em; text-transform:uppercase; color:var(--text); margin-bottom:4px;}
 
-  .artist-picker{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 6px;}
+  .artist-picker{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 6px;}
   .artist-btn{
-    font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.08em; text-transform:uppercase;
-    background:var(--surface); color:var(--text-muted); border:1px solid var(--border); border-radius:999px;
-    padding:8px 14px; cursor:pointer;
+    min-height:44px; font:800 .9rem/1 var(--display); letter-spacing:.08em; text-transform:uppercase;
+    background:var(--surface); color:var(--muted); border:1px solid var(--border); border-radius:999px;
+    padding:0 16px; cursor:pointer;
   }
   .artist-btn:hover{color:var(--text); border-color:rgba(255,255,255,0.25);}
-  .artist-btn[aria-selected="true"]{color:var(--text); border-color:var(--accent); background:var(--accent-soft);}
-  .artist-sub{margin:12px 0 6px; font-size:0.9rem;}
+  .artist-btn[aria-pressed="true"]{color:var(--gold-hi); border-color:var(--gold); background:rgba(235,154,38,.1);}
+  .artist-sub{margin:12px 0 6px; font-size:.9rem;}
   .tags{list-style:none; padding:0; margin:0 0 6px; display:flex; flex-wrap:wrap; gap:6px;}
-  .tags li{font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-muted); border:1px solid var(--border); border-radius:3px; padding:3px 7px; margin:0;}
-  .artist-sub .note{font-size:0.7rem;}
+  .doc .tags li{font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:6px; padding:3px 8px; margin:0;}
   pre.prompt{
     margin:10px 0 18px; padding:16px 18px; background:var(--surface); border:1px solid var(--border);
-    border-radius:6px; overflow-x:auto;
+    border-radius:12px; overflow-x:auto;
   }
-  pre.prompt code{background:none; border:none; padding:0; font-size:0.8rem; line-height:1.65; color:var(--text); white-space:pre-wrap;}
+  pre.prompt code{background:none; border:none; padding:0; font-size:.8rem; line-height:1.65; color:var(--text); white-space:pre-wrap;}
 
-  footer{padding:44px 0 70px; color:var(--text-muted); font-size:0.85rem;}
-  footer a{color:var(--t-decision);}
+  /* ---------- Pied de page commun ---------- */
+  footer{padding:36px 0 40px;}
+  .site-nav{display:flex; flex-wrap:wrap; gap:0 6px; border-top:1px solid var(--border); padding-top:14px;}
+  .site-nav a{
+    display:inline-flex; align-items:center; min-height:44px; padding:0 10px;
+    font:800 .8rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none;
+  }
+  .site-nav a:hover,.site-nav a[aria-current="page"]{color:var(--gold);}
 
-
-  /* ---------- Gate ---------- */
+  /* ---------- Rideau ---------- */
   .gate{
     position:fixed; inset:0; z-index:50; background:var(--bg);
     display:flex; align-items:center; justify-content:center; padding:24px;
   }
   .gate-form{max-width:360px; width:100%; text-align:center;}
-  .gate-title{font-size:clamp(2rem,7vw,2.6rem); text-transform:uppercase; margin:6px 0 14px;}
-  .gate-copy{color:var(--text-muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-title{margin:6px 0 14px;}
+  .gate-title img{display:block; width:min(260px,72vw); height:auto; margin:0 auto;}
+  .gate-copy{color:var(--muted); font-size:.95rem; margin:0 0 22px;}
   .gate-input{
-    width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:4px;
-    color:var(--text); font-family:var(--font-body); font-size:1rem; padding:12px 14px; margin-bottom:14px;
+    width:100%; min-height:48px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px;
+    color:var(--text); font-family:var(--body); font-size:1rem; padding:12px 14px; margin-bottom:18px;
   }
-  .gate-submit{
-    width:100%; font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.04em;
-    font-size:1rem; padding:12px 14px; background:var(--accent); color:var(--text);
-    border:none; border-radius:4px; cursor:pointer;
-  }
-  .gate-submit:hover{background:#c24444;}
-  .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
+  .gate-submit{width:100%;}
+  .gate-error{color:var(--accent-text); font-size:.9rem; margin-top:16px;}
 
-  /* ---------- Commenter (click-to-comment) ---------- */
+  /* ---------- Commenter (commentaire positionné) ---------- */
   html.commenting, html.commenting body{cursor:crosshair;}
   html.commenting a, html.commenting button:not(.comment-toggle):not(.comment-close){cursor:crosshair;}
 
   .comment-toggle{
-    position:fixed; right:20px; bottom:20px; z-index:40;
-    display:flex; align-items:center; gap:8px;
-    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
-    background:var(--surface-2); color:var(--text); border:1px solid var(--border);
-    border-radius:999px; padding:10px 16px; cursor:pointer;
+    position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:40;
+    display:flex; align-items:center; gap:8px; min-height:44px;
+    font:800 .85rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase;
+    background:var(--ink); color:var(--text); border:1px solid var(--gold);
+    border-radius:999px; padding:0 16px; cursor:pointer;
     box-shadow:0 6px 20px rgba(0,0,0,0.4);
   }
-  .comment-toggle:hover{border-color:var(--accent);}
-  .comment-toggle.is-active{background:var(--accent); border-color:var(--accent); color:#fff;}
-  .comment-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--t-decision); flex:0 0 auto;}
-  .comment-toggle.is-active .dot{background:#fff;}
+  .comment-toggle:hover{color:var(--gold-hi);}
+  .comment-toggle.is-active{background:var(--gold); color:#1a0f05;}
+  .comment-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--gold); flex:0 0 auto;}
+  .comment-toggle.is-active .dot{background:#1a0f05;}
+  /* le contenu se termine au-dessus de la pastille */
+  #site-content{padding-bottom:calc(76px + env(safe-area-inset-bottom));}
 
   .comment-hint{
     position:fixed; left:50%; top:18px; transform:translateX(-50%); z-index:39;
-    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.04em;
-    background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);
-    border-radius:6px; padding:8px 14px; text-align:center; max-width:88vw;
+    font-size:.8rem; font-weight:500;
+    background:var(--surface-2); color:var(--muted); border:1px solid var(--border);
+    border-radius:12px; padding:8px 14px; text-align:center; max-width:88vw;
   }
 
   .comment-pin{
     position:absolute; z-index:38; width:14px; height:14px; margin:-7px 0 0 -7px;
-    border-radius:50%; background:var(--accent); border:2px solid var(--text);
-    box-shadow:0 0 0 4px var(--accent-soft);
+    border-radius:50%; background:var(--gold); border:2px solid var(--text);
+    box-shadow:0 0 0 4px rgba(235,154,38,.25);
   }
 
   .comment-popover{
     position:absolute; z-index:41; width:min(320px,86vw);
-    background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:12px;
     padding:16px; box-shadow:0 14px 40px rgba(0,0,0,0.55); cursor:auto;
   }
   .comment-popover .cp-context{
-    font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase;
-    color:var(--accent); margin:0 0 8px; line-height:1.4;
+    font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-text); margin:0 0 8px; line-height:1.4;
   }
   .comment-popover textarea{
     width:100%; min-height:70px; resize:vertical; background:var(--bg); color:var(--text);
-    border:1px solid var(--border); border-radius:4px; padding:9px 10px;
-    font-family:var(--font-body); font-size:0.9rem;
+    border:1px solid var(--border); border-radius:8px; padding:9px 10px;
+    font-family:var(--body); font-size:1rem;
   }
   .comment-popover input[type="text"]{
-    width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border);
-    border-radius:4px; padding:9px 10px; font-family:var(--font-body); font-size:0.88rem; margin-bottom:8px;
+    width:100%; min-height:44px; background:var(--bg); color:var(--text); border:1px solid var(--border);
+    border-radius:8px; padding:9px 10px; font-family:var(--body); font-size:1rem; margin-bottom:8px;
   }
-  .comment-popover textarea:focus-visible, .comment-popover input:focus-visible{
-    outline:2px solid var(--t-decision); outline-offset:1px;
-  }
-  .comment-popover .cp-row{display:flex; gap:8px; margin-top:10px; align-items:center;}
-  .comment-popover .cp-send{
-    font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.03em; font-size:0.85rem;
-    background:var(--accent); color:#fff; border:none; border-radius:4px; padding:9px 16px; cursor:pointer;
-  }
-  .comment-popover .cp-send:hover{background:#c24444;}
-  .comment-popover .cp-send:disabled{opacity:0.6; cursor:default;}
+  .comment-popover .cp-row{display:flex; gap:12px; margin-top:12px; align-items:center;}
+  .comment-popover .cp-send{min-height:44px; font-size:.95rem; padding:0 18px;}
   .comment-close{
-    background:none; border:none; color:var(--text-muted); cursor:pointer;
-    font-family:var(--font-mono); font-size:0.78rem; padding:9px 4px;
+    min-height:44px; background:none; border:none; color:var(--muted); cursor:pointer;
+    font:800 .85rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; padding:0 8px;
   }
   .comment-close:hover{color:var(--text);}
-  .comment-popover .cp-msg{margin-top:10px; font-size:0.82rem;}
+  .comment-popover .cp-msg{margin-top:10px; font-size:.86rem;}
   .comment-popover .cp-msg.success{color:var(--text);}
-  .comment-popover .cp-msg.error{color:#e08a8a;}
-  .botcheck{display:none;}
+  .comment-popover .cp-msg.error{color:var(--accent-text);}
 </style>
 </head>
 <body>
@@ -303,15 +332,16 @@
 <div id="gate" class="gate">
   <form id="gate-form" class="gate-form">
     <p class="eyebrow" style="margin-bottom:10px">Accès privé</p>
-    <h1 class="gate-title">Metalnini</h1>
+    <h1 class="gate-title"><img src="proto/cards/logo.webp" alt="Metalnini" width="900" height="534"></h1>
     <p class="gate-copy">Document de travail interne. Mot de passe requis.</p>
-    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" autocomplete="off" autofocus>
-    <button type="submit" class="gate-submit">Entrer</button>
+    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="off" autofocus>
+    <button type="submit" class="btn gate-submit">Entrer</button>
     <p id="gate-error" class="gate-error" hidden>Mot de passe incorrect.</p>
   </form>
 </div>
 
 <div id="site-content" style="display:none">
+<a class="skip" href="#contenu">Aller au contenu</a>
 
 <div class="wrap head">
   <p class="eyebrow">Document de travail — concept</p>
@@ -321,14 +351,15 @@
 </div>
 
 <nav class="tabs" aria-label="Sections du document">
-  <div class="tabs-inner" role="tablist">
-    <a class="tab" role="tab" href="#concept" id="tab-concept" aria-controls="panel-concept" data-tab="concept">Concept</a><a class="tab" role="tab" href="#da" id="tab-da" aria-controls="panel-da" data-tab="da">Direction artistique</a><a class="tab" role="tab" href="#architecture" id="tab-architecture" aria-controls="panel-architecture" data-tab="architecture">Architecture</a><a class="tab" role="tab" href="#roadmap" id="tab-roadmap" aria-controls="panel-roadmap" data-tab="roadmap">Roadmap</a>
+  <div class="tabs-inner">
+    <a class="tab" href="#concept" data-tab="concept">Concept</a><a class="tab" href="#da" data-tab="da">Direction artistique</a><a class="tab" href="#architecture" data-tab="architecture">Architecture</a><a class="tab" href="#roadmap" data-tab="roadmap">Roadmap</a>
     <a class="tab ext" href="flows.html">User flows ↗</a>
   </div>
 </nav>
 
 
-<div class="tab-panel" role="tabpanel" id="panel-concept" aria-labelledby="tab-concept" data-label="Concept" hidden>
+<main id="contenu" tabindex="-1">
+<div class="tab-panel" id="panel-concept" data-label="Concept" hidden>
   <div class="wrap">
     <div class="panel-head">
       <p class="eyebrow">01 · Concept</p>
@@ -366,9 +397,8 @@
 <li><strong>Rareté</strong> : Commune → Rare → Holo/Prisme → Signature (numérotée) → Légendaire (série ultra-limitée).</li>
 <li>Traitement graphique différencié par rareté (texture, foil, bordure), identité graphique déclinée par sous-genre.</li>
 </ul>
-<p><strong>Carte Membre (musicien)</strong> — dédiée à un membre précis d'un groupe (nom, instrument, rôle). Elle porte une métadonnée <code>instrument</code> (guitare, basse, batterie, chant, clavier, etc.) et peut être rattachée à plusieurs groupes (side-projects, supergroupes, remplacements — fréquent dans le metal). Elle ouvre un axe de collection <strong>transversal</strong>, indépendant du regroupement par groupe :
-- Collection "par musicien" : retrouver toutes les cartes liées à un même musicien à travers ses différents groupes.
-- Collection "par instrument" : par exemple, collectionner les batteurs ou les bassistes suivis, tous groupes confondus.</p>
+<p><strong>Carte Membre (musicien)</strong> — dédiée à un membre précis d'un groupe (nom, instrument, rôle). Elle porte une métadonnée <code>instrument</code> (guitare, basse, batterie, chant, clavier, etc.) et peut être rattachée à plusieurs groupes (side-projects, supergroupes, remplacements — fréquent dans le metal). Elle ouvre un axe de collection <strong>transversal</strong>, indépendant du regroupement par groupe :</p>
+<ul><li>Collection "par musicien" : retrouver toutes les cartes liées à un même musicien à travers ses différents groupes.</li><li>Collection "par instrument" : par exemple, collectionner les batteurs ou les bassistes suivis, tous groupes confondus.</li></ul>
 </section>
 <section id="concept-classeurs-recompenses" class="doc-sec"><h2>Classeurs &amp; récompenses</h2>
 <ul>
@@ -378,10 +408,8 @@
 </ul>
 </section>
 <section id="concept-mecanique-d-evolution-des-cartes" class="doc-sec"><h2>Mécanique d'évolution des cartes</h2>
-<p>Les cartes changent d'état suite à un flux d'actualité artiste réel — directement celle du vrai groupe affiché sur la carte (plus de mapping caché tant que noms et portraits sont ceux du vrai groupe) :
-- Carte "Artiste" → devient carte "Album" à la sortie d'un nouvel album.
-- Carte "Live" → variante spéciale débloquée si l'utilisateur était présent au concert concerné (preuve par billet importé, voir <code>Avatar de fan &amp; carnet de concerts</code>).
-- Événements calendaires (anniversaire d'un album culte, reformation, etc.) déclenchent des drops commémoratifs limités dans le temps.</p>
+<p>Les cartes changent d'état suite à un flux d'actualité artiste réel — directement celle du vrai groupe affiché sur la carte (plus de mapping caché tant que noms et portraits sont ceux du vrai groupe) :</p>
+<ul><li>Carte "Artiste" → devient carte "Album" à la sortie d'un nouvel album.</li><li>Carte "Live" → variante spéciale débloquée si l'utilisateur était présent au concert concerné (preuve par billet importé, voir <code>Avatar de fan &amp; carnet de concerts</code>).</li><li>Événements calendaires (anniversaire d'un album culte, reformation, etc.) déclenchent des drops commémoratifs limités dans le temps.</li></ul>
 <p><strong>Suivi de l'actualité réelle</strong> : un travail éditorial continu (curation manuelle et/ou flux externe — RSS metal news, API type Songkick/Bandsintown pour les dates de concert — à cadrer) reste nécessaire pour détecter ces événements. C'est aussi ce qui conditionne le rythme de contenu.</p>
 </section>
 <section id="concept-volet-social-troc-pas-de-marche" class="doc-sec"><h2>Volet social (troc, pas de marché)</h2>
@@ -410,13 +438,8 @@
 <section id="concept-missions" class="doc-sec"><h2>Missions</h2>
 <p>Les classeurs et paliers (voir <code>Classeurs &amp; récompenses</code>) disent <em>ce qui existe à collectionner</em> ; les missions disent <strong>quoi faire maintenant</strong>. C'est la couche qui donne une direction concrète, visible et renouvelée à un utilisateur qui ne saurait pas spontanément quoi faire de sa prochaine session.</p>
 <p><strong>Principe</strong> : une mission a toujours un objectif clair, une progression visible, et une récompense garantie à l'accomplissement (XP avatar systématique, et selon la mission un pack gratuit ou un cosmétique) — jamais de tirage aléatoire en récompense de mission, ce serait rouvrir la question loot-box pour une mécanique qui doit au contraire renforcer le sentiment de maîtrise (même logique que <code>Classeurs &amp; récompenses</code>).</p>
-<p><strong>Catégories (liste volontairement large, à cribler en game design)</strong> :
-- <strong>Collection</strong> — obtenir une carte d'une rareté donnée, compléter un thème précis, réunir des cartes Membre dans N instruments différents, obtenir une carte de chaque type sur un même artiste.
-- <strong>Échange (en présentiel)</strong> — conclure un échange, échanger avec 3 fans différents dans le mois, faire un échange pendant un concert, faire un échange avec un membre de sa guilde.
-- <strong>Concert / vécu réel</strong> — check-in à un concert (billet importé), remplir son carnet le lendemain, assister à deux concerts d'un même sous-genre, activer la présence partagée et confirmer une rencontre ("on s'est croisés").
-- <strong>Social / communauté</strong> — rejoindre une guilde, participer au classement hebdomadaire, enregistrer son cri signature, créer un classeur personnalisé.
-- <strong>Découverte</strong> — consulter l'évolution d'une carte suite à une actu réelle, suivre un nouveau sous-genre ou artiste.
-- <strong>Achat réel (album, billet, merch)</strong> — acheter un album ou un billet de concert via un lien partenaire, acheter du merch d'un artiste suivi. Catégorie liée à <code>Monétisation</code> : elle suppose soit un partenariat marchand permettant une confirmation d'achat fiable, soit à défaut une preuve déclarative (photo de reçu) — moins fiable, à traiter comme telle plutôt que comme une vérification forte.</p>
+<p><strong>Catégories (liste volontairement large, à cribler en game design)</strong> :</p>
+<ul><li><strong>Collection</strong> — obtenir une carte d'une rareté donnée, compléter un thème précis, réunir des cartes Membre dans N instruments différents, obtenir une carte de chaque type sur un même artiste.</li><li><strong>Échange (en présentiel)</strong> — conclure un échange, échanger avec 3 fans différents dans le mois, faire un échange pendant un concert, faire un échange avec un membre de sa guilde.</li><li><strong>Concert / vécu réel</strong> — check-in à un concert (billet importé), remplir son carnet le lendemain, assister à deux concerts d'un même sous-genre, activer la présence partagée et confirmer une rencontre ("on s'est croisés").</li><li><strong>Social / communauté</strong> — rejoindre une guilde, participer au classement hebdomadaire, enregistrer son cri signature, créer un classeur personnalisé.</li><li><strong>Découverte</strong> — consulter l'évolution d'une carte suite à une actu réelle, suivre un nouveau sous-genre ou artiste.</li><li><strong>Achat réel (album, billet, merch)</strong> — acheter un album ou un billet de concert via un lien partenaire, acheter du merch d'un artiste suivi. Catégorie liée à <code>Monétisation</code> : elle suppose soit un partenariat marchand permettant une confirmation d'achat fiable, soit à défaut une preuve déclarative (photo de reçu) — moins fiable, à traiter comme telle plutôt que comme une vérification forte.</li></ul>
 <p><strong>Cadence, pour rester cohérent avec <a class="xref" href="#architecture">Architecture</a> (boucles de rétention)</strong> : quelques missions actives en parallèle plutôt qu'une liste illimitée, à cadences mêlées — une mission courte (quotidienne/légère), une mission de la semaine, et occasionnellement une mission saisonnière liée à un événement réel (tournée, sortie d'album majeure, festival). Une mission accomplie est remplacée, pas accumulée à l'infini.</p>
 <p><strong>Anti-pattern à respecter</strong> : une mission ne doit jamais pousser à une action qui n'a pas de valeur en soi si elle échouait à débloquer la récompense — "va à un concert" reste une bonne expérience même sans la carte bonus, "envoie un message à 10 inconnus" ne le serait pas. Écarter toute mission dont le seul but perçu serait la récompense.</p>
 </section>
@@ -425,23 +448,15 @@
 <p><strong>Source 1 — Collection de cartes</strong>
 Diversité de sous-genres/groupes suivis, rareté moyenne possédée, thèmes complétés, diversité d'instruments collectionnés via les cartes Membre : nourrit des traits d'identité de collectionneur sur l'avatar (ex. sous-genre dominant affiché).</p>
 <p><strong>Détection et preuve de concert — par billet, pas par suivi d'artiste</strong>
-Croiser les artistes suivis avec un agenda de concerts externe a été écarté : ça dépend d'une intégration d'agenda tierce (Songkick/Bandsintown ou équivalent) à maintenir, pour un résultat qui reste probabiliste (l'utilisateur suit-il vraiment l'artiste dont il va voir le concert ce soir-là ?). Le <strong>billet, électronique ou physique, sert directement de preuve</strong> — plus simple et plus fiable :
-- <strong>Billet électronique</strong> : scan du QR/code-barres du billet (affiché sur le téléphone) via l'appareil photo. Si le code n'est pas exploitable directement (pas de partenariat billetterie établi), l'utilisateur confirme/complète manuellement artiste, date et lieu à partir de ce qui a été lu.
-- <strong>Billet physique</strong> : même mécanique de scan sur le billet imprimé.
-- <strong>Repli</strong> : photo du billet (avec tentative de lecture automatique) ou saisie manuelle complète, pour les cas sans code scannable (accès guestlist, billet au nom d'un tiers).
-- <strong>Deux niveaux de preuve</strong> : le billet scanné suffit pour le carnet de concert et l'XP avatar (niveau "standard"). Une <strong>géolocalisation ponctuelle le jour même</strong>, optionnelle, apporte un niveau de preuve renforcé — c'est cette version renforcée qui conditionne la carte Live exclusive (voir <code>Mécanique d'évolution des cartes</code>), pour limiter (sans l'exclure complètement) le cas d'un billet scanné sans y être allé.
-- Cette approche supprime le besoin de maintenir un catalogue d'artistes suivis pour la détection : le billet dit déjà tout (quel artiste, quelle date, quel lieu).</p>
-<p><strong>Vécu de concert (double mécanisme de captation)</strong>
-- <strong>Jauge d'ambiance semi-automatique</strong> : si la précision technique le permet, utilisation de l'accéléromètre/gyroscope du téléphone pendant le concert pour estimer un niveau d'énergie/intensité vécu (à valider par un spike technique — la détection fine d'un pogo vs un wall of death n'est pas garantie, mais un niveau d'intensité global est plausible).
-- <strong>Déclaratif (toujours disponible, socle du MVP)</strong> : après le concert, l'utilisateur note son expérience — ambiance, musique, sono, intensité du mosh pit, etc. Ce carnet de concerts a une valeur en soi (journal de ses shows vécus), indépendamment de l'avatar.</p>
+Croiser les artistes suivis avec un agenda de concerts externe a été écarté : ça dépend d'une intégration d'agenda tierce (Songkick/Bandsintown ou équivalent) à maintenir, pour un résultat qui reste probabiliste (l'utilisateur suit-il vraiment l'artiste dont il va voir le concert ce soir-là ?). Le <strong>billet, électronique ou physique, sert directement de preuve</strong> — plus simple et plus fiable :</p>
+<ul><li><strong>Billet électronique</strong> : scan du QR/code-barres du billet (affiché sur le téléphone) via l'appareil photo. Si le code n'est pas exploitable directement (pas de partenariat billetterie établi), l'utilisateur confirme/complète manuellement artiste, date et lieu à partir de ce qui a été lu.</li><li><strong>Billet physique</strong> : même mécanique de scan sur le billet imprimé.</li><li><strong>Repli</strong> : photo du billet (avec tentative de lecture automatique) ou saisie manuelle complète, pour les cas sans code scannable (accès guestlist, billet au nom d'un tiers).</li><li><strong>Deux niveaux de preuve</strong> : le billet scanné suffit pour le carnet de concert et l'XP avatar (niveau "standard"). Une <strong>géolocalisation ponctuelle le jour même</strong>, optionnelle, apporte un niveau de preuve renforcé — c'est cette version renforcée qui conditionne la carte Live exclusive (voir <code>Mécanique d'évolution des cartes</code>), pour limiter (sans l'exclure complètement) le cas d'un billet scanné sans y être allé.</li><li>Cette approche supprime le besoin de maintenir un catalogue d'artistes suivis pour la détection : le billet dit déjà tout (quel artiste, quelle date, quel lieu).</li></ul>
+<p><strong>Vécu de concert (double mécanisme de captation)</strong></p>
+<ul><li><strong>Jauge d'ambiance semi-automatique</strong> : si la précision technique le permet, utilisation de l'accéléromètre/gyroscope du téléphone pendant le concert pour estimer un niveau d'énergie/intensité vécu (à valider par un spike technique — la détection fine d'un pogo vs un wall of death n'est pas garantie, mais un niveau d'intensité global est plausible).</li><li><strong>Déclaratif (toujours disponible, socle du MVP)</strong> : après le concert, l'utilisateur note son expérience — ambiance, musique, sono, intensité du mosh pit, etc. Ce carnet de concerts a une valeur en soi (journal de ses shows vécus), indépendamment de l'avatar.</li></ul>
 <p><strong>Source 3 — Profil de spectateur</strong>
 Agrégation dans le temps du comportement déclaré en concert (pogo, calme, air guitar, chanteur, photographe, etc.) en un "type" de spectateur dominant, affiché sur l'avatar et affiné au fil des shows plutôt que figé dès le premier concert.</p>
 <p><strong>Progression de l'avatar</strong>
-Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ces trois sources, par exemple (liste ouverte, à affiner) :
-- Titres d'ambiance : "Roi du pogo", "As des airs" (air guitar), etc.
-- Titres sociaux : "Metal Corner" (a échangé/discuté avec d'autres fans sur place).
-- Titres de fidélité/découverte : nombre de concerts vus, diversité de sous-genres/artistes vus, ancienneté sur un artiste.
-- Titres de collectionneur : ex. "Puriste" (collection ultra-concentrée sur un seul sous-genre), "Multi-instrumentiste" (cartes Membre collectionnées dans de nombreux instruments différents).</p>
+Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ces trois sources, par exemple (liste ouverte, à affiner) :</p>
+<ul><li>Titres d'ambiance : "Roi du pogo", "As des airs" (air guitar), etc.</li><li>Titres sociaux : "Metal Corner" (a échangé/discuté avec d'autres fans sur place).</li><li>Titres de fidélité/découverte : nombre de concerts vus, diversité de sous-genres/artistes vus, ancienneté sur un artiste.</li><li>Titres de collectionneur : ex. "Puriste" (collection ultra-concentrée sur un seul sous-genre), "Multi-instrumentiste" (cartes Membre collectionnées dans de nombreux instruments différents).</li></ul>
 </section>
 <section id="concept-monetisation-mvp" class="doc-sec"><h2>Monétisation (MVP)</h2>
 <ul>
@@ -525,7 +540,7 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
     </div>
   </div>
 </div>
-<div class="tab-panel" role="tabpanel" id="panel-da" aria-labelledby="tab-da" data-label="Direction artistique" hidden>
+<div class="tab-panel" id="panel-da" data-label="Direction artistique" hidden>
   <div class="wrap">
     <div class="panel-head">
       <p class="eyebrow">02 · Direction artistique</p>
@@ -536,7 +551,6 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
     <div class="doc">
 <!-- ============ LIGNE ÉDITO ============ -->
 <section id="da-ligne-edito" class="doc-sec">
-  <p class="eyebrow">01 · Ligne édito</p>
   <h2>Ligne édito</h2>
   <p class="lead">Humour, fun, moderne, gamifié, rock'n'roll. Ce ton n'est pas décoratif : il décide de ce qu'on dessine sur une carte, de comment on nomme les choses dans l'app, et de ce qu'on s'interdit.</p>
 
@@ -632,28 +646,28 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 
 <!-- ============ MOODBOARD ============ -->
 <section id="da-moodboard" class="doc-sec">
-  <p class="eyebrow">02 · Moodboard</p>
   <h2>Moodboard</h2>
   <p class="lead">Le moodboard Krea (9 images : 5 références externes, 4 générations). Les images restent en local, hors du dépôt public, puisque certaines sont des illustrations de tiers : elles ne s'affichent que sur la machine qui les contient.</p>
 
-  <div class="slots mood tall">
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-01.jpg" alt="The Wizard" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-01.jpg</span></div>
+  <p class="offline-box" id="moodboard-off"><strong>Moodboard hors ligne</strong>Illustrations de tiers, visibles seulement sur la machine du propriétaire.</p>
+  <div class="slots mood tall" id="moodboard-grid" hidden>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-01.jpg" alt="The Wizard" loading="lazy"></div>
       <figcaption><strong>01 · The Wizard</strong>Référence externe (signée NB). Linogravure à contour noir épais, nuit bleu profond, aplats limités. Le gag passe par les attributs : colombe et chauve-souris renvoient aux légendes d'Ozzy, le titre est un titre de chanson.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-02.jpg" alt="The Priest" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-02.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-02.jpg" alt="The Priest" loading="lazy"></div>
       <figcaption><strong>02 · The Priest</strong>Référence externe. Gothique dense : hachures fines, halo, cadre ornementé, rouge / noir / or. Candidat naturel pour les raretés hautes.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-03.jpg" alt="Ozzy" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-03.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-03.jpg" alt="Ozzy" loading="lazy"></div>
       <figcaption><strong>03 · Ozzy</strong>Référence externe. Palette chaude, attributs du tarot (coupe, pentacle, épée), cornes du diable : ton joyeux, personnage expressif.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-04.jpg" alt="A Reza" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-04.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-04.jpg" alt="A Reza" loading="lazy"></div>
       <figcaption><strong>04 · A Reza</strong>Référence externe. Noir et crème uniquement, pure gravure, halo et banderole. Piste pour une version sobre, type Commune.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-05.jpg" alt="The Reclaimed" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-05.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-05.jpg" alt="The Reclaimed" loading="lazy"></div>
       <figcaption><strong>05 · The Reclaimed</strong>Référence externe. Fond brique, cadre floral, légende humoristique sous le titre : preuve que le texte de carte peut porter le second degré.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-06.jpg" alt="Navire céleste" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-06.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-06.jpg" alt="Navire céleste" loading="lazy"></div>
       <figcaption><strong>06 · Navire céleste</strong>Génération Krea. Soleils à visage, œil, étoiles : le répertoire de motifs célestes, palette violet / bleu nuit / rose.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-07.jpg" alt="Forêt" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-07.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-07.jpg" alt="Forêt" loading="lazy"></div>
       <figcaption><strong>07 · Forêt</strong>Génération Krea. Décor en linogravure, format paysage : piste pour les fonds des cartes Live ou le verso.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-08.jpg" alt="Le squelette" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-08.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-08.jpg" alt="Le squelette" loading="lazy"></div>
       <figcaption><strong>08 · Le squelette</strong>Génération Krea. Hachures fines, rouge sourd, halo, architecture en fond : proche de la famille gothique.</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-09.jpg" alt="La clé" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">mb-09.jpg</span></div>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/moodboard/mb-09.jpg" alt="La clé" loading="lazy"></div>
       <figcaption><strong>09 · La clé</strong>Génération Krea. Gros plan sur un objet : piste pour les cartes Album ou Riff centrées sur un attribut plutôt qu'un personnage.</figcaption></figure>
   </div>
 
@@ -689,394 +703,376 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
 
 <!-- ============ EXEMPLES DE CRÉA ============ -->
 <section id="da-exemples-crea" class="doc-sec">
-  <p class="eyebrow">03 · Exemples de créa</p>
   <h2>Exemples de créa</h2>
   <div class="decision"><p class="eyebrow">Décision — 2026-09-23</p><p><b>La V1 des cartes est à usage strictement perso et utilise des artistes reconnaissables</b> (vrais noms, portraits ressemblants dans le style tarot, dans la lignée du test Landmvrks). Le socle Sleeplot, stylisé et sans photo-guidage, redevient la règle avant toute diffusion au-delà de ce cercle (voir <a class="xref" href="#roadmap">Roadmap</a>). Mise à jour du même jour : pour y accéder depuis plusieurs machines, <b>les cartes sont publiées dans le dépôt public</b> et visibles en ligne, choix assumé en connaissance du risque (voir l'onglet <a class="xref" href="#concept">Concept</a>, section risques).</p></div>
-  <p class="lead">Une carte par type, à des raretés différentes, pour vérifier que le gabarit tient sur toute la gamme. Déposer les images générées avec Krea dans <code>assets/da/creas/</code> sous le nom indiqué. Format conseillé : portrait 2:3 (ex. 1000 × 1500 px).</p>
-
-  <div class="slots creas">
-    <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/artiste-commune.jpg" alt="Carte Artiste, rareté Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">artiste-commune.jpg</span></div>
-      <figcaption><strong>Artiste · Commune</strong><span class="meta">Gabarit de base, sans effet de rareté.</span><span class="groupe">Groupe : [À PRÉCISER]</span></figcaption></figure>
-    <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/membre-rare.jpg" alt="Carte Membre, rareté Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">membre-rare.jpg</span></div>
-      <figcaption><strong>Membre · Rare</strong><span class="meta">Zone instrument visible (ex. batterie).</span><span class="groupe">Musicien : [À PRÉCISER]</span></figcaption></figure>
-    <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/live-holo.jpg" alt="Carte Live, rareté Holo" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">live-holo.jpg</span></div>
-      <figcaption><strong>Live · Holo/Prisme</strong><span class="meta">Scène, foule, lumières : la carte du vécu.</span><span class="groupe">Concert : [À PRÉCISER]</span></figcaption></figure>
-    <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/album-signature.jpg" alt="Carte Album, rareté Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">album-signature.jpg</span></div>
-      <figcaption><strong>Album · Signature</strong><span class="meta">Numérotée, dorure. Évoque l'album sans reproduire la pochette.</span><span class="groupe">Album : [À PRÉCISER]</span></figcaption></figure>
-    <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/riff-rare.jpg" alt="Carte Riff ou Moment culte, rareté Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">riff-rare.jpg</span></div>
-      <figcaption><strong>Riff / Moment culte · Rare</strong><span class="meta">Un instant précis (clip, scène culte) mis en arcane.</span><span class="groupe">Moment : [À PRÉCISER]</span></figcaption></figure>
-    <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/collector-legendaire.jpg" alt="Carte Collector, rareté Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">collector-legendaire.jpg</span></div>
-      <figcaption><strong>Collector · Légendaire</strong><span class="meta">Rouge sombre, foil noir, série ultra-limitée.</span><span class="groupe">Événement : [À PRÉCISER]</span></figcaption></figure>
-  </div>
-
   <h3>Galerie par artiste</h3>
   <p>Chaque artiste : la carte de base générée avec la recette validée, puis ses 5 raretés, obtenues en repartant de la base (seuls le cadre et la finition changent). Les cases vides attendent leur génération.</p>
   <div class="artist-gallery">
-    <div class="artist-picker" role="tablist" aria-label="Choisir l'artiste"><button type="button" class="artist-btn" role="tab" data-artist="knocked-loose" aria-selected="true">Knocked Loose</button><button type="button" class="artist-btn" role="tab" data-artist="jinjer" aria-selected="false">Jinjer</button><button type="button" class="artist-btn" role="tab" data-artist="spiritbox" aria-selected="false">Spiritbox</button><button type="button" class="artist-btn" role="tab" data-artist="blink182" aria-selected="false">Blink-182 (batterie)</button><button type="button" class="artist-btn" role="tab" data-artist="landmvrks" aria-selected="false">Landmvrks</button><button type="button" class="artist-btn" role="tab" data-artist="hendrix" aria-selected="false">Jimi Hendrix</button><button type="button" class="artist-btn" role="tab" data-artist="isaac-hale" aria-selected="false">Knocked Loose (guitare)</button><button type="button" class="artist-btn" role="tab" data-artist="korn" aria-selected="false">Korn</button><button type="button" class="artist-btn" role="tab" data-artist="hoppus" aria-selected="false">Blink-182 (basse)</button><button type="button" class="artist-btn" role="tab" data-artist="poppy" aria-selected="false">Poppy</button><button type="button" class="artist-btn" role="tab" data-artist="ramos" aria-selected="false">Will Ramos</button><button type="button" class="artist-btn" role="tab" data-artist="slash" aria-selected="false">Slash</button><button type="button" class="artist-btn" role="tab" data-artist="duplantier" aria-selected="false">Mario Duplantier</button><button type="button" class="artist-btn" role="tab" data-artist="zack" aria-selected="false">Zack de la Rocha</button><button type="button" class="artist-btn" role="tab" data-artist="heriot" aria-selected="false">Debbie Gough</button><button type="button" class="artist-btn" role="tab" data-artist="frusciante" aria-selected="false">John Frusciante</button><button type="button" class="artist-btn" role="tab" data-artist="root" aria-selected="false">Jim Root</button><button type="button" class="artist-btn" role="tab" data-artist="jordison" aria-selected="false">Joey Jordison</button></div>
+    <div class="artist-picker" role="group" aria-label="Choisir l'artiste"><button type="button" class="artist-btn" data-artist="knocked-loose" aria-pressed="true">Knocked Loose</button><button type="button" class="artist-btn" data-artist="jinjer" aria-pressed="false">Jinjer</button><button type="button" class="artist-btn" data-artist="spiritbox" aria-pressed="false">Spiritbox</button><button type="button" class="artist-btn" data-artist="blink182" aria-pressed="false">Blink-182 (batterie)</button><button type="button" class="artist-btn" data-artist="landmvrks" aria-pressed="false">Landmvrks</button><button type="button" class="artist-btn" data-artist="hendrix" aria-pressed="false">Jimi Hendrix</button><button type="button" class="artist-btn" data-artist="isaac-hale" aria-pressed="false">Knocked Loose (guitare)</button><button type="button" class="artist-btn" data-artist="korn" aria-pressed="false">Korn</button><button type="button" class="artist-btn" data-artist="hoppus" aria-pressed="false">Blink-182 (basse)</button><button type="button" class="artist-btn" data-artist="poppy" aria-pressed="false">Poppy</button><button type="button" class="artist-btn" data-artist="ramos" aria-pressed="false">Will Ramos</button><button type="button" class="artist-btn" data-artist="slash" aria-pressed="false">Slash</button><button type="button" class="artist-btn" data-artist="duplantier" aria-pressed="false">Mario Duplantier</button><button type="button" class="artist-btn" data-artist="zack" aria-pressed="false">Zack de la Rocha</button><button type="button" class="artist-btn" data-artist="heriot" aria-pressed="false">Debbie Gough</button><button type="button" class="artist-btn" data-artist="frusciante" aria-pressed="false">John Frusciante</button><button type="button" class="artist-btn" data-artist="root" aria-pressed="false">Jim Root</button><button type="button" class="artist-btn" data-artist="jordison" aria-pressed="false">Joey Jordison</button></div>
 
-    <div class="artist-panel" role="tabpanel" data-artist="knocked-loose">
+    <div class="artist-panel" data-artist="knocked-loose">
       <p class="artist-sub"><b>Bryan Garris · « The Deadringer » · IV</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Hardcore</li><li>Groupe : Knocked Loose</li></ul>
       <p class="note">Photo de référence : S. Bollmann, With Full Force 2018, Wikimedia Commons (Attribution).</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-knocked-loose-03.jpg" alt="Knocked Loose, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-knocked-loose-03.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/test-knocked-loose-03.webp" alt="Knocked Loose, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/knocked-loose-commune.jpg" alt="Knocked Loose, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/knocked-loose-commune.webp" alt="Knocked Loose, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/knocked-loose-rare.jpg" alt="Knocked Loose, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/knocked-loose-rare.webp" alt="Knocked Loose, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/knocked-loose-holo-v2.jpg" alt="Knocked Loose, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-holo-v2.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/knocked-loose-holo-v2.webp" alt="Knocked Loose, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/knocked-loose-signature.jpg" alt="Knocked Loose, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/knocked-loose-signature.webp" alt="Knocked Loose, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/knocked-loose-legendaire-v2.jpg" alt="Knocked Loose, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">knocked-loose-legendaire-v2.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/knocked-loose-legendaire-v2.webp" alt="Knocked Loose, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="jinjer" hidden>
+    <div class="artist-panel" data-artist="jinjer" hidden>
       <p class="artist-sub"><b>Tatiana Shmayluk · « Pisces » · V</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Metalcore progressif</li><li>Groupe : Jinjer</li></ul>
       <p class="note">Photo de référence : Stefan Brending (2eight), Rock im Park 2023, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/jinjer-base.jpg" alt="Jinjer, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/jinjer-base.webp" alt="Jinjer, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/jinjer-commune.jpg" alt="Jinjer, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/jinjer-commune.webp" alt="Jinjer, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/jinjer-rare.jpg" alt="Jinjer, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/jinjer-rare.webp" alt="Jinjer, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/jinjer-holo.jpg" alt="Jinjer, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/jinjer-holo.webp" alt="Jinjer, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/jinjer-signature.jpg" alt="Jinjer, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/jinjer-signature.webp" alt="Jinjer, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/jinjer-legendaire.jpg" alt="Jinjer, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jinjer-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/jinjer-legendaire.webp" alt="Jinjer, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="spiritbox" hidden>
+    <div class="artist-panel" data-artist="spiritbox" hidden>
       <p class="artist-sub"><b>Courtney LaPlante · « Holy Roller » · VI</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Metalcore</li><li>Groupe : Spiritbox</li></ul>
       <p class="note">Photo de référence : Sven Mandel, Wacken 2024, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/spiritbox-base.jpg" alt="Spiritbox, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/spiritbox-base.webp" alt="Spiritbox, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/spiritbox-commune.jpg" alt="Spiritbox, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/spiritbox-commune.webp" alt="Spiritbox, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/spiritbox-rare.jpg" alt="Spiritbox, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/spiritbox-rare.webp" alt="Spiritbox, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/spiritbox-holo.jpg" alt="Spiritbox, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/spiritbox-holo.webp" alt="Spiritbox, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/spiritbox-signature.jpg" alt="Spiritbox, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/spiritbox-signature.webp" alt="Spiritbox, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/spiritbox-legendaire.jpg" alt="Spiritbox, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">spiritbox-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/spiritbox-legendaire.webp" alt="Spiritbox, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="blink182" hidden>
+    <div class="artist-panel" data-artist="blink182" hidden>
       <p class="artist-sub"><b>Travis Barker · « All the Small Things » · VII</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Batterie</li><li>Sous-genre : Pop punk</li><li>Groupe : Blink-182</li></ul>
       <p class="note">Photo de référence : Glenn Francis, 2019, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/blink182-base.jpg" alt="Blink-182, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">blink182-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/blink182-base.webp" alt="Blink-182, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/blink182-commune.jpg" alt="Blink-182, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">blink182-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/blink182-commune.webp" alt="Blink-182, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/blink182-rare.jpg" alt="Blink-182, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">blink182-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/blink182-rare.webp" alt="Blink-182, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/blink182-holo.jpg" alt="Blink-182, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">blink182-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/blink182-holo.webp" alt="Blink-182, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/blink182-signature.jpg" alt="Blink-182, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">blink182-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/blink182-signature.webp" alt="Blink-182, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/blink182-legendaire.jpg" alt="Blink-182, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">blink182-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/blink182-legendaire.webp" alt="Blink-182, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="landmvrks" hidden>
+    <div class="artist-panel" data-artist="landmvrks" hidden>
       <p class="artist-sub"><b>Florent Salfati · « Lost in the Waves » · VIII</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Metalcore</li><li>Groupe : Landmvrks</li></ul>
       <p class="note">Photo de référence : Birgit Fostervold, Tons of Rock 2025, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/landmvrks-base.jpg" alt="Landmvrks, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">landmvrks-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/landmvrks-base.webp" alt="Landmvrks, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/landmvrks-commune.jpg" alt="Landmvrks, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">landmvrks-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/landmvrks-commune.webp" alt="Landmvrks, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/landmvrks-rare.jpg" alt="Landmvrks, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">landmvrks-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/landmvrks-rare.webp" alt="Landmvrks, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/landmvrks-holo.jpg" alt="Landmvrks, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">landmvrks-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/landmvrks-holo.webp" alt="Landmvrks, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/landmvrks-signature.jpg" alt="Landmvrks, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">landmvrks-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/landmvrks-signature.webp" alt="Landmvrks, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/landmvrks-legendaire.jpg" alt="Landmvrks, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">landmvrks-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/landmvrks-legendaire.webp" alt="Landmvrks, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="hendrix" hidden>
+    <div class="artist-panel" data-artist="hendrix" hidden>
       <p class="artist-sub"><b>Jimi Hendrix · « Purple Haze » · IX</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Guitare</li><li>Sous-genre : Rock psychédélique</li><li>Groupe : Jimi Hendrix</li></ul>
       <p class="note">Photo de référence : photographe inconnu, Gröna Lund, Stockholm, 1967, domaine public.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/hendrix-base.jpg" alt="Jimi Hendrix, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hendrix-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/hendrix-base.webp" alt="Jimi Hendrix, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/hendrix-commune.jpg" alt="Jimi Hendrix, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hendrix-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/hendrix-commune.webp" alt="Jimi Hendrix, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/hendrix-rare.jpg" alt="Jimi Hendrix, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hendrix-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/hendrix-rare.webp" alt="Jimi Hendrix, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/hendrix-holo.jpg" alt="Jimi Hendrix, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hendrix-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/hendrix-holo.webp" alt="Jimi Hendrix, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/hendrix-signature.jpg" alt="Jimi Hendrix, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hendrix-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/hendrix-signature.webp" alt="Jimi Hendrix, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/hendrix-legendaire.jpg" alt="Jimi Hendrix, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hendrix-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/hendrix-legendaire.webp" alt="Jimi Hendrix, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="isaac-hale" hidden>
+    <div class="artist-panel" data-artist="isaac-hale" hidden>
       <p class="artist-sub"><b>Isaac Hale · « Counting Worms » · X</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Guitare</li><li>Sous-genre : Hardcore</li><li>Groupe : Knocked Loose</li></ul>
       <p class="note">Photo de référence : S. Bollmann, With Full Force 2018, Wikimedia Commons (Attribution).</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/isaac-hale-base.jpg" alt="Isaac Hale, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">isaac-hale-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/isaac-hale-base.webp" alt="Isaac Hale, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/isaac-hale-commune.jpg" alt="Isaac Hale, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">isaac-hale-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/isaac-hale-commune.webp" alt="Isaac Hale, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/isaac-hale-rare.jpg" alt="Isaac Hale, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">isaac-hale-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/isaac-hale-rare.webp" alt="Isaac Hale, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/isaac-hale-holo.jpg" alt="Isaac Hale, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">isaac-hale-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/isaac-hale-holo.webp" alt="Isaac Hale, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/isaac-hale-signature.jpg" alt="Isaac Hale, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">isaac-hale-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/isaac-hale-signature.webp" alt="Isaac Hale, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/isaac-hale-legendaire.jpg" alt="Isaac Hale, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">isaac-hale-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/isaac-hale-legendaire.webp" alt="Isaac Hale, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="korn" hidden>
+    <div class="artist-panel" data-artist="korn" hidden>
       <p class="artist-sub"><b>Jonathan Davis · « Freak on a Leash » · XI</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Nu metal</li><li>Groupe : Korn</li></ul>
       <p class="note">Photo de référence : pitpony.photography, Rock im Park 2016, CC BY-SA 3.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/korn-base.jpg" alt="Jonathan Davis, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/korn-base.webp" alt="Jonathan Davis, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/korn-commune.jpg" alt="Jonathan Davis, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/korn-commune.webp" alt="Jonathan Davis, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/korn-rare.jpg" alt="Jonathan Davis, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/korn-rare.webp" alt="Jonathan Davis, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/korn-holo.jpg" alt="Jonathan Davis, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/korn-holo.webp" alt="Jonathan Davis, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/korn-signature.jpg" alt="Jonathan Davis, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/korn-signature.webp" alt="Jonathan Davis, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/korn-legendaire.jpg" alt="Jonathan Davis, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">korn-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/korn-legendaire.webp" alt="Jonathan Davis, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="hoppus" hidden>
+    <div class="artist-panel" data-artist="hoppus" hidden>
       <p class="artist-sub"><b>Mark Hoppus · « What's My Age Again? » · XII</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Basse, chant</li><li>Sous-genre : Pop punk</li><li>Groupe : Blink-182</li></ul>
       <p class="note">Photo de référence : Brennan Schnell, Montréal 2011, CC BY 2.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/hoppus-base.jpg" alt="Mark Hoppus, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hoppus-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/hoppus-base.webp" alt="Mark Hoppus, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/hoppus-commune.jpg" alt="Mark Hoppus, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hoppus-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/hoppus-commune.webp" alt="Mark Hoppus, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/hoppus-rare.jpg" alt="Mark Hoppus, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hoppus-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/hoppus-rare.webp" alt="Mark Hoppus, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/hoppus-holo.jpg" alt="Mark Hoppus, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hoppus-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/hoppus-holo.webp" alt="Mark Hoppus, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/hoppus-signature.jpg" alt="Mark Hoppus, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hoppus-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/hoppus-signature.webp" alt="Mark Hoppus, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/hoppus-legendaire.jpg" alt="Mark Hoppus, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">hoppus-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/hoppus-legendaire.webp" alt="Mark Hoppus, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="poppy" hidden>
+    <div class="artist-panel" data-artist="poppy" hidden>
       <p class="artist-sub"><b>Poppy · « I Disagree » · XIII</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Métal expérimental</li><li>Groupe : Poppy</li></ul>
       <p class="note">Photo de référence : Justin Higuchi, The Wiltern 2023, CC BY 2.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/poppy-base.jpg" alt="Poppy, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">poppy-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/poppy-base.webp" alt="Poppy, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/poppy-commune.jpg" alt="Poppy, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">poppy-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/poppy-commune.webp" alt="Poppy, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/poppy-rare.jpg" alt="Poppy, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">poppy-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/poppy-rare.webp" alt="Poppy, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/poppy-holo.jpg" alt="Poppy, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">poppy-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/poppy-holo.webp" alt="Poppy, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/poppy-signature.jpg" alt="Poppy, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">poppy-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/poppy-signature.webp" alt="Poppy, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/poppy-legendaire.jpg" alt="Poppy, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">poppy-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/poppy-legendaire.webp" alt="Poppy, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="ramos" hidden>
+    <div class="artist-panel" data-artist="ramos" hidden>
       <p class="artist-sub"><b>Will Ramos · « To the Hellfire » · XIV</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Deathcore</li><li>Groupe : Lorna Shore</li></ul>
       <p class="note">Photo de référence : Birgit Fostervold, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/ramos-base.jpg" alt="Will Ramos, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">ramos-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/ramos-base.webp" alt="Will Ramos, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/ramos-commune.jpg" alt="Will Ramos, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">ramos-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/ramos-commune.webp" alt="Will Ramos, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/ramos-rare.jpg" alt="Will Ramos, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">ramos-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/ramos-rare.webp" alt="Will Ramos, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/ramos-holo.jpg" alt="Will Ramos, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">ramos-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/ramos-holo.webp" alt="Will Ramos, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/ramos-signature.jpg" alt="Will Ramos, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">ramos-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/ramos-signature.webp" alt="Will Ramos, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/ramos-legendaire.jpg" alt="Will Ramos, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">ramos-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/ramos-legendaire.webp" alt="Will Ramos, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="slash" hidden>
+    <div class="artist-panel" data-artist="slash" hidden>
       <p class="artist-sub"><b>Slash · « Welcome to the Jungle » · XV</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Guitare</li><li>Sous-genre : Hard rock</li><li>Groupe : Guns N' Roses</li></ul>
       <p class="note">Photo de référence : Kreepin Deth, Londres 2022, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/slash-base.jpg" alt="Slash, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">slash-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/slash-base.webp" alt="Slash, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/slash-commune.jpg" alt="Slash, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">slash-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/slash-commune.webp" alt="Slash, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/slash-rare.jpg" alt="Slash, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">slash-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/slash-rare.webp" alt="Slash, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/slash-holo.jpg" alt="Slash, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">slash-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/slash-holo.webp" alt="Slash, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/slash-signature.jpg" alt="Slash, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">slash-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/slash-signature.webp" alt="Slash, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/slash-legendaire.jpg" alt="Slash, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">slash-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/slash-legendaire.webp" alt="Slash, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="duplantier" hidden>
+    <div class="artist-panel" data-artist="duplantier" hidden>
       <p class="artist-sub"><b>Mario Duplantier · « Flying Whales » · XVI</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Batterie</li><li>Sous-genre : Death metal progressif</li><li>Groupe : Gojira</li></ul>
       <p class="note">Photo de référence : Sven Mandel, Rock am Ring 2017, CC BY-SA 4.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/duplantier-base.jpg" alt="Mario Duplantier, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">duplantier-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/duplantier-base.webp" alt="Mario Duplantier, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/duplantier-commune.jpg" alt="Mario Duplantier, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">duplantier-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/duplantier-commune.webp" alt="Mario Duplantier, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/duplantier-rare.jpg" alt="Mario Duplantier, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">duplantier-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/duplantier-rare.webp" alt="Mario Duplantier, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/duplantier-holo.jpg" alt="Mario Duplantier, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">duplantier-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/duplantier-holo.webp" alt="Mario Duplantier, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/duplantier-signature.jpg" alt="Mario Duplantier, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">duplantier-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/duplantier-signature.webp" alt="Mario Duplantier, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/duplantier-legendaire.jpg" alt="Mario Duplantier, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">duplantier-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/duplantier-legendaire.webp" alt="Mario Duplantier, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="zack" hidden>
+    <div class="artist-panel" data-artist="zack" hidden>
       <p class="artist-sub"><b>Zack de la Rocha · « Bulls on Parade » · XVII</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant</li><li>Sous-genre : Rap metal</li><li>Groupe : Rage Against the Machine</li></ul>
       <p class="note">Photo de référence : thetripwirenyc, Coachella 2007, CC BY 2.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/zack-base.jpg" alt="Zack de la Rocha, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">zack-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/zack-base.webp" alt="Zack de la Rocha, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/zack-commune.jpg" alt="Zack de la Rocha, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">zack-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/zack-commune.webp" alt="Zack de la Rocha, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/zack-rare.jpg" alt="Zack de la Rocha, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">zack-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/zack-rare.webp" alt="Zack de la Rocha, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/zack-holo.jpg" alt="Zack de la Rocha, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">zack-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/zack-holo.webp" alt="Zack de la Rocha, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/zack-signature.jpg" alt="Zack de la Rocha, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">zack-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/zack-signature.webp" alt="Zack de la Rocha, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/zack-legendaire.jpg" alt="Zack de la Rocha, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">zack-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/zack-legendaire.webp" alt="Zack de la Rocha, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="heriot" hidden>
+    <div class="artist-panel" data-artist="heriot" hidden>
       <p class="artist-sub"><b>Debbie Gough · « Devoured by the Mouth of Hell » · XVIII</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Chant, guitare</li><li>Sous-genre : Metalcore</li><li>Groupe : Heriot</li></ul>
       <p class="note">Photo de référence : Nessie Spencer, Brighton, CC BY-SA 2.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/heriot-base.jpg" alt="Debbie Gough, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">heriot-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/heriot-base.webp" alt="Debbie Gough, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/heriot-commune.jpg" alt="Debbie Gough, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">heriot-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/heriot-commune.webp" alt="Debbie Gough, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/heriot-rare.jpg" alt="Debbie Gough, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">heriot-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/heriot-rare.webp" alt="Debbie Gough, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/heriot-holo.jpg" alt="Debbie Gough, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">heriot-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/heriot-holo.webp" alt="Debbie Gough, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/heriot-signature.jpg" alt="Debbie Gough, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">heriot-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/heriot-signature.webp" alt="Debbie Gough, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/heriot-legendaire.jpg" alt="Debbie Gough, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">heriot-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/heriot-legendaire.webp" alt="Debbie Gough, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="frusciante" hidden>
+    <div class="artist-panel" data-artist="frusciante" hidden>
       <p class="artist-sub"><b>John Frusciante · « Under the Bridge » · XIX</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Guitare</li><li>Sous-genre : Funk rock</li><li>Groupe : Red Hot Chili Peppers</li></ul>
       <p class="note">Photo de référence : Hel Davies, CC BY-SA 2.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/frusciante-base.jpg" alt="John Frusciante, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">frusciante-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/frusciante-base.webp" alt="John Frusciante, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/frusciante-commune.jpg" alt="John Frusciante, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">frusciante-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/frusciante-commune.webp" alt="John Frusciante, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/frusciante-rare.jpg" alt="John Frusciante, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">frusciante-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/frusciante-rare.webp" alt="John Frusciante, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/frusciante-holo.jpg" alt="John Frusciante, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">frusciante-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/frusciante-holo.webp" alt="John Frusciante, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/frusciante-signature.jpg" alt="John Frusciante, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">frusciante-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/frusciante-signature.webp" alt="John Frusciante, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/frusciante-legendaire.jpg" alt="John Frusciante, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">frusciante-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/frusciante-legendaire.webp" alt="John Frusciante, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="root" hidden>
+    <div class="artist-panel" data-artist="root" hidden>
       <p class="artist-sub"><b>Jim Root · « Duality » · XX</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Guitare</li><li>Sous-genre : Nu metal</li><li>Groupe : Slipknot</li></ul>
       <p class="note">Photo de référence : Factor Metal, Knotfest México 2016, CC BY 2.0 ; masque de bouffon décrit dans le prompt.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/root-base.jpg" alt="Jim Root, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">root-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/root-base.webp" alt="Jim Root, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/root-commune.jpg" alt="Jim Root, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">root-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/root-commune.webp" alt="Jim Root, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/root-rare.jpg" alt="Jim Root, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">root-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/root-rare.webp" alt="Jim Root, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/root-holo.jpg" alt="Jim Root, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">root-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/root-holo.webp" alt="Jim Root, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/root-signature.jpg" alt="Jim Root, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">root-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/root-signature.webp" alt="Jim Root, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/root-legendaire.jpg" alt="Jim Root, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">root-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/root-legendaire.webp" alt="Jim Root, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
-    <div class="artist-panel" role="tabpanel" data-artist="jordison" hidden>
+    <div class="artist-panel" data-artist="jordison" hidden>
       <p class="artist-sub"><b>Joey Jordison · « Wait and Bleed » · XXI</b></p>
       <ul class="tags"><li>Type : Membre</li><li>Instrument : Batterie</li><li>Sous-genre : Nu metal</li><li>Groupe : Slipknot</li></ul>
       <p class="note">Photo de référence : Rezter, CC BY-SA 3.0.</p>
       <div class="slots creas">
-      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/jordison-base.jpg" alt="Joey Jordison, Base" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jordison-base.jpg</span></div>
+      <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/jordison-base.webp" alt="Joey Jordison, Base" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Base</strong></figcaption></figure>
-      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/creas/jordison-commune.jpg" alt="Joey Jordison, Commune" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jordison-commune.jpg</span></div>
+      <figure class="slot" data-rarity="commune"><div class="slot-img"><img src="assets/da/thumbs/creas/jordison-commune.webp" alt="Joey Jordison, Commune" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Commune</strong></figcaption></figure>
-      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/creas/jordison-rare.jpg" alt="Joey Jordison, Rare" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jordison-rare.jpg</span></div>
+      <figure class="slot" data-rarity="rare"><div class="slot-img"><img src="assets/da/thumbs/creas/jordison-rare.webp" alt="Joey Jordison, Rare" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Rare</strong></figcaption></figure>
-      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/creas/jordison-holo.jpg" alt="Joey Jordison, Holo / Prisme" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jordison-holo.jpg</span></div>
+      <figure class="slot" data-rarity="holo"><div class="slot-img"><img src="assets/da/thumbs/creas/jordison-holo.webp" alt="Joey Jordison, Holo / Prisme" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Holo / Prisme</strong></figcaption></figure>
-      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/creas/jordison-signature.jpg" alt="Joey Jordison, Signature" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jordison-signature.jpg</span></div>
+      <figure class="slot" data-rarity="signature"><div class="slot-img"><img src="assets/da/thumbs/creas/jordison-signature.webp" alt="Joey Jordison, Signature" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Signature</strong></figcaption></figure>
-      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/creas/jordison-legendaire.jpg" alt="Joey Jordison, Légendaire" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">jordison-legendaire.jpg</span></div>
+      <figure class="slot" data-rarity="legendaire"><div class="slot-img"><img src="assets/da/thumbs/creas/jordison-legendaire.webp" alt="Joey Jordison, Légendaire" loading="lazy" width="520" height="776"></div>
         <figcaption><strong>Légendaire</strong></figcaption></figure>
       </div>
     </div>
   </div>
 
   <h3>Dos de carte</h3>
-  <div class="slots creas"><figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/card-back.jpg" alt="Dos de carte Metalnini" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">card-back.jpg</span></div>
+  <div class="slots creas"><figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/card-back.webp" alt="Dos de carte Metalnini" loading="lazy" width="520" height="776"></div>
     <figcaption><strong>Dos commun à toutes les cartes</strong><span class="meta">Même recette (Nano Banana Pro, référence de style The Priest), sans personnage : sigil lune et soleil, manches de guitare croisés, crânes aux coins, cartouche « METALNINI ». Identique pour toutes les raretés, pour ne rien dévoiler avant le retournement.</span></figcaption></figure></div>
 
   <h3>Paquet</h3>
   <div class="slots creas">
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/pack-a.jpg" alt="Booster Metalnini en foil" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-a.jpg</span></div>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-a.webp" alt="Booster Metalnini en foil" loading="lazy" width="520" height="776"></div>
       <figcaption><strong>A · Booster en foil (retenu pour l'app)</strong><span class="meta">Sachet scellé aux bords sertis, sigil du dos de carte, « METALNINI ». Devenu le <b>Mosh Pack</b> (« MOSH PACK · 5 CARTES ») : le paquet tous styles, qui tire dans tous les musiciens, comme un mosh pit où toutes les scènes se mélangent. C'est l'objet que l'on déchire du doigt dans le prototype.</span></figcaption></figure>
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/pack-b.jpg" alt="Booster Metalnini sous blister" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-b.jpg</span></div>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-b.webp" alt="Booster Metalnini sous blister" loading="lazy" width="520" height="776"></div>
       <figcaption><strong>B · Sous blister</strong><span class="meta">Le même booster dans une coque plastique sur carton gravé : piste pour la boutique, la présentation ou un futur produit physique (phase 2 hybride).</span></figcaption></figure>
   
   </div>
   <p>Un sachet par classeur de style, même design, couleur d'accent propre : un paquet de style ne contient que des cartes de son classeur, le Mosh Pack tire dans tous les musiciens.</p>
   <div class="slots mood tall">
-    <figure class="slot"><div class="slot-img"><img src="assets/da/creas/pack-metalcore.jpg" alt="Paquet Metalcore" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-metalcore.jpg</span></div><figcaption><strong>Metalcore</strong>Bleu glacial et argent</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/creas/pack-hardcore.jpg" alt="Paquet Hardcore & extrême" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-hardcore.jpg</span></div><figcaption><strong>Hardcore & extrême</strong>Rouge sang</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/creas/pack-numetal.jpg" alt="Paquet Nu metal & alternatif" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-numetal.jpg</span></div><figcaption><strong>Nu metal & alternatif</strong>Orange industriel</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/creas/pack-poppunk.jpg" alt="Paquet Pop punk" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-poppunk.jpg</span></div><figcaption><strong>Pop punk</strong>Rose vif</figcaption></figure>
-    <figure class="slot"><div class="slot-img"><img src="assets/da/creas/pack-legendes.jpg" alt="Paquet Légendes du rock" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">pack-legendes.jpg</span></div><figcaption><strong>Légendes du rock</strong>Ambre et bronze ; proche de la Série I, à différencier davantage si besoin</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-metalcore.webp" alt="Paquet Metalcore" loading="lazy" width="520" height="776"></div><figcaption><strong>Metalcore</strong>Bleu glacial et argent</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-hardcore.webp" alt="Paquet Hardcore & extrême" loading="lazy" width="520" height="776"></div><figcaption><strong>Hardcore & extrême</strong>Rouge sang</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-numetal.webp" alt="Paquet Nu metal & alternatif" loading="lazy" width="520" height="776"></div><figcaption><strong>Nu metal & alternatif</strong>Orange industriel</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-poppunk.webp" alt="Paquet Pop punk" loading="lazy" width="520" height="776"></div><figcaption><strong>Pop punk</strong>Rose vif</figcaption></figure>
+    <figure class="slot"><div class="slot-img"><img src="assets/da/thumbs/creas/pack-legendes.webp" alt="Paquet Légendes du rock" loading="lazy" width="520" height="776"></div><figcaption><strong>Légendes du rock</strong>Ambre et bronze ; proche de la Série I, à différencier davantage si besoin</figcaption></figure>
 </div>
 
   <h3>Marquage des cartes</h3>
@@ -1086,43 +1082,42 @@ Traits visuels et titres/achievements déblocables selon le vécu cumulé sur ce
     <tbody>
       <tr><td>Type</td><td>Artiste, Membre, Live, Album, Riff, Collector</td><td>Gabarit utilisé</td></tr>
       <tr><td>Instrument</td><td>Chant, guitare, basse, batterie, clavier… ; collection « par instrument »</td><td>Petit pictogramme dans une zone fixe du cadre [À PRÉCISER : emplacement]</td></tr>
-      <tr><td>Sous-genre</td><td>Collections et guildes par sous-genre ; un groupe peut en avoir plusieurs</td><td>Accent de liseré et tag (voir Système visuel)</td></tr>
+      <tr><td>Sous-genre</td><td>Collections et guildes par sous-genre ; un groupe peut en avoir plusieurs</td><td>Accent de liseré et tag (voir Brief Krea)</td></tr>
       <tr><td>Groupe(s)</td><td>Collection « par musicien » à travers les side-projects</td><td>Sous-titre du cartouche</td></tr>
       <tr><td>Rareté, numéro d'arcane, numéro d'édition</td><td>Système de rareté, ordre dans la série</td><td>Cadre et finition, chiffre romain, fine print</td></tr>
     </tbody>
   </table></div>
-  <p class="note">[À PRÉCISER : la liste des accents de sous-genre (Système visuel) ne couvre pas encore hardcore, metalcore, metalcore progressif, pop punk, rock psychédélique, nu metal, métal expérimental, deathcore, hard rock, rap metal, funk rock ni death metal progressif ; couleurs à définir.]</p>
+  <p class="note">[À PRÉCISER : la liste des accents de sous-genre (Brief Krea, variable [SOUS-GENRE]) ne couvre pas encore hardcore, metalcore, metalcore progressif, pop punk, rock psychédélique, nu metal, métal expérimental, deathcore, hard rock, rap metal, funk rock ni death metal progressif ; couleurs à définir.]</p>
   <p class="note">[À PRÉCISER : les signatures manuscrites des versions Signature sont inventées par le modèle ; acceptable en usage perso, à remplacer par un sceau avant toute diffusion.]</p>
   <p class="note">[INFORMATION MANQUANTE : Dying Wish (Emma Boster) et Kublai Khan TX (Matt Honeycutt) — aucune photo en gros plan libre de droits sur Wikimedia Commons ; photos de référence à fournir]</p>
 
   <h3>Tests de génération</h3>
   <div class="slots creas">
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-knocked-loose-01.jpg" alt="Test Knocked Loose, essai 1" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-knocked-loose-01.jpg</span></div>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/test-knocked-loose-01.webp" alt="Test Knocked Loose, essai 1" loading="lazy" width="520" height="780"></div>
       <figcaption><strong>Knocked Loose · essai 1</strong><span class="meta">Krea 2 Medium, 2:3. Style gothique conforme à The Priest ; personnage, objets et textes ignorés.</span></figcaption></figure>
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-knocked-loose-02.jpg" alt="Test Knocked Loose, essai 2" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-knocked-loose-02.jpg</span></div>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/test-knocked-loose-02.webp" alt="Test Knocked Loose, essai 2" loading="lazy" width="520" height="780"></div>
       <figcaption><strong>Knocked Loose · essai 2</strong><span class="meta">Krea 2 Medium, creativity raw, style ref The Priest 0.6, personnage en tête du prompt. Composition, objets et titre respectés ; ressemblance à valider.</span></figcaption></figure>
-    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/creas/test-knocked-loose-03.jpg" alt="Test Knocked Loose, essai 3" loading="lazy" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="ph">test-knocked-loose-03.jpg</span></div>
+    <figure class="slot" data-rarity="archive"><div class="slot-img"><img src="assets/da/thumbs/creas/test-knocked-loose-03.webp" alt="Test Knocked Loose, essai 3" loading="lazy" width="520" height="776"></div>
       <figcaption><strong>Knocked Loose · essai 3</strong><span class="meta">Nano Banana Pro, 2:3. Références : photo de Bryan Garris (S. Bollmann, Wikimedia Commons, With Full Force 2018) pour le visage, The Priest pour le style. Nom et titre ajoutés.</span></figcaption></figure>
   </div>
 
 </section>
 
-<!-- ============ BRIEF KREA ============ -->
+<!-- ============ LOGO ============ -->
 <section id="da-logo" class="doc-sec">
-  <p class="eyebrow">Logo</p>
   <h2>Logo</h2>
   <p class="lead">Lettrage façon thrash des années 80 : lettres anguleuses, M et I de bout étirés en lames. Inspiré du genre, sans copier un logo existant (celui de Metallica est une marque déposée). Deux pistes générées avec Nano Banana Pro, à choisir puis à redessiner en vectoriel.</p>
   <div class="slots creas">
-    <figure class="slot"><div class="slot-img has-img" style="aspect-ratio:16/9"><img src="assets/da/logo/logo-chrome.jpg" alt="Logo Metalnini, piste chrome" loading="lazy"></div>
+    <figure class="slot"><div class="slot-img" style="aspect-ratio:16/9"><img src="assets/da/thumbs/logo/logo-chrome.webp" alt="Logo Metalnini, piste chrome" loading="lazy" width="520" height="291"></div>
       <figcaption><strong>Piste A · Chrome</strong>Acier poli biseauté, reflets froids : très heavy metal, lisible de loin.</figcaption></figure>
-    <figure class="slot"><div class="slot-img has-img" style="aspect-ratio:16/9"><img src="assets/da/logo/logo-or.jpg" alt="Logo Metalnini, piste or gravé" loading="lazy"></div>
+    <figure class="slot"><div class="slot-img" style="aspect-ratio:16/9"><img src="assets/da/thumbs/logo/logo-or.webp" alt="Logo Metalnini, piste or gravé" loading="lazy" width="520" height="291"></div>
       <figcaption><strong>Piste B · Or gravé</strong>Or ancien hachuré comme les cartes tarot : le plus raccord avec la DA des cartes et de l'interface.</figcaption></figure>
   </div>
   <p class="note"><b>Piste retenue (2026-09-25) : B · Or gravé.</b> Utilisée détourée sur l'écran de lancement et l'écran de compte du prototype. Reste à la redessiner en vectoriel pour l'app iOS, les paquets et les icônes.</p>
 </section>
 
+<!-- ============ BRIEF KREA ============ -->
 <section id="da-brief-krea" class="doc-sec">
-  <p class="eyebrow">04 · Brief de génération</p>
   <h2>Brief Krea</h2>
   <p class="lead">Un prompt de base commun à toutes les créas, pour que les cartes restent homogènes d'une génération à l'autre. Seuls les champs entre crochets changent. Point de départ à ajuster après les premiers essais.</p>
 
@@ -1171,7 +1166,6 @@ Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
 </section>
 <!-- ============ COÛTS ============ -->
 <section id="da-couts" class="doc-sec">
-  <p class="eyebrow">05 · Budget</p>
   <h2>Coûts de génération</h2>
   <p class="lead">Les générations passent par l'API Krea du compte perso, sur un solde prépayé en dollars, séparé des crédits de l'app web. Seuls les jobs terminés sont facturés.</p>
 
@@ -1224,43 +1218,91 @@ Card type: [TYPE]. Rarity treatment: [RARETÉ].</code></pre>
   <p class="note">Estimations sur la base du tarif Nano Banana Pro 1K ; une résolution plus haute (2K, 4K) coûte davantage.</p>
 </section>
 
-<section id="da-systeme" class="doc-sec"><p class="eyebrow">Référence</p><h2>Système visuel &amp; gabarit</h2><p class="lead">Les règles déjà actées : chrome, palette, typographie, gabarit paramétrique et motion. Elles restent valables quel que soit le style de portrait retenu.</p></section>
-<section id="da-principe-directeur" class="doc-sec sub"><h2>Principe directeur</h2>
-<p><strong>Le chrome de l'app est monochrome. Toute la couleur est réservée aux cartes.</strong>
-Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds ou les composants UI génériques — ils restent noir/blanc/gris. Ça garantit que l'œil va systématiquement à la carte à l'écran, et ça évite l'écueil "app metal = néon partout" qui fatiguerait vite visuellement.</p>
-<p><em>Point ouvert depuis le pivot vers une direction carte "tarot vintage" (voir plus bas) :</em> ce principe suppose une carte qui contraste avec un chrome sombre neutre. Une carte à dominante parchemin/chaude peut très bien fonctionner par contraste sur fond noir (comme une carte de tarot posée sur une table sombre) — mais reste à valider en contexte réel d'écran, pas seulement sur une carte isolée.</p>
+<!-- ============ SYSTÈME VISUEL (d'après MASTER.md) ============ -->
+<section id="da-systeme" class="doc-sec">
+  <h2>Système visuel &amp; gabarit</h2>
+  <div class="decision"><p class="eyebrow">Mise à jour du 2026-10-10</p><p>Remplace la version antérieure au 2026-09-30 (chrome monochrome, Oswald, Inter, JetBrains Mono). La référence vivante est <a href="https://github.com/PITTILLONI/metalnini/blob/main/design-system/metalnini/MASTER.md">design-system/metalnini/MASTER.md</a> : en cas d'écart, elle fait foi.</p></div>
+  <p class="lead">Tarot gravé, moderne et élégant. L'interface est le cadre des cartes : noir d'encre, or, os, rouge sang. Jamais « site web » générique. Les cartes sont les héroïnes ; l'interface s'efface autour.</p>
+</section>
+<section id="da-signature" class="doc-sec sub"><h2>Signature « collector arcade »</h2>
+  <p>Validée le 2026-09-30. Deux couches, jamais mélangées sur un même élément :</p>
+  <div class="dodont">
+    <div class="do">
+      <p class="eyebrow">Collector (gravure) : les cartes</p>
+      <ul>
+        <li>Cadres à coins ornés or (<code>.gframe</code>).</li>
+        <li>Sceaux de cire pour les raretés (C, R, H, S, L).</li>
+        <li>Cierge qui se consume pour la transformation.</li>
+        <li>Noms et titres en Pirata One, rubans rouges pour les titres de section.</li>
+        <li>Parchemin pour les textes longs (bios, styles).</li>
+      </ul>
+    </div>
+    <div class="do">
+      <p class="eyebrow">Arcade (relief et crans) : le jeu</p>
+      <ul>
+        <li>Bandeau de rang : anneau, titre, points en crans.</li>
+        <li>Quêtes à jauges segmentées épaisses (10 crans).</li>
+        <li>Boutons en relief : ombre pleine décalée de 5 à 7 px, pas de flou.</li>
+        <li>Coffre et butin : rayons, flammes, pastilles « +1 », « +6 XP ».</li>
+      </ul>
+    </div>
+  </div>
 </section>
 <section id="da-palette" class="doc-sec sub"><h2>Palette</h2>
-<p><strong>Chrome UI (neutre, sobre)</strong> — inspiré d'une DA "photo studio" pur noir/blanc :
-- Background : <span class="sw" style="--c:#000000"></span><code>#000000</code> (noir OLED)
-- Surface/carte de fond (hors carte-jeu) : <span class="sw" style="--c:#0C0C0C"></span><code>#0C0C0C</code> / <span class="sw" style="--c:#121212"></span><code>#121212</code>
-- Foreground : <span class="sw" style="--c:#FAFAFA"></span><code>#FAFAFA</code>
-- Muted foreground : <span class="sw" style="--c:#94A3B8"></span><code>#94A3B8</code>
-- Border : <span class="sw" style="--c:#3F3F46"></span><code>#3F3F46</code> (rgba(255,255,255,0.08) en overlay)
-- Destructive : <span class="sw" style="--c:#EF4444"></span><code>#EF4444</code> (usage fonctionnel uniquement — erreurs)</p>
-<p><strong>Couleur = système de rareté</strong> (seule source de couleur saturée de l'app, portée par les cartes) :
-- Commune : gris acier <span class="sw" style="--c:#71717A"></span><code>#71717A</code>
-- Rare : bleu froid <span class="sw" style="--c:#3B82F6"></span><code>#3B82F6</code>
-- Holo/Prisme : dégradé iridescent (teal → violet → rose, effet shimmer animé)
-- Signature : or métallique <span class="sw" style="--c:#D4AF37"></span><code>#D4AF37</code>
-- Légendaire : rouge sombre profond + foil noir <span class="sw" style="--c:#7F1D1D"></span><code>#7F1D1D</code> / holo noir</p>
-<p><strong>Accent de sous-genre</strong> (discret, limité au liseré de cadre + tag, jamais au fond) :
-- Black metal : bleu glacial
-- Death metal : rouge sang
-- Thrash : jaune/orange
-- Nu-metal : orange industriel
-- Prog : violet
-- Rock/hard rock classique : ambre/bronze</p>
+  <p>Jetons CSS de <code>proto/index.html</code>. Contrastes mesurés sur le fond <code>--bg</code>.</p>
+  <div class="table-wrap"><table class="palette">
+    <thead><tr><th>Nuance</th><th>Jeton</th><th>Valeur</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td><span class="sw" style="--c:#0c0b0a"></span></td><td><code>--bg</code> / <code>--ink</code></td><td><code>#0c0b0a</code> / <code>#0d0a08</code></td><td>Fond</td></tr>
+      <tr><td><span class="sw" style="--c:#161412"></span></td><td><code>--surface</code></td><td><code>#161412</code></td><td>Surfaces : tuiles, objectifs, modales (filet <code>--border</code>, rayon 12-14 px, sans ombre intérieure)</td></tr>
+      <tr><td><span class="sw" style="--c:#1e1b18"></span></td><td><code>--surface-2</code></td><td><code>#1e1b18</code></td><td>Surface au-dessus d'une surface</td></tr>
+      <tr><td><span class="sw" style="--c:#f3f0ea"></span></td><td><code>--text</code></td><td><code>#f3f0ea</code></td><td>Texte (17:1)</td></tr>
+      <tr><td><span class="sw" style="--c:#a49e94"></span></td><td><code>--muted</code></td><td><code>#a49e94</code></td><td>Texte secondaire (7,4:1)</td></tr>
+      <tr><td><span class="sw" style="--c:#eb9a26"></span></td><td><code>--gold</code></td><td><code>#eb9a26</code></td><td>Or : accent, état actif (8,6:1)</td></tr>
+      <tr><td><span class="sw" style="--c:#f4b243"></span></td><td><code>--gold-hi</code></td><td><code>#f4b243</code></td><td>Or clair : survol, filet de focus clavier</td></tr>
+      <tr><td><span class="sw" style="--c:#b56c16"></span></td><td><code>--gold-lo</code></td><td><code>#b56c16</code></td><td>Or sombre</td></tr>
+      <tr><td><span class="sw" style="--c:#b23a3a"></span></td><td><code>--accent</code></td><td><code>#b23a3a</code></td><td>Rouge des fonds et pastilles, bouton danger (texte blanc dessus 5,9:1) ; jamais en texte</td></tr>
+      <tr><td><span class="sw" style="--c:#e0605a"></span></td><td><code>--accent-text</code></td><td><code>#e0605a</code></td><td>Rouge des textes et surtitres (5,6:1)</td></tr>
+      <tr><td><span class="sw" style="--c:#c9c3b8"></span></td><td><code>--r-commune</code></td><td><code>#c9c3b8</code></td><td>Rareté Commune</td></tr>
+      <tr><td><span class="sw" style="--c:#3b82f6"></span></td><td><code>--r-rare</code></td><td><code>#3b82f6</code></td><td>Rareté Rare</td></tr>
+      <tr><td><span class="sw" style="--c:#a78bfa"></span></td><td><code>--r-holo</code></td><td><code>#a78bfa</code></td><td>Rareté Holo</td></tr>
+      <tr><td><span class="sw" style="--c:#f5c542"></span></td><td><code>--r-signature</code></td><td><code>#f5c542</code></td><td>Rareté Signature</td></tr>
+      <tr><td><span class="sw" style="--c:#ef4444"></span></td><td><code>--r-legendaire</code></td><td><code>#ef4444</code></td><td>Rareté Légendaire</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Une rareté est toujours doublée d'un libellé, jamais signalée par la couleur seule.</p>
 </section>
 <section id="da-typographie" class="doc-sec sub"><h2>Typographie</h2>
-<ul>
-<li><strong>Display</strong> (titres, noms d'artiste/groupe) : condensée, bold, esprit affiche de concert — ex. Barlow Condensed ou Oswald.</li>
-<li><strong>Corps/UI</strong> : sans-serif neutre et très lisible — Inter.</li>
-<li><strong>Meta cartes</strong> (numéro d'édition, stats, code de rareté) : monospace — JetBrains Mono ou IBM Plex Mono, esprit "fine print" de carte à collectionner.</li>
-</ul>
+  <div class="type-specimen">
+    <div><p class="sample s-gothic">Pirata One</p><p>Titres d'écran, noms de cartes, titres de section. Bas de casse, seule police gothique, jamais en texte courant.</p></div>
+    <div><p class="sample s-display">Big Shoulders 0123</p><p>Chiffres, libellés et boutons. Graisse 800-900, capitales, interligne 0,95.</p></div>
+    <div><p class="sample s-body">Barlow, le texte courant<span>Surtitre en capitales Barlow</span></p><p>Interface et texte, graisses 400 à 700. Surtitres et libellés en capitales Barlow 500-600, espacées de 0,12 à 0,24 em.</p></div>
+  </div>
+  <ul>
+    <li>Aucun texte sous ~11 px (0,7 rem) ; corps de texte d'au moins 14 px.</li>
+    <li>Chiffres en <code>tabular-nums</code> (classe <code>.num</code>).</li>
+  </ul>
 </section>
-<section id="da-style" class="doc-sec sub"><h2>Style</h2>
-<p>Dark mode sobre, content-first, chrome plat sans effet (pas de skeuomorphisme, pas de glow décoratif hors carte). Les seuls effets visuels riches (texture foil, grain, shimmer holographique) sont réservés aux cartes elles-mêmes — jamais à l'interface autour.</p>
+<section id="da-boutons" class="doc-sec sub"><h2>Boutons en relief</h2>
+  <p>Un seul système en relief : même hauteur (52 px) et même typo partout (Big Shoulders Display 900, capitales, 0,1 em), coins de 12 px, ombre pleine décalée de 6 px.</p>
+  <div class="btn-demo" aria-hidden="true"><span class="btn">Principal</span><span class="btn ghost">Secondaire</span><span class="btn danger">Danger</span></div>
+  <ul>
+    <li><b>Principal</b> <code>.btn</code> : or plein en relief, lettres encre. Un seul par écran ; <code>.btn.block</code> pour la pleine largeur.</li>
+    <li><b>Secondaire</b> <code>.btn.ghost</code> : encre en relief, filet et lettres or.</li>
+    <li><b>Danger</b> <code>.btn.danger</code> : rouge plein, toujours derrière une modale de confirmation.</li>
+    <li><b>Icône seule</b> <code>.icon-btn</code> : rond, filet or fin, <code>aria-label</code> obligatoire, 44 px minimum.</li>
+    <li><b>Bordures</b> : un seul filet fin (1 px), jamais de double bordure ni de double filet.</li>
+  </ul>
+</section>
+<section id="da-interdits" class="doc-sec sub"><h2>À ne pas faire</h2>
+  <ul>
+    <li>Pas de carte « SaaS » : fond gris uni, rayon 12 px, filet 1 px, ombre floue, tout aligné au cordeau.</li>
+    <li>Pas de dégradé violet-bleu générique, pas de glassmorphism, pas d'emoji.</li>
+    <li>Pas de barre de progression lisse et fine : toujours segmentée ou matérielle (cierge, jauge à crans).</li>
+    <li>Pas de texte d'interface creux (« Bienvenue ! », « Découvrez… ») : le ton est celui d'un fan de metal.</li>
+    <li>Pas de deuxième police gothique ; pas de Pirata One en texte courant.</li>
+    <li>Pas de décor collector sur les éléments arcade, ni l'inverse (pas de coffre sur une fiche carte, pas de sceau sur une quête).</li>
+  </ul>
 </section>
 <section id="da-le-vrai-enjeu-generer-des-cartes-a-l-echelle-de-facon-homoge" class="doc-sec sub"><h2>Le vrai enjeu : générer des cartes à l'échelle, de façon homogène</h2>
 <p>La réponse n'est pas "designer chaque carte à la main", c'est un <strong>système de template paramétrique</strong> :</p>
@@ -1279,25 +1321,16 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 <section id="da-motion" class="doc-sec sub"><h2>Motion</h2>
 <p><strong>Outil retenu : Rive</strong>, sur la base d'une compétence déjà acquise par le porteur de projet — pas de dépendance externe à trouver pour animer l'app. Tous les moments listés ci-dessous restent dans le même principe directeur que le reste de la DA : les effets riches (foil, shimmer, particules) sont réservés à ces moments précis, jamais au chrome d'app autour.</p>
 <p>Classement par le soin que chaque moment demande, pas par ordre d'apparition dans l'app (détail des flows dans <a class="xref" href="#architecture">Architecture</a> et <a class="xref" href="flows.html">flows.html</a>) :</p>
-<p><strong>Niveau 1 — Séquences majeures</strong> (state machine à plusieurs variables exposées à l'app) :
-1. <strong>Reveal de pack</strong> (Flow B) — rareté et type de carte pilotent la scène ; le moment le plus chargé émotionnellement de l'app, et le seul endroit où les effets riches sont autorisés.
-2. <strong>Évolution de carte</strong> (Flow C) — avant/après, doit rester lisible même joué en rafale pour un utilisateur qui revient avec plusieurs évolutions en attente.
-3. <strong>Récompense de complétion / palier avatar</strong> (Flow F) — dans l'esprit du reveal mais plus court : un aboutissement, pas une découverte.
-4. <strong>Composition en direct, à deux</strong> (Flow G) — le swap atomique d'un échange vu simultanément sur les deux téléphones ; conclusion physique d'une vraie rencontre, mérite le même soin que le reveal.
-5. <strong>Mission complétée</strong> (Flow H) — probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.</p>
-<p><strong>Niveau 2 — Confirmations &amp; feedback courts</strong> (Rive plus simple, timeline ou peu de variables) :
-- <strong>Scan de billet réussi</strong> (Flow D) — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.
-- <strong>Barre XP qui se remplit</strong> (Flow D, F, H) — motif réutilisable partout où l'XP change.
-- <strong>Carte bonus de connexion "Metal Corner"</strong> (Flow G) — version allégée du reveal, une seule carte.
-- <strong>Nouvelle carte qui "atterrit" en Collection</strong>, avec highlight (Flow B).
-- <strong>Blips du radar de proximité</strong> (Flow G) — fans qui apparaissent/disparaissent à l'écran ; de l'ambiance plus qu'un moment fort.
-- <strong>Waveform du cri enregistré</strong> (profil) — cosmétique, mais colle directement à la ligne édito "drôle" du positionnement (voir <a class="xref" href="#concept">Concept</a>).</p>
+<p><strong>Niveau 1 — Séquences majeures</strong> (state machine à plusieurs variables exposées à l'app) :</p>
+<ol><li><strong>Reveal de pack</strong> (Flow B) — rareté et type de carte pilotent la scène ; le moment le plus chargé émotionnellement de l'app, et le seul endroit où les effets riches sont autorisés.</li><li><strong>Évolution de carte</strong> (Flow C) — avant/après, doit rester lisible même joué en rafale pour un utilisateur qui revient avec plusieurs évolutions en attente.</li><li><strong>Récompense de complétion / palier avatar</strong> (Flow F) — dans l'esprit du reveal mais plus court : un aboutissement, pas une découverte.</li><li><strong>Composition en direct, à deux</strong> (Flow G) — le swap atomique d'un échange vu simultanément sur les deux téléphones ; conclusion physique d'une vraie rencontre, mérite le même soin que le reveal.</li><li><strong>Mission complétée</strong> (Flow H) — probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.</li></ol>
+<p><strong>Niveau 2 — Confirmations &amp; feedback courts</strong> (Rive plus simple, timeline ou peu de variables) :</p>
+<ul><li><strong>Scan de billet réussi</strong> (Flow D) — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.</li><li><strong>Barre XP qui se remplit</strong> (Flow D, F, H) — motif réutilisable partout où l'XP change.</li><li><strong>Carte bonus de connexion "Metal Corner"</strong> (Flow G) — version allégée du reveal, une seule carte.</li><li><strong>Nouvelle carte qui "atterrit" en Collection</strong>, avec highlight (Flow B).</li><li><strong>Blips du radar de proximité</strong> (Flow G) — fans qui apparaissent/disparaissent à l'écran ; de l'ambiance plus qu'un moment fort.</li><li><strong>Waveform du cri enregistré</strong> (profil) — cosmétique, mais colle directement à la ligne édito "drôle" du positionnement (voir <a class="xref" href="#concept">Concept</a>).</li></ul>
 <p><strong>Niveau 3 — Micro-interactions</strong> : sélection de tuiles (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation — du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.</p>
 <p>Le détail des state machines de niveau 1 (déclencheurs, variables exposées — rareté, type de carte, palier atteint) est à spécifier une fois le gabarit de carte lui-même stabilisé, puisque l'animation de reveal doit piloter les mêmes zones fixes (bordure, overlay de rareté, portrait) que le gabarit statique.</p></section>
     </div>
   </div>
 </div>
-<div class="tab-panel" role="tabpanel" id="panel-architecture" aria-labelledby="tab-architecture" data-label="Architecture" hidden>
+<div class="tab-panel" id="panel-architecture" data-label="Architecture" hidden>
   <div class="wrap">
     <div class="panel-head">
       <p class="eyebrow">03 · Architecture</p>
@@ -1319,46 +1352,21 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 <div class="decision"><p class="eyebrow">Direction — 2026-09-25</p><p><b>Dans le prototype, la barre basse compte aujourd'hui deux onglets (Paquets, Classeur) ; les objectifs passent derrière une icône de l'en-tête qui ouvre une feuille, dont chaque ligne mène où elle se joue.</b> La place libérée prépare un onglet social qui réunit Live et Communauté : échanges, nouveautés, concerts, et des interactions gamifiées entre fans. Nom à trouver avec la DA (pistes : « Le Pit », « La Fosse », « Backstage »).</p></div>
 </section>
 <section id="architecture-2-inventaire-d-ecrans-par-section" class="doc-sec"><h2>2. Inventaire d'écrans (par section)</h2>
-<p><strong>Onboarding</strong>
-- Choix des genres/artistes favoris
-- Pack de bienvenue (offert) + premier reveal
-- Intro courte à la boucle centrale (collection / évolution / concert)</p>
-<p><strong>Accueil</strong>
-- Feed chronologique (évolutions, actu artiste, events à venir)
-- Bannière pack disponible
-- Accès rapide "prochain concert suivi"
-- Bandeau <strong>Missions en cours</strong> (2-3 missions actives, progression visible) — voir <code>Missions</code> dans <a class="xref" href="#concept">Concept</a> et Flow H</p>
-<p><strong>Collection</strong>
-- Vue d'ensemble par thème (grille + % complétion)
-- Vue transversale "par musicien" — toutes les cartes Membre d'un même musicien, tous groupes confondus (side-projects, supergroupes)
-- Vue transversale "par instrument" — ex. tous les batteurs ou bassistes suivis, tous groupes confondus
-- Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention) — pour une carte Membre : instrument et groupe(s) associés, avec lien direct vers les autres cartes de ce musicien
-- Vue "collections en cours" vs "complétées"
-- Écran de récompense de complétion d'un classeur officiel (carte Collector cosmétique + badge), dans l'esprit du reveal de pack
-- Création et gestion de classeurs personnalisés : sélection libre parmi ses cartes possédées, nommage, réordonnancement — sans mécanique de récompense propre (voir <a class="xref" href="#concept">Concept</a>)</p>
+<p><strong>Onboarding</strong></p>
+<ul><li>Choix des genres/artistes favoris</li><li>Pack de bienvenue (offert) + premier reveal</li><li>Intro courte à la boucle centrale (collection / évolution / concert)</li></ul>
+<p><strong>Accueil</strong></p>
+<ul><li>Feed chronologique (évolutions, actu artiste, events à venir)</li><li>Bannière pack disponible</li><li>Accès rapide "prochain concert suivi"</li><li>Bandeau <strong>Missions en cours</strong> (2-3 missions actives, progression visible) — voir <code>Missions</code> dans <a class="xref" href="#concept">Concept</a> et Flow H</li></ul>
+<p><strong>Collection</strong></p>
+<ul><li>Vue d'ensemble par thème (grille + % complétion)</li><li>Vue transversale "par musicien" — toutes les cartes Membre d'un même musicien, tous groupes confondus (side-projects, supergroupes)</li><li>Vue transversale "par instrument" — ex. tous les batteurs ou bassistes suivis, tous groupes confondus</li><li>Détail carte (recto/verso, historique d'évolution, rareté, origine d'obtention) — pour une carte Membre : instrument et groupe(s) associés, avec lien direct vers les autres cartes de ce musicien</li><li>Vue "collections en cours" vs "complétées"</li><li>Écran de récompense de complétion d'un classeur officiel (carte Collector cosmétique + badge), dans l'esprit du reveal de pack</li><li>Création et gestion de classeurs personnalisés : sélection libre parmi ses cartes possédées, nommage, réordonnancement — sans mécanique de récompense propre (voir <a class="xref" href="#concept">Concept</a>)</li></ul>
 <p><em>Point ouvert à trancher</em> : faut-il un binder unique filtrable par thème (structure actuelle), ou plusieurs classeurs distincts par sous-genre (ex. un classeur "Black metal", un classeur "Nu-metal") ? Un classeur par genre renforcerait l'identité de niche (cohérent avec les guildes par sous-genre) mais fragmenterait la vue d'ensemble et la lisibilité de la progression globale — à trancher avant maquettage de cet écran.</p>
-<p><strong>Packs</strong>
-- Sélection de pack (gratuit du jour/semaine, payant, événementiel)
-- Écran de reveal (le moment le plus chargé émotionnellement de l'app)
-- Résumé post-ouverture (nouvelles cartes, doublons, suggestion d'échange si doublon)</p>
-<p><strong>Live</strong>
-- Carnet de concerts (liste chronologique des shows vécus)
-- Import de billet (scan QR/code-barres électronique ou physique, repli photo/saisie manuelle) — détecte le concert et sert de preuve standard, voir <a class="xref" href="#concept">Concept</a>
-- Check-in confirmé, avec option "Visible aux autres fans ce soir" (opt-in, off par défaut) et option de géolocalisation ponctuelle du jour même (preuve renforcée, conditionne la carte Live exclusive)
-- Liste éphémère "Fans présents ce soir" — visible uniquement entre fans ayant mutuellement activé l'option pour ce concert ; disparaît après l'événement
-- Fiche avatar (traits débloqués, titres, XP par catégorie : collection, vécu concert, profil de spectateur)
-- Détail d'un concert passé (note d'ambiance, carte exclusive obtenue le cas échéant)</p>
-<p><strong>Communauté</strong>
-- Recherche/liste de fans (par carte recherchée, par guilde) — <strong>découverte uniquement</strong>, aucune proposition d'échange à distance possible depuis cet écran
-- Radar de proximité (hors concert) — fans de l'app détectés à quelques mètres (Bluetooth, opt-in, éphémère), point d'entrée d'une session d'échange
-- Session d'échange en direct (composition à deux en temps réel, confirmation simultanée) — accessible depuis la liste "Fans présents ce soir" (Live) ou le radar de proximité, jamais depuis la recherche globale
-- Guilde (fil, classement interne, membres)
-- Classements globaux (collection, avatar, guildes)</p>
-<p><strong>Profil (perso)</strong>
-- Vitrine publique de collection, dont les classeurs personnalisés mis en avant
-- Enregistrement et lecture du "cri" signature (audio court, cosmétique)
-- Historique des missions accomplies
-- Réglages, notifications, comptes liés</p>
+<p><strong>Packs</strong></p>
+<ul><li>Sélection de pack (gratuit du jour/semaine, payant, événementiel)</li><li>Écran de reveal (le moment le plus chargé émotionnellement de l'app)</li><li>Résumé post-ouverture (nouvelles cartes, doublons, suggestion d'échange si doublon)</li></ul>
+<p><strong>Live</strong></p>
+<ul><li>Carnet de concerts (liste chronologique des shows vécus)</li><li>Import de billet (scan QR/code-barres électronique ou physique, repli photo/saisie manuelle) — détecte le concert et sert de preuve standard, voir <a class="xref" href="#concept">Concept</a></li><li>Check-in confirmé, avec option "Visible aux autres fans ce soir" (opt-in, off par défaut) et option de géolocalisation ponctuelle du jour même (preuve renforcée, conditionne la carte Live exclusive)</li><li>Liste éphémère "Fans présents ce soir" — visible uniquement entre fans ayant mutuellement activé l'option pour ce concert ; disparaît après l'événement</li><li>Fiche avatar (traits débloqués, titres, XP par catégorie : collection, vécu concert, profil de spectateur)</li><li>Détail d'un concert passé (note d'ambiance, carte exclusive obtenue le cas échéant)</li></ul>
+<p><strong>Communauté</strong></p>
+<ul><li>Recherche/liste de fans (par carte recherchée, par guilde) — <strong>découverte uniquement</strong>, aucune proposition d'échange à distance possible depuis cet écran</li><li>Radar de proximité (hors concert) — fans de l'app détectés à quelques mètres (Bluetooth, opt-in, éphémère), point d'entrée d'une session d'échange</li><li>Session d'échange en direct (composition à deux en temps réel, confirmation simultanée) — accessible depuis la liste "Fans présents ce soir" (Live) ou le radar de proximité, jamais depuis la recherche globale</li><li>Guilde (fil, classement interne, membres)</li><li>Classements globaux (collection, avatar, guildes)</li></ul>
+<p><strong>Profil (perso)</strong></p>
+<ul><li>Vitrine publique de collection, dont les classeurs personnalisés mis en avant</li><li>Enregistrement et lecture du "cri" signature (audio court, cosmétique)</li><li>Historique des missions accomplies</li><li>Réglages, notifications, comptes liés</li></ul>
 </section>
 <section id="architecture-3-parcours-cles" class="doc-sec"><h2>3. Parcours clés</h2>
 <h3>Flow A — Onboarding → premier pack</h3>
@@ -1536,7 +1544,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
     </div>
   </div>
 </div>
-<div class="tab-panel" role="tabpanel" id="panel-roadmap" aria-labelledby="tab-roadmap" data-label="Roadmap" hidden>
+<div class="tab-panel" id="panel-roadmap" data-label="Roadmap" hidden>
   <div class="wrap">
     <div class="panel-head">
       <p class="eyebrow">04 · Roadmap</p>
@@ -1821,9 +1829,11 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
   </div>
 </div>
 
+</main>
+
 <div class="wrap">
   <footer>
-    Document de travail Metalnini — concept. Complète <a href="index.html">la page de pitch</a> et <a href="flows.html">les user flows</a>.
+    <nav class="site-nav" aria-label="Pages du projet"><a href="index.html">Pitch</a><a href="concept.html" aria-current="page">Concept</a><a href="flows.html">Flows</a><a href="sons.html">Sons</a><a href="proto/">Prototype</a></nav>
   </footer>
 </div>
 
@@ -1886,7 +1896,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
       var h2 = section.querySelector('h2');
       if(h2) parts.push(h2.textContent.trim());
     }
-    var block = el.closest('.slot, .pillar, .swatch-row, h3 + *, li, p');
+    var block = el.closest('.slot, .pillar, h3 + *, li, p');
     if(block){
       var h = block.querySelector('h4, figcaption strong') || null;
       if(h && h.textContent.trim()) parts.push(h.textContent.trim());
@@ -1952,7 +1962,7 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
       '<input type="text" class="cp-name" placeholder="Ton prénom (optionnel)">' +
       '<textarea class="cp-message" placeholder="Ton commentaire ici…" autofocus></textarea>' +
       '<div class="cp-row">' +
-        '<button type="button" class="cp-send">Envoyer</button>' +
+        '<button type="button" class="btn cp-send">Envoyer</button>' +
         '<button type="button" class="comment-close">Annuler</button>' +
       '</div>' +
       '<p class="cp-msg" hidden></p>';
@@ -2017,12 +2027,31 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
 (function(){
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab[data-tab]'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  var bar = document.querySelector('.tabs');
+  var strip = bar.querySelector('.tabs-inner');
+
+  // dégradés de bord tant qu'il reste des onglets cachés de ce côté
+  function fades(){
+    var max = strip.scrollWidth - strip.clientWidth;
+    bar.classList.toggle('fade-l', strip.scrollLeft > 4);
+    bar.classList.toggle('fade-r', strip.scrollLeft < max - 4);
+  }
+  strip.addEventListener('scroll', fades, {passive:true});
+  new ResizeObserver(fades).observe(strip);   // aussi quand le rideau se lève
 
   function show(key, target){
     panels.forEach(function(p){ p.hidden = p.id !== 'panel-' + key; });
-    tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-tab') === key)); });
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === key;
+      if(on){
+        t.setAttribute('aria-current', 'true');
+        // onglet actif ramené au centre de la barre, sans faire défiler la page
+        strip.scrollLeft = t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2;
+      } else t.removeAttribute('aria-current');
+    });
+    fades();
     if(target){ target.scrollIntoView(); }
-    else { window.scrollTo(0, document.querySelector('.tabs').offsetTop); }
+    else { window.scrollTo(0, bar.offsetTop); }
   }
 
   function route(){
@@ -2032,6 +2061,11 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
     var el = document.getElementById(id);
     var panel = el && el.closest('.tab-panel');
     if(panel){ show(panel.id.replace('panel-',''), el); return; }
+    // lien d'évitement : garde l'onglet ouvert et donne le focus au contenu
+    if(el){
+      if(panels.every(function(p){ return p.hidden; })) show('concept', null);
+      el.focus(); return;
+    }
     show('concept', null);
   }
 
@@ -2039,12 +2073,20 @@ Aucune couleur vive n'est utilisée dans la navigation, les boutons, les fonds o
   route();
 })();
 (function(){
+  // moodboard hors dépôt : la grille ne s'affiche que si ses images existent (jamais sur GitHub Pages)
+  var grid = document.getElementById('moodboard-grid');
+  if(/github\.io$/.test(location.hostname)) return;
+  var probe = new Image();
+  probe.onload = function(){ grid.hidden = false; document.getElementById('moodboard-off').hidden = true; };
+  probe.src = grid.querySelector('img').getAttribute('src');
+})();
+(function(){
   var KEY = 'metalnini-artist';
   var btns = Array.prototype.slice.call(document.querySelectorAll('.artist-btn'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.artist-panel'));
   function pick(id){
     if(!panels.some(function(p){ return p.getAttribute('data-artist') === id; })) return;
-    btns.forEach(function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-artist') === id)); });
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-artist') === id)); });
     panels.forEach(function(p){ p.hidden = p.getAttribute('data-artist') !== id; });
     try{ localStorage.setItem(KEY, id); }catch(e){}
   }

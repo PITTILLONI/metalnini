@@ -10,7 +10,7 @@ e = lambda s: html.escape(s, quote=False)
 
 # sons livrés : déclarés dans proto/sounds/manifest.js (case « Fait » cochée d'office)
 done = set(re.findall(r"^\s*'([a-z0-9-]+)'\s*:", (ROOT / 'proto' / 'sounds' / 'manifest.js').read_text(), re.M))
-box = lambda ok: '<span class="box on" aria-label="fait">✓</span>' if ok else '<span class="box" aria-label="à faire"></span>'
+box = lambda ok: '<span class="box on" role="img" aria-label="Fait">✓</span>' if ok else '<span class="box" role="img" aria-label="À faire"></span>'
 
 # sons.html : tableau trié par priorité puis dans l'ordre de la source, et compteurs dans l'en-tête
 order = sorted(cues, key=lambda c: c['priorite'])

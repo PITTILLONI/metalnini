@@ -1,116 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="Metalnini : les parcours clés du jeu détaillés pour le maquettage (étapes, branches, états limites, décisions ouvertes) et les boucles de rétention. Document de travail.">
+<meta property="og:title" content="Metalnini · User flows">
+<meta property="og:description" content="Les parcours clés de Metalnini, détaillés pour le maquettage, et les boucles de rétention. Document de travail.">
+<meta name="theme-color" content="#0c0b0a">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="manifest" href="icons/site.webmanifest">
 <title>Metalnini — User flows</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
+  /* jetons : ceux de proto/index.html (design-system/metalnini/MASTER.md) */
   :root{
     --bg:#0c0b0a;
     --surface:#161412;
     --surface-2:#1e1b18;
     --text:#f3f0ea;
-    --text-muted:#a49e94;
+    --muted:#a49e94;
     --border:rgba(255,255,255,0.09);
+    --gold:#eb9a26;          /* accent actif */
+    --gold-hi:#f4b243;
+    --accent:#b23a3a;        /* rouge : fonds seulement */
+    --accent-text:#e0605a;   /* rouge : surtitres, danger */
 
-    --accent:#b23a3a;
-    --accent-soft:rgba(178,58,58,0.14);
+    /* types d'étape : couleur + forme (rond, losange, carré) */
+    --t-screen:var(--text);
+    --t-action:var(--gold);
+    --t-decision:var(--gold-hi);
+    --t-system:var(--muted);
+    --t-notif:var(--accent-text);
 
-    --t-screen:#f3f0ea;
-    --t-action:#5b8fd6;
-    --t-decision:#cda44e;
-    --t-system:#7d7871;
-    --t-notif:#b23a3a;
-
-    --font-display:'Oswald','Arial Narrow',sans-serif;
-    --font-body:'Inter',-apple-system,sans-serif;
-    --font-mono:'JetBrains Mono','Courier New',monospace;
+    --gothic:'Pirata One', serif;
+    --display:'Big Shoulders Display', 'Arial Narrow', sans-serif;
+    --body:'Barlow', system-ui, sans-serif;
   }
 
   *{box-sizing:border-box;}
-  html{color-scheme:dark; scroll-behavior:smooth;}
+  [hidden]{display:none !important;}
+  html{color-scheme:dark;}
+  @media (prefers-reduced-motion: no-preference){ html{scroll-behavior:smooth;} }
   body{
     margin:0; background:var(--bg); color:var(--text);
-    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    font-family:var(--body); font-size:16px; line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
   body::before{
     content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:0.035;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
-  a{color:var(--t-decision);}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--t-decision); outline-offset:3px;}
+  a{color:var(--gold-hi);}
+  :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px;}
+
+  /* lien d'évitement, visible seulement au clavier */
+  .skip{position:absolute; left:12px; top:-80px; z-index:60; padding:12px 16px; background:var(--surface-2); color:var(--gold-hi); font:800 .85rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase; text-decoration:none; border-radius:8px;}
+  .skip:focus{top:12px;}
+  main:focus{outline:none;}
 
   .wrap{max-width:860px; margin:0 auto; padding:0 20px; position:relative; z-index:2;}
-  h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:0.01em; text-wrap:balance;}
+  h1,h2{font-family:var(--gothic); font-weight:400; margin:0; line-height:1.05; text-wrap:balance;}
+  h3,h4{margin:0; text-wrap:balance;}
 
   .eyebrow{
-    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--accent); margin:0 0 12px;
+    font:800 0.8rem/1.2 var(--display); letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent-text); margin:0 0 12px;
   }
+
+  /* ---------- Bouton principal (recette .btn du proto) ---------- */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
+    font:900 1.1rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:#1a0f05; background:var(--gold);
+    box-shadow:0 6px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease, background .15s ease;}
+  .btn:hover{background:var(--gold-hi);}
+  .btn:active{transform:translateY(4px); box-shadow:0 2px 0 #8a5510;}
+  .btn:disabled{opacity:.45; cursor:default; transform:none;}
 
   /* ---------- Header ---------- */
-  .head{padding:clamp(56px,11vw,90px) 0 36px;}
-  .head h1{font-size:clamp(2.2rem,7vw,3.4rem); font-weight:700; line-height:1; text-transform:uppercase;}
-  .head .tagline{margin-top:14px; color:var(--text-muted); max-width:56ch;}
+  .wrap.head{padding:clamp(56px,11vw,90px) 20px 36px;}
+  .head h1{font-size:clamp(2.8rem,9vw,4.4rem); line-height:0.95;}
+  .head .tagline{margin-top:14px; color:var(--muted); max-width:56ch;}
   .head .meta{
-    margin-top:22px; font-family:var(--font-mono); font-size:0.78rem;
-    color:var(--text-muted); letter-spacing:0.04em;
+    margin-top:22px; font:500 0.75rem/1.5 var(--body);
+    color:var(--muted); letter-spacing:0.12em; text-transform:uppercase;
   }
 
-  /* ---------- Nav ---------- */
+  /* ---------- Barre d'ancres ---------- */
   .nav{
     position:sticky; top:0; z-index:5;
     background:rgba(12,11,10,0.92); backdrop-filter:blur(8px);
     border-top:1px solid var(--border); border-bottom:1px solid var(--border);
-    margin-bottom:8px;
   }
-  .nav-inner{display:flex; gap:6px; overflow-x:auto; padding:10px 20px; max-width:860px; margin:0 auto; scrollbar-width:none;}
+  .nav-inner{display:flex; gap:2px; overflow-x:auto; padding:4px 12px; max-width:860px; margin:0 auto; scrollbar-width:none;}
   .nav-inner::-webkit-scrollbar{display:none;}
+  /* dégradé de bord : la barre défile (posé par le script tant qu'il reste à voir à droite) */
+  .nav::before, .nav::after{content:""; position:absolute; top:0; bottom:0; width:40px; pointer-events:none; opacity:0; transition:opacity .2s ease; z-index:1;}
+  .nav::before{left:0; background:linear-gradient(to left, rgba(12,11,10,0), var(--bg));}
+  .nav::after{right:0; background:linear-gradient(to right, rgba(12,11,10,0), var(--bg));}
+  .nav.has-less::before, .nav.has-more::after{opacity:1;}
+  @media (min-width:1024px){ .nav-inner{max-width:none; justify-content:center;} }
   .nav a{
-    flex:0 0 auto; font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em;
-    text-transform:uppercase; text-decoration:none; color:var(--text-muted);
-    padding:6px 10px; border:1px solid var(--border); border-radius:3px; white-space:nowrap;
+    flex:0 0 auto; display:inline-flex; align-items:center; min-height:44px; padding:0 10px;
+    font:800 0.8rem/1 var(--display); letter-spacing:0.1em;
+    text-transform:uppercase; text-decoration:none; color:var(--muted); white-space:nowrap;
   }
-  .nav a:hover{color:var(--text); border-color:rgba(255,255,255,0.25);}
+  .nav a:hover{color:var(--text);}
+  .nav a[aria-current="true"]{color:var(--gold-hi); box-shadow:inset 0 -2px 0 var(--gold);}
 
-  /* ---------- Legend ---------- */
-  .legend{
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:10px; margin:28px 0 0;
-  }
-  .legend div{
-    border:1px solid var(--border); border-radius:4px; padding:10px 12px;
-    background:var(--surface); font-size:0.82rem; color:var(--text-muted);
-  }
+  /* ---------- Légende des types ---------- */
+  .legend{display:flex; flex-wrap:wrap; gap:12px 28px; margin:28px 0 0; padding:0; list-style:none;}
+  .legend li{font-size:0.88rem; color:var(--muted);}
   .legend strong{
-    display:block; font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.12em;
-    text-transform:uppercase; margin-bottom:4px; color:var(--text);
+    display:flex; align-items:center; gap:8px; font:600 0.72rem/1.3 var(--body); letter-spacing:0.14em;
+    text-transform:uppercase; margin-bottom:2px; color:var(--t-system);
   }
+  .legend strong::before{content:""; width:11px; height:11px; flex:0 0 auto; box-sizing:border-box; border:2px solid currentColor;}
   .legend .l-screen strong{color:var(--t-screen);}
   .legend .l-action strong{color:var(--t-action);}
   .legend .l-decision strong{color:var(--t-decision);}
-  .legend .l-system strong{color:var(--t-system);}
   .legend .l-notif strong{color:var(--t-notif);}
+  .legend .l-screen strong::before, .legend .l-notif strong::before{border-radius:50%;}
+  .legend .l-action strong::before{border-radius:50%; background:currentColor;}
+  .legend .l-decision strong::before{width:9px; height:9px; margin:0 1px; border-radius:1px; transform:rotate(45deg);}
 
   /* ---------- Sections ---------- */
-  section{padding:clamp(40px,7vw,64px) 0; border-bottom:1px solid var(--border);}
-  h2{font-size:clamp(1.4rem,3.2vw,1.9rem); font-weight:600; text-transform:uppercase; margin-bottom:6px;}
-  .flow-sub{color:var(--text-muted); font-size:0.95rem; margin:0 0 4px; max-width:64ch;}
+  section.wrap{padding:clamp(40px,7vw,64px) 20px; border-bottom:1px solid var(--border); scroll-margin-top:56px;}
+  h2{font-size:clamp(1.8rem,4.2vw,2.5rem); margin-bottom:8px;}
+  .flow-sub{color:var(--muted); font-size:0.95rem; margin:0 0 4px; max-width:64ch;}
   section > p{max-width:66ch;}
 
   .facts{
     display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
     gap:12px; margin:22px 0 30px;
   }
-  .fact{border-left:2px solid var(--accent); padding:2px 0 2px 14px;}
+  .fact{border-left:2px solid var(--gold); padding:2px 0 2px 14px;}
   .fact dt{
-    font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.12em;
-    text-transform:uppercase; color:var(--accent); margin-bottom:3px;
+    font:600 0.72rem/1.3 var(--body); letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent-text); margin-bottom:3px;
   }
-  .fact dd{margin:0; font-size:0.9rem; color:var(--text-muted);}
+  .fact dd{margin:0; font-size:0.9rem; color:var(--muted);}
 
-  /* ---------- Flow steps ---------- */
+  /* ---------- Étapes : rond (écran, action, notif), losange (décision), carré (système) ---------- */
   .flow{list-style:none; margin:0; padding:0 0 0 26px; position:relative;}
   .flow::before{
     content:""; position:absolute; left:5px; top:8px; bottom:8px;
@@ -119,16 +151,16 @@
   .step{position:relative; padding:0 0 22px;}
   .step::before{
     content:""; position:absolute; left:-26px; top:7px;
-    width:11px; height:11px; border-radius:50%;
+    width:11px; height:11px; border-radius:1px;
     background:var(--bg); border:2px solid var(--t-system);
   }
-  .step[data-type="ecran"]::before{border-color:var(--t-screen);}
-  .step[data-type="action"]::before{border-color:var(--t-action);}
+  .step[data-type="ecran"]::before{border-color:var(--t-screen); border-radius:50%;}
+  .step[data-type="action"]::before{border-color:var(--t-action); background:var(--t-action); border-radius:50%;}
   .step[data-type="decision"]::before{border-color:var(--t-decision); border-radius:2px; transform:rotate(45deg); top:8px;}
-  .step[data-type="notif"]::before{border-color:var(--t-notif);}
+  .step[data-type="notif"]::before{border-color:var(--t-notif); border-radius:50%;}
 
   .tag{
-    display:inline-block; font-family:var(--font-mono); font-size:0.63rem;
+    display:inline-block; font:600 0.7rem/1.3 var(--body);
     letter-spacing:0.14em; text-transform:uppercase; color:var(--t-system);
     margin-bottom:3px;
   }
@@ -137,180 +169,179 @@
   .step[data-type="decision"] .tag{color:var(--t-decision);}
   .step[data-type="notif"] .tag{color:var(--t-notif);}
 
-  .step h4{font-size:1.02rem; font-weight:500; text-transform:none; line-height:1.35;}
-  .step p{margin:5px 0 0; font-size:0.9rem; color:var(--text-muted); max-width:62ch;}
+  .step h4{font-size:1.04rem; font-weight:600; line-height:1.35;}
+  .step p{margin:5px 0 0; font-size:0.9rem; color:var(--muted); max-width:62ch;}
 
   .branches{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:8px;}
   .branches li{
     background:var(--surface); border:1px solid var(--border); border-radius:4px;
-    padding:10px 13px; font-size:0.87rem; color:var(--text-muted);
+    padding:10px 13px; font-size:0.87rem; color:var(--muted);
   }
   .branches b{
-    display:block; color:var(--text); font-weight:500; font-size:0.83rem;
-    font-family:var(--font-mono); letter-spacing:0.04em; margin-bottom:3px;
+    display:block; color:var(--text); font:600 0.72rem/1.3 var(--body);
+    letter-spacing:0.12em; text-transform:uppercase; margin-bottom:3px;
   }
 
   .note{
-    margin-top:10px; font-size:0.84rem; color:var(--text-muted);
+    margin-top:10px; font-size:0.84rem; color:var(--muted);
     border-left:2px solid var(--border); padding-left:12px; max-width:62ch;
   }
-  .note b{color:var(--text); font-weight:500;}
+  .note b{color:var(--text); font-weight:600;}
 
-  /* ---------- Edge cases / open questions ---------- */
+  /* ---------- Cas limites / questions ouvertes ---------- */
   .block{margin-top:34px;}
   .block h3{
-    font-size:0.78rem; font-family:var(--font-mono); letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--text-muted); margin-bottom:12px;
+    font:600 0.75rem/1.4 var(--body); letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:12px;
     padding-bottom:8px; border-bottom:1px solid var(--border);
   }
   .block ul{margin:0; padding-left:18px;}
-  .block li{font-size:0.9rem; color:var(--text-muted); margin-bottom:8px; max-width:66ch;}
-  .block li b{color:var(--text); font-weight:500;}
+  .block li{font-size:0.9rem; color:var(--muted); margin-bottom:8px; max-width:66ch;}
+  .block li b{color:var(--text); font-weight:600;}
+  .block li::marker{color:var(--gold);}
 
-  .open h3{color:var(--t-decision); border-bottom-color:rgba(205,164,78,0.3);}
-  .open li::marker{color:var(--t-decision);}
+  .open h3, .block h3.lvl-1{color:var(--gold-hi); border-bottom-color:rgba(235,154,38,0.35);}
+  .block h3.lvl-2{color:var(--text); border-bottom-color:rgba(243,240,234,0.25);}
 
-  /* ---------- Principles ---------- */
+  /* ---------- Principes ---------- */
   .principles{display:grid; gap:14px; margin-top:24px;}
   .principle{
     background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:16px 18px;
   }
-  .principle h4{font-size:0.98rem; font-weight:500; text-transform:none; margin-bottom:5px;}
-  .principle p{margin:0; font-size:0.88rem; color:var(--text-muted); max-width:70ch;}
+  .principle h4{font-size:1rem; font-weight:600; margin-bottom:5px;}
+  .principle p{margin:0; font-size:0.88rem; color:var(--muted); max-width:70ch;}
 
-  /* ---------- Recap table ---------- */
+  /* ---------- Tableau récapitulatif ---------- */
   .recap{margin-top:22px; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
   .recap-row{
-    display:grid; grid-template-columns:64px 1fr; gap:0;
+    display:grid; grid-template-columns:52px 1fr; gap:0;
     border-bottom:1px solid var(--border);
   }
   .recap-row:last-child{border-bottom:none;}
   .recap-row > div{padding:12px 14px;}
   .recap-row > div:first-child{
-    font-family:var(--font-mono); font-size:0.72rem; color:var(--t-decision);
-    background:var(--surface); letter-spacing:0.06em; border-right:1px solid var(--border);
+    font:900 1.1rem/1.2 var(--display); color:var(--gold); text-align:center;
+    background:var(--surface); border-right:1px solid var(--border);
   }
-  .recap-row > div:last-child{font-size:0.89rem; color:var(--text-muted);}
-  .recap-row b{color:var(--text); font-weight:500;}
+  .recap-row > div:last-child{font-size:0.89rem; color:var(--muted);}
+  .recap-row b{color:var(--text); font-weight:600;}
 
-  footer{padding:44px 0 70px; color:var(--text-muted); font-size:0.85rem;}
-  footer a{color:var(--t-decision);}
+  footer{padding:44px 0 96px; color:var(--muted); font-size:0.85rem;}
 
-  /* ---------- Rive tag (3 niveaux d'importance) ---------- */
+  /* ---------- Pied de page commun ---------- */
+  .site-nav{display:flex; flex-wrap:wrap; gap:0 4px; margin:0 0 12px -10px;}
+  .site-nav a{display:inline-flex; align-items:center; min-height:44px; padding:0 10px; font:800 .8rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-decoration:none;}
+  .site-nav a:hover, .site-nav a[aria-current="page"]{color:var(--gold-hi);}
+  .site-nav a[aria-current="page"]{text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:6px;}
+
+  /* ---------- Étiquette Rive (3 niveaux d'importance) ---------- */
   .rive{
-    display:inline-block; margin-left:8px; font-family:var(--font-mono); font-size:0.62rem;
-    letter-spacing:0.08em; text-transform:uppercase; color:var(--t-decision);
-    border:1px solid rgba(205,164,78,0.4); border-radius:3px; padding:2px 7px; vertical-align:middle;
+    display:inline-block; margin-left:8px; font:600 0.66rem/1.3 var(--body);
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-hi);
+    border:1px solid rgba(235,154,38,0.45); border-radius:3px; padding:2px 7px; vertical-align:middle;
   }
-  .rive[data-tier="2"]{color:var(--t-action); border-color:rgba(91,143,214,0.4);}
-  .rive[data-tier="3"]{color:var(--t-system); border-color:rgba(125,120,113,0.4);}
+  .rive[data-tier="2"]{color:var(--text); border-color:rgba(243,240,234,0.3);}
+  .rive[data-tier="3"]{color:var(--muted); border-color:rgba(164,158,148,0.35);}
 
-  /* ---------- Retention loops ---------- */
+  /* ---------- Boucles de rétention ---------- */
   .loops{display:grid; gap:16px; margin-top:24px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
   .loop-card{
     background:var(--surface); border:1px solid var(--border); border-radius:6px;
     padding:16px 18px; display:flex; flex-direction:column; gap:10px;
     border-top:2px solid var(--t-system);
   }
-  .loop-card[data-tier="quotidienne"]{border-top-color:var(--t-notif);}
-  .loop-card[data-tier="hebdo"]{border-top-color:var(--t-decision);}
-  .loop-card[data-tier="evenementielle"]{border-top-color:var(--t-action);}
-  .loop-card[data-tier="rare"]{border-top-color:var(--rarity-legendary,#9c2b2b);}
-  .loop-card[data-tier="sociale"]{border-top-color:var(--t-screen);}
+  .loop-card[data-tier="quotidienne"]{border-top-color:var(--accent);}
+  .loop-card[data-tier="hebdo"]{border-top-color:var(--gold);}
+  .loop-card[data-tier="evenementielle"]{border-top-color:var(--gold-hi);}
+  .loop-card[data-tier="rare"]{border-top-color:var(--accent-text);}
+  .loop-card[data-tier="sociale"], .loop-card.is-missions{border-top-color:var(--text);}
   .loop-card .cadence{
-    font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.12em;
-    text-transform:uppercase; color:var(--text-muted);
+    font:600 0.7rem/1.3 var(--body); letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--muted);
   }
-  .loop-card h4{font-size:1rem; font-weight:500; text-transform:none; margin:2px 0 2px;}
-  .loop-row{font-size:0.85rem; color:var(--text-muted); line-height:1.45;}
+  .loop-card h4{font-size:1rem; font-weight:600; margin:2px 0 2px;}
+  .loop-row{font-size:0.85rem; color:var(--muted); line-height:1.45;}
   .loop-row b{
-    display:block; font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.1em;
+    display:block; font:600 0.68rem/1.3 var(--body); letter-spacing:0.12em;
     text-transform:uppercase; color:var(--text); margin-bottom:2px;
   }
 
   .priority{list-style:none; counter-reset:p; margin:14px 0 0; padding:0; display:grid; gap:8px;}
   .priority li{
     counter-increment:p; background:var(--surface); border:1px solid var(--border);
-    border-radius:4px; padding:10px 13px 10px 38px; font-size:0.87rem; color:var(--text-muted); position:relative;
+    border-radius:4px; padding:10px 13px 10px 40px; font-size:0.87rem; color:var(--muted); position:relative;
   }
   .priority li::before{
-    content:counter(p); position:absolute; left:13px; top:10px;
-    font-family:var(--font-mono); font-size:0.75rem; color:var(--t-decision);
+    content:counter(p); position:absolute; left:14px; top:9px;
+    font:900 1rem/1.3 var(--display); color:var(--gold);
   }
-  .priority b{color:var(--text); font-weight:500;}
+  .priority b{color:var(--text); font-weight:600;}
 
-  /* ---------- Missions ---------- */
-  :root{
-    --m-collection:#71717a; --m-echange:#5b8fd6; --m-concert:#b23a3a;
-    --m-social:#9b6fd6; --m-decouverte:#3ecbb0; --m-achat:#cda44e;
-  }
+  /* ---------- Missions : catégorie écrite + filet de la palette ---------- */
   .mission-grid{display:grid; gap:14px; margin-top:24px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
   .mission-card{
     background:var(--surface); border:1px solid var(--border); border-radius:6px;
     padding:14px 16px; border-left:3px solid var(--t-system);
   }
-  .mission-card[data-cat="collection"]{border-left-color:var(--m-collection);}
-  .mission-card[data-cat="echange"]{border-left-color:var(--m-echange);}
-  .mission-card[data-cat="concert"]{border-left-color:var(--m-concert);}
-  .mission-card[data-cat="social"]{border-left-color:var(--m-social);}
-  .mission-card[data-cat="decouverte"]{border-left-color:var(--m-decouverte);}
-  .mission-card[data-cat="achat"]{border-left-color:var(--m-achat);}
+  .mission-card[data-cat="echange"]{border-left-color:var(--gold);}
+  .mission-card[data-cat="concert"]{border-left-color:var(--accent);}
+  .mission-card[data-cat="social"]{border-left-color:var(--text);}
+  .mission-card[data-cat="decouverte"]{border-left-color:var(--gold-hi);}
+  .mission-card[data-cat="achat"]{border-left-color:var(--accent-text);}
   .mission-card .cat{
-    display:block; font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.12em;
-    text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;
+    display:block; font:600 0.7rem/1.3 var(--body); letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:6px;
   }
   .mission-card ul{margin:0; padding-left:16px;}
-  .mission-card li{font-size:0.87rem; color:var(--text-muted); margin-bottom:5px;}
+  .mission-card li{font-size:0.87rem; color:var(--muted); margin-bottom:5px;}
   .mission-card li:last-child{margin-bottom:0;}
 
-  /* ---------- Gate ---------- */
+  /* ---------- Rideau d'accès ---------- */
   .gate{
     position:fixed; inset:0; z-index:50; background:var(--bg);
-    display:flex; align-items:center; justify-content:center; padding:24px;
+    display:flex; align-items:center; justify-content:center; padding:24px; overflow-y:auto;
   }
   .gate-form{max-width:360px; width:100%; text-align:center;}
-  .gate-title{font-size:clamp(2rem,7vw,2.6rem); text-transform:uppercase; margin:6px 0 14px;}
-  .gate-copy{color:var(--text-muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-form .eyebrow{margin-bottom:10px;}
+  .gate-form .btn{width:100%;}   /* .block est déjà pris par les blocs de section */
+  .gate-title{margin:6px 0 14px;}
+  .gate-title img{display:block; width:min(260px,70vw); height:auto; margin:0 auto;}
+  .gate-copy{color:var(--muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-label{display:block; text-align:left; margin:0 0 6px; font:600 .75rem/1.2 var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
   .gate-input{
-    width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:4px;
-    color:var(--text); font-family:var(--font-body); font-size:1rem; padding:12px 14px; margin-bottom:14px;
+    display:block; width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    color:var(--text); font-family:var(--body); font-size:1rem; min-height:48px; padding:12px 14px; margin-bottom:16px;
   }
-  .gate-submit{
-    width:100%; font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.04em;
-    font-size:1rem; padding:12px 14px; background:var(--accent); color:var(--text);
-    border:none; border-radius:4px; cursor:pointer;
-  }
-  .gate-submit:hover{background:#c24444;}
-  .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
+  .gate-error{color:var(--accent-text); font-size:0.9rem; margin-top:16px;}
 
-  /* ---------- Commenter (click-to-comment) ---------- */
+  /* ---------- Commenter (clic pour commenter) ---------- */
   html.commenting, html.commenting body{cursor:crosshair;}
   html.commenting a, html.commenting button:not(.comment-toggle):not(.comment-close){cursor:crosshair;}
 
   .comment-toggle{
-    position:fixed; right:20px; bottom:20px; z-index:40;
-    display:flex; align-items:center; gap:8px;
-    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    position:fixed; right:16px; bottom:16px; z-index:40;
+    display:flex; align-items:center; gap:8px; min-height:44px;
+    font:800 0.8rem/1 var(--display); letter-spacing:0.12em; text-transform:uppercase;
     background:var(--surface-2); color:var(--text); border:1px solid var(--border);
-    border-radius:999px; padding:10px 16px; cursor:pointer;
+    border-radius:999px; padding:0 18px; cursor:pointer;
     box-shadow:0 6px 20px rgba(0,0,0,0.4);
   }
-  .comment-toggle:hover{border-color:var(--accent);}
-  .comment-toggle.is-active{background:var(--accent); border-color:var(--accent); color:#fff;}
-  .comment-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--t-decision); flex:0 0 auto;}
-  .comment-toggle.is-active .dot{background:#fff;}
+  .comment-toggle:hover{border-color:var(--gold);}
+  .comment-toggle.is-active{background:var(--gold); border-color:var(--gold); color:#1a0f05;}
+  .comment-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--gold); flex:0 0 auto;}
+  .comment-toggle.is-active .dot{background:#1a0f05;}
 
   .comment-hint{
     position:fixed; left:50%; top:18px; transform:translateX(-50%); z-index:39;
-    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.04em;
-    background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);
+    font:600 0.72rem/1.4 var(--body); letter-spacing:0.12em; text-transform:uppercase;
+    background:var(--surface-2); color:var(--muted); border:1px solid var(--border);
     border-radius:6px; padding:8px 14px; text-align:center; max-width:88vw;
   }
 
   .comment-pin{
     position:absolute; z-index:38; width:14px; height:14px; margin:-7px 0 0 -7px;
-    border-radius:50%; background:var(--accent); border:2px solid var(--text);
-    box-shadow:0 0 0 4px var(--accent-soft);
+    border-radius:50%; background:var(--gold); border:2px solid var(--text);
+    box-shadow:0 0 0 4px rgba(235,154,38,0.2);
   }
 
   .comment-popover{
@@ -319,68 +350,68 @@
     padding:16px; box-shadow:0 14px 40px rgba(0,0,0,0.55); cursor:auto;
   }
   .comment-popover .cp-context{
-    font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase;
-    color:var(--accent); margin:0 0 8px; line-height:1.4;
+    font:600 0.7rem/1.4 var(--body); letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--accent-text); margin:0 0 8px;
   }
   .comment-popover textarea{
     width:100%; min-height:70px; resize:vertical; background:var(--bg); color:var(--text);
     border:1px solid var(--border); border-radius:4px; padding:9px 10px;
-    font-family:var(--font-body); font-size:0.9rem;
+    font-family:var(--body); font-size:1rem;
   }
   .comment-popover input[type="text"]{
     width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border);
-    border-radius:4px; padding:9px 10px; font-family:var(--font-body); font-size:0.88rem; margin-bottom:8px;
+    border-radius:4px; padding:9px 10px; font-family:var(--body); font-size:1rem; margin-bottom:8px;
   }
-  .comment-popover textarea:focus-visible, .comment-popover input:focus-visible{
-    outline:2px solid var(--t-decision); outline-offset:1px;
-  }
-  .comment-popover .cp-row{display:flex; gap:8px; margin-top:10px; align-items:center;}
-  .comment-popover .cp-send{
-    font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.03em; font-size:0.85rem;
-    background:var(--accent); color:#fff; border:none; border-radius:4px; padding:9px 16px; cursor:pointer;
-  }
-  .comment-popover .cp-send:hover{background:#c24444;}
-  .comment-popover .cp-send:disabled{opacity:0.6; cursor:default;}
+  .comment-popover .cp-row{display:flex; gap:8px; margin-top:12px; align-items:center;}
+  .comment-popover .cp-send{min-height:44px; font-size:0.95rem; padding:0 18px;}
   .comment-close{
-    background:none; border:none; color:var(--text-muted); cursor:pointer;
-    font-family:var(--font-mono); font-size:0.78rem; padding:9px 4px;
+    min-height:44px; background:none; border:none; color:var(--muted); cursor:pointer;
+    font:800 0.8rem/1 var(--display); letter-spacing:0.12em; text-transform:uppercase; padding:0 10px;
   }
   .comment-close:hover{color:var(--text);}
-  .comment-popover .cp-msg{margin-top:10px; font-size:0.82rem;}
+  .comment-popover .cp-msg{margin-top:10px; font-size:0.85rem;}
   .comment-popover .cp-msg.success{color:var(--text);}
-  .comment-popover .cp-msg.error{color:#e08a8a;}
-  .botcheck{display:none;}
+  .comment-popover .cp-msg.error{color:var(--accent-text);}
+
+  @media (prefers-reduced-motion: reduce){
+    .btn, .nav::before, .nav::after{transition:none;}
+  }
 </style>
+</head>
+<body>
 
 <div id="gate" class="gate">
   <form id="gate-form" class="gate-form">
-    <p class="eyebrow" style="margin-bottom:10px">Accès privé</p>
-    <h1 class="gate-title">Metalnini</h1>
+    <p class="eyebrow">Accès privé</p>
+    <h1 class="gate-title"><img src="proto/cards/logo.webp" alt="Metalnini" width="900" height="534"></h1>
     <p class="gate-copy">Document de travail interne. Mot de passe requis.</p>
-    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" autocomplete="off" autofocus>
-    <button type="submit" class="gate-submit">Entrer</button>
+    <label for="gate-input" class="gate-label">Mot de passe</label>
+    <input id="gate-input" type="password" class="gate-input" autocomplete="off" autofocus>
+    <button type="submit" class="btn">Entrer</button>
     <p id="gate-error" class="gate-error" hidden>Mot de passe incorrect.</p>
   </form>
 </div>
 
 <div id="site-content" style="display:none">
 
-<div class="wrap head">
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="wrap head">
   <p class="eyebrow">Document de travail — conception</p>
   <h1>User flows</h1>
   <p class="tagline">Les 8 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes — plus l'architecture des boucles de rétention qui les relie.</p>
   <p class="meta">Basé sur concept.html (onglet Architecture) · Motion : Rive · Aucun visuel de carte requis à ce stade</p>
 
-  <div class="legend">
-    <div class="l-screen"><strong>Écran</strong>Une vue à maquetter</div>
-    <div class="l-action"><strong>Action</strong>Geste de l'utilisateur</div>
-    <div class="l-decision"><strong>Décision</strong>Embranchement</div>
-    <div class="l-system"><strong>Système</strong>Traitement invisible</div>
-    <div class="l-notif"><strong>Notif</strong>Sollicitation sortante</div>
-  </div>
-</div>
+  <ul class="legend" aria-label="Types d'étape">
+    <li class="l-screen"><strong>Écran</strong>Une vue à maquetter</li>
+    <li class="l-action"><strong>Action</strong>Geste de l'utilisateur</li>
+    <li class="l-decision"><strong>Décision</strong>Embranchement</li>
+    <li class="l-system"><strong>Système</strong>Traitement invisible</li>
+    <li class="l-notif"><strong>Notif</strong>Sollicitation sortante</li>
+  </ul>
+</header>
 
-<nav class="nav">
+<nav class="nav" aria-label="Sections">
   <div class="nav-inner">
     <a href="#principes">Principes</a>
     <a href="#flow-a">A · Onboarding</a>
@@ -396,6 +427,8 @@
     <a href="#trancher">À trancher</a>
   </div>
 </nav>
+
+<main id="contenu" tabindex="-1">
 
 <!-- ============ PRINCIPES ============ -->
 <section id="principes" class="wrap">
@@ -1052,7 +1085,7 @@
   <p class="flow-sub">Tous les endroits clés où une animation porte le moment plutôt que de le décorer — classés par le soin qu'ils demandent, pas par ordre d'apparition. <b style="color:var(--text)">Motion : Rive</b> partout (voir <a href="concept.html#da">la direction artistique</a>) ; le reste reste du polish d'interface standard, sans state machine dédiée.</p>
 
   <div class="block">
-    <h3 style="color:var(--t-decision); border-bottom-color:rgba(205,164,78,0.3)">Niveau 1 — Séquences majeures (state machine, plusieurs variables exposées)</h3>
+    <h3 class="lvl-1">Niveau 1 — Séquences majeures (state machine, plusieurs variables exposées)</h3>
     <ul>
       <li><a href="#flow-b">Flow B</a> <b>Reveal de pack</b> — rareté et type de carte pilotent la scène ; c'est le seul endroit où les effets riches (foil, shimmer, grain) sont autorisés.</li>
       <li><a href="#flow-c">Flow C</a> <b>Évolution de carte</b> — avant/après ; doit rester lisible même joué en rafale pour un utilisateur qui revient après une absence avec plusieurs évolutions en attente.</li>
@@ -1063,7 +1096,7 @@
   </div>
 
   <div class="block">
-    <h3 style="color:var(--t-action); border-bottom-color:rgba(91,143,214,0.3)">Niveau 2 — Confirmations & feedback courts</h3>
+    <h3 class="lvl-2">Niveau 2 — Confirmations & feedback courts</h3>
     <ul>
       <li><a href="#flow-d">Flow D</a> <b>Scan de billet réussi</b> — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.</li>
       <li><a href="#flow-d">Flow D</a> <b>Barre XP qui se remplit</b> au retour du carnet — motif réutilisable partout où l'XP change (concert, mission, palier).</li>
@@ -1134,7 +1167,7 @@
       <div class="loop-row"><b>Investissement</b>Réputation d'échangeur, relation de confiance.</div>
     </div>
 
-    <div class="loop-card" data-tier="quotidienne" style="border-top-color:var(--t-screen)">
+    <div class="loop-card is-missions" data-tier="quotidienne">
       <span class="cadence">Rotative, à cadences mêlées</span>
       <h4>Missions</h4>
       <div class="loop-row"><b>Déclencheur</b>Mission active, quelle que soit sa source (Flow H).</div>
@@ -1144,16 +1177,16 @@
     </div>
   </div>
 
-  <p style="margin-top:14px; max-width:66ch; font-size:0.85rem; color:var(--text-muted)">La boucle <b style="color:var(--text)">Missions</b> n'a pas de cadence propre : elle recycle la progression des quatre autres en lui donnant une direction visible, plutôt que d'ajouter un cycle indépendant à gérer.</p>
+  <p style="margin-top:14px; max-width:66ch; font-size:0.85rem; color:var(--muted)">La boucle <b style="color:var(--text)">Missions</b> n'a pas de cadence propre : elle recycle la progression des quatre autres en lui donnant une direction visible, plutôt que d'ajouter un cycle indépendant à gérer.</p>
 
-  <p style="margin-top:22px; max-width:66ch; font-size:0.9rem; color:var(--text-muted)">
+  <p style="margin-top:22px; max-width:66ch; font-size:0.9rem; color:var(--muted)">
     <b style="color:var(--text); font-weight:500">La boucle "actu artiste réelle" est celle qui différencie le plus Metalnini</b> — aucun concurrent de collection pure ne peut la répliquer sans le même travail éditorial continu. C'est elle qui mérite le plus d'investissement produit avant d'optimiser les boucles plus génériques. La <b style="color:var(--text); font-weight:500">boucle d'échange</b> a une propriété propre aux mécaniques sociales : un échange conclu retient potentiellement deux comptes à la fois, pas un seul.
   </p>
 
   <div class="block">
     <h3>Budget de notifications — la gouvernance qui empêche le cumul de devenir du spam</h3>
-    <p style="font-size:0.9rem; color:var(--text-muted); max-width:66ch; margin:0 0 14px">Empiler des boucles authentiques ne dispense pas d'arbitrer : c'est le <i>cumul</i> de plusieurs boucles qui notifient le même jour, pas une boucle isolée, qui produirait le spam que cette communauté sanctionnerait.</p>
-    <p style="font-size:0.85rem; color:var(--text-muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues — au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
+    <p style="font-size:0.9rem; color:var(--muted); max-width:66ch; margin:0 0 14px">Empiler des boucles authentiques ne dispense pas d'arbitrer : c'est le <i>cumul</i> de plusieurs boucles qui notifient le même jour, pas une boucle isolée, qui produirait le spam que cette communauté sanctionnerait.</p>
+    <p style="font-size:0.85rem; color:var(--muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues — au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
     <ol class="priority">
       <li><b>Session d'échange proposée à proximité</b> (Flow G) — time-critique, le fan est là <i>maintenant</i>, contrairement à tout le reste de cette liste.</li>
       <li><b>Actu artiste réelle</b> (Flow C) — le fait le plus rare et le plus fort après la proximité en direct.</li>
@@ -1217,8 +1250,11 @@
   </div>
 </section>
 
+</main>
+
 <div class="wrap">
   <footer>
+    <nav class="site-nav" aria-label="Pages du projet"><a href="index.html">Pitch</a><a href="concept.html">Concept</a><a href="flows.html" aria-current="page">Flows</a><a href="sons.html">Sons</a><a href="proto/">Prototype</a></nav>
     Document de travail Metalnini — user flows. Complète <a href="index.html">la page de pitch</a> et <a href="concept.html#architecture">le document concept</a>.<br>
     Prochaine étape naturelle : trancher les décisions ci-dessus, puis wireframer les écrans en basse fidélité.
   </footer>
@@ -1263,6 +1299,38 @@
       }
     });
   }
+})();
+
+// barre d'ancres : état actif sur la section courante, dégradé de bord tant que la barre défile
+(function(){
+  var nav = document.querySelector('.nav');
+  var inner = nav.querySelector('.nav-inner');
+  var links = {};
+  inner.querySelectorAll('a[href^="#"]').forEach(function(a){ links[a.getAttribute('href').slice(1)] = a; });
+
+  function edge(){
+    nav.classList.toggle('has-less', inner.scrollLeft > 4);
+    nav.classList.toggle('has-more', inner.scrollLeft + inner.clientWidth < inner.scrollWidth - 4);
+  }
+  inner.addEventListener('scroll', edge, {passive:true});
+  window.addEventListener('resize', edge);
+  edge();
+
+  if(!('IntersectionObserver' in window)) return;
+  var current = null;
+  function setActive(id){
+    if(id === current || !links[id]) return;
+    if(current) links[current].removeAttribute('aria-current');
+    current = id;
+    var a = links[id];
+    a.setAttribute('aria-current', 'true');
+    inner.scrollLeft = a.offsetLeft - (inner.clientWidth - a.offsetWidth) / 2;
+  }
+  // une section est « courante » quand elle traverse le haut de l'écran, sous la barre
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
+  }, {rootMargin:'-60px 0px -70% 0px'});
+  Object.keys(links).forEach(function(id){ var el = document.getElementById(id); if(el) io.observe(el); });
 })();
 
 (function(){
@@ -1355,7 +1423,7 @@
       '<input type="text" class="cp-name" placeholder="Ton prénom (optionnel)">' +
       '<textarea class="cp-message" placeholder="Ton commentaire ici…" autofocus></textarea>' +
       '<div class="cp-row">' +
-        '<button type="button" class="cp-send">Envoyer</button>' +
+        '<button type="button" class="btn cp-send">Envoyer</button>' +
         '<button type="button" class="comment-close">Annuler</button>' +
       '</div>' +
       '<p class="cp-msg" hidden></p>';
@@ -1417,3 +1485,5 @@
   }, true);
 })();
 </script>
+</body>
+</html>

@@ -1,41 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="Metalnini, le classeur de cartes du metal et du rock : la page de pitch du projet, document de travail partagé avec des proches.">
+<meta property="og:title" content="Metalnini">
+<meta property="og:description" content="Le classeur de cartes du metal et du rock : la page de pitch du projet, document de travail partagé avec des proches.">
+<meta name="theme-color" content="#0c0b0a">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="manifest" href="icons/site.webmanifest">
 <title>Metalnini</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
+  /* jetons : ceux de proto/index.html (design-system/metalnini/MASTER.md) */
   :root{
     --bg:#0c0b0a;
     --surface:#161412;
     --surface-2:#1e1b18;
     --text:#f3f0ea;
-    --text-muted:#a49e94;
+    --muted:#a49e94;
     --border:rgba(255,255,255,0.09);
+    --gold:#eb9a26;          /* accent actif */
+    --gold-hi:#f4b243;
+    --accent:#b23a3a;        /* rouge : fonds seulement */
+    --accent-text:#e0605a;   /* rouge : surtitres, danger */
 
-    --accent:#b23a3a;        /* ember red — fil rouge du document */
-    --accent-soft:rgba(178,58,58,0.14);
+    --r-commune:#c9c3b8;
+    --r-rare:#3b82f6;
+    --r-holo:#a78bfa;
+    --r-signature:#f5c542;
+    --r-legendaire:#ef4444;
 
-    --rarity-common:#7d7871;
-    --rarity-rare:#5b8fd6;
-    --rarity-holo-a:#3ecbb0;
-    --rarity-holo-b:#9b6fd6;
-    --rarity-holo-c:#e07bc0;
-    --rarity-signature:#cda44e;
-    --rarity-legendary:#9c2b2b;
-
-    --font-display:'Oswald', 'Arial Narrow', sans-serif;
-    --font-body:'Inter', -apple-system, sans-serif;
-    --font-mono:'JetBrains Mono', 'Courier New', monospace;
+    --gothic:'Pirata One', serif;
+    --display:'Big Shoulders Display', 'Arial Narrow', sans-serif;
+    --body:'Barlow', system-ui, sans-serif;
   }
 
   *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
   html{color-scheme:dark;}
   body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:var(--font-body);
+    font-family:var(--body);
     font-size:16px;
     line-height:1.65;
     -webkit-font-smoothing:antialiased;
@@ -51,21 +62,39 @@
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 
-  a{color:var(--rarity-signature);}
-  a:focus-visible, button:focus-visible{outline:2px solid var(--rarity-signature); outline-offset:3px;}
+  a{color:var(--gold-hi);}
+  :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px;}
+
+  /* lien d'évitement, visible seulement au clavier */
+  .skip{position:absolute; left:12px; top:-80px; z-index:60; padding:12px 16px; background:var(--surface-2); color:var(--gold-hi); font:800 .85rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase; text-decoration:none; border-radius:8px;}
+  .skip:focus{top:12px;}
 
   .wrap{max-width:760px; margin:0 auto; padding:0 24px; position:relative; z-index:2;}
+  main:focus{outline:none;}
 
-  h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0; letter-spacing:0.01em;}
+  h1,h2{font-family:var(--gothic); font-weight:400; text-wrap:balance; margin:0; line-height:1.05;}
+  h3{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin:0;}
 
   .eyebrow{
-    font-family:var(--font-mono);
-    font-size:0.75rem;
+    font:800 0.8rem/1.2 var(--display);
     letter-spacing:0.14em;
     text-transform:uppercase;
-    color:var(--accent);
+    color:var(--accent-text);
     margin:0 0 14px;
   }
+
+  /* ---------- Bouton principal (recette .btn du proto) ---------- */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
+    font:900 1.1rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:#1a0f05; background:var(--gold);
+    box-shadow:0 6px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease, background .15s ease;}
+  .btn:hover{background:var(--gold-hi);}
+  .btn:active{transform:translateY(4px); box-shadow:0 2px 0 #8a5510;}
+  .btn:disabled{opacity:.45; cursor:default; transform:none;}
+  .btn.ghost{color:var(--gold-hi); background:#15110f; box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 6px 0 #000;}
+  .btn.ghost:hover{background:#1e1812;}
+  .btn.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 2px 0 #000;}
+  .btn.block{width:100%;}
+  .btn svg{width:20px; height:20px; flex:0 0 auto;}
 
   /* ---------- Hero ---------- */
   .hero{
@@ -73,15 +102,13 @@
     border-bottom:1px solid var(--border);
   }
   .hero h1{
-    font-size:clamp(2.8rem,9vw,4.6rem);
-    font-weight:700;
-    line-height:0.98;
-    text-transform:uppercase;
+    font-size:clamp(3.2rem,11vw,5.4rem);
+    line-height:0.95;
   }
   .hero .tagline{
     margin-top:18px;
     font-size:clamp(1.1rem,2.6vw,1.35rem);
-    color:var(--text-muted);
+    color:var(--muted);
     max-width:34ch;
     font-weight:400;
   }
@@ -99,20 +126,18 @@
   section.reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease;}
   section.reveal.is-visible{opacity:1; transform:none;}
 
-  h2{font-size:clamp(1.55rem,3.4vw,2.05rem); font-weight:600; text-transform:uppercase; margin-bottom:22px;}
+  h2{font-size:clamp(1.9rem,4.4vw,2.6rem); margin-bottom:22px;}
   section p{max-width:64ch;}
   section p + p{margin-top:14px;}
 
   .lede{
-    font-family:var(--font-display);
-    font-size:clamp(1.3rem,2.8vw,1.7rem);
+    font-size:clamp(1.25rem,2.8vw,1.6rem);
     font-weight:500;
-    line-height:1.35;
+    line-height:1.4;
     color:var(--text);
-    border-left:3px solid var(--accent);
+    border-left:3px solid var(--gold);
     padding-left:20px;
     margin:0 0 8px;
-    text-transform:none;
   }
 
   /* ---------- Boucle (étapes réelles) ---------- */
@@ -129,111 +154,42 @@
     padding:18px 16px;
   }
   .loop-step .n{
-    font-family:var(--font-mono);
-    color:var(--accent);
-    font-size:0.8rem;
-    letter-spacing:0.08em;
+    font:900 1.5rem/1 var(--display);
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
   }
   .loop-step h3{
-    margin-top:8px;
-    font-size:1.05rem;
-    text-transform:uppercase;
-  }
-  .loop-step p{margin-top:8px; font-size:0.92rem; color:var(--text-muted);}
-
-  /* ---------- Cartes (démo de rareté) ---------- */
-  .cards-demo{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(128px,1fr));
-    gap:14px;
-    margin-top:28px;
-  }
-  .card-chip{
-    position:relative;
-    border-radius:6px;
-    background:var(--surface);
-    border:1px solid var(--border);
-    padding:16px 12px 14px;
-    min-height:150px;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
-    overflow:hidden;
-    transition:transform .35s ease;
-  }
-  .card-chip:hover{transform:translateY(-4px);}
-  .card-chip::before{
-    content:"";
-    position:absolute; top:0; left:0; right:0; height:4px;
-  }
-  .card-chip .band{
-    font-family:var(--font-display);
-    font-size:0.98rem;
-    text-transform:uppercase;
-    letter-spacing:0.02em;
-  }
-  .card-chip .genre{
-    font-family:var(--font-mono);
-    font-size:0.68rem;
-    color:var(--text-muted);
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    margin-top:4px;
-  }
-  .card-chip .rarity{
-    font-family:var(--font-mono);
-    font-size:0.68rem;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
     margin-top:10px;
-    padding-top:10px;
-    border-top:1px solid var(--border);
+    font-size:1.1rem;
   }
-  .c-common::before{background:var(--rarity-common);}
-  .c-common .rarity{color:var(--rarity-common);}
-  .c-rare::before{background:var(--rarity-rare);}
-  .c-rare .rarity{color:var(--rarity-rare);}
-  .c-rare{box-shadow:0 0 0 1px rgba(91,143,214,0.15) inset;}
-  .c-holo::before{background:linear-gradient(90deg,var(--rarity-holo-a),var(--rarity-holo-b),var(--rarity-holo-c));}
-  .c-holo{background:linear-gradient(160deg, var(--surface) 55%, rgba(155,111,214,0.12));}
-  .c-holo .rarity{
-    background:linear-gradient(90deg,var(--rarity-holo-a),var(--rarity-holo-b),var(--rarity-holo-c));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .c-signature::before{background:var(--rarity-signature);}
-  .c-signature .rarity{color:var(--rarity-signature);}
-  .c-signature{box-shadow:0 0 0 1px rgba(205,164,78,0.2) inset;}
-  .c-legendary::before{background:var(--rarity-legendary);}
-  .c-legendary .rarity{color:#e08a8a;}
-  .c-legendary{background:linear-gradient(160deg, var(--surface) 40%, rgba(156,43,43,0.18));}
+  .loop-step p{margin-top:8px; font-size:0.92rem; color:var(--muted);}
 
-  .fig-note{margin-top:14px; font-size:0.85rem; color:var(--text-muted); font-style:italic;}
+  /* ---------- Cartes (bande des raretés) ---------- */
+  .fig-note{margin-top:14px; font-size:0.85rem; color:var(--muted); font-style:italic;}
 
   .rarity-strip{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-top:24px;}
   .rarity-strip figure{margin:0;}
-  .rarity-strip img{width:100%; aspect-ratio:2/3; object-fit:cover; display:block; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.45);}
-  .rarity-strip figcaption{font-family:var(--font-mono, ui-monospace, monospace); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; margin-top:8px; color:var(--rarity-common);}
-  .rarity-strip [data-r="rare"] figcaption{color:var(--rarity-rare);}
-  .rarity-strip [data-r="holo"] figcaption{color:var(--rarity-holo-b);}
-  .rarity-strip [data-r="signature"] figcaption{color:var(--rarity-signature);}
-  .rarity-strip [data-r="legendaire"] figcaption{color:#e08a8a;}
+  .rarity-strip img{width:100%; height:auto; aspect-ratio:2/3; object-fit:cover; display:block; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.45);}
+  .rarity-strip figcaption{font:600 0.72rem/1.3 var(--body); letter-spacing:0.14em; text-transform:uppercase; margin-top:8px; color:var(--r-commune);}
+  .rarity-strip [data-r="rare"] figcaption{color:var(--r-rare);}
+  .rarity-strip [data-r="holo"] figcaption{color:var(--r-holo);}
+  .rarity-strip [data-r="signature"] figcaption{color:var(--r-signature);}
+  .rarity-strip [data-r="legendaire"] figcaption{color:var(--r-legendaire);}
   @media (max-width:640px){
     .rarity-strip{grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:42%; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px;}
     .rarity-strip figure{scroll-snap-align:start;}
   }
-  .card-preview{margin-top:24px; max-width:260px;}
-  .card-preview img{width:100%; display:block; border-radius:14px; box-shadow:0 16px 40px rgba(0,0,0,0.45);}
 
   /* ---------- Titres d'avatar ---------- */
   .titles{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
   .title-pill{
-    font-family:var(--font-mono);
-    font-size:0.78rem;
-    letter-spacing:0.04em;
-    padding:8px 14px;
+    font:600 0.75rem/1.2 var(--body);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:9px 14px;
     border:1px solid var(--border);
     border-radius:999px;
-    color:var(--text-muted);
+    color:var(--muted);
     background:var(--surface);
   }
 
@@ -248,26 +204,24 @@
   .later-item:first-child{border-top:none;}
   .later-item .tag{
     flex:0 0 auto;
-    font-family:var(--font-mono);
-    font-size:0.7rem;
-    letter-spacing:0.08em;
+    font:600 0.72rem/1.3 var(--body);
+    letter-spacing:0.12em;
     text-transform:uppercase;
-    color:var(--accent);
+    color:var(--accent-text);
     width:88px;
   }
-  .later-item p{margin:0; color:var(--text-muted); font-size:0.95rem;}
+  .later-item p{margin:0; color:var(--muted); font-size:0.95rem;}
 
   /* ---------- Craintes ---------- */
   .fears{margin-top:24px; display:flex; flex-direction:column; gap:16px;}
   .fear{
     padding:16px 18px;
     background:var(--surface);
-    border:1px solid var(--border);
-    border-left:3px solid var(--rarity-legendary);
+    border-left:3px solid var(--accent);
     border-radius:2px;
   }
-  .fear strong{display:block; margin-bottom:4px; font-family:var(--font-display); text-transform:uppercase; font-size:0.95rem; letter-spacing:0.02em;}
-  .fear span{font-size:0.92rem; color:var(--text-muted);}
+  .fear strong{display:block; margin-bottom:4px; font:800 1.05rem/1.2 var(--display); text-transform:uppercase; letter-spacing:0.06em;}
+  .fear span{font-size:0.92rem; color:var(--muted);}
 
   /* ---------- Questions (closing) ---------- */
   .ask{
@@ -277,16 +231,9 @@
     padding:clamp(24px,5vw,36px);
     margin-top:24px;
   }
-  .ask ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:14px;}
-  .ask li{
-    padding-left:26px;
-    position:relative;
-    font-size:1.02rem;
-  }
-  .ask li::before{
-    content:"—";
-    position:absolute; left:0; color:var(--accent);
-  }
+  .ask .eyebrow{margin-bottom:16px;}
+  .ask h2{margin-bottom:8px;}
+  .ask-intro{color:var(--muted); font-size:0.92rem; margin:0 0 20px;}
 
   /* ---------- Feedback form ---------- */
   .feedback-form label{display:block; margin-top:18px;}
@@ -294,39 +241,38 @@
   .feedback-form .q{display:block; margin-bottom:7px; font-size:0.95rem;}
   .feedback-form input[type="text"],
   .feedback-form textarea{
-    width:100%; font-family:var(--font-body); font-size:0.95rem; line-height:1.5;
+    width:100%; font-family:var(--body); font-size:1rem; line-height:1.5;
     padding:11px 13px; background:var(--surface); border:1px solid var(--border);
     border-radius:5px; color:var(--text); resize:vertical;
   }
   .feedback-form textarea{min-height:60px;}
-  .feedback-form input:focus-visible, .feedback-form textarea:focus-visible{
-    outline:2px solid var(--rarity-signature); outline-offset:1px;
-  }
+  .feedback-form input:focus-visible, .feedback-form textarea:focus-visible{outline-offset:1px;}
   .botcheck{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
-  .voice-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
-  .voice-btn{
-    font-family:var(--font-mono); font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase;
-    padding:10px 16px; border-radius:999px; border:1px solid var(--border);
-    background:var(--surface); color:var(--text); cursor:pointer; transition:background .2s ease, border-color .2s ease;
-  }
-  .voice-btn:hover{border-color:var(--accent);}
-  .voice-btn.is-recording{background:var(--accent); border-color:var(--accent);}
-  .voice-status{font-size:0.82rem; color:var(--text-muted);}
+  .voice-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding-bottom:6px;}
+  .voice-btn{min-height:48px; font-size:0.95rem;}
+  .voice-btn.is-recording, .voice-btn.is-recording:hover{color:#fff; background:var(--accent); box-shadow:0 6px 0 #5a1414;}
+  .voice-status{font-size:0.85rem; color:var(--muted);}
   .voice-preview{display:block; margin-top:10px; width:100%; max-width:320px;}
   .submit-row{margin-top:26px;}
   .form-msg{margin-top:14px; font-size:0.9rem;}
   .form-msg.success{color:var(--text);}
-  .form-msg.error{color:#e08a8a;}
+  .form-msg.error{color:var(--accent-text);}
 
-  footer{
-    padding:32px 0 60px;
-    font-size:0.82rem;
-    color:var(--text-muted);
+  footer.wrap{
+    padding:32px 24px 60px;
+    font-size:0.85rem;
+    color:var(--muted);
   }
+
+  /* ---------- Pied de page commun ---------- */
+  .site-nav{display:flex; flex-wrap:wrap; gap:0 4px; margin:0 0 12px -10px;}
+  .site-nav a{display:inline-flex; align-items:center; min-height:44px; padding:0 10px; font:800 .8rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-decoration:none;}
+  .site-nav a:hover, .site-nav a[aria-current="page"]{color:var(--gold-hi);}
+  .site-nav a[aria-current="page"]{text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:6px;}
 
   @media (prefers-reduced-motion: reduce){
     section.reveal{opacity:1; transform:none; transition:none;}
-    .card-chip{transition:none;}
+    .btn{transition:none;}
   }
 
   /* ---------- Rideau d'accès ---------- */
@@ -335,52 +281,53 @@
     display:flex; align-items:center; justify-content:center;
     background:var(--bg);
     padding:24px;
+    overflow-y:auto;
   }
   .gate-form{max-width:360px; width:100%; text-align:center;}
-  .gate-title{font-size:clamp(2rem,7vw,2.6rem); text-transform:uppercase; margin:6px 0 14px;}
-  .gate-copy{color:var(--text-muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-form .eyebrow{margin-bottom:10px;}
+  .gate-title{margin:6px 0 14px;}
+  .gate-title img{display:block; width:min(260px,70vw); height:auto; margin:0 auto;}
+  .gate-copy{color:var(--muted); font-size:0.95rem; margin:0 0 22px;}
+  .gate-label{display:block; text-align:left; margin:0 0 6px; font:600 .75rem/1.2 var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
   .gate-input{
-    width:100%; font-family:var(--font-mono); font-size:1rem;
-    padding:12px 14px; background:var(--surface); border:1px solid var(--border);
-    border-radius:4px; color:var(--text); margin-bottom:12px;
+    display:block; width:100%; font-family:var(--body); font-size:1rem;
+    min-height:48px; padding:12px 14px; background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; color:var(--text); margin-bottom:16px;
   }
-  .gate-input:focus-visible{outline:2px solid var(--rarity-signature); outline-offset:2px;}
-  .gate-submit{
-    width:100%; font-family:var(--font-display); text-transform:uppercase;
-    letter-spacing:0.04em; font-size:1rem; padding:12px 14px;
-    background:var(--accent); color:var(--text); border:none; border-radius:4px;
-    cursor:pointer; transition:background .2s ease;
-  }
-  .gate-submit:hover{background:#c24444;}
-  .gate-error{color:#e08a8a; font-size:0.85rem; margin-top:12px;}
+  .gate-error{color:var(--accent-text); font-size:0.9rem; margin-top:16px;}
 </style>
+</head>
+<body>
 
 <div id="gate" class="gate">
   <form id="gate-form" class="gate-form">
-    <p class="eyebrow" style="margin-bottom:10px">Accès privé</p>
-    <h1 class="gate-title">Metalnini</h1>
+    <p class="eyebrow">Accès privé</p>
+    <h1 class="gate-title"><img src="proto/cards/logo.webp" alt="Metalnini" width="900" height="534"></h1>
     <p class="gate-copy">Document de travail partagé avec des proches. Mot de passe requis.</p>
-    <input id="gate-input" type="password" class="gate-input" placeholder="Mot de passe" autocomplete="off" autofocus>
-    <button type="submit" class="gate-submit">Entrer</button>
+    <label for="gate-input" class="gate-label">Mot de passe</label>
+    <input id="gate-input" type="password" class="gate-input" autocomplete="off" autofocus>
+    <button type="submit" class="btn block">Entrer</button>
     <p id="gate-error" class="gate-error" hidden>Mot de passe incorrect.</p>
   </form>
 </div>
 
 <div id="site-content" style="display:none">
 
-<div class="wrap hero">
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<main id="contenu" class="wrap" tabindex="-1">
+
+<header class="hero">
   <p class="eyebrow">Projet en gestation — document de travail</p>
   <h1>Metalnini</h1>
   <p class="tagline">Le classeur Panini du metal et du rock, réinventé pour une génération qui vit sa passion en ligne comme en fosse.</p>
   <p class="pitch">Ce document explique où en est l'idée : la vision, comment le jeu fonctionnerait, ce qui nous excite, et ce qui nous fait encore hésiter. Pas de jargon technique — on veut votre avis de fans avant d'aller plus loin.</p>
-</div>
-
-<div class="wrap">
+</header>
 
 <section class="reveal">
   <p class="eyebrow">Le constat</p>
   <h2>On collectionnait des vignettes. Aujourd'hui, on scrolle.</h2>
-  <p>Il y a vingt ans, compléter l'album Panini de sa équipe, c'était une obsession partagée : on échangeait dans la cour, on avait "les doubles", on montrait sa collection avec fierté. La musique metal et rock a la même culture de la fidélité et du fanatisme — mais aucun objet de collection à sa mesure aujourd'hui.</p>
+  <p>Il y a vingt ans, compléter l'album Panini de son équipe, c'était une obsession partagée : on échangeait dans la cour, on avait "les doubles", on montrait sa collection avec fierté. La musique metal et rock a la même culture de la fidélité et du fanatisme — mais aucun objet de collection à sa mesure aujourd'hui.</p>
   <p>Metalnini part de ce manque : donner à une communauté très soudée, souvent qualifiée de "nerd" (et on l'assume), un objet à collectionner, à montrer, à s'échanger — construit autour des artistes qu'elle suit vraiment.</p>
 </section>
 
@@ -424,11 +371,11 @@
   <h2>Un même objet, plusieurs degrés de rareté</h2>
   <p>Chaque carte suit un même gabarit visuel — seule la rareté change le traitement (bordure, texture, effet). Ça permet d'en produire beaucoup, tout en gardant un objet cohérent et reconnaissable.</p>
   <div class="rarity-strip" role="list">
-    <figure role="listitem" data-r="commune"><img src="proto/cards/landmvrks-commune.jpg" alt="Carte Landmvrks, rareté Commune" loading="lazy"><figcaption>Commune</figcaption></figure>
-    <figure role="listitem" data-r="rare"><img src="proto/cards/landmvrks-rare.jpg" alt="Carte Landmvrks, rareté Rare" loading="lazy"><figcaption>Rare</figcaption></figure>
-    <figure role="listitem" data-r="holo"><img src="proto/cards/landmvrks-holo.jpg" alt="Carte Landmvrks, rareté Holo" loading="lazy"><figcaption>Holo</figcaption></figure>
-    <figure role="listitem" data-r="signature"><img src="proto/cards/landmvrks-signature.jpg" alt="Carte Landmvrks, rareté Signature" loading="lazy"><figcaption>Signature</figcaption></figure>
-    <figure role="listitem" data-r="legendaire"><img src="proto/cards/landmvrks-legendaire.jpg" alt="Carte Landmvrks, rareté Légendaire" loading="lazy"><figcaption>Légendaire</figcaption></figure>
+    <figure role="listitem" data-r="commune"><img src="proto/cards/landmvrks-commune.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Commune" loading="lazy"><figcaption>Commune</figcaption></figure>
+    <figure role="listitem" data-r="rare"><img src="proto/cards/landmvrks-rare.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Rare" loading="lazy"><figcaption>Rare</figcaption></figure>
+    <figure role="listitem" data-r="holo"><img src="proto/cards/landmvrks-holo.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Holo" loading="lazy"><figcaption>Holo</figcaption></figure>
+    <figure role="listitem" data-r="signature"><img src="proto/cards/landmvrks-signature.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Signature" loading="lazy"><figcaption>Signature</figcaption></figure>
+    <figure role="listitem" data-r="legendaire"><img src="proto/cards/landmvrks-legendaire.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Légendaire" loading="lazy"><figcaption>Légendaire</figcaption></figure>
   </div>
   <p class="fig-note">Une vraie carte : Florent Salfati, chanteur de Landmvrks, en arcane VIII « Lost in the Waves ». L'illustration ne change pas d'une rareté à l'autre ; seuls le cadre et la finition montent en gamme, du papier mat de la Commune à l'or de la Signature et au foil noir et rouge de la Légendaire. Illustration générée par IA à partir d'une photo sous licence libre ; usage privé, le groupe n'a pas été consulté.</p>
   <p class="fig-note"><a href="export/metalnini-cartes.html">Voir tous les artistes et leurs raretés</a> · <a href="proto/">Essayer d'ouvrir un paquet</a></p>
@@ -523,9 +470,9 @@
 
 <section class="reveal">
   <div class="ask">
-    <p class="eyebrow" style="margin-bottom:16px">On a besoin de vous</p>
-    <h2 style="margin-bottom:8px">Ce qu'on aimerait savoir</h2>
-    <p style="color:var(--text-muted); font-size:0.92rem; margin:0 0 20px">Réponds à ce que tu veux, ignore le reste. Ça part directement par mail — pas besoin de créer de compte.</p>
+    <p class="eyebrow">On a besoin de vous</p>
+    <h2>Ce qu'on aimerait savoir</h2>
+    <p class="ask-intro">Réponds à ce que tu veux, ignore le reste. Ça part directement par mail — pas besoin de créer de compte.</p>
 
     <form id="feedback-form" class="feedback-form" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="access_key" value="32acdb51-a679-4ea0-8159-3e5dc3d544a0">
@@ -561,7 +508,7 @@
       <label>
         <span class="q">Ou dis-le de vive voix (optionnel)</span>
         <div class="voice-row">
-          <button type="button" id="voice-btn" class="voice-btn">🎙 Enregistrer un vocal</button>
+          <button type="button" id="voice-btn" class="btn ghost voice-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5a3 3 0 0 1 6 0v5a3 3 0 0 1 -6 0z"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M8 21h8"/><path d="M12 17v4"/></svg><span>Enregistrer un vocal</span></button>
           <span id="voice-status" class="voice-status"></span>
         </div>
         <audio id="voice-preview" class="voice-preview" controls hidden></audio>
@@ -569,16 +516,17 @@
       </label>
 
       <div class="submit-row">
-        <button type="submit" class="gate-submit" style="width:auto; padding:12px 28px;">Envoyer</button>
+        <button type="submit" class="btn">Envoyer</button>
       </div>
       <p id="form-msg" class="form-msg" hidden></p>
     </form>
   </div>
 </section>
 
-</div>
+</main>
 
 <footer class="wrap">
+  <nav class="site-nav" aria-label="Pages du projet"><a href="index.html" aria-current="page">Pitch</a><a href="concept.html">Concept</a><a href="flows.html">Flows</a><a href="sons.html">Sons</a><a href="proto/">Prototype</a></nav>
   Document de travail — à partager, commenter, démonter si besoin.
 </footer>
 
@@ -650,6 +598,11 @@
   var voiceFileInput = document.getElementById('voice-file');
   var formMsg = document.getElementById('form-msg');
 
+  // icônes Tabler (microphone, player-stop) en currentColor
+  var MIC = voiceBtn ? voiceBtn.querySelector('svg').outerHTML : '';
+  var STOP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/></svg>';
+  function setVoiceBtn(icon, label){ voiceBtn.innerHTML = icon + '<span>' + label + '</span>'; }
+
   var mediaRecorder = null;
   var chunks = [];
   var recording = false;
@@ -687,13 +640,13 @@
           voicePreview.hidden = false;
           recording = false;
           voiceBtn.classList.remove('is-recording');
-          voiceBtn.textContent = '🎙 Réenregistrer';
+          setVoiceBtn(MIC, 'Réenregistrer');
           setStatus('Vocal prêt — envoyé avec le formulaire.');
         });
         mediaRecorder.start();
         recording = true;
         voiceBtn.classList.add('is-recording');
-        voiceBtn.textContent = '⏺ Arrêter';
+        setVoiceBtn(STOP, 'Arrêter');
         setStatus('Enregistrement en cours…');
       }).catch(function(){
         setStatus("Micro indisponible ou refusé — pas grave, tu peux répondre par écrit.");
@@ -731,3 +684,5 @@
   });
 })();
 </script>
+</body>
+</html>

@@ -1,32 +1,63 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Metalnini · Sons</title><link rel="icon" href="icons/icon-32.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0c0b0a">
+<title>Metalnini · Sons</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="icons/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0c0b0a; --surface:#161412; --text:#f3f0ea; --muted:#a49e94; --border:rgba(255,255,255,.1); --gold:#eb9a26; --gold-hi:#f4b243}
-  body{margin:0; background:var(--bg); color:var(--text); font:15px/1.55 Inter, system-ui, sans-serif}
-  .wrap{max-width:1040px; margin:0 auto; padding:32px 16px 60px}
-  h1,h2{font-family:"Big Shoulders Display", sans-serif; text-transform:uppercase; line-height:.95; margin:0 0 12px} h1{font-size:2.6rem} h2{font-size:1.6rem; margin-top:36px}
-  p, li{color:var(--muted); max-width:72ch} strong{color:var(--text)} code{color:var(--gold-hi); font-size:.9em}
-  .eyebrow{font:600 .72rem Inter; letter-spacing:.16em; text-transform:uppercase; color:#e0605a; margin:0 0 8px}
-  .table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin-top:12px}
+  :root{--bg:#0c0b0a; --surface:#161412; --text:#f3f0ea; --muted:#a49e94; --border:rgba(255,255,255,.1); --gold:#eb9a26; --gold-hi:#f4b243; --accent-text:#e0605a;
+    --gothic:"Pirata One", serif; --display:"Big Shoulders Display", "Arial Narrow", sans-serif; --body:Barlow, system-ui, sans-serif}
+  body{margin:0; background:var(--bg); color:var(--text); font:15px/1.55 var(--body)}
+  :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px}
+  /* colonne de lecture à 760 px, tableau élargi à 1040 px */
+  .wrap{max-width:760px; margin:0 auto; padding:32px 16px 60px}
+  h1,h2{font-family:var(--gothic); font-weight:400; line-height:1.05; margin:0 0 12px} h1{font-size:3rem} h2{font-size:2rem; margin-top:36px}
+  p, li{color:var(--muted)} strong{color:var(--text)} code{color:var(--gold-hi); font-size:.9em}
+  .eyebrow{font:800 .8rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); margin:0 0 8px}
+  .table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin:12px calc(50% - min(520px, 50vw - 16px)) 0}
   table{border-collapse:collapse; width:100%; min-width:760px} th,td{padding:10px 12px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; font-size:.9rem}
-  th{font:600 .72rem Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface)} td:nth-child(3){white-space:nowrap; color:var(--muted)}
+  th{font:600 .72rem var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); background:var(--surface)} td:nth-child(3){white-space:nowrap; color:var(--muted)}
+  td code{white-space:nowrap}
   a{color:var(--gold-hi)}
-  .box{display:inline-grid; place-items:center; width:16px; height:16px; border:1.5px solid var(--muted); border-radius:3px; font:700 12px/1 Inter; color:var(--bg)}
+  .box{display:inline-grid; place-items:center; width:16px; height:16px; border:1.5px solid var(--muted); border-radius:3px; font:700 12px/1 var(--body); color:var(--bg)}
   .box.on{background:var(--gold); border-color:var(--gold)} td:first-child{width:34px; text-align:center}
+  /* téléphone : une fiche par son, libellés repris des en-têtes de colonne */
+  @media (max-width:640px){
+    .table-wrap{overflow:visible; border:0; border-radius:0; margin:12px 0 0}
+    table, tbody, tr, td{display:block} table{min-width:0}
+    thead{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)}
+    tr{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:2px 10px; padding:12px 14px; margin-bottom:10px; background:var(--surface); border:1px solid var(--border); border-radius:10px}
+    td{padding:0; border:0}
+    td:first-child{width:auto}
+    td:nth-child(2) code{font-size:1rem}
+    td:nth-child(n+4){grid-column:1 / -1; margin-top:8px}
+    td:nth-child(n+4)::before{display:block; font:600 .68rem/1.4 var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+    td:nth-child(4)::before{content:"Famille"}
+    td:nth-child(5)::before{content:"Moment dans le jeu"}
+    td:nth-child(6)::before{content:"Durée"}
+    td:nth-child(7)::before{content:"Intention"}
+  }
+  /* pied de page commun */
+  .site-nav{display:flex; flex-wrap:wrap; gap:0 4px; margin:40px 0 0 -10px; padding-top:20px; border-top:1px solid var(--border)}
+  .site-nav a{display:inline-flex; align-items:center; min-height:44px; padding:0 10px; font:800 .8rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-decoration:none}
+  .site-nav a:hover, .site-nav a[aria-current="page"]{color:var(--gold-hi)}
+  .site-nav a[aria-current="page"]{text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:6px}
   /* impression / PDF : fond clair, A4 paysage, en-tête du tableau répété, pas de ligne coupée entre deux pages */
   @page{size:A4 landscape; margin:12mm}
   @media print{
     :root{--bg:#fff; --surface:#f3efe8; --text:#141210; --muted:#4a453e; --border:#d9d2c6; --gold-hi:#8a5410}
     body{font-size:10.5px} .wrap{max-width:none; padding:0}
-    h1{font-size:2rem} h2{font-size:1.25rem; margin-top:18px; break-after:avoid}
-    p, li{max-width:none} .eyebrow{color:#a8322d}
-    .table-wrap{overflow:visible; border:0} table{min-width:0} th,td{padding:5px 7px; font-size:9.5px}
+    h1{font-size:2.2rem} h2{font-size:1.5rem; margin-top:18px; break-after:avoid}
+    .eyebrow{color:#a8322d}
+    .table-wrap{overflow:visible; border:0; margin:12px 0 0} table{min-width:0} th,td{padding:5px 7px; font-size:9.5px}
     thead{display:table-header-group} tr{break-inside:avoid}
     .box{width:13px; height:13px; border-color:#6b645a; -webkit-print-color-adjust:exact; print-color-adjust:exact} .box.on{color:#fff}
     th{background:#efe9df; -webkit-print-color-adjust:exact; print-color-adjust:exact}
-    td code{white-space:nowrap}
+    .site-nav{display:none}
   }
 </style></head><body><div class="wrap">
 <p class="eyebrow">Brief sonorisation</p>
@@ -59,51 +90,52 @@
 
 <h2>Liste des sons (46, dont 26 en priorité P1 · 14 faits)</h2>
 <div class="table-wrap"><table><thead><tr><th>Fait</th><th>Son</th><th>Priorité</th><th>Famille</th><th>Moment dans le jeu</th><th>Durée</th><th>Intention</th></tr></thead><tbody>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>music-main</code></td><td>P1</td><td>Musique</td><td>Fond sonore de l'app (accueil, classeurs, profil). Baisse pendant les révélations, se coupe pendant les extraits audio.</td><td>60 à 120 s, bouclable sans couture</td><td>Instrumental rock / metal accessible, énergie moyenne, pas de chant. Doit tenir 20 minutes sans lasser : peu de mélodie envahissante, un groove.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-commune-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Commune se retourne. Variante 1 sur 2, tirée au hasard.</td><td>0,3 à 0,6 s</td><td>Corde étouffée, un « tchak » sec, un peu drôle, sans déception.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>reveal-commune-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Commune se retourne. Variante 2 sur 2, tirée au hasard.</td><td>0,3 à 0,6 s</td><td>Autre couleur, même énergie : caisse claire sèche et basse étouffée.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-rare-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Rare se retourne. Variante 1 sur 2, tirée au hasard.</td><td>0,8 à 1,2 s</td><td>Petit riff clair, bleu, satisfaisant.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>reveal-rare-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Rare se retourne. Variante 2 sur 2, tirée au hasard.</td><td>0,8 à 1,2 s</td><td>Autre riff de même longueur : lick en harmoniques, bleu et net.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-holo-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Holo se retourne. Variante 1 sur 2, tirée au hasard.</td><td>1 à 1,5 s</td><td>Brillant, irisé : chorus / shimmer sur un riff.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>reveal-holo-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Holo se retourne. Variante 2 sur 2, tirée au hasard.</td><td>1 à 1,5 s</td><td>Arpège irisé, cymbale à l'envers qui monte, impact léger.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-signature-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Signature se retourne. Variante 1 sur 2, tirée au hasard.</td><td>1,5 à 2,5 s</td><td>Or : power chord plein, cymbale, un « Yeah! » ou un chœur court.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-signature-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Signature se retourne. Variante 2 sur 2, tirée au hasard.</td><td>1,5 à 2,5 s</td><td>Power chord et fry scream court (moins d'une seconde), façon metalcore.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-legendaire-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Légendaire se retourne. Variante 1 sur 3, tirée au hasard.</td><td>2,5 à 4 s</td><td>L'explosion : gros riff, impact, feu, et un growl profond façon death metal.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reveal-legendaire-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Légendaire se retourne. Variante 2 sur 3, tirée au hasard.</td><td>2,5 à 4 s</td><td>Breakdown lourd, double pédale et fry scream aigu.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>tear</code></td><td>P1</td><td>Jeu</td><td>Le sachet se déchire.</td><td>0,4 à 0,7 s</td><td>Déchirure de papier alu, nette et satisfaisante (le son qu'on entend le plus : pas fatigant).</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>flip</code></td><td>P1</td><td>Jeu</td><td>Une carte se retourne (avant le jingle de rareté).</td><td>0,15 à 0,25 s</td><td>Swish de carte, discret.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>place</code></td><td>P1</td><td>Jeu</td><td>Une carte se pose dans sa case du classeur.</td><td>0,15 à 0,3 s</td><td>« Clac » feutré d'une carte qui trouve sa place.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>duplicate</code></td><td>P1</td><td>Jeu</td><td>Un doublon rejoint la pile (+1).</td><td>0,2 à 0,4 s</td><td>Pièce / jeton qui s'empile, léger.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>binder-complete-1</code></td><td>P1</td><td>Récompense</td><td>Un classeur est complété, variante 1 sur 2, tirée au hasard.</td><td>2 à 3 s</td><td>Fanfare rock : le patch cousu sur la veste. Fierté.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>fusion</code></td><td>P1</td><td>Récompense</td><td>Transformation de doublons en rareté supérieure.</td><td>1 à 1,5 s</td><td>Forge, métal qui se fond puis un éclat.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>gift</code></td><td>P1</td><td>Récompense</td><td>Cadeau du Grand Architecte (carte ou paquet offert).</td><td>1 à 1,5 s</td><td>Mystique : cloche, orgue lointain, un peu occulte.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>tap</code></td><td>P1</td><td>Interface</td><td>Toucher un bouton.</td><td>0,03 à 0,08 s</td><td>Clic très discret (joué souvent, volume bas) : médiator sur une corde étouffée.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-scan</code></td><td>P1</td><td>Échange</td><td>Le QR code de ton pote est reconnu par la caméra.</td><td>0,2 à 0,4 s</td><td>Confirmation nette et courte : un médiator qui gratte une corde, ou un bip d'ampli. Doit rassurer tout de suite.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-join</code></td><td>P1</td><td>Échange</td><td>Ton pote entre dans l'échange (vu des deux côtés).</td><td>0,6 à 1 s</td><td>Arrivée d'un complice : deux notes qui se répondent, comme deux guitares qui s'accordent.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-add</code></td><td>P1</td><td>Échange</td><td>Tu poses une carte dans l'échange.</td><td>0,2 à 0,4 s</td><td>Carte posée sur la table : « clac » de carton, légèrement plus appuyé que place.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-partner</code></td><td>P1</td><td>Échange</td><td>Ton pote pose, retire ou te demande une carte (ton écran change sans que tu touches).</td><td>0,3 à 0,5 s</td><td>Attire l'œil sans agresser : petite cloche sèche ou harmonique, différente de trade-add.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-ready</code></td><td>P1</td><td>Échange</td><td>Ton pote a validé l'échange.</td><td>0,5 à 0,8 s</td><td>Tension positive : accord suspendu qui appelle la résolution (ta validation).</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>trade-done</code></td><td>P1</td><td>Échange</td><td>Les deux ont validé : échange conclu, juste avant la révélation des cartes reçues.</td><td>1,5 à 2,5 s</td><td>Le « tope là » du metal : deux guitares à l'unisson, impact, chœur de foule court. Moment fort, un cran sous la Signature.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>meet-bonus</code></td><td>P1</td><td>Récompense</td><td>Carte bonus de première rencontre avec un fan (après un échange conclu).</td><td>1 à 1,5 s</td><td>Cadeau complice, plus chaleureux que gift : riff court et joyeux, un « hey ! » de foule.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>intro</code></td><td>P2</td><td>Musique</td><td>Accroche de l'onboarding, au premier « Ouvrir mon premier paquet ».</td><td>1 à 2 s</td><td>Signature sonore de Metalnini : un power chord et un larsen maîtrisé. Donne envie.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>reveal-legendaire-3</code></td><td>P2</td><td>Révélation</td><td>Une carte Légendaire se retourne. Variante 3 sur 3, tirée au hasard.</td><td>2,5 à 4 s</td><td>L'ultime : growl grave et fry scream aigu en duo, sur le plus gros impact du jeu.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>heartbeat</code></td><td>P2</td><td>Suspense</td><td>Paquet qui contient une Légendaire : trois battements avant l'ouverture.</td><td>0,4 s (un battement, joué 3 fois)</td><td>Grosse caisse sourde, battement de cœur.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>rumble</code></td><td>P2</td><td>Suspense</td><td>Juste avant de retourner une Signature ou une Légendaire.</td><td>0,6 à 2 s</td><td>Montée : grondement, feedback qui enfle, jusqu'au retournement.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>deal</code></td><td>P2</td><td>Jeu</td><td>« Tout ranger d'un coup » : chaque carte distribuée.</td><td>0,1 à 0,15 s</td><td>Carte qui glisse, façon croupier. Joué en rafale : très court, sans attaque agressive.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>place-new</code></td><td>P2</td><td>Jeu</td><td>Rangement à l'unité d'une nouvelle carte.</td><td>0,3 à 0,6 s</td><td>Comme place, avec une petite note de victoire.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>upgrade</code></td><td>P2</td><td>Jeu</td><td>Une carte « monte en grade » dans le classeur.</td><td>0,6 à 1 s</td><td>Riser qui monte et claque en haut.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>binder-complete-2</code></td><td>P2</td><td>Récompense</td><td>Un classeur est complété, variante 2 sur 2, tirée au hasard.</td><td>2 à 3 s</td><td>Fanfare rock et fry scream de victoire à la fin.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>mastery-1</code></td><td>P2</td><td>Récompense</td><td>Maîtrise d'un musicien (5 raretés réunies), variante 1 sur 2, tirée au hasard.</td><td>1,5 à 2 s</td><td>Chœur, choir hit, épique.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>mastery-2</code></td><td>P2</td><td>Récompense</td><td>Maîtrise d'un musicien, variante 2 sur 2, tirée au hasard.</td><td>1,5 à 2 s</td><td>Growl long et tenu sur un accord épique, chœur derrière.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>tear-card</code></td><td>P2</td><td>Jeu</td><td>Une carte est déchirée (la détruire).</td><td>0,5 à 0,8 s</td><td>Carton épais qui se déchire, un peu dramatique.</td></tr>
-<tr><td><span class="box on" aria-label="fait">✓</span></td><td><code>reward</code></td><td>P2</td><td>Récompense</td><td>Mini offert (installation, notifications).</td><td>0,6 à 1 s</td><td>Petit jingle joyeux, « loot ».</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>select</code></td><td>P2</td><td>Interface</td><td>Choisir une option (format, univers, carte de vitrine).</td><td>0,08 à 0,15 s</td><td>Un cran plus marqué que tap.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>notify</code></td><td>P2</td><td>Interface</td><td>Une notification apparaît en haut de l'écran.</td><td>0,2 à 0,4 s</td><td>Deux notes, amical.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-code</code></td><td>P2</td><td>Échange</td><td>Ton code d'échange s'affiche, en attente de ton pote.</td><td>0,5 à 1 s</td><td>Un ampli qu'on allume : souffle, petit « ploc » de lampe. Discret, il annonce l'attente.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-remove</code></td><td>P2</td><td>Échange</td><td>Tu retires une carte de l'échange.</td><td>0,2 à 0,3 s</td><td>Le même geste à l'envers : glissé court, plus léger que trade-add.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>trade-cancel</code></td><td>P2</td><td>Échange</td><td>Échange annulé, ou ton pote a quitté la session.</td><td>0,5 à 0,8 s</td><td>Retombée sans drame : corde qu'on relâche, larsen coupé net.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>title</code></td><td>P2</td><td>Récompense</td><td>Nouveau titre débloqué (Metal Corner, Roadie…).</td><td>1 à 2 s</td><td>Fanfare metal courte : roulement de toms et power chord, comme une entrée sur scène.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>zoom</code></td><td>P2</td><td>Interface</td><td>Une carte s'ouvre en plein écran.</td><td>0,2 à 0,4 s</td><td>Souffle court et ample, comme une carte qu'on lève à la lumière.</td></tr>
-<tr><td><span class="box" aria-label="à faire"></span></td><td><code>nope</code></td><td>P2</td><td>Interface</td><td>Action refusée (code inconnu, carte plus disponible, trop de cartes).</td><td>0,2 à 0,4 s</td><td>Non, gentiment : deux notes descendantes étouffées. Jamais un buzzer agressif.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>music-main</code></td><td>P1</td><td>Musique</td><td>Fond sonore de l'app (accueil, classeurs, profil). Baisse pendant les révélations, se coupe pendant les extraits audio.</td><td>60 à 120 s, bouclable sans couture</td><td>Instrumental rock / metal accessible, énergie moyenne, pas de chant. Doit tenir 20 minutes sans lasser : peu de mélodie envahissante, un groove.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-commune-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Commune se retourne. Variante 1 sur 2, tirée au hasard.</td><td>0,3 à 0,6 s</td><td>Corde étouffée, un « tchak » sec, un peu drôle, sans déception.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>reveal-commune-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Commune se retourne. Variante 2 sur 2, tirée au hasard.</td><td>0,3 à 0,6 s</td><td>Autre couleur, même énergie : caisse claire sèche et basse étouffée.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-rare-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Rare se retourne. Variante 1 sur 2, tirée au hasard.</td><td>0,8 à 1,2 s</td><td>Petit riff clair, bleu, satisfaisant.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>reveal-rare-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Rare se retourne. Variante 2 sur 2, tirée au hasard.</td><td>0,8 à 1,2 s</td><td>Autre riff de même longueur : lick en harmoniques, bleu et net.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-holo-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Holo se retourne. Variante 1 sur 2, tirée au hasard.</td><td>1 à 1,5 s</td><td>Brillant, irisé : chorus / shimmer sur un riff.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>reveal-holo-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Holo se retourne. Variante 2 sur 2, tirée au hasard.</td><td>1 à 1,5 s</td><td>Arpège irisé, cymbale à l'envers qui monte, impact léger.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-signature-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Signature se retourne. Variante 1 sur 2, tirée au hasard.</td><td>1,5 à 2,5 s</td><td>Or : power chord plein, cymbale, un « Yeah! » ou un chœur court.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-signature-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Signature se retourne. Variante 2 sur 2, tirée au hasard.</td><td>1,5 à 2,5 s</td><td>Power chord et fry scream court (moins d'une seconde), façon metalcore.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-legendaire-1</code></td><td>P1</td><td>Révélation</td><td>Une carte Légendaire se retourne. Variante 1 sur 3, tirée au hasard.</td><td>2,5 à 4 s</td><td>L'explosion : gros riff, impact, feu, et un growl profond façon death metal.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reveal-legendaire-2</code></td><td>P1</td><td>Révélation</td><td>Une carte Légendaire se retourne. Variante 2 sur 3, tirée au hasard.</td><td>2,5 à 4 s</td><td>Breakdown lourd, double pédale et fry scream aigu.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>tear</code></td><td>P1</td><td>Jeu</td><td>Le sachet se déchire.</td><td>0,4 à 0,7 s</td><td>Déchirure de papier alu, nette et satisfaisante (le son qu'on entend le plus : pas fatigant).</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>flip</code></td><td>P1</td><td>Jeu</td><td>Une carte se retourne (avant le jingle de rareté).</td><td>0,15 à 0,25 s</td><td>Swish de carte, discret.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>place</code></td><td>P1</td><td>Jeu</td><td>Une carte se pose dans sa case du classeur.</td><td>0,15 à 0,3 s</td><td>« Clac » feutré d'une carte qui trouve sa place.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>duplicate</code></td><td>P1</td><td>Jeu</td><td>Un doublon rejoint la pile (+1).</td><td>0,2 à 0,4 s</td><td>Pièce / jeton qui s'empile, léger.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>binder-complete-1</code></td><td>P1</td><td>Récompense</td><td>Un classeur est complété, variante 1 sur 2, tirée au hasard.</td><td>2 à 3 s</td><td>Fanfare rock : le patch cousu sur la veste. Fierté.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>fusion</code></td><td>P1</td><td>Récompense</td><td>Transformation de doublons en rareté supérieure.</td><td>1 à 1,5 s</td><td>Forge, métal qui se fond puis un éclat.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>gift</code></td><td>P1</td><td>Récompense</td><td>Cadeau du Grand Architecte (carte ou paquet offert).</td><td>1 à 1,5 s</td><td>Mystique : cloche, orgue lointain, un peu occulte.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>tap</code></td><td>P1</td><td>Interface</td><td>Toucher un bouton.</td><td>0,03 à 0,08 s</td><td>Clic très discret (joué souvent, volume bas) : médiator sur une corde étouffée.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-scan</code></td><td>P1</td><td>Échange</td><td>Le QR code de ton pote est reconnu par la caméra.</td><td>0,2 à 0,4 s</td><td>Confirmation nette et courte : un médiator qui gratte une corde, ou un bip d'ampli. Doit rassurer tout de suite.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-join</code></td><td>P1</td><td>Échange</td><td>Ton pote entre dans l'échange (vu des deux côtés).</td><td>0,6 à 1 s</td><td>Arrivée d'un complice : deux notes qui se répondent, comme deux guitares qui s'accordent.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-add</code></td><td>P1</td><td>Échange</td><td>Tu poses une carte dans l'échange.</td><td>0,2 à 0,4 s</td><td>Carte posée sur la table : « clac » de carton, légèrement plus appuyé que place.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-partner</code></td><td>P1</td><td>Échange</td><td>Ton pote pose, retire ou te demande une carte (ton écran change sans que tu touches).</td><td>0,3 à 0,5 s</td><td>Attire l'œil sans agresser : petite cloche sèche ou harmonique, différente de trade-add.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-ready</code></td><td>P1</td><td>Échange</td><td>Ton pote a validé l'échange.</td><td>0,5 à 0,8 s</td><td>Tension positive : accord suspendu qui appelle la résolution (ta validation).</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>trade-done</code></td><td>P1</td><td>Échange</td><td>Les deux ont validé : échange conclu, juste avant la révélation des cartes reçues.</td><td>1,5 à 2,5 s</td><td>Le « tope là » du metal : deux guitares à l'unisson, impact, chœur de foule court. Moment fort, un cran sous la Signature.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>meet-bonus</code></td><td>P1</td><td>Récompense</td><td>Carte bonus de première rencontre avec un fan (après un échange conclu).</td><td>1 à 1,5 s</td><td>Cadeau complice, plus chaleureux que gift : riff court et joyeux, un « hey ! » de foule.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>intro</code></td><td>P2</td><td>Musique</td><td>Accroche de l'onboarding, au premier « Ouvrir mon premier paquet ».</td><td>1 à 2 s</td><td>Signature sonore de Metalnini : un power chord et un larsen maîtrisé. Donne envie.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>reveal-legendaire-3</code></td><td>P2</td><td>Révélation</td><td>Une carte Légendaire se retourne. Variante 3 sur 3, tirée au hasard.</td><td>2,5 à 4 s</td><td>L'ultime : growl grave et fry scream aigu en duo, sur le plus gros impact du jeu.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>heartbeat</code></td><td>P2</td><td>Suspense</td><td>Paquet qui contient une Légendaire : trois battements avant l'ouverture.</td><td>0,4 s (un battement, joué 3 fois)</td><td>Grosse caisse sourde, battement de cœur.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>rumble</code></td><td>P2</td><td>Suspense</td><td>Juste avant de retourner une Signature ou une Légendaire.</td><td>0,6 à 2 s</td><td>Montée : grondement, feedback qui enfle, jusqu'au retournement.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>deal</code></td><td>P2</td><td>Jeu</td><td>« Tout ranger d'un coup » : chaque carte distribuée.</td><td>0,1 à 0,15 s</td><td>Carte qui glisse, façon croupier. Joué en rafale : très court, sans attaque agressive.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>place-new</code></td><td>P2</td><td>Jeu</td><td>Rangement à l'unité d'une nouvelle carte.</td><td>0,3 à 0,6 s</td><td>Comme place, avec une petite note de victoire.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>upgrade</code></td><td>P2</td><td>Jeu</td><td>Une carte « monte en grade » dans le classeur.</td><td>0,6 à 1 s</td><td>Riser qui monte et claque en haut.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>binder-complete-2</code></td><td>P2</td><td>Récompense</td><td>Un classeur est complété, variante 2 sur 2, tirée au hasard.</td><td>2 à 3 s</td><td>Fanfare rock et fry scream de victoire à la fin.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>mastery-1</code></td><td>P2</td><td>Récompense</td><td>Maîtrise d'un musicien (5 raretés réunies), variante 1 sur 2, tirée au hasard.</td><td>1,5 à 2 s</td><td>Chœur, choir hit, épique.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>mastery-2</code></td><td>P2</td><td>Récompense</td><td>Maîtrise d'un musicien, variante 2 sur 2, tirée au hasard.</td><td>1,5 à 2 s</td><td>Growl long et tenu sur un accord épique, chœur derrière.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>tear-card</code></td><td>P2</td><td>Jeu</td><td>Une carte est déchirée (la détruire).</td><td>0,5 à 0,8 s</td><td>Carton épais qui se déchire, un peu dramatique.</td></tr>
+<tr><td><span class="box on" role="img" aria-label="Fait">✓</span></td><td><code>reward</code></td><td>P2</td><td>Récompense</td><td>Mini offert (installation, notifications).</td><td>0,6 à 1 s</td><td>Petit jingle joyeux, « loot ».</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>select</code></td><td>P2</td><td>Interface</td><td>Choisir une option (format, univers, carte de vitrine).</td><td>0,08 à 0,15 s</td><td>Un cran plus marqué que tap.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>notify</code></td><td>P2</td><td>Interface</td><td>Une notification apparaît en haut de l'écran.</td><td>0,2 à 0,4 s</td><td>Deux notes, amical.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-code</code></td><td>P2</td><td>Échange</td><td>Ton code d'échange s'affiche, en attente de ton pote.</td><td>0,5 à 1 s</td><td>Un ampli qu'on allume : souffle, petit « ploc » de lampe. Discret, il annonce l'attente.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-remove</code></td><td>P2</td><td>Échange</td><td>Tu retires une carte de l'échange.</td><td>0,2 à 0,3 s</td><td>Le même geste à l'envers : glissé court, plus léger que trade-add.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>trade-cancel</code></td><td>P2</td><td>Échange</td><td>Échange annulé, ou ton pote a quitté la session.</td><td>0,5 à 0,8 s</td><td>Retombée sans drame : corde qu'on relâche, larsen coupé net.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>title</code></td><td>P2</td><td>Récompense</td><td>Nouveau titre débloqué (Metal Corner, Roadie…).</td><td>1 à 2 s</td><td>Fanfare metal courte : roulement de toms et power chord, comme une entrée sur scène.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>zoom</code></td><td>P2</td><td>Interface</td><td>Une carte s'ouvre en plein écran.</td><td>0,2 à 0,4 s</td><td>Souffle court et ample, comme une carte qu'on lève à la lumière.</td></tr>
+<tr><td><span class="box" role="img" aria-label="À faire"></span></td><td><code>nope</code></td><td>P2</td><td>Interface</td><td>Action refusée (code inconnu, carte plus disponible, trop de cartes).</td><td>0,2 à 0,4 s</td><td>Non, gentiment : deux notes descendantes étouffées. Jamais un buzzer agressif.</td></tr>
 </tbody></table></div>
+<nav class="site-nav" aria-label="Pages du projet"><a href="index.html">Pitch</a><a href="concept.html">Concept</a><a href="flows.html">Flows</a><a href="sons.html" aria-current="page">Sons</a><a href="proto/">Prototype</a></nav>
 </div></body></html>
