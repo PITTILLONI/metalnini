@@ -32,7 +32,7 @@
   .forge img{position:absolute; left:50%; top:50%; width:90px; aspect-ratio:2/3; margin:-67px 0 0 -45px; object-fit:cover; border-radius:6px; box-shadow:0 10px 24px rgba(0,0,0,.7); opacity:0}
   .forge i{position:absolute; left:50%; top:50%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; background:var(--fc); opacity:0; box-shadow:0 0 40px var(--fc)}
   body{margin:0; background:var(--bg); color:var(--text); font-family:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; line-height:1.45;
-       padding-bottom:calc(84px + var(--safe-b)); overscroll-behavior:none}
+       padding-bottom:calc(84px + var(--safe-b) + var(--pill, 0px)); overscroll-behavior:none}
   button{font:inherit; color:inherit}
   button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .wrap{max-width:960px; margin:0 auto; padding:0 16px}
@@ -294,6 +294,14 @@
   .pogo-body .fan circle, .pogo-body .fan path:not(.fan-a){fill:#2a1d15; stroke:var(--gold-hi); stroke-width:1.6} .pogo-body .fan-a{stroke:#2a1d15}
   .pogo-arena.fall .pogo-me{transform:translate(-50%, 10%) rotate(80deg); filter:grayscale(1) brightness(.7)}
   .pogo-bal{display:flex; justify-content:center; gap:6px; margin:0 0 8px} .pogo-bal i{width:30px; height:8px; border-radius:4px; background:var(--gold)} .pogo-bal i.off{background:rgba(255,255,255,.14)}
+  /* manche en paysage (téléphone couché) : Gauche | arène | Droite, tout tient sans défiler */
+  @media (orientation:landscape) and (max-height:500px){
+    body.playing #pogo-in{max-width:none; display:grid; grid-template-columns:1fr 2fr 1fr; grid-template-areas:"top top top" "pl arena pr" "bal bal bal" "note note note"; column-gap:12px; padding-top:calc(6px + env(safe-area-inset-top)); padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+    body.playing #pogo-in .pit-top{grid-area:top; flex-direction:row; justify-content:center; gap:16px; margin:0 44px 12px} body.playing #pogo-in .pit-clock{font-size:1.6rem}
+    body.playing #pogo-in .pogo-arena{grid-area:arena; height:calc(100dvh - 126px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); margin:0}
+    body.playing #pogo-in .pogo-pads{display:contents} body.playing #pogo-pl{grid-area:pl} body.playing #pogo-pr{grid-area:pr}
+    body.playing #pogo-in .pogo-bal{grid-area:bal; margin:8px 0 4px} body.playing #pogo-in .pit-note{grid-area:note; margin:0; font-size:.75rem}
+  }
   .pogo-stake{display:flex; align-items:center; gap:12px; margin:4px 0 12px; padding:10px 12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); text-align:left}
   .pogo-stake small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-stake b{display:block; font:900 1.15rem/1.15 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pogo-stake span span{font:500 .8rem/1.3 var(--mono); color:var(--muted)}
   .pogo-c{flex:none; display:block; width:64px} .pogo-c img{display:block; width:100%; border-radius:6px}
@@ -361,14 +369,14 @@
   .how-steps b{display:block; margin-bottom:3px; font:800 1rem/1.15 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--text)} .how-steps span{font:500 .86rem/1.45 var(--mono); color:var(--muted)}
   .how-gain{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0} .how-gain small{flex-basis:100%; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .how-gain span{padding:8px 12px; border:1px solid rgba(235,154,38,.45); border-radius:999px; font:600 .8rem var(--mono); color:var(--gold-hi)}
-  .salle .trade-x{position:fixed; z-index:2; background:rgba(12,10,9,.55); border-radius:50%}
-  .salle-in{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
-  .cta-bar{position:fixed; left:0; right:0; bottom:0; z-index:3; padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(12,10,9,0), var(--bg) 30%); text-align:center}
+  .salle-in{padding-bottom:calc(144px + env(safe-area-inset-bottom))}
+  .cta-bar{position:fixed; left:0; right:0; bottom:0; z-index:3; padding:24px 16px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(12,10,9,0), var(--bg) 16px); text-align:center}   /* fondu court puis fond plein : la note reste lisible au-dessus de ce qui défile */
   .cta-bar > *{max-width:488px; margin-left:auto; margin-right:auto} .cta-bar small{display:block; margin-bottom:8px; font:600 .8rem var(--mono); color:var(--gold-hi)}
   @media (prefers-reduced-motion: reduce){ .pogo-me{transition:none} }
   .trade{position:fixed; inset:0; z-index:70; overflow-y:auto; overscroll-behavior:contain; background:var(--bg)}
   .trade[hidden]{display:none}
   .trade-x{position:fixed; top:calc(12px + env(safe-area-inset-top)); right:16px; z-index:2} .trade-min{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:16px; z-index:2}
+  .icon-btn.trade-x, .icon-btn.trade-min, .icon-btn.pub-x{background:rgba(12,10,9,.55)}   /* posés sur ce qui défile : un disque d'encre les garde lisibles */
   /* échange réduit : pastille au-dessus de la barre d'onglets pour y revenir */
   .trade-pill{position:fixed; left:16px; right:16px; bottom:calc(var(--tb, 86px) + 10px); transform:translate3d(0, var(--tb-drift, 0px), 0); z-index:25; max-width:520px; margin:0 auto; min-height:48px; display:flex; align-items:center; gap:12px; padding:10px 16px; border:1px solid var(--gold); border-radius:999px; background:var(--ink); color:var(--text); font:600 .86rem var(--mono); text-align:left; cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,.6); animation:sheetup .24s cubic-bezier(.2,.8,.2,1)}
   .trade-pill[hidden]{display:none} .trade-pill b{color:var(--gold-hi)} .trade-pill em{flex:1; min-width:0; font-style:normal; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -524,7 +532,7 @@
   .btn.ghost:hover{background:#1e1812} .btn.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 2px 0 #000}
   .btn.danger{color:#fff; background:var(--accent); box-shadow:0 6px 0 #5a1414} .btn.danger:hover{background:#c44545} .btn.danger:active{box-shadow:0 2px 0 #5a1414}
   .btn.block{width:100%} .btn.block + .btn.block{margin-top:16px}   /* deux boutons empilés ne se touchent jamais */
-  .modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
+  .modal{position:fixed; inset:0; z-index:84; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
   .modal[hidden]{display:none}
   .modal-in{width:100%; max-width:380px; background:linear-gradient(180deg,#1b1511,#110d0a); border-radius:16px; padding:22px 20px 18px; text-align:center;
     border:1px solid rgba(235,154,38,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
@@ -919,7 +927,7 @@
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
   @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
   .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
-  .matrix .mh{font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; text-align:center}
+  .matrix .mh{min-width:0; cursor:default; justify-content:flex-end} .matrix .mh i{width:30px; height:30px; font-size:1rem}   /* en-têtes : mini-sceaux C R H S L, le nom entier en aria-label */
   .matrix .who{font:500 .7rem var(--mono); text-transform:uppercase; color:var(--muted); line-height:1.3; overflow:hidden}
   .matrix .who b{display:block; color:var(--text); font-family:var(--display); font-size:.8rem; letter-spacing:.02em}
   .matrix .cell{border:0; padding:0; background:none; cursor:pointer; position:relative}
@@ -1048,6 +1056,10 @@
   .sheet-in.detail{background:#0d0a08 repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px); border-top:1px solid rgba(235,154,38,.35)}
   .gframe{position:relative; padding:9px; border:1px solid rgba(235,154,38,.5); background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg transform=''%3E%3Cpath d='M1 21V1h20M5 17V5h12' fill='none' stroke='%23eb9a26' stroke-width='1.2'/%3E%3Ccircle cx='5' cy='5' r='2' fill='%23eb9a26'/%3E%3C/g%3E%3C/svg%3E") left top/22px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg transform='matrix%28-1 0 0 1 22 0%29'%3E%3Cpath d='M1 21V1h20M5 17V5h12' fill='none' stroke='%23eb9a26' stroke-width='1.2'/%3E%3Ccircle cx='5' cy='5' r='2' fill='%23eb9a26'/%3E%3C/g%3E%3C/svg%3E") right top/22px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg transform='matrix%281 0 0 -1 0 22%29'%3E%3Cpath d='M1 21V1h20M5 17V5h12' fill='none' stroke='%23eb9a26' stroke-width='1.2'/%3E%3Ccircle cx='5' cy='5' r='2' fill='%23eb9a26'/%3E%3C/g%3E%3C/svg%3E") left bottom/22px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg transform='matrix%28-1 0 0 -1 22 22%29'%3E%3Cpath d='M1 21V1h20M5 17V5h12' fill='none' stroke='%23eb9a26' stroke-width='1.2'/%3E%3Ccircle cx='5' cy='5' r='2' fill='%23eb9a26'/%3E%3C/g%3E%3C/svg%3E") right bottom/22px no-repeat}
   .gframe .pcard{margin:0; width:100%} .dt-top > .gframe{width:min(80%, 300px); margin:0 auto}
+  /* carte pas encore obtenue : le dos gravé, comme sa case dans le classeur, avec l'arcane et l'instrument */
+  .gframe .detail-img.myst{position:relative; width:100%; margin:0; aspect-ratio:2/3; border-radius:6px; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:#140b0b}
+  .detail-img.myst::before{content:""; position:absolute; inset:0; background:url(cards/back.jpg) center/cover; opacity:.3}
+  .detail-img.myst b{position:relative; font:400 3rem/1 var(--gothic); color:var(--gold-hi)} .detail-img.myst small{position:relative; font:600 .8rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
   .d-rar{margin:0 0 2px; font:400 1.15rem/1 var(--gothic); color:var(--sc, var(--accent-text)); text-align:center}
   .detail h2.d-name{margin:0; font:400 2.3rem/1 var(--gothic); text-transform:none; letter-spacing:0; text-align:center}
   .detail .sub{text-align:center; margin:4px 0 16px}
@@ -4332,6 +4344,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function bindPogoUp(){ [].forEach.call(pogoIn.querySelectorAll('[data-up]'), function(b){ b.onclick = function(){ b.disabled = true; pogoLift(pogo.id, b.getAttribute('data-up'), function(){ b.disabled = false; }); }; }); }
   // ramassage : ma mise (gardée ou perdue) et les cartes ramassées
   function pogoResult(r){
+    clearInterval(pogoSync);   // le pogo est fini : plus de rafraîchissement qui repeindrait l'écran par-dessus le ramassage
     pogoInv(); loadSlam(); loadPogos();
     var lost = r.result === 'lost', won = r.won || [], prime = won.some(function(c){ return c.prime; });
     snd(lost ? 'tear' : 'reward');
@@ -5179,6 +5192,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // hauteur réelle de la barre (zone de sécurité comprise) : le bac « À ranger » et la pastille d'échange s'y posent pile
   function tbHeight(){ document.documentElement.style.setProperty('--tb', document.querySelector('.tabbar').getBoundingClientRect().height + 'px'); }
   tbHeight(); addEventListener('resize', tbHeight);
+  // pastille d'échange ou de slam affichée : le bas de page lui laisse sa place (rien de caché dessous)
+  var pills = ['trade-pill','slam-pill'].map(function(id){ return document.getElementById(id); });
+  function pillSpace(){ var h = Math.max.apply(null, pills.map(function(p){ return p.offsetHeight; }));
+    document.documentElement.style.setProperty('--pill', h ? h + 18 + 'px' : '0px'); }
+  if(window.ResizeObserver){ var pillObs = new ResizeObserver(pillSpace); pills.forEach(function(p){ pillObs.observe(p); }); }
   // iPhone, app installée : si la barre d'onglets décroche du bas de l'écran et part avec la page, on la recale
   // (avec ce qui est posé dessus : bac « À ranger », pastille d'échange) ; bas de la fenêtre, pas de la zone visible : le clavier ne la soulève pas
   var tbDrift = 0, tbQueued = false;
@@ -6079,7 +6097,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(document.querySelectorAll('#sort-sheet [data-dir]'), function(b){ b.setAttribute('aria-checked', String(b.getAttribute('data-dir') === (dir > 0 ? 'asc' : 'desc')));
       b.onclick = function(){ state.sortDir = b.getAttribute('data-dir'); save(); renderBinder(); }; });
     if(mode === 'matrix'){
-      m.innerHTML = '<span></span>' + RARITIES.map(function(x){ return '<span class="mh" style="color:' + x.color + '">' + x.label + '</span>'; }).join('') +
+      m.innerHTML = '<span></span>' + RARITIES.map(function(x){ return '<span class="seal mh" style="--sc:' + x.color + '" role="img" aria-label="' + x.label + '" title="' + x.label + '"><i>' + x.label.charAt(0) + '</i></span>'; }).join('') +
         list.map(function(c){
           var known = best(c.id);
           return '<span class="who">' + (known ? '<b>' + esc(c.who) + '</b>N° ' + pos[c.id] + ' · ' + esc(c.band) : '<b>N° ' + pos[c.id] + '</b>' + esc(firstInst(c))) + '</span>' +
@@ -6146,7 +6164,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var c = card(id), r = shown || best(id);
     delete state.fresh[id]; save();
     var side = r && !c.secret && !c.perso && !c.cursed ? fuseSide(id, r) : '', head = r ? '<div class="gframe"><div class="pcard" id="pcard"><div class="pin" id="pin"><img class="detail-img" src="' + img(id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '"><div class="glare"></div></div><button type="button" class="icon-btn zoom-go" id="zoom-go" aria-label="Voir la carte en plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/></svg></button></div></div>' :
-      '<div class="detail-img" style="aspect-ratio:2/3;background:var(--surface-2);border:1px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:2.4rem;color:rgba(255,255,255,.25)">' + c.num + '</div>';
+      '<div class="gframe"><div class="detail-img myst" role="img" aria-label="Carte pas encore obtenue, arcane ' + esc(c.num) + '"><b>' + esc(c.num) + '</b><small>' + esc(firstInst(c)) + '</small></div></div>';
     document.getElementById('detail').innerHTML = '<div class="dt-top' + (side ? ' side' : '') + '">' + head + side + '</div>' +
       // maîtrise et sceaux juste sous la carte
       // carte secrète : ni maîtrise ni sceaux, une seule rareté
@@ -6154,7 +6172,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<p class="cf-src">Sources : ' + (c.sources || []).map(function(x){ return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + '</a>'; }).join(' · ') + '</p><p class="cf-src">Faits établis par la justice ou reconnus publiquement, jamais d\'accusation.</p></div>' :
       c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · partagée ou troquée, son portrait est visible des autres joueurs</span></p><div class="seals"></div>' :
       c.secret ? '<p class="mst done"><span class="mst-l">Carte secrète · presque personne ne l\'a</span></p><div class="seals"></div>' :
-      (r ? masteryHead(id) : '<p class="mst"><span class="mst-l">Raretés obtenues</span></p>') + '<div class="seals">' + RARITIES.map(function(x){
+      !r ? '<p class="mst"><span class="mst-l">5 raretés à trouver</span></p>' :
+      masteryHead(id) + '<div class="seals">' + RARITIES.map(function(x){
         var n = state.owned[id+'|'+x.k] || 0, l = '<i>' + x.label.charAt(0) + '</i>';
         return n ? '<button type="button" class="seal' + (x.k === r ? ' cur' : '') + '" data-r="' + x.k + '" style="--sc:' + x.color + '" aria-label="' + x.label + ', ' + n + ' exemplaire' + (n > 1 ? 's' : '') + (x.k === r ? ', affichée' : '') + '">' + l + (n > 1 ? '<em class="num">×' + n + '</em>' : '') + '<small>' + x.label + '</small></button>'
                  : '<span class="seal off" style="--sc:' + x.color + '" aria-label="' + x.label + ', pas encore obtenue">' + l + '<small>' + x.label + '</small></span>';
@@ -6165,7 +6184,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (r ? '<details class="d-art"><summary><h2 class="d-name">' + esc(c.who) + '</h2><p class="sub">' + esc(c.band) + ' · ' + total(id) + ' exemplaire' + (total(id) > 1 ? 's' : '') + '</p>' +
              '<span class="d-more">Bio et coup spécial' + icon('<path d="M6 9l6 6l6 -6"/>', 16) + '</span></summary>' + artistBlock(c) + '</details>' +
            '<div class="listen" id="d-listen" hidden></div>'
-         : '<h2>Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p><div class="chips"><span>' + esc(firstInst(c)) + '</span></div>') +
+         : '<h2 class="d-name">Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p>') +
       (r && c.cursed ? '<div class="detail-actions"><button type="button" class="relief curse-go" id="d-curse">Déchirer la carte<small>récompense surprise</small></button></div>' :
        r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
     if(r && c.cursed){
