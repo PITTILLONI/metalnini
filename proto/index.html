@@ -1485,6 +1485,14 @@
   </div>
 </div>
 
+<div class="bsheet" id="av-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="av-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="av-t">Ta photo de profil</h2>
+    <div id="av-step"></div>
+    <button type="button" class="btn ghost block" id="av-x">Plus tard</button>
+  </div>
+</div>
 <div class="bsheet" id="show-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sh-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -2012,12 +2020,13 @@ const api = {
     const url = async (b, p) => p ? (must(await sb.storage.from(b).createSignedUrl(p, 3600))).signedUrl : null;
     return { avatar: await url('avatars', r.avatar_path), cry: await url('cries', r.cry_path) };
   },
-  async uploadMedia(kind, blob, ext){
+  async uploadMedia(kind, blob, ext, card){
     const { data: { user } } = await sb.auth.getUser(), bucket = kind === 'avatar' ? 'avatars' : 'cries';
     const rows = must(await sb.from('profiles').select(kind + '_path').eq('id', user.id)), old = rows[0] && rows[0][kind + '_path'];
     const path = user.id + '/' + kind + '-' + Date.now() + '.' + ext;
     must(await sb.storage.from(bucket).upload(path, blob, { contentType: blob.type, upsert: false }));
     must(await sb.rpc('set_profile_media', { p_kind: kind, p_path: path }));
+    if(kind === 'avatar') must(await sb.rpc('set_avatar_card', { p_card: card || null }));   // « musicien|rareté » si la photo est une carte
     if(old) await sb.storage.from(bucket).remove([old]);
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
@@ -2856,21 +2865,48 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('pf-close').addEventListener('click', closeProfile);
   // photo : recadrée au carré et réduite à 320 px avant l'envoi
   var fileIn = document.getElementById('pf-file');
-  document.getElementById('pf-photo').addEventListener('click', function(){ fileIn.click(); });
-  document.getElementById('pf-av').addEventListener('click', function(){ fileIn.click(); });
+  // photo de profil : une vraie photo, ou une de mes cartes (son portrait recadré au carré)
+  var avSheet = document.getElementById('av-sheet');
+  function openAvatarPick(){
+    var keys = ownedKeys().sort(byRarity);
+    document.getElementById('av-step').innerHTML = '<button type="button" class="btn block" id="av-photo">Prendre ou choisir une photo</button>' +
+      '<p class="eyebrow" style="margin:16px 0 6px">Ou une de tes cartes</p>' + (keys.length ? '<div class="sh-grid" id="av-grid">' + keys.map(function(k){ var p = k.split('|');
+        return '<button type="button" data-k="' + esc(k) + '" aria-label="' + esc(card(p[0]).who + ', ' + rarity(p[1]).label) + '"><img src="' + kImg(k) + '" alt="" loading="lazy"></button>'; }).join('') + '</div>'
+        : '<p class="pf-note">Pas encore de carte : ouvre un paquet.</p>') +
+      '<p class="pf-note">Une carte en photo de profil compte comme une photo. Pour commander ta carte perso, il faudra une vraie photo de toi.</p>';
+    document.getElementById('av-photo').onclick = function(){ avSheet.hidden = true; fileIn.click(); };
+    [].forEach.call(document.querySelectorAll('#av-grid [data-k]'), function(b){ b.onclick = function(){ avSheet.hidden = true; cardAvatar(b.getAttribute('data-k')); }; });
+    avSheet.hidden = false;
+  }
+  document.getElementById('av-x').onclick = function(){ avSheet.hidden = true; };
+  avSheet.addEventListener('click', function(e){ if(e.target === avSheet) avSheet.hidden = true; });
+  document.getElementById('pf-photo').addEventListener('click', openAvatarPick);
+  document.getElementById('pf-av').addEventListener('click', openAvatarPick);
+  // portrait d'une carte : carré pris sous le bandeau du haut, centré sur le visage (les cartes sont toutes cadrées pareil)
+  function cardAvatar(k){
+    var im = new Image(), src = kImg(k); if(/^https?:/.test(src)) im.crossOrigin = 'anonymous';
+    im.onload = function(){ var S = 320, c = document.createElement('canvas'); c.width = c.height = S;
+      var side = im.width * .5; c.getContext('2d').drawImage(im, (im.width - side) / 2, im.height * .1, side, side, 0, 0, S, S);
+      saveAvatar(c, k); };
+    im.onerror = function(){ pfErr.textContent = 'Image de la carte illisible. Réessaie.'; };
+    im.src = src;
+  }
+  function saveAvatar(c, k){
+    c.toBlob(async function(blob){
+      try{
+        if(ONLINE){ MEDIA.avatar = await ONLINE.uploadMedia('avatar', blob, 'jpg', k || null); }
+        else { state.avatar = c.toDataURL('image/jpeg', .82); save(); }
+        paintAvatar(); renderGoals(); toast(k ? 'Ta carte devient ta photo de profil.' : 'Nouvelle tête validée');
+      }catch(e){ pfErr.textContent = e.message; }
+    }, 'image/jpeg', .85);
+  }
   fileIn.addEventListener('change', function(){
     var f = fileIn.files && fileIn.files[0]; fileIn.value = ''; if(!f) return;
     var im = new Image(), u = URL.createObjectURL(f);
     im.onload = function(){
       URL.revokeObjectURL(u); var S = 320, c = document.createElement('canvas'); c.width = c.height = S;
       var side = Math.min(im.width, im.height); c.getContext('2d').drawImage(im, (im.width - side) / 2, (im.height - side) / 2, side, side, 0, 0, S, S);
-      c.toBlob(async function(blob){
-        try{
-          if(ONLINE){ MEDIA.avatar = await ONLINE.uploadMedia('avatar', blob, 'jpg'); }
-          else { state.avatar = c.toDataURL('image/jpeg', .82); save(); }
-          paintAvatar(); renderGoals(); toast('Nouvelle tête validée');
-        }catch(e){ pfErr.textContent = e.message; }
-      }, 'image/jpeg', .85);
+      saveAvatar(c, null);
     };
     im.onerror = function(){ pfErr.textContent = 'Image illisible, essaie un JPEG ou un PNG.'; };
     im.src = u;
