@@ -214,7 +214,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('demande d\'artiste : feuille ouverte, hors ligne il faut un compte', !d4.getElementById('artist-sheet').hidden && d4.getElementById('as-send').disabled && /Connecte-toi/.test(d4.getElementById('as-err').textContent));
   d4.getElementById('as-cancel').click(); await sleep(20);
   check('demande d\'artiste : Annuler ferme la feuille', d4.getElementById('artist-sheet').hidden);
-  key(d4.getElementById('pack'), 'Enter'); await sleep(3200);
+  d4.getElementById('pack').click(); await sleep(3200);   // clic sans pointeur (commande vocale) : ouvre comme un toucher
   const got = Object.keys(JSON.parse(dom4.window.localStorage.getItem('metalnini-proto-v1')).owned).map(k => k.split('|')[0]);
   check('paquet Hardcore & metalcore : uniquement des cartes du classeur', got.every(id => ['knocked-loose','isaac-hale','spiritbox','jinjer','landmvrks','heriot','sykes','sam-carter','brendan-murphy','mccall','heafy','yates','honeycutt'].includes(id)), got.join(','));
   d4.getElementById('skip').click(); await sleep(400);
@@ -596,7 +596,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   pogoSt.over = true; pogoSt.ends_at = new Date(Date.now() - 1000).toISOString();
   d9.getElementById('pogo-x').click(); await sleep(20); d9.querySelector('#pogos [data-pogo="g1"]').click(); await sleep(60);
   d9.getElementById('pogo-claim').click(); await sleep(80);
-  check('pogo : ramassage, mise rendue et prime remportée', pogoClaimed === 1 && /Tu remportes la prime/.test(d9.getElementById('pogo-in').textContent) && !!d9.querySelector('.pogo-prime') && d9.querySelectorAll('.pogo-loot .pogo-c').length === 2);
+  check('pogo : ramassage, mise rendue et prime remportée', pogoClaimed === 1 && /Tu remportes la prime/.test(d9.getElementById('pogo-in').textContent) && [].some.call(d9.querySelectorAll('.pogo-lc small'), function(x){ return x.textContent === 'La prime'; }) && d9.querySelectorAll('.pogo-loot .pogo-c').length === 2);
   d9.getElementById('pogo-done').click(); await sleep(20);
   d9.querySelector('#pogo-quests [data-pm="first"]').click(); await sleep(80);
   check('pogo : mission récupérée', pogoMission === 'first');

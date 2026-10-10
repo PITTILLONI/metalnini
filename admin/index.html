@@ -15,65 +15,87 @@
     --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94; --border:rgba(255,255,255,.1);
     --accent:#b23a3a; --accent-text:#e0605a; --gold:#eb9a26; --gold-hi:#f4b243; --ink:#0d0a08; --ok:#4ade80; --err:#f87171;   /* jetons du jeu (MASTER) */
     --r-commune:#c9c3b8; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#f5c542; --r-legendaire:#ef4444;
+    /* dérivés propres à l'admin : ombres des reliefs, filets teintés, avertissement */
+    --gold-deep:#8a5510; --gold-line:rgba(235,154,38,.5); --ink-btn:#15110f; --accent-deep:#5a1414; --err-line:rgba(248,113,113,.4);
+    --warn:#f5c542; --warn-bg:rgba(245,197,66,.15); --warn-line:rgba(245,197,66,.4); --backdrop:rgba(5,4,4,.8);
+    --tabs-h:62px; --anch-h:0px;   /* hauteurs réelles des barres collantes, mesurées par le script */
     --display:"Big Shoulders Display","Arial Narrow",sans-serif; --gothic:"Pirata One","Big Shoulders Display",serif; --mono:"Barlow",system-ui,sans-serif;
   }
-  *{box-sizing:border-box} html{color-scheme:dark}
+  *{box-sizing:border-box} html{color-scheme:dark; accent-color:var(--gold)}
   body{margin:0; background:var(--bg); color:var(--text); font-family:"Barlow",system-ui,sans-serif; font-size:15px; line-height:1.45}
   h1,h2{font-family:var(--gothic); font-weight:400; letter-spacing:0; margin:0 0 12px} h1{font-size:2.4rem; color:var(--gold-hi)} h2{font-size:1.7rem}
   h3{font:800 1.15rem/1.15 var(--display); text-transform:uppercase; letter-spacing:.05em; margin:0 0 12px}
   .wrap{max-width:1100px; margin:0 auto; padding:0 16px}
   .eyebrow{font:600 .72rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); margin:0 0 6px}
   .muted{color:var(--muted)} .ok{color:var(--ok)} .err{color:var(--err)}
+  .note{font-size:.85rem; margin:0 0 10px} .as-is{text-transform:none; letter-spacing:0}   /* .as-is : pseudo et e-mail gardent leur casse dans un titre */
+  .num, table, .badge, .total{font-variant-numeric:tabular-nums} th.n, td.n{text-align:right}
+  .big{font:900 2.4rem/1 var(--display); color:var(--text); margin:0}
+  .hit{display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; margin:-10px; cursor:pointer}   /* case à cocher de tableau : zone de toucher de 44 px */
+  .meta{font:500 .75rem var(--mono); color:var(--muted); text-transform:none; letter-spacing:0}   /* précision discrète dans un titre */
+  a{color:var(--gold)} .check{display:flex; gap:8px; align-items:center} input[type=checkbox]{width:auto}
+  .ic{width:1.1em; height:1.1em; flex:0 0 auto; vertical-align:-.18em}
   .card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin:14px 0}
   input,select,button,textarea{font:inherit; color:inherit}
   input,select,textarea{background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:9px 11px; width:100%}
   input[type=number]{width:90px}
   /* boutons en relief du jeu : or pour l'action, encre (.ghost) pour le reste, rouge (.danger) seulement pour ce qui détruit */
   button{min-height:40px; margin-bottom:4px; background:var(--gold); color:var(--ink); border:0; border-radius:10px; padding:9px 18px; font:800 .95rem/1 var(--display); text-transform:uppercase; letter-spacing:.06em; cursor:pointer;
-    box-shadow:0 4px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease}
-  button:active{transform:translateY(3px); box-shadow:0 1px 0 #8a5510}
-  button.ghost{background:#15110f; color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 4px 0 #000} button.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 1px 0 #000}
-  button.danger{background:var(--accent); color:#fff; box-shadow:0 4px 0 #5a1414} button.danger:active{box-shadow:0 1px 0 #5a1414}
+    box-shadow:0 4px 0 var(--gold-deep); transition:transform .08s ease, box-shadow .08s ease; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+  button:active{transform:translateY(3px); box-shadow:0 1px 0 var(--gold-deep)}
+  button.ghost{background:var(--ink-btn); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold-line), 0 4px 0 #000} button.ghost:active{box-shadow:inset 0 0 0 1px var(--gold-line), 0 1px 0 #000}
+  button.danger{background:var(--accent); color:var(--text); box-shadow:0 4px 0 var(--accent-deep)} button.danger:active{box-shadow:0 1px 0 var(--accent-deep)}
   button:disabled{opacity:.5; cursor:default; transform:none} button[aria-busy="true"]{cursor:progress}
-  .ask{max-width:min(440px, calc(100vw - 32px)); padding:20px; border:1px solid rgba(235,154,38,.5); border-radius:14px; background:var(--surface); color:var(--text)} .ask::backdrop{background:rgba(5,4,4,.8)}
+  .ask{max-width:min(440px, calc(100vw - 32px)); padding:20px; border:1px solid var(--gold-line); border-radius:14px; background:var(--surface); color:var(--text)} .ask::backdrop{background:var(--backdrop)}
   .ask h3{margin:0 0 8px} .ask p#ask-d{margin:0 0 16px; overflow-wrap:anywhere}
-  td, h3{overflow-wrap:anywhere}
-  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
-  label{display:block; font-size:.85rem; color:var(--muted); margin:10px 0 4px}
+  h2, h3{overflow-wrap:anywhere} td{overflow-wrap:break-word} .pill{white-space:nowrap}
+  :focus-visible{outline:2px solid var(--gold-hi); outline-offset:2px}
+  label, .lab{display:block; font-size:.85rem; color:var(--muted); margin:10px 0 4px}
   .row{display:flex; gap:10px; align-items:end; flex-wrap:wrap}
   .row > *{flex:1 1 160px}
   .row > .fit{flex:0 0 auto}
   table{width:100%; border-collapse:collapse; font-size:.88rem}
   th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top}
-  th{font:500 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
-  tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
+  th{font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+  tr.click{cursor:pointer} tr.click:hover td, tr.click[aria-current] td{background:var(--surface-2)} tr.click[aria-current] td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
+  .pl-link{color:inherit; text-decoration:none} .pl-link:hover{text-decoration:underline}
   .table-wrap{overflow-x:auto}
   .pk-list{max-height:240px; overflow-y:auto; display:grid; gap:4px; margin:6px 0 4px; padding:6px; border:1px solid var(--border); border-radius:8px}
-  .pk-list label{display:flex; gap:8px; align-items:center; font-size:.88rem} .pk-list input{width:auto} .pk-list label[hidden]{display:none}
-  .po{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; padding:10px 0; border-top:1px solid var(--border)} .po img{width:96px; aspect-ratio:2/3; object-fit:cover; border-radius:6px; background:var(--surface-2)}
-  .tabs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border); padding:10px 0; position:sticky; top:0; background:var(--bg); z-index:2}
+  .pk-list label{display:flex; gap:8px; align-items:center; font-size:.88rem; margin:0; color:var(--text)} .pk-list input{width:auto} .pk-list label[hidden]{display:none}
+  .po{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; padding:10px 0; border-top:1px solid var(--border)} .po.solo{grid-template-columns:1fr}
+  .po img, .noimg{width:96px; aspect-ratio:2/3; object-fit:cover; border-radius:6px; background:var(--surface-2)}
+  .noimg{display:flex; align-items:center; justify-content:center; padding:6px; text-align:center; font-size:.72rem; color:var(--muted); border:1px dashed var(--border)} .grid-cards .noimg, .vw-card .noimg{width:100%} .thumb .noimg{width:40px; padding:0} .vw-rar .noimg{width:60px}
+  .hist{margin-top:10px; border-top:1px solid var(--border)} .hist > summary{cursor:pointer; padding:12px 0 4px; color:var(--muted); font-size:.88rem}
+  .tabs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border); padding:10px 0; position:sticky; top:0; background:var(--bg); z-index:3}
   .tabs button{flex:0 0 auto; white-space:nowrap; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-size:.8rem; padding:9px 14px; display:inline-flex; align-items:center; gap:6px}
   .tabs button{box-shadow:none; margin:0} .tabs button[aria-current="page"]{color:var(--ink); border-color:var(--gold); background:var(--gold)}
-  .badge{min-width:18px; height:18px; padding:0 5px; border-radius:99px; background:var(--gold); color:#000; font:700 .68rem/18px var(--mono); text-align:center}
-  /* sections d'une page : ancres en tête, la barre d'onglets ne les recouvre pas */
+  .badge{min-width:18px; height:18px; padding:0 5px; border-radius:99px; background:var(--ink); color:var(--gold-hi); font:700 .7rem/18px var(--mono); text-align:center}
+  .tabs button[aria-current="page"] .badge{background:var(--ink)} .tabs button:not([aria-current]) .badge{background:var(--gold); color:var(--ink)}
+  /* sections d'une page : ancres en tête (collantes sous les onglets sur ordinateur), les barres ne recouvrent jamais le haut d'une section */
   .anchors{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 0}
-  .anchors button{background:none; border:1px solid var(--border); color:var(--muted); box-shadow:none; font:600 .75rem var(--mono); letter-spacing:.06em; padding:6px 11px}
-  .part, #player-detail{scroll-margin-top:70px}
-  .todo{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border)} .todo b{font:700 1.3rem var(--display); color:var(--gold); margin-right:8px}
+  .anchors button{background:none; border:1px solid var(--border); color:var(--muted); box-shadow:none; font:600 .75rem var(--mono); letter-spacing:.06em; padding:6px 11px; margin:0}
+  .part, #player-detail{scroll-margin-top:calc(var(--tabs-h) + var(--anch-h) + 12px)}
+  @media (min-width:641px){ .anchors{position:sticky; top:var(--tabs-h); z-index:2; background:var(--bg); margin:0; padding:10px 0; border-bottom:1px solid var(--border)} }
+  .page-title{margin:22px 0 0}
+  .todo{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border)} .todo b{font:800 1.3rem var(--display); color:var(--gold); margin-right:8px; display:inline-block; min-width:1.4em; text-align:right}
   /* menu du compte, en haut à droite */
-  .menu{position:relative} .menu > summary{cursor:pointer; list-style:none; padding:6px 0} .menu > summary::-webkit-details-marker{display:none} .menu > summary::after{content:" ▾"; color:var(--gold)}
+  .menu{position:relative} .menu > summary{cursor:pointer; list-style:none; padding:6px 0; min-height:44px; display:flex; align-items:center; gap:6px} .menu > summary::-webkit-details-marker{display:none} .menu > summary .ic{color:var(--gold)}
   .menu-list{position:absolute; right:0; top:100%; z-index:5; display:grid; gap:6px; min-width:180px; padding:10px; background:var(--surface); border:1px solid var(--border); border-radius:10px}
-  .pill{display:inline-block; font:500 .64rem var(--mono); letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--border); border-radius:4px; padding:2px 6px}
+  .menu-list button[aria-current="page"]{background:var(--gold); color:var(--ink)}
+  .pill{display:inline-block; font:500 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--border); border-radius:4px; padding:2px 6px}
   .r-commune{color:var(--r-commune)} .r-rare{color:var(--r-rare)} .r-holo{color:var(--r-holo)} .r-signature{color:var(--r-signature)} .r-legendaire{color:var(--r-legendaire)}
   .grid-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px}
-  .perso-all{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))} .perso-all figure{font-size:.82rem}
+  .perso-all{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
   /* classeur d'un joueur : replié par défaut sous les options */
   .pl-inv{margin:20px 0 4px; border:1px solid var(--border); border-radius:10px; padding:0 12px}
-  .pl-inv > summary{cursor:pointer; padding:12px 0; font-weight:700; list-style:none; display:flex; align-items:center; gap:8px} .pl-inv > summary::-webkit-details-marker{display:none}
-  .pl-inv > summary::before{content:"▸"; color:var(--gold); transition:transform .2s} .pl-inv[open] > summary::before{transform:rotate(90deg)}
+  .pl-inv > summary{cursor:pointer; padding:12px 0; min-height:44px; font-weight:700; list-style:none; display:flex; align-items:center; gap:8px} .pl-inv > summary::-webkit-details-marker{display:none}
+  .pl-inv > summary .ic{color:var(--gold); transition:transform .2s} .pl-inv[open] > summary .ic{transform:rotate(90deg)}
   .pl-inv[open]{padding-bottom:12px}
-  .grid-cards figure{margin:0; font:500 .6rem var(--mono); text-transform:uppercase; color:var(--muted)}
-  .grid-cards img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; display:block}
+  .grid-cards figure{margin:0; font-size:.78rem; line-height:1.35; color:var(--muted)} .grid-cards figure b{color:var(--text); font-weight:600}
+  .grid-cards img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; display:block; margin-bottom:4px}
+  .grid-cards a{text-decoration:none}
+  .rl{font:600 .7rem var(--mono); letter-spacing:.06em; text-transform:uppercase}   /* libellé de rareté sous une carte */
+  .qty{display:flex; gap:6px; margin-top:6px} .qty button{margin:0; padding:0; width:40px; min-height:36px}
   .bar{height:8px; background:var(--surface-2); border-radius:99px; overflow:hidden; position:relative; min-width:120px}
   .bar i{position:absolute; left:0; top:0; bottom:0; background:var(--gold)}
   .bar b{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--text)}
@@ -81,36 +103,42 @@
   .qr{background:#fff; padding:10px; border-radius:10px; display:inline-block}
   .vw-stage{display:flex; align-items:center; justify-content:center; gap:12px}
   .vw-card{margin:0; text-align:center; flex:0 1 360px}
-  .vw-card img{display:block; width:100%; max-width:360px; aspect-ratio:2/3; object-fit:cover; margin:0 auto; border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.6); background:#111}
+  .vw-card img{display:block; width:100%; max-width:360px; aspect-ratio:2/3; object-fit:cover; margin:0 auto; border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.6); background:var(--surface-2)}
   .vw-card figcaption{margin-top:10px; font-size:.9rem; line-height:1.5}
-  .vw-arrow{flex:0 0 auto; width:48px; height:48px; border-radius:50%; font-size:1.6rem; line-height:1; padding:0}
+  .vw-arrow{flex:0 0 auto; width:48px; height:48px; border-radius:50%; padding:0} .vw-arrow .ic{width:24px; height:24px}
   .vw-arrow:disabled{opacity:.3}
   .vw-rars{display:flex; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap}
   .vw-rar{display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:1px solid transparent; border-radius:10px; padding:4px; width:auto; box-shadow:none; color:var(--text)}
-  .vw-rar img{width:60px; aspect-ratio:2/3; object-fit:cover; border-radius:6px} .vw-rar span{font:500 .66rem var(--mono)}
+  .vw-rar img{width:60px; aspect-ratio:2/3; object-fit:cover; border-radius:6px} .vw-rar span{font:500 .7rem var(--mono)}
   .vw-rar.on{border-color:var(--gold)}
-  .thumb{background:none; border:0; padding:0; width:auto; min-height:0; margin:0; box-shadow:none; cursor:zoom-in}
-  .warn-pill{background:rgba(245,197,66,.15); color:#f5c542; border-color:rgba(245,197,66,.4)}
-  .warn{font-size:.85rem; color:#f5c542; border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:8px 10px}
+  .thumb{background:none; border:0; padding:0; width:auto; min-height:0; margin:0; box-shadow:none; cursor:zoom-in} .thumb img{display:block; width:40px; aspect-ratio:2/3; object-fit:cover; border-radius:4px; background:var(--surface-2)}
+  .warn-pill{background:var(--warn-bg); color:var(--warn); border-color:var(--warn-line)}
+  .warn{font-size:.85rem; color:var(--warn); border:1px solid var(--warn-line); border-radius:8px; padding:8px 10px}
+  .warn-box{margin:0 0 12px; border:1px solid var(--warn-line); border-radius:10px; padding:12px} .warn-box > b{display:block; margin:0 0 6px; color:var(--warn)}
+  .red-zone{margin-top:18px; border:1px solid var(--err-line); border-radius:10px; padding:12px}
+  .back{margin:0 0 12px}
+  tr.dirty td{background:var(--warn-bg)}
+  .filters{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 10px} .filters > *{flex:1 1 180px}
   .steps{padding-left:18px; font-size:.88rem; line-height:1.5} .steps li{margin:6px 0}
   .qr img{display:block; width:190px; height:190px}
   code{font-family:var(--mono); font-size:.85em; background:var(--surface-2); padding:2px 6px; border-radius:4px; word-break:break-all}
   [hidden]{display:none!important}
-  .bc-list{max-height:220px; overflow-y:auto; display:grid; gap:4px; margin:6px 0 4px; padding:6px; border:1px solid var(--border, #333); border-radius:8px}
-  .bc-p{display:flex; gap:8px; align-items:center; font-size:.88rem} .bc-p input{width:auto} .bc-p[hidden]{display:none}
   /* téléphone : chaque ligne de tableau devient une fiche (libellé de colonne devant chaque valeur), champs à 16 px (pas de zoom iOS) */
   @media (max-width:640px){
     body{font-size:16px} input,select,textarea{font-size:16px}
     header h1{font-size:2rem} .card{padding:14px} .row > .fit{max-width:100%}
-    button, .tabs button, .anchors button{min-height:44px}
+    button, .tabs button, .anchors button, .qty button{min-height:44px} .qty button, .vw-arrow{min-width:44px}
     .tabs{flex-wrap:wrap}   /* toutes les rubriques visibles, sur deux lignes au besoin */
-    .part, #player-detail{scroll-margin-top:130px}
+    .pk-list label, details > summary{min-height:44px}
+    input[type=checkbox]{width:22px; height:22px} .thumb img, .thumb .noimg{width:44px} .po a, td .pl-link{display:inline-flex; align-items:center; min-height:44px}
+    /* fiche : libellé dans la marge gauche, la valeur reste un seul bloc (date et appareil, plusieurs cartes) */
     table.cards-m tr:first-child{display:none}
     table.cards-m, table.cards-m tbody, table.cards-m tr, table.cards-m td{display:block; width:auto}
     table.cards-m tr{border:1px solid var(--border); border-radius:10px; padding:6px 10px; margin:0 0 10px}
-    table.cards-m td{border:0; padding:5px 0; display:flex; gap:10px; align-items:baseline}
-    table.cards-m td[data-l]::before{content:attr(data-l); flex:0 0 38%; font:500 .66rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
-    table.cards-m td:empty{display:none} table.cards-m td > input:not([type=checkbox]), table.cards-m td > select{flex:1; min-width:0}
+    table.cards-m td{border:0; padding:6px 0; position:relative; text-align:left}
+    table.cards-m td[data-l]{padding-left:40%; min-height:34px}
+    table.cards-m td[data-l]::before{content:attr(data-l); position:absolute; left:0; top:9px; width:37%; font:500 .7rem/1.25 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+    table.cards-m td:empty{display:none}
     .table-wrap{overflow:visible}
     .pl-t td:nth-child(6), .pl-t td:nth-child(8), .pl-t td:nth-child(9){display:none}   /* liste des joueurs : création, variantes et paquets restent sur la fiche ordinateur */
   }
@@ -145,8 +173,8 @@
       <li><b>Ou</b> avec Google Authenticator : <b>+</b> → <b>Scanner un QR code</b>.</li>
       <li>Saisis ici le code à 6 chiffres affiché dans l'app, puis <b>Valider</b>.</li>
     </ol>
-    <p class="muted" style="font-size:.8rem">Clé de configuration : <code id="secret"></code> <button type="button" id="copy-secret" class="ghost fit" style="padding:4px 10px">Copier la clé</button></p>
-    <p class="muted" style="font-size:.8rem">Tu ouvres cette page sur l'iPhone lui-même ? <a id="otp-link" href="#" style="color:var(--gold)">Ajouter le code sur cet appareil</a></p>
+    <p class="muted" style="font-size:.8rem">Clé de configuration : <code id="secret"></code> <button type="button" id="copy-secret" class="ghost fit">Copier la clé</button></p>
+    <p class="muted" style="font-size:.8rem">Tu ouvres cette page sur l'iPhone lui-même ? <a id="otp-link" href="#">Ajouter le code sur cet appareil</a></p>
     <label for="code-enroll">Code à 6 chiffres</label><input id="code-enroll" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
     <div class="row" style="margin-top:12px"><button id="btn-enroll" class="fit">Valider</button></div>
     <p id="enroll-msg" class="msg"></p>
@@ -222,6 +250,12 @@ document.addEventListener('click', e => {
   r.finally(() => { b.removeAttribute('aria-busy'); if(b.isConnected && !was) b.disabled = false; });
 }, true);
 const fmt = d => d ? new Date(d).toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'}) : '—';
+// icônes Tabler (MIT) en SVG, à la couleur du texte
+const ICONS = { star:'<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>',
+  play:'<path d="M7 4v16l13 -8z"/>', stop:'<path d="M5 7a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/>', check:'<path d="M5 12l5 5l10 -10"/>',
+  down:'<path d="M6 9l6 6l6 -6"/>', right:'<path d="M9 6l6 6l-6 6"/>', left:'<path d="M15 6l-6 6l6 6"/>', minus:'<path d="M5 12h14"/>', plus:'<path d="M12 5v14M5 12h14"/>' };
+const ic = n => `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+const motion = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 let catalog = {musicians:[], packs:[], odds:[], cards:[]};
 
 // ---------------------------------------------------------------- parcours de connexion
@@ -244,7 +278,7 @@ async function route(){
 }
 // menu du compte : Mon compte et Admins une fois dans l'admin, déconnexion partout
 function paintWho(email, app){
-  $('who').innerHTML = `<details class="menu"><summary>${esc(email)}</summary><div class="menu-list">
+  $('who').innerHTML = `<details class="menu"><summary>${esc(email)} ${ic('down')}</summary><div class="menu-list">
     ${app ? '<button class="ghost" data-go="compte">Mon compte</button><button class="ghost" data-go="equipe">Admins</button>' : ''}<button class="ghost" id="logout">Déconnexion</button></div></details>`;
   $('logout').onclick = async () => { await sb.auth.signOut(); history.replaceState(null, '', location.pathname); route(); };
 }
@@ -301,7 +335,7 @@ $('code-enroll').addEventListener('keydown', e => { if(e.key === 'Enter') $('btn
 // ---------------------------------------------------------------- navigation
 // une rangée d'onglets ; une page empile ses sections (ancres en tête) ; l'adresse suit : #page, #page/section, #joueurs/<id>
 const PAGES = {
-  accueil: {label:'Accueil', parts:[['todo', 'À traiter', todo], ['chiffres', 'Chiffres', dash]]},
+  accueil: {label:'Accueil', flat:true, parts:[['todo', 'À traiter', todo], ['chiffres', 'Chiffres', dash]]},
   joueurs: {label:'Joueurs', parts:[['liste', 'Liste', players], ['echanges', 'Échanges', trades], ['preuves', 'Preuves de concert', proofs], ['favoris', 'Groupes favoris', favBands]]},
   envoyer: {label:'Envoyer', parts:[['prevenir', 'Prévenir les joueurs', notify], ['offrir', 'Offrir des cartes', gifts], ['perso', 'Cartes perso', persoOrders]]},
   catalogue: {label:'Catalogue', parts:[['demandes', 'Demandes d\'artistes', requests], ['musiciens', 'Musiciens', catalogTab], ['perso', 'Cartes perso', persoAll], ['defis', 'Défis de concert', challenges]]},
@@ -316,7 +350,22 @@ const parseHash = () => { const [p, s] = location.hash.slice(1).split('/'); retu
 function paintNav(){
   $('tabs').innerHTML = Object.entries(PAGES).filter(([, x]) => !x.menu).map(([k, x]) =>
     `<button data-go="${k}"${k === cur ? ' aria-current="page"' : ''}>${x.label}${k === 'accueil' && todoN ? ` <span class="badge" aria-label="${todoN} à traiter">${todoN}</span>` : ''}</button>`).join('');
+  document.querySelectorAll('.menu-list [data-go]').forEach(b => b.dataset.go === cur ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
 }
+// hauteur réelle des barres collantes (onglets, ancres sur ordinateur) : le haut d'une section s'arrête juste dessous
+function bars(){ const a = document.querySelector('.anchors'), st = document.documentElement.style;
+  st.setProperty('--tabs-h', $('tabs').offsetHeight + 'px');
+  st.setProperty('--anch-h', a && getComputedStyle(a).position === 'sticky' ? a.offsetHeight + 'px' : '0px'); }
+new ResizeObserver(bars).observe($('tabs')); addEventListener('resize', bars);
+// lien direct, rechargement ou changement de page : on se pose sur la cible sans animation (un défilement doux lancé pendant le rendu
+// s'arrêtait trop tôt, sous les onglets), puis on s'y recale tant que la page finit de se remplir (images, polices), jusqu'au premier geste
+const GESTURES = ['wheel', 'touchstart', 'keydown', 'mousedown'];
+function land(el){
+  const stick = () => { if(el.isConnected) el.scrollIntoView({ block: 'start' }); };
+  const ro = new ResizeObserver(stick), stop = () => { ro.disconnect(); GESTURES.forEach(t => removeEventListener(t, stop, true)); };
+  stick(); ro.observe($('page')); GESTURES.forEach(t => addEventListener(t, stop, { capture: true, passive: true })); setTimeout(stop, 3000);
+}
+const reach = (el, fresh) => fresh ? land(el) : el.scrollIntoView({ behavior: motion() });
 function go(p, s = '', force = false){
   const h = '#' + p + (s ? '/' + s : '');
   if(location.hash !== h) history.pushState(null, '', h);
@@ -325,19 +374,22 @@ function go(p, s = '', force = false){
 }
 async function render(){
   const [p, s] = parseHash(), parts = PAGES[p].parts;
+  let fresh = false;
   if(cur !== p){
-    cur = p; playersP = null; paintNav();
+    cur = p; fresh = true; playersP = null; paintNav();
     const page = $('page');
-    page.innerHTML = (parts.length > 1 ? `<nav class="anchors" aria-label="Sections">${parts.map(x => `<button data-go="${p}/${x[0]}">${x[1]}</button>`).join('')}</nav>` : '')
+    // pages du menu du compte : pas d'onglet actif, leur titre dit où l'on est
+    page.innerHTML = (PAGES[p].menu ? `<h2 class="page-title">${parts[0][1]}</h2>` : '')
+      + (parts.length > 1 && !PAGES[p].flat ? `<nav class="anchors" aria-label="Sections">${parts.map(x => `<button data-go="${p}/${x[0]}">${x[1]}</button>`).join('')}</nav>` : '')
       + parts.map(x => `<div class="part" id="s-${x[0]}"><p class="muted">Chargement…</p></div>`).join('');
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); bars();
     await Promise.all(parts.map(async ([k, , f]) => { const el = $('s-' + k);
-      try { await f(el); } catch(e){ el.innerHTML = `<p class="err">${escfrErr(e.message || e)}</p>`; } }));
+      try { await f(el); } catch(e){ el.innerHTML = `<p class="err">${esc(frErr(e.message || e))}</p>`; } }));
     if(cur !== p) return;
   }
-  if(p === 'joueurs' && s && !parts.some(x => x[0] === s)){ const pl = (await allPlayers()).find(x => x.id === s); if(pl) return player(pl); }
-  if(p === 'joueurs' && $('player-detail')) $('player-detail').innerHTML = '';
-  if(s && $('s-' + s)) $('s-' + s).scrollIntoView({ behavior: 'smooth' });
+  if(p === 'joueurs' && s && !parts.some(x => x[0] === s)){ const pl = (await allPlayers()).find(x => x.id === s); if(pl) return player(pl, fresh); }
+  if(p === 'joueurs' && $('player-detail')){ $('player-detail').innerHTML = ''; markRow(null); }
+  if(s && $('s-' + s)) reach($('s-' + s), fresh);
 }
 window.addEventListener('popstate', () => { if(!$('v-app').hidden) render(); });
 function labelTables(root){
@@ -354,8 +406,12 @@ document.addEventListener('click', e => {
   const a = e.target.closest('[data-go]');
   document.querySelectorAll('details.menu[open]').forEach(d => { if(a || !d.contains(e.target)) d.open = false; });
   if(!a) return;
+  if(a.tagName === 'A'){ if(e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); }   // lien : nouvel onglet possible, sinon navigation dans la page
   go(...a.dataset.go.split('/'));
 });
+// image introuvable (branche absente, fichier retiré) : un cadre « Aperçu indisponible » à la place de l'image cassée
+document.addEventListener('error', e => { const im = e.target; if(im.tagName !== 'IMG' || !im.closest('#page')) return;
+  const n = document.createElement('span'); n.className = 'noimg'; n.textContent = im.closest('.thumb') ? '' : 'Aperçu indisponible'; im.replaceWith(n); }, true);
 async function loadCatalog(){
   const [m, p, o, c] = await Promise.all([sb.from('musicians').select('*').order('name'), sb.from('pack_types').select('*'), sb.from('pack_odds').select('*'),
     sb.from('cards').select('musician_id, rarity, image_path')]);
@@ -394,22 +450,22 @@ async function dash(el){
   const totalOpen = Object.values(byPack).reduce((a, rows) => a + Number(rows[0].openings), 0);
   el.innerHTML = `
     <div class="row" style="margin:14px 0; align-items:stretch">
-      <div class="card" style="margin:0"><p class="eyebrow">Joueurs</p><h2 style="margin:0">${players.length}</h2><p class="muted" style="margin:0">${players.filter(p => p.is_anonymous).length} anonymes</p></div>
-      <div class="card" style="margin:0"><p class="eyebrow">Paquets ouverts (30 j)</p><h2 style="margin:0">${totalOpen}</h2></div>
-      <div class="card" style="margin:0"><p class="eyebrow">Cartes distribuées</p><h2 style="margin:0">${players.reduce((a, p) => a + Number(p.cards), 0)}</h2></div>
+      <div class="card" style="margin:0"><p class="eyebrow">Joueurs</p><p class="big num">${players.length}</p><p class="muted" style="margin:0">${players.filter(p => p.is_anonymous).length} anonymes</p></div>
+      <div class="card" style="margin:0"><p class="eyebrow">Paquets ouverts (30 j)</p><p class="big num">${totalOpen}</p></div>
+      <div class="card" style="margin:0"><p class="eyebrow">Cartes distribuées</p><p class="big num">${players.reduce((a, p) => a + Number(p.cards), 0)}</p></div>
     </div>
-    <div class="card"><h3>Raretés tirées ou réglées (30 j)</h3><p class="muted" style="font-size:.85rem">La barre dorée montre le taux observé, le trait blanc le taux réglé. Un écart important sur beaucoup de tirages signale un problème.</p>
-    ${Object.entries(byPack).map(([pk, rows]) => `<h3 style="margin-top:16px; font-size:.95rem">${esc((catalog.packs.find(p => p.id === pk) || {}).label || pk)} <span class="muted" style="font:500 .7rem var(--mono)">· ${rows[0].openings} paquet(s)</span></h3>
-      <div class="table-wrap"><table><tr><th>Rareté</th><th>Tirées</th><th>Observé</th><th>Réglé</th><th></th></tr>
-      ${rows.map(r => `<tr><td class="r-${r.rarity}">${RLABEL[r.rarity]}</td><td>${r.drawn}</td><td>${r.observed_pct ?? '—'} %</td><td>${r.configured_pct} %</td>
+    <div class="card"><h3>Raretés tirées ou réglées (30 j)</h3><p class="muted note">La barre dorée montre le taux observé, le trait blanc le taux réglé. Un écart important sur beaucoup de tirages signale un problème.</p>
+    ${stats.length ? Object.entries(byPack).map(([pk, rows]) => `<h3 style="margin-top:16px; font-size:.95rem">${esc((catalog.packs.find(p => p.id === pk) || {}).label || pk)} <span class="meta">· ${rows[0].openings} paquet${rows[0].openings > 1 ? 's' : ''}</span></h3>
+      <div class="table-wrap"><table><tr><th>Rareté</th><th class="n">Tirées</th><th class="n">Observé</th><th class="n">Réglé</th><th></th></tr>
+      ${rows.map(r => `<tr><td class="r-${r.rarity}">${RLABEL[r.rarity]}</td><td class="n">${r.drawn}</td><td class="n">${r.observed_pct ?? '—'} %</td><td class="n">${r.configured_pct} %</td>
         <td><div class="bar"><i style="width:${Math.min(100, r.observed_pct || 0)}%"></i><b style="left:${Math.min(100, r.configured_pct)}%"></b></div></td></tr>`).join('')}
-      </table></div>`).join('')}</div>`;
+      </table></div>`).join('') : '<p class="muted" style="margin:0">Aucun paquet ouvert ces 30 derniers jours : rien à comparer pour l\'instant.</p>'}</div>`;
 }
 
 // ---------------------------------------------------------------- envois
 // liste de joueurs à cocher (recherche par pseudo) ; mark : petite mention à droite
 function pickList(id, players, mark){
-  return `<input id="${id}-find" placeholder="Chercher un pseudo" data-find="${id}"><div class="pk-list" id="${id}">` +
+  return `<label for="${id}-find">Joueurs</label><input id="${id}-find" type="search" placeholder="Chercher un pseudo" autocomplete="off" data-find="${id}"><div class="pk-list" id="${id}">` +
     players.filter(p => !p.is_anonymous && !p.blocked).sort((x, y) => (x.username || '').localeCompare(y.username || '', 'fr')).map(p =>
       `<label data-n="${esc((p.username || '').toLowerCase())}"><input type="checkbox" value="${p.id}"> ${esc(p.username || 'Sans pseudo')} <span class="muted">${mark ? mark(p) : ''}</span></label>`).join('') + '</div>' +
     `<div class="row" style="margin:4px 0 0"><button class="ghost fit" data-all="${id}">Tout cocher</button><button class="ghost fit" data-none="${id}">Tout décocher</button></div>`;
@@ -418,39 +474,44 @@ const picked = id => [...document.querySelectorAll(`#${id} input:checked`)].map(
 document.addEventListener('input', e => { const id = e.target.dataset && e.target.dataset.find; if(!id) return; const q = e.target.value.trim().toLowerCase();
   document.querySelectorAll(`#${id} label`).forEach(l => { l.hidden = !!q && !l.dataset.n.includes(q); }); });
 document.addEventListener('click', e => { const a = e.target.dataset && (e.target.dataset.all || e.target.dataset.none); if(!a) return;
-  document.querySelectorAll(`#${a} label:not([hidden]) input`).forEach(i => { i.checked = !!e.target.dataset.all; }); });
+  document.querySelectorAll(`#${a} label:not([hidden]) input`).forEach(i => { i.checked = !!e.target.dataset.all; });
+  $(a).dispatchEvent(new Event('change', { bubbles: true })); });
 
 async function notify(el){
   const players = await allPlayers();
   el.innerHTML = `
     <div class="card"><h3>Prévenir les joueurs</h3>
-      <p class="muted" style="font-size:.85rem; margin:0 0 10px">Choisis la cible : ceux qui ont activé les notifications la reçoivent (dans la limite de notifications par jour réglée dans Réglages, sauf si tu coches « Ignorer la limite »), les autres trouvent le message dans l'app à leur prochaine ouverture. « Aussi par e-mail » : en plus, aux adresses confirmées qui n'ont pas coupé les e-mails (Gmail, 500 par jour au plus). Inscrit au journal.</p>
+      <p class="muted note">Choisis la cible : ceux qui ont activé les notifications la reçoivent (dans la limite de notifications par jour réglée dans Réglages, sauf si tu coches « Ignorer la limite »), les autres trouvent le message dans l'app à leur prochaine ouverture. « Aussi par e-mail » : en plus, aux adresses confirmées qui n'ont pas coupé les e-mails (Gmail, 500 par jour au plus). Inscrit au journal.</p>
       <div class="row">
         <div><label for="bc-who">Cible</label><select id="bc-who"><option value="all">Tous les joueurs</option><option value="inst">App installée</option><option value="noinst">App pas installée</option><option value="push">Notifications activées</option><option value="nopush">Notifications pas activées</option><option value="pick">Joueurs choisis</option></select></div>
         <div><label for="bc-plat">Appareil</label><select id="bc-plat"><option value="">Tous</option><option value="iphone">iPhone</option><option value="android">Android</option><option value="ordinateur">Ordinateur</option></select></div>
         <div><label for="bc-act">Activité</label><select id="bc-act"><option value="">Tous</option><option value="a7">Venus ces 7 jours</option><option value="i7">Pas venus depuis 7 jours</option><option value="i30">Pas venus depuis 30 jours</option></select></div>
       </div>
-      <div id="bc-pick" hidden><label for="bc-find">Joueurs</label><input id="bc-find" placeholder="Chercher un pseudo"><div class="bc-list" id="bc-list">${players.filter(p => !p.is_anonymous && !p.blocked).sort((x, y) => (x.username || '').localeCompare(y.username || '', 'fr')).map(p =>
-        `<label class="bc-p" data-n="${esc((p.username || '').toLowerCase())}"><input type="checkbox" value="${p.id}"> ${esc(p.username || 'Sans pseudo')} <span class="muted">${p.installed_at ? 'app' : 'web'}${p.push ? ' · notifs' : ''}</span></label>`).join('')}</div></div>
+      <div id="bc-pick" hidden>${pickList('bc-list', players, p => (p.installed_at ? 'app' : 'web') + (p.push ? ' · notifs' : ''))}</div>
       <div class="row" style="margin:8px 0"><button class="ghost fit" data-preset="cards">Nouvelles cartes</button><button class="ghost fit" data-preset="update">Mise à jour</button><button class="ghost fit" data-preset="install">Installer l'app</button><button class="ghost fit" data-preset="comeback">Revenir jouer</button></div>
       <div class="row"><div><label for="bc-title">Titre (60 max)</label><input id="bc-title" maxlength="60"></div><div style="flex:2 1 260px"><label for="bc-body">Message (160 max)</label><input id="bc-body" maxlength="160"></div></div>
       <div class="row"><div><label for="bc-to">Ouvre</label><select id="bc-to"><option value="">L'accueil (paquets)</option><option value="classeur">Le classeur</option><option value="potes">Metal Corner · Potes</option><option value="fosse">Metal Corner · Fosse</option><option value="epreuves">Metal Corner · Épreuves</option><option value="rang">Metal Corner · Rang</option></select></div>
         <div><label for="bc-why">Motif (obligatoire)</label><input id="bc-why" placeholder="ex. arrivée de Prince"></div></div>
-      <div class="row"><label class="fit" style="display:flex; gap:6px; align-items:center"><input type="checkbox" id="bc-force" style="width:auto"> Ignorer la limite de notifications par jour</label><label class="fit" style="display:flex; gap:6px; align-items:center"><input type="checkbox" id="bc-mail" style="width:auto"> Aussi par e-mail</label><p class="muted fit" id="bc-aud" style="margin:0"></p><div class="fit"><button id="bc-go">Envoyer</button></div></div>
+      <div class="row"><label class="fit check"><input type="checkbox" id="bc-force"> Ignorer la limite de notifications par jour</label><label class="fit check"><input type="checkbox" id="bc-mail"> Aussi par e-mail</label><p class="muted fit" id="bc-aud" style="margin:0"></p><div class="fit"><button id="bc-go">Envoyer</button></div></div>
       <p class="msg" id="bc-msg"></p></div>
 `;
   bcAudience();
 }
 
+// liste de musiciens pour un choix de carte : l'album, puis les cartes à part (secrète, maudites, perso), chacune triée par nom
+function musicianOptions(){
+  const kind = m => m.perso ? 'Perso' : m.cursed ? 'Maudites' : m.arcana_number ? 'Album' : 'Secrète';
+  return ['Album', 'Secrète', 'Maudites', 'Perso'].map(k => { const ms = catalog.musicians.filter(m => kind(m) === k).sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+    return ms.length ? `<optgroup label="${k}">${ms.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</optgroup>` : ''; }).join('');
+}
 // offrir la même carte à plusieurs joueurs (cadeau découvert à la prochaine ouverture)
 async function gifts(el){
   const players = await allPlayers();
-  const mus = catalog.musicians.slice().sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   el.innerHTML = `<div class="card"><h3>Offrir des cartes</h3>
-    <p class="muted" style="font-size:.85rem; margin:0 0 10px">La même carte à chaque joueur coché. Il la découvre à sa prochaine ouverture (« Le Grand Architecte t'offre… »), avec une notification s'il les a activées. Inscrit au journal.</p>
-    <div class="row"><div><label for="gf-m">Carte</label><select id="gf-m">${mus.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}${m.perso ? ' (perso)' : ''}</option>`).join('')}</select></div>
-      <div><label for="gf-r">Rareté</label><select id="gf-r">${['commune', 'rare', 'holo', 'signature', 'legendaire'].map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div></div>
-    <label>Joueurs</label>${pickList('gf-list', players)}
+    <p class="muted note">La même carte à chaque joueur coché. Il la découvre à sa prochaine ouverture (« Le Grand Architecte t'offre… »), avec une notification s'il les a activées. Inscrit au journal.</p>
+    <div class="row"><div><label for="gf-m">Carte</label><select id="gf-m">${musicianOptions()}</select></div>
+      <div><label for="gf-r">Rareté</label><select id="gf-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div></div>
+    ${pickList('gf-list', players)}
     <div class="row"><div><label for="gf-why">Motif (obligatoire)</label><input id="gf-why" placeholder="ex. merci pour le concert"></div><div class="fit"><button id="gf-go">Offrir</button></div></div>
     <p class="msg" id="gf-msg"></p></div>`;
   $('gf-go').onclick = async () => {
@@ -458,8 +519,12 @@ async function gifts(el){
     if(!users.length) return say($('gf-msg'), 'Coche au moins un joueur.');
     if(!why) return say($('gf-msg'), 'Indique un motif.');
     if(!await ask('Offrir cette carte ?', `${musicianName($('gf-m').value)} (${RLABEL[$('gf-r').value]}) à ${users.length} joueur${users.length > 1 ? 's' : ''}. Motif : ${why}`, 'Offrir')) return;
+    const card = `${musicianName($('gf-m').value)} (${RLABEL[$('gf-r').value]})`;
     const r = await sb.rpc('admin_gift_cards', { p_users: users, p_musician: $('gf-m').value, p_rarity: $('gf-r').value, p_reason: why });
-    say($('gf-msg'), r.error ? frErr(r.error.message) : `Offerte à ${r.data} joueur${r.data > 1 ? 's' : ''}.`, !r.error);
+    if(r.error) return say($('gf-msg'), frErr(r.error.message));
+    // envoi fait : la sélection et le motif repartent à zéro (pas de second envoi par mégarde), le récapitulatif reste
+    document.querySelectorAll('#gf-list input:checked').forEach(i => { i.checked = false; }); $('gf-why').value = '';
+    say($('gf-msg'), `${card} offerte à ${r.data} joueur${r.data > 1 ? 's' : ''}. Motif : ${why}.`, true);
   };
 }
 
@@ -475,24 +540,28 @@ async function persoAll(el){
   await Promise.all(cards.map(async c => { const r = await sb.storage.from('perso').createSignedUrl(c.image_path, 3600); if(r.data) curl[c.musician_id + '|' + c.rarity] = r.data.signedUrl; }));
   el.innerHTML = `<div class="card"><h3>Toutes les cartes perso (${cards.length})</h3>
     ${cards.length ? `<div class="grid-cards perso-all">${cards.map(c => { const k = c.musician_id + '|' + c.rarity, own = owned.filter(o => o.musician_id === c.musician_id && o.rarity === c.rarity);
-      return `<figure>${curl[k] ? `<a href="${curl[k]}" target="_blank" rel="noopener"><img src="${curl[k]}" alt="${esc(musicianName(c.musician_id))}"></a>` : '<img alt="">'}
-        <b>${esc(musicianName(c.musician_id))}</b><br><span class="r-${c.rarity}">${RLABEL[c.rarity]}</span><br><span class="muted">${own.length ? own.map(o => esc(who(o.user_id)) + (o.copies > 1 ? ' ×' + o.copies : '')).join(', ') : 'personne'}</span></figure>`; }).join('')}</div>`
-      : '<p class="muted">Aucune carte perso pour l\'instant.</p>'}</div>`;
+      return `<figure>${curl[k] ? `<a href="${curl[k]}" target="_blank" rel="noopener"><img src="${curl[k]}" alt="${esc(musicianName(c.musician_id))}"></a>` : '<span class="noimg">Aperçu indisponible</span>'}
+        <b>${esc(musicianName(c.musician_id))}</b><br><span class="rl r-${c.rarity}">${RLABEL[c.rarity]}</span><br>${own.length ? own.map(o => esc(who(o.user_id)) + (o.copies > 1 ? ' ×' + o.copies : '')).join(', ') : 'Personne ne l\'a encore'}</figure>`; }).join('')}</div>`
+      : '<p class="muted" style="margin:0">Aucune carte perso pour l\'instant. Elles arrivent ici une fois validées dans Envoyer, Cartes perso.</p>'}</div>`;
 }
 async function persoOrders(el){
   const [orders, players] = await Promise.all([sb.rpc('admin_perso_orders').then(must), allPlayers()]);
   const urls = {};
   await Promise.all(orders.filter(o => o.image).map(async o => { const r = await sb.storage.from('perso').createSignedUrl(o.image, 3600); if(r.data) urls[o.id] = r.data.signedUrl; }));
-  el.innerHTML = `<div class="card"><h3>Commandes de cartes perso</h3>
-    <p class="muted" style="font-size:.85rem; margin:0 0 6px">Générées automatiquement à partir de la photo de profil (quelques minutes). « Valider » l'offre au joueur ; « Relancer » refait une génération ; « Refuser » prévient le joueur (rembourse-le dans Stripe s'il a payé).</p>
-    ${orders.length ? orders.map(o => `<div class="po">${urls[o.id] ? `<img src="${urls[o.id]}" alt="Carte de ${esc(o.username)}">` : '<img alt="">'}<div>
+  // à traiter en tête ; offertes et refusées repliées dans l'historique
+  const orderRow = o => `<div class="po">${urls[o.id] ? `<img src="${urls[o.id]}" alt="Carte de ${esc(o.username)}">` : `<span class="noimg">${['paid', 'base'].includes(o.status) ? 'En fabrication' : 'Pas d\'image'}</span>`}<div>
       <b>${esc(o.nickname)}</b> <span class="muted">· ${esc(o.username)} · ${new Date(o.created_at).toLocaleString('fr-FR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}</span>
       <p style="margin:4px 0">${PSTATUS[o.status] || o.status}${o.tries > 1 ? ' · essai ' + o.tries : ''}${o.error ? ` <span class="err">${esc(o.error)}</span>` : ''}</p>
-      <div class="row" style="margin:0">${o.status === 'ready' ? `<button class="fit" data-po="${o.id}" data-a="approve">Valider</button>` : ''}${['ready', 'error'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="retry">Relancer</button>` : ''}${['ready', 'error', 'paid', 'base'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="reject">Refuser</button>` : ''}</div></div></div>`).join('') : '<p class="muted">Aucune commande pour l\'instant.</p>'}
+      <div class="row" style="margin:0">${o.status === 'ready' ? `<button class="fit" data-po="${o.id}" data-a="approve">Valider</button>` : ''}${['ready', 'error'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="retry">Relancer</button>` : ''}${['ready', 'error', 'paid', 'base'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="reject">Refuser</button>` : ''}</div></div></div>`;
+  const done = orders.filter(o => ['approved', 'rejected'].includes(o.status)), open = orders.filter(o => !done.includes(o));
+  el.innerHTML = `<div class="card"><h3>Commandes de cartes perso</h3>
+    <p class="muted note">Générées automatiquement à partir de la photo de profil (quelques minutes). « Valider » l'offre au joueur ; « Relancer » refait une génération ; « Refuser » prévient le joueur (rembourse-le dans Stripe s'il a payé).</p>
+    ${open.length ? open.map(orderRow).join('') : `<p class="muted" style="margin:0">Aucune commande en cours. Elles arrivent ici après un achat dans l'app ou une création ci-dessous.</p>`}
+    ${done.length ? `<details class="hist"><summary>Historique · ${done.length} offerte${done.length > 1 ? 's' : ''} ou refusée${done.length > 1 ? 's' : ''}</summary>${done.map(orderRow).join('')}</details>` : ''}
     <p class="msg" id="po-msg"></p></div>
     <div class="card"><h3>Créer des cartes perso</h3>
-    <p class="muted" style="font-size:.85rem; margin:0 0 10px">Offertes, sans paiement : une carte par joueur coché, à partir de sa photo de profil (les joueurs sans photo sont sautés). Surnom : son pseudo, sauf si tu en donnes un. Elles arrivent ici « à valider ».</p>
-    <label>Joueurs</label>${pickList('pc-list', players, p => p.avatar_path ? 'photo ✓' : 'sans photo')}
+    <p class="muted note">Offertes, sans paiement : une carte par joueur coché, à partir de sa photo de profil (les joueurs sans photo sont sautés). Surnom : son pseudo, sauf si tu en donnes un. Elles arrivent ici « à valider ».</p>
+    ${pickList('pc-list', players, p => p.avatar_path ? 'avec photo' : 'sans photo')}
     <div class="row"><div><label for="pc-nick">Surnom (facultatif, sinon le pseudo)</label><input id="pc-nick" maxlength="24"></div><div><label for="pc-why">Motif (obligatoire)</label><input id="pc-why" placeholder="ex. cadeau d'équipe"></div><div class="fit"><button id="pc-go">Lancer</button></div></div>
     <p class="msg" id="pc-msg"></p></div>`;
   el.querySelectorAll('[data-po]').forEach(b => b.onclick = async () => {
@@ -513,26 +582,40 @@ async function persoOrders(el){
 }
 
 // ---------------------------------------------------------------- joueurs
+// filtres de la liste des joueurs
+const PL_FILTERS = { blocked: p => p.blocked, unconfirmed: p => p.email && !p.email_confirmed, installed: p => !!p.installed_at, push: p => !!p.push, anon: p => p.is_anonymous };
+const markRow = id => document.querySelectorAll('tr.click[data-id]').forEach(tr => tr.dataset.id === id ? tr.setAttribute('aria-current', 'true') : tr.removeAttribute('aria-current'));
 async function players(el){
   const list = await allPlayers();
-  el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3><div class="table-wrap"><table class="pl-t">
-    <tr><th>Pseudo</th><th>Compte</th><th>Dernière visite</th><th>App</th><th>Notifs</th><th>Créé</th><th>Cartes</th><th>Variantes</th><th>Paquets</th><th>État</th></tr>
-    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><b>${esc(p.username || '—')}</b>${p.cry_path ? ' <span class="pill" title="A enregistré un cri">cri</span>' : ''}</td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
+  if(!list.length){ el.innerHTML = '<div class="card"><h3>Joueurs</h3><p class="muted" style="margin:0">Aucun joueur pour l\'instant : chacun apparaît ici dès sa première ouverture de l\'app.</p></div><div id="player-detail"></div>'; return; }
+  el.innerHTML = `<div class="card"><h3>Joueurs (${list.length})</h3>
+    <div class="filters"><div><label for="pl-q">Chercher</label><input id="pl-q" type="search" placeholder="Pseudo ou e-mail" autocomplete="off"></div>
+      <div><label for="pl-f">Afficher</label><select id="pl-f"><option value="">Tous les joueurs</option><option value="blocked">Bloqués</option><option value="unconfirmed">Adresse non confirmée</option><option value="installed">App installée</option><option value="push">Notifications activées</option><option value="anon">Anonymes</option></select></div></div>
+    <div class="table-wrap"><table class="pl-t">
+    <tr><th>Pseudo</th><th>Compte</th><th>Dernière visite</th><th>App</th><th>Notifs</th><th>Créé</th><th class="n">Cartes</th><th class="n">Variantes</th><th class="n">Paquets</th><th>État</th></tr>
+    ${list.map(p => `<tr class="click" data-id="${p.id}"><td><a class="pl-link" href="#joueurs/${p.id}"><b>${esc(p.username || '—')}</b></a>${p.cry_path ? ' <span class="pill" title="A enregistré un cri">cri</span>' : ''}</td><td>${p.is_anonymous ? '<span class="pill">anonyme</span> ' : ''}${p.email && !p.email_confirmed ? '<span class="pill warn-pill">non confirmé</span> ' : ''}${esc(p.email || p.id.slice(0, 8))}</td>
       <td title="Dernière connexion par mot de passe : ${fmt(p.last_sign_in_at)}">${fmt(p.last_seen_at || p.last_sign_in_at)}${p.last_platform ? ' <span class="muted">· ' + p.last_platform + '</span>' : ''}</td>
       <td>${p.installed_at ? '<span class="ok" title="Depuis le ' + fmt(p.installed_at) + '">installée</span>' : '<span class="muted">navigateur</span>'}</td><td>${p.push ? '<span class="ok">oui</span>' : '<span class="muted">—</span>'}</td>
-      <td>${fmt(p.created_at)}</td><td>${p.cards}</td><td>${p.variants}</td><td>${p.openings}</td>
+      <td>${fmt(p.created_at)}</td><td class="n">${p.cards}</td><td class="n">${p.variants}</td><td class="n">${p.openings}</td>
       <td>${p.blocked ? '<span class="err">bloqué</span>' : '<span class="ok">actif</span>'}</td></tr>`).join('')}
+    <tr id="pl-none" hidden><td colspan="10" class="muted">Aucun joueur ne correspond.</td></tr>
     </table></div></div><div id="player-detail"></div>`;
-  el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => go('joueurs', tr.dataset.id));
+  // toute la ligne ouvre la fiche ; le pseudo est un vrai lien (clavier, nouvel onglet)
+  el.querySelectorAll('tr.click').forEach(tr => tr.onclick = e => { if(e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); go('joueurs', tr.dataset.id); });
+  const filter = () => { const q = $('pl-q').value.trim().toLowerCase(), f = PL_FILTERS[$('pl-f').value]; let n = 0;
+    el.querySelectorAll('tr.click').forEach(tr => { const p = list.find(x => x.id === tr.dataset.id);
+      tr.hidden = !((!q || ((p.username || '') + ' ' + (p.email || '')).toLowerCase().includes(q)) && (!f || f(p))); n += !tr.hidden; });
+    $('pl-none').hidden = n > 0; };
+  $('pl-q').addEventListener('input', filter); $('pl-f').addEventListener('change', filter);
 }
 const isPerso = id => !!(catalog.musicians.find(m => m.id === id) || {}).perso;
 // visuels : l'adresse vient de la table des cartes (maudites : une image, Céline : sa Légendaire, perso : stockage privé, lien signé par signPerso)
 const variants = id => RARITIES.filter(r => catalog.cards.some(c => c.musician_id === id && c.rarity === r));
 const rarLabel = (id, r) => (catalog.musicians.find(m => m.id === id) || {}).cursed ? 'Maudite' : RLABEL[r];
-function cardImg(id, r, attrs = ''){
+function cardImg(id, r){
   const c = catalog.cards.find(x => x.musician_id === id && x.rarity === r);
-  if(!c) return `<img alt=""${attrs}>`;
-  return isPerso(id) ? `<img data-perso="${esc(c.image_path)}" alt=""${attrs}>` : `<img src="../proto/${esc(c.image_path)}" alt="" loading="lazy"${attrs}>`;
+  if(!c) return '<span class="noimg">Pas de visuel</span>';
+  return isPerso(id) ? `<img data-perso="${esc(c.image_path)}" alt="">` : `<img src="../proto/${esc(c.image_path)}" alt="" loading="lazy">`;
 }
 const signedUrls = {};
 function signPerso(root){
@@ -541,33 +624,33 @@ function signPerso(root){
     const url = await signedUrls[path]; if(url) im.src = url; });
 }
 let invOpen = false, invFor = null;   // le classeur reste ouvert après une correction
-async function player(p){
+async function player(p, fresh){
   if(invFor !== p.id){ invOpen = false; invFor = p.id; }
   const inv = await sb.rpc('admin_player_inventory', { p_user: p.id }).then(must);
-  const d = $('player-detail');
-  d.innerHTML = `<div class="card"><p class="eyebrow">Joueur</p><h3>${esc(p.username || p.email || 'sans pseudo')}${p.username && p.email ? ' · ' + esc(p.email) : ''} <span class="muted" style="font:500 .7rem var(--mono)">${p.id}</span></h3>
-    <div class="pl-media" id="pl-media">${p.avatar_path || p.cry_path || p.metal_power ? '<p class="muted">Chargement du profil…</p>' : '<p class="muted" style="font-size:.85rem">Pas encore de photo, de cri ni de capacité.</p>'}</div>
+  const d = $('player-detail'); markRow(p.id);
+  d.innerHTML = `<div class="card"><button class="ghost fit back" data-go="joueurs/liste">${ic('left')} Liste des joueurs</button>
+    <p class="eyebrow">Joueur</p><h2 style="margin:0 0 2px">${esc(p.username || p.email || 'sans pseudo')}</h2><p class="meta" style="margin:0 0 12px">${p.username && p.email ? esc(p.email) + ' · ' : ''}${p.id}</p>
+    <div class="pl-media" id="pl-media">${p.avatar_path || p.cry_path || p.metal_power ? '<p class="muted">Chargement du profil…</p>' : '<p class="muted note">Pas encore de photo, de cri ni de capacité.</p>'}</div>
     <label for="why">Motif de l'action (obligatoire, inscrit au journal)</label><input id="why" placeholder="ex. geste commercial, correction d'un bug, compte de test">
     <p id="adj-msg" class="msg"></p>
     <h3 style="margin-top:16px">Options</h3>
-    ${p.email && !p.email_confirmed ? `<div style="margin:0 0 12px; border:1px solid rgba(245,197,66,.4); border-radius:10px; padding:12px">
-      <p style="margin:0 0 6px; font-weight:600; color:#f5c542">Adresse pas encore confirmée</p>
+    ${p.email && !p.email_confirmed ? `<div class="warn-box"><b>Adresse pas encore confirmée</b>
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Le mail de confirmation a été envoyé. S'il n'est pas arrivé (spam, messagerie d'entreprise), renvoie-le, ou confirme l'adresse toi-même si tu es sûr que c'est bien elle ou lui.</p>
       <div class="row"><button id="cf-resend" class="ghost fit">Renvoyer le mail de confirmation</button><button id="cf-go" class="fit">Confirmer à la main</button></div></div>` : ''}
     <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit" data-pts="2">Offrir un paquet (2 points)</button><button id="push-test" class="ghost fit">Notification de test</button></div>
     <h3 style="margin-top:18px">Donner une carte</h3>
-    <div class="row"><div><label for="adj-m">Musicien</label><select id="adj-m">${catalog.musicians.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</select></div>
+    <div class="row"><div><label for="adj-m">Musicien</label><select id="adj-m">${musicianOptions()}</select></div>
       <div><label for="adj-r">Rareté</label><select id="adj-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div>
       <div class="fit"><label for="adj-d">Exemplaires</label><input id="adj-d" type="number" min="1" value="1"></div>
-      <div class="fit"><label style="display:flex; gap:6px; align-items:center; margin:0 0 10px"><input id="adj-n" type="checkbox" checked style="width:auto"> Prévenir le joueur</label></div>
+      <div class="fit"><label class="check" style="margin:0 0 10px"><input id="adj-n" type="checkbox" checked> Prévenir le joueur</label></div>
       <div class="fit"><button id="adj-go">Appliquer</button></div></div>
     <p class="muted" style="font-size:.8rem; margin:6px 0 0">« Prévenir le joueur » : la carte lui est révélée comme un cadeau du Grand Architecte et attend d'être rangée. Décoché, c'est une correction silencieuse. Pour retirer des exemplaires : les boutons − du classeur.</p>
-    <details class="pl-inv" id="pl-inv"${invOpen ? ' open' : ''}><summary>Classeur · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s), ${inv.length} variante(s)</summary>
+    <details class="pl-inv" id="pl-inv"${invOpen ? ' open' : ''}><summary>${ic('right')}<span>Classeur · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s), ${inv.length} variante(s)</span></summary>
     <div class="grid-cards">${inv.map(i => `<figure>${cardImg(i.musician_id, i.rarity)}
-      <span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}
-      <span class="row" style="gap:4px; margin-top:4px"><button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="-1" style="padding:4px 10px" aria-label="Retirer un exemplaire">−</button>
-      <button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="1" style="padding:4px 10px" aria-label="Ajouter un exemplaire">+</button></span></figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div></details>
-    <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
+      <span class="rl r-${i.rarity}">${rarLabel(i.musician_id, i.rarity)}</span> <span class="num">×${i.copies}</span>${i.placed ? '' : ' · à ranger'}<br><b>${esc(musicianName(i.musician_id))}</b>
+      <span class="qty"><button class="ghost q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="-1" aria-label="Retirer un exemplaire de ${esc(musicianName(i.musician_id))}">${ic('minus')}</button>
+      <button class="ghost q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="1" aria-label="Ajouter un exemplaire de ${esc(musicianName(i.musician_id))}">${ic('plus')}</button></span></figure>`).join('') || '<p class="muted" style="margin:0">Aucune carte : son classeur est vide. « Donner une carte » ci-dessus en ajoute.</p>'}</div></details>
+    <div class="red-zone">
       <p class="err" style="margin:0 0 6px; font-weight:600">Zone rouge</p>
       <div class="row" style="margin:0 0 14px"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button><button id="clr-go" class="danger fit">Vider la collection</button></div>
       <p style="margin:0 0 6px; font-weight:600">Supprimer le joueur</p>
@@ -577,7 +660,7 @@ async function player(p){
     <div class="card"><h3>Ses échanges</h3><div id="pl-trades" class="muted">Chargement…</div></div>`;
   $('pl-inv').ontoggle = () => { invOpen = $('pl-inv').open; };
   signPerso(d);
-  d.scrollIntoView({ behavior: 'smooth' });
+  reach(d, fresh);
   sb.rpc('admin_trades', { p_user: p.id, p_limit: 50 }).then(r => { $('pl-trades').className = ''; $('pl-trades').innerHTML = r.error ? esc(frErr(r.error.message)) : tradesTable(r.data); });
   // photo et cri : fichiers privés, lus par lien signé (1 h)
   if(p.avatar_path || p.cry_path || p.metal_power){
@@ -586,11 +669,11 @@ async function player(p){
     $('pl-media').innerHTML = `<div class="row" style="align-items:center; gap:14px">
         ${av ? `<img class="fit" src="${esc(av)}" alt="Photo de ${esc(p.username || 'ce joueur')}" style="flex:0 0 72px; width:72px; height:72px; border-radius:50%; object-fit:cover; border:1px solid var(--gold)">` : ''}
         <div style="flex:1; min-width:200px">${p.metal_power ? `<p style="margin:0 0 8px"><span class="muted" style="font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Capacité de metaleux</span><br>${esc(p.metal_power)}</p>` : ''}
-          ${cry ? `<p class="muted" style="margin:0 0 4px; font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Son cri</p><button type="button" class="ghost fit" id="pl-cry" data-src="${esc(cry)}">▶ Écouter</button>` : ''}</div></div>`;
+          ${cry ? `<p class="muted" style="margin:0 0 4px; font:500 .7rem var(--mono); text-transform:uppercase; letter-spacing:.1em">Son cri</p><button type="button" class="ghost fit" id="pl-cry" data-src="${esc(cry)}">${ic('play')} Écouter</button>` : ''}</div></div>`;
   }
   // le cri : un bouton lecture / arrêt, sans lecteur
-  if($('pl-cry')){ const b = $('pl-cry'), a = new Audio(b.dataset.src), idle = () => { b.textContent = '▶ Écouter'; };
-    a.onended = idle; b.onclick = () => { if(a.paused){ a.currentTime = 0; a.play().then(() => { b.textContent = '■ Arrêter'; }).catch(idle); } else { a.pause(); idle(); } }; }
+  if($('pl-cry')){ const b = $('pl-cry'), a = new Audio(b.dataset.src), idle = () => { b.innerHTML = ic('play') + ' Écouter'; };
+    a.onended = idle; b.onclick = () => { if(a.paused){ a.currentTime = 0; a.play().then(() => { b.innerHTML = ic('stop') + ' Arrêter'; }).catch(idle); } else { a.pause(); idle(); } }; }
   const why = () => $('why').value.trim();
   const needWhy = () => { if(!why()){ say($('adj-msg'), 'Indique d\'abord un motif.'); $('why').focus(); return true; } return false; };
   const adjust = async (m, r, delta, notify = false) => {
@@ -618,11 +701,11 @@ async function player(p){
     const res = await sb.rpc('admin_test_push', { p_user: p.id });
     say($('adj-msg'), res.error ? frErr(res.error.message) : res.data ? `Notification envoyée à ${res.data} appareil${res.data > 1 ? 's' : ''}.` : 'Aucun appareil abonné : le joueur doit activer les notifications dans les réglages de l\'app.', !res.error && !!res.data);
   };
-  ['bonus-go'].forEach(id => { $(id).onclick = async () => {
+  $('bonus-go').onclick = async () => {
     if(needWhy()) return;
-    const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: +$(id).dataset.pts, p_reason: why() });
+    const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: +$('bonus-go').dataset.pts, p_reason: why() });
     say($('adj-msg'), res.error ? frErr(res.error.message) : 'Cadeau envoyé : ' + res.data + ' point(s) bonus en réserve, le joueur sera prévenu à sa prochaine visite.', !res.error);
-  }; });
+  };
   const who = p.username || p.email || 'ce joueur';
   $('blk-go').onclick = async () => {
     if(needWhy()) return;
@@ -654,9 +737,9 @@ async function packs(el){
   await loadCatalog();
   el.innerHTML = catalog.packs.map(p => {
     const w = r => (catalog.odds.find(o => o.pack_type_id === p.id && o.rarity === r) || {}).weight ?? 0;
-    return `<div class="card" data-pack="${esc(p.id)}"><h3>${esc(p.label)} <span class="muted" style="font:500 .7rem var(--mono)">${p.size} cartes · ${p.binder_id ? 'classeur ' + esc(p.binder_id) : 'tous les musiciens'}</span></h3>
+    return `<div class="card" data-pack="${esc(p.id)}"><h3>${esc(p.label)} <span class="meta">${p.size} cartes · ${p.binder_id ? 'classeur ' + esc(p.binder_id) : 'tous les musiciens'}</span></h3>
       <div class="row">${RARITIES.map(r => `<div class="fit"><label class="r-${r}" for="od-${esc(p.id)}-${r}">${RLABEL[r]}</label><input id="od-${esc(p.id)}-${r}" type="number" min="0" step="0.5" data-r="${r}" value="${w(r)}"></div>`).join('')}
-        <div class="fit"><label>Total</label><p class="total" style="margin:8px 0 0"></p></div></div>
+        <div class="fit"><p class="lab">Total</p><p class="total" style="margin:8px 0 0" aria-live="polite"></p></div></div>
       <label for="why-${esc(p.id)}">Motif (obligatoire)</label><input class="why" id="why-${esc(p.id)}" placeholder="ex. test d'un taux de Légendaire plus généreux">
       <div class="row" style="margin-top:10px"><button class="save fit">Enregistrer</button></div><p class="msg"></p></div>`;
   }).join('');
@@ -678,7 +761,7 @@ async function packs(el){
 async function gameSettings(el){
   const settings = await sb.from('settings').select('*').then(must), setting = k => (settings.find(s => s.key === k) || {}).value;
   el.innerHTML = `<div class="card"><h3>Réglages de jeu</h3>
-    <p class="muted" style="font-size:.85rem; margin:0 0 6px">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
+    <p class="muted note">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
     <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}" for="fz-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input id="fz-${r}" data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
     <div class="row"><div class="fit"><label for="set-ppd">Points de paquet par jour (un paquet, standard ou mini, = 2)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
       <div class="fit"><label for="set-welcome">Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
@@ -730,8 +813,6 @@ async function bcAudience(){
   $('bc-aud').textContent = `${a.players} joueur${a.players > 1 ? 's' : ''} : ${a.push} par notification, ${inbox} dans l'app` + ($('bc-mail').checked ? `, ${a.mail} par e-mail` : '');
 }
 document.addEventListener('change', e => { if(e.target.closest('#bc-who, #bc-plat, #bc-act, #bc-list, #bc-mail')) bcAudience(); });
-document.addEventListener('input', e => { if(e.target.id !== 'bc-find') return; const q = e.target.value.trim().toLowerCase();
-  document.querySelectorAll('#bc-list .bc-p').forEach(l => { l.hidden = !!q && !l.dataset.n.includes(q); }); });
 document.addEventListener('click', async e => {
   const pr = e.target.closest('[data-preset]'); if(pr){ [$('bc-title').value, $('bc-body').value] = BC_PRESETS[pr.dataset.preset]; return; }
   if(e.target.id !== 'bc-go') return;
@@ -762,8 +843,14 @@ async function catalogTab(el){
   const uniq = xs => [...new Set(xs.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
   const opts = (xs, lab) => `<option value="">${lab}</option>` + xs.map(x => `<option value="${esc(x.v ?? x)}">${esc(x.l ?? x)}</option>`).join('');
   let at = 0, rar = 'commune';
-  el.innerHTML = `<div class="card">
-    <div class="row" style="margin:0">
+  el.innerHTML = `<div class="card viewer"><h3>Visuels des cartes</h3>
+      <div class="vw-stage"><button class="vw-arrow ghost" id="vw-prev" aria-label="Musicien précédent">${ic('left')}</button>
+        <figure class="vw-card"><span id="vw-pic"></span><figcaption id="vw-cap"></figcaption></figure>
+        <button class="vw-arrow ghost" id="vw-next" aria-label="Musicien suivant">${ic('right')}</button></div>
+      <div class="vw-rars" id="vw-rars"></div>
+      <p class="muted" style="font-size:.8rem; text-align:center; margin:8px 0 0">Flèches du clavier ← → pour changer de musicien, ↑ ↓ pour changer de rareté. La visionneuse suit les filtres du tableau.</p></div>
+    <div class="card"><h3>Musiciens <span class="muted as-is" id="cat-count"></span></h3>
+    <div class="row" style="margin:0 0 10px">
       <div style="flex:2 1 220px"><label for="cat-q">Rechercher</label><input id="cat-q" type="search" placeholder="Nom, groupe, titre, n° d'arcane" autocomplete="off"></div>
       <div><label for="cat-b">Classeur</label><select id="cat-b">${opts(binders.map(b => ({ v: b.id, l: b.label })), 'Tous')}</select></div>
       <div><label for="cat-g">Sous-genre</label><select id="cat-g">${opts(uniq(all.map(m => m.subgenre)), 'Tous')}</select></div>
@@ -771,19 +858,12 @@ async function catalogTab(el){
       <div><label for="cat-a">État</label><select id="cat-a"><option value="">Tous</option><option value="1">Actifs</option><option value="0">Inactifs</option></select></div>
       <div class="fit"><button class="ghost" id="cat-reset">Effacer</button></div>
     </div>
-    </div>
-    <div class="card viewer"><h3>Visuels des cartes</h3>
-      <div class="vw-stage"><button class="vw-arrow ghost" id="vw-prev" aria-label="Musicien précédent">‹</button>
-        <figure class="vw-card"><span id="vw-pic"></span><figcaption id="vw-cap"></figcaption></figure>
-        <button class="vw-arrow ghost" id="vw-next" aria-label="Musicien suivant">›</button></div>
-      <div class="vw-rars" id="vw-rars"></div>
-      <p class="muted" style="font-size:.8rem; text-align:center; margin:8px 0 0">Flèches du clavier ← → pour changer de musicien, ↑ ↓ pour changer de rareté.</p></div>
-    <div class="card"><h3>Musiciens <span class="muted" id="cat-count"></span></h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
+    <p class="muted note">Chaque modification est inscrite au journal ; une ligne modifiée et pas encore enregistrée est surlignée. Décocher « Actif » retire l'artiste des paquets. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
     <div class="table-wrap"><table><tr><th></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
-    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}">${cardImg(m.id, variants(m.id)[0], ' style="width:40px;border-radius:4px"')}</button></td>
+    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}">${cardImg(m.id, variants(m.id)[0])}</button></td>
       <td><input data-f="name" value="${esc(m.name)}"></td><td><input data-f="band" value="${esc(m.band)}"></td><td><input data-f="arcana_title" value="${esc(m.arcana_title)}"></td>
       <td style="width:80px"><input data-f="arcana_number" value="${esc(m.arcana_number)}"></td><td><input data-f="subgenre" value="${esc(m.subgenre)}"></td>
-      <td><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} style="width:auto"></td><td><button class="ghost save">OK</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
+      <td><label class="hit"><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} aria-label="Actif"></label></td><td><button class="ghost save">Enregistrer</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
     <tr id="cat-none" hidden><td colspan="8" class="muted">Aucun musicien ne correspond.</td></tr>
     </table></div></div>`;
   // recherche et filtres : masquent les lignes (les saisies en cours restent) et limitent la visionneuse à la sélection
@@ -823,14 +903,17 @@ async function catalogTab(el){
   let x0 = null; const st = el.querySelector('.vw-card');
   st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   st.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); x0 = null; });
-  el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: 'smooth' }); });
+  el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { at = Math.max(0, list.findIndex(m => m.id === b.dataset.view)); show(); el.querySelector('.viewer').scrollIntoView({ behavior: motion() }); });
   filter(); signPerso(el);
+  // ligne modifiée : surlignée et bouton en or jusqu'à l'enregistrement
+  const dirty = (tr, on) => { tr.classList.toggle('dirty', on); tr.querySelector('.save').classList.toggle('ghost', !on); };
+  el.querySelectorAll('tr[data-id]').forEach(tr => tr.addEventListener('input', () => dirty(tr, true)));
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
-    const tr = btn.closest('tr'), patch = {};
+    const tr = btn.closest('tr'), patch = {}, m = tr.querySelector('.msg'), mu = catalog.musicians.find(x => x.id === tr.dataset.id) || {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
+    if(mu.active && !patch.active && !await ask('Désactiver ' + (patch.name || mu.name) + ' ?', 'Ses cartes ne sortent plus des paquets. Les joueurs gardent celles qu\'ils ont.', 'Désactiver')) return;
     const r = await sb.from('musicians').update(patch).eq('id', tr.dataset.id).select();
-    const m = tr.querySelector('.msg');
-    if(r.error) say(m, frErr(r.error.message)); else if(!r.data.length) say(m, 'Refusé (droits).'); else say(m, 'Enregistré', true);
+    if(r.error) say(m, frErr(r.error.message)); else if(!r.data.length) say(m, 'Refusé (droits).'); else { say(m, 'Enregistré', true); dirty(tr, false); Object.assign(mu, patch); }
   });
 }
 
@@ -846,9 +929,9 @@ function jobCard(j){
   const live = ['review', 'ready', 'error'].includes(j.status);
   const pics = j.status === 'ready' && j.musician_id && j.branch ? `<div class="grid-cards" style="margin:10px 0">${RARITIES.map(r =>
     `<figure><a href="${RAW}${esc(j.branch)}/proto/cards/${esc(j.musician_id)}-${r}.jpg" target="_blank" rel="noopener"><img src="${RAW}${esc(j.branch)}/proto/cards/${esc(j.musician_id)}-${r}.jpg" alt="" loading="lazy"></a><span class="r-${r}">${RLABEL[r]}</span></figure>`).join('')}</div>` : '';
-  return `<div class="po" style="grid-template-columns:1fr" data-job="${j.id}"><div>
+  return `<div class="po solo" data-job="${j.id}"><div>
     <b>${esc(j.artist)}</b> <span class="pill${j.status === 'review' || j.status === 'error' ? ' warn-pill' : ''}">${JSTATUS[j.status]}</span>
-    <span class="muted" style="font-size:.8rem">· ${fmt(j.updated_at)}${j.branch ? ` · <a href="${GH}/compare/main...${esc(j.branch)}" target="_blank" rel="noopener" style="color:var(--gold)">voir les changements</a>` : ''}</span>
+    <span class="muted" style="font-size:.8rem">· ${fmt(j.updated_at)}${j.branch ? ` · <a href="${GH}/compare/main...${esc(j.branch)}" target="_blank" rel="noopener">voir les changements</a>` : ''}</span>
     ${j.note ? `<details style="margin:6px 0"${j.status === 'review' ? ' open' : ''}><summary class="muted" style="cursor:pointer">Compte rendu de l'agent</summary><p style="white-space:pre-wrap; font-size:.85rem; margin:6px 0">${esc(j.note)}</p></details>` : ''}
     ${pics}
     ${live ? `<label for="jn-${j.id}">${j.status === 'review' ? 'Ta décision (consigne pour l\'agent)' : 'Consigne pour une reprise (facultatif)'}</label><input id="jn-${j.id}" maxlength="500">
@@ -858,15 +941,18 @@ function jobCard(j){
 }
 async function requests(el){
   const [rows, jobs] = await Promise.all([sb.rpc('admin_requests').then(must), sb.rpc('admin_jobs').then(must)]);
-  const groups = reqGroups(rows), active = jobs.filter(j => !['published', 'refused'].includes(j.status));
-  const jobOf = g => active.find(j => g.rows.some(x => j.request_ids.includes(x.id)));
-  el.innerHTML = `<div class="card"><h3>Demandes d'artistes (${groups.length})</h3>${groups.length ? groups.map((g, i) => `<div class="po" style="grid-template-columns:1fr"><div>
-      <b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''} <span class="muted" style="font-size:.8rem">· ${fmt(g.rows[0].created_at)}</span>
-      <div style="font-size:.85rem; margin:4px 0 8px">${g.rows.map(x => `<div>${esc(x.username)}${x.priority ? ' <span class="ok">★ ticket</span>' : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</div>
-      <div class="row" style="margin:0">${jobOf(g) ? `<span class="pill fit">${JSTATUS[jobOf(g).status]}</span>` : `<button class="fit" data-req="${i}" data-out="launch">Lancer l'agent</button><button class="ghost fit" data-req="${i}" data-out="added">Déjà en ligne</button><button class="ghost fit" data-req="${i}" data-out="refused">Refuser</button>`}</div><p class="msg"></p></div></div>`).join('') + `
-    <p class="muted" style="font-size:.85rem">Lancer l'agent : il vérifie l'artiste, génère les cartes et prépare le catalogue à son prochain passage (9 h, 13 h, 18 h), puis la demande revient ci-dessous. Déjà en ligne : seulement si l'artiste est déjà dans le jeu ; le demandeur est prévenu tout de suite qu'il débarque. Refuser : le demandeur est prévenu, le ticket prioritaire est rendu.</p>`
-    : '<p class="muted" style="margin:0">Aucune demande en attente.</p>'}</div>
-    ${jobs.length ? `<div class="card"><h3>Préparées par l'agent</h3>${jobs.map(jobCard).join('')}</div>` : ''}`;
+  // une demande confiée à l'agent passe dans « Préparées par l'agent » : ici, seulement celles qui attendent une décision (même compte que l'Accueil)
+  const open = new Set(jobs.filter(j => !['published', 'refused'].includes(j.status)).flatMap(j => j.request_ids));
+  const groups = reqGroups(rows.filter(x => !open.has(x.id)));
+  const live = jobs.filter(j => !['published', 'refused'].includes(j.status)), past = jobs.filter(j => !live.includes(j));
+  el.innerHTML = `<div class="card"><h3>Demandes d'artistes (${groups.length})</h3>${groups.length ? groups.map((g, i) => `<div class="po solo"><div>
+      <b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ` <span class="ok" style="font-size:.8rem">${ic('star')} prioritaire</span>` : ''} <span class="muted" style="font-size:.8rem">· ${fmt(g.rows[0].created_at)}</span>
+      <div style="font-size:.85rem; margin:4px 0 8px">${g.rows.map(x => `<div>${esc(x.username)}${x.priority ? ` <span class="ok">${ic('star')} ticket</span>` : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</div>
+      <div class="row" style="margin:0"><button class="fit" data-req="${i}" data-out="launch">Lancer l'agent</button><button class="ghost fit" data-req="${i}" data-out="added">Déjà en ligne</button><button class="ghost fit" data-req="${i}" data-out="refused">Refuser</button></div><p class="msg"></p></div></div>`).join('') + `
+    <p class="muted note" style="margin-top:10px">Lancer l'agent : il vérifie l'artiste, génère les cartes et prépare le catalogue à son prochain passage (9 h, 13 h, 18 h), puis la demande revient ci-dessous. Déjà en ligne : seulement si l'artiste est déjà dans le jeu ; le demandeur est prévenu tout de suite qu'il débarque. Refuser : le demandeur est prévenu, le ticket prioritaire est rendu.</p>`
+    : `<p class="muted" style="margin:0">Aucune demande en attente${live.length ? ' : celles en cours sont chez l\'agent, ci-dessous' : ''}. Les joueurs demandent un artiste depuis la case « Il manque un artiste ? » de leurs classeurs.</p>`}</div>
+    ${jobs.length ? `<div class="card"><h3>Préparées par l'agent</h3>${live.length ? live.map(jobCard).join('') : '<p class="muted" style="margin:0">Rien en cours chez l\'agent.</p>'}
+      ${past.length ? `<details class="hist"><summary>Historique · ${past.length} publiée${past.length > 1 ? 's' : ''} ou refusée${past.length > 1 ? 's' : ''}</summary>${past.map(jobCard).join('')}</details>` : ''}</div>` : ''}`;
   el.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
     const g = groups[+b.dataset.req], out = b.dataset.out, n = g.rows.length + ' joueur' + (g.rows.length > 1 ? 's' : '');
     const msg = b.closest('.po').querySelector('.msg');
@@ -903,7 +989,7 @@ async function requests(el){
 // groupes favoris déclarés à l'onboarding, les plus cités d'abord
 async function favBands(el){
   const rows = await sb.rpc('admin_fav_bands').then(must);
-  el.innerHTML = `<div class="card"><h3>Groupes favoris des joueurs</h3><p class="muted" style="font-size:.85rem">Déclarés à l'onboarding (5 au plus par joueur).</p>
+  el.innerHTML = `<div class="card"><h3>Groupes favoris des joueurs</h3><p class="muted note">Déclarés à l'onboarding (5 au plus par joueur).</p>
     ${rows.length ? `<div class="table-wrap"><table><tr><th>Groupe ou artiste</th><th>Joueurs</th><th>Catalogue</th></tr>
     ${rows.map(x => `<tr><td><b>${esc(x.band)}</b></td><td>${x.fans}</td><td class="muted">${x.in_catalog ? 'déjà dedans' : '—'}</td></tr>`).join('')}</table></div>` : '<p class="muted" style="margin:0">Aucun groupe déclaré pour l\'instant.</p>'}</div>`;
 }
@@ -936,8 +1022,8 @@ function challengeRow(c){
     <td><input class="ch-hint" value="${esc(c.hint)}" maxlength="200" aria-label="Consigne"></td>
     <td><select class="ch-proof" aria-label="Preuve"><option value="photo"${c.proof === 'video' ? '' : ' selected'}>Photo</option><option value="video"${c.proof === 'video' ? ' selected' : ''}>Vidéo 10 s</option></select></td>
     <td><input class="ch-points" type="number" min="0" max="20" value="${n ? 2 : c.points}" style="width:64px" aria-label="Points"></td>
-    <td><input class="ch-band" type="checkbox"${c.band_only ? ' checked' : ''} aria-label="En bande seulement"></td>
-    <td><input class="ch-active" type="checkbox"${n || c.active ? ' checked' : ''} aria-label="Actif"></td>
+    <td><label class="hit"><input class="ch-band" type="checkbox"${c.band_only ? ' checked' : ''} aria-label="En bande seulement"></label></td>
+    <td><label class="hit"><input class="ch-active" type="checkbox"${n || c.active ? ' checked' : ''} aria-label="Actif"></label></td>
     <td><button class="ghost fit" data-save>${n ? 'Ajouter' : 'Enregistrer'}</button><span class="msg"></span></td></tr>`;
 }
 async function challenges(el){
@@ -989,7 +1075,7 @@ async function team(el){
   if(error) throw error;
   const ROLE = {owner:'Propriétaire', admin:'Admin'};
   el.innerHTML = `
-    <div class="card"><h3>L'équipe</h3><p class="muted" style="font-size:.85rem">Propriétaire : tout, y compris nommer et retirer des admins. Admin : tout le reste (joueurs, cadeaux, catalogue, paquets, journal).</p>
+    <div class="card"><h3>L'équipe</h3><p class="muted note">Propriétaire : tout, y compris nommer et retirer des admins. Admin : tout le reste (joueurs, cadeaux, catalogue, paquets, journal).</p>
     ${owner ? '<label for="team-why">Motif pour retirer un admin ou changer son rôle (obligatoire, inscrit au journal)</label><input id="team-why" placeholder="ex. fin de la mission de modération">' : ''}
     <div class="table-wrap"><table><tr><th>Admin</th><th>Rôle</th><th>Double authentification</th><th>Dernière connexion</th><th>Depuis</th>${owner ? '<th></th>' : ''}</tr>
     ${list.map(a => `<tr data-u="${a.user_id}"><td><b>${esc(a.email)}</b>${a.me ? ' <span class="muted">(toi)</span>' : ''}</td>
@@ -997,7 +1083,7 @@ async function team(el){
       <td>${a.mfa ? '<span class="ok">active</span>' : '<span class="muted">pas encore (invitation en attente ?)</span>'}</td><td>${fmt(a.last_sign_in_at)}</td><td>${fmt(a.created_at)}</td>
       ${owner ? `<td>${a.me ? '' : '<button class="ghost fit" data-revoke>Retirer</button>'}<span class="msg"></span></td>` : ''}</tr>`).join('')}</table></div></div>
     ${owner ? `<div class="card" style="max-width:520px"><h3>Nommer un admin</h3>
-      <p class="muted" style="font-size:.85rem">Compte Metalnini existant : nommé tout de suite. Sinon, il reçoit un e-mail d'invitation pour choisir son mot de passe ; à sa première connexion, il active la double authentification.</p>
+      <p class="muted note">Compte Metalnini existant : nommé tout de suite. Sinon, il reçoit un e-mail d'invitation pour choisir son mot de passe ; à sa première connexion, il active la double authentification.</p>
       <label for="adm-mail">E-mail</label><input id="adm-mail" type="email" autocomplete="off" spellcheck="false">
       <label for="adm-why">Motif (journal)</label><input id="adm-why" maxlength="200" placeholder="ex. aide à la modération">
       <div class="row" style="margin-top:12px"><button id="adm-go" class="fit">Nommer admin</button></div><p id="adm-msg" class="msg"></p></div>` : ''}`;
@@ -1031,12 +1117,33 @@ async function team(el){
 }
 
 // ---------------------------------------------------------------- journal
+// détail d'une ligne du journal : « clé : valeur », musicien et rareté en clair
+const LOG_KEYS = { musician:'carte', rarity:'rareté', delta:'exemplaires', notify:'prévenu', points:'points', users:'joueurs', key:'réglage', value:'valeur', weights:'poids', title:'titre', body:'message' };
+function logDetail(o){
+  if(!o || typeof o !== 'object') return esc(o ?? '');
+  return Object.entries(o).map(([k, v]) => { const val = k === 'musician' ? musicianName(v) : k === 'rarity' ? (RLABEL[v] || v) : typeof v === 'boolean' ? (v ? 'oui' : 'non')
+      : Array.isArray(v) ? v.length + ' élément' + (v.length > 1 ? 's' : '') : v && typeof v === 'object' ? JSON.stringify(v) : v;
+    return `<span class="muted">${esc(LOG_KEYS[k] || k)} :</span> ${esc(String(val).slice(0, 120))}`; }).join('<br>');
+}
 async function log(el){
-  const rows = await sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(200).then(must);
-  el.innerHTML = `<div class="card"><h3>Journal des actions admin</h3><div class="table-wrap"><table><tr><th>Date</th><th>Action</th><th>Joueur</th><th>Détail</th><th>Motif</th></tr>
-    ${rows.map(r => `<tr><td>${fmt(r.created_at)}</td><td><span class="pill">${esc(r.action)}</span></td><td>${r.target_user ? esc(r.target_user.slice(0, 8)) : '—'}</td>
-      <td><code style="font-size:.72rem">${esc(JSON.stringify(r.payload)).slice(0, 220)}</code></td><td>${esc(r.reason)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">Aucune action pour l\'instant.</td></tr>'}
-    </table></div></div>`;
+  const [rows, players] = await Promise.all([sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(200).then(must), allPlayers()]);
+  const name = id => (players.find(p => p.id === id) || {}).username;
+  const actions = [...new Set(rows.map(r => r.action))].sort();
+  el.innerHTML = `<div class="card"><h3>Journal des actions admin</h3>
+    ${rows.length ? `<div class="filters"><div><label for="lg-a">Action</label><select id="lg-a"><option value="">Toutes</option>${actions.map(a => `<option>${esc(a)}</option>`).join('')}</select></div>
+      <div><label for="lg-q">Joueur ou motif</label><input id="lg-q" type="search" autocomplete="off" placeholder="Pseudo, motif"></div></div>
+    <p class="muted note">Les ${rows.length} dernières actions.</p>
+    <div class="table-wrap"><table><tr><th>Date</th><th>Action</th><th>Joueur</th><th>Détail</th><th>Motif</th></tr>
+    ${rows.map(r => `<tr data-a="${esc(r.action)}" data-q="${esc(((name(r.target_user) || '') + ' ' + (r.reason || '')).toLowerCase())}"><td>${fmt(r.created_at)}</td><td><span class="pill">${esc(r.action)}</span></td>
+      <td>${r.target_user ? (name(r.target_user) ? `<a class="pl-link" href="#joueurs/${esc(r.target_user)}" data-go="joueurs/${esc(r.target_user)}"><b>${esc(name(r.target_user))}</b></a>` : `<span class="muted">${esc(r.target_user.slice(0, 8))} (supprimé ?)</span>`) : '—'}</td>
+      <td style="font-size:.82rem">${logDetail(r.payload)}</td><td>${esc(r.reason)}</td></tr>`).join('')}
+    <tr id="lg-none" hidden><td colspan="5" class="muted">Aucune action ne correspond.</td></tr></table></div>`
+    : '<p class="muted" style="margin:0">Aucune action pour l\'instant : chaque geste sur un joueur, un réglage ou le catalogue s\'inscrira ici avec son motif.</p>'}</div>`;
+  if(!rows.length) return;
+  const filter = () => { const a = $('lg-a').value, q = $('lg-q').value.trim().toLowerCase(); let n = 0;
+    el.querySelectorAll('tr[data-a]').forEach(tr => { tr.hidden = !((!a || tr.dataset.a === a) && (!q || tr.dataset.q.includes(q))); n += !tr.hidden; });
+    $('lg-none').hidden = n > 0; };
+  $('lg-a').addEventListener('change', filter); $('lg-q').addEventListener('input', filter);
 }
 
 // ---------------------------------------------------------------- mon compte
@@ -1074,7 +1181,7 @@ async function account(el){
       <div class="row"><button id="em-go" class="fit">Changer l'e-mail</button></div><p id="em-msg" class="msg"></p></div>
 
     <div class="card" style="max-width:520px"><h3>Sécurité</h3>
-      <p class="muted" style="font-size:.85rem">Te déconnecte de l'admin sur tous tes appareils et navigateurs (utile en cas de doute sur un appareil perdu ou partagé).</p>
+      <p class="muted note">Te déconnecte de l'admin sur tous tes appareils et navigateurs (utile en cas de doute sur un appareil perdu ou partagé).</p>
       <div class="row"><button id="all-out" class="ghost fit">Se déconnecter partout</button></div></div>`;
 
   $('un-go').onclick = async () => {
