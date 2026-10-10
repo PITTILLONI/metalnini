@@ -316,7 +316,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d6.querySelector('#tr-give .tr-card[data-r="commune"]').click(); await sleep(50);
   T.their_ok = true; T.partner_cry = 'u2/cry.webm'; watchCb(); await sleep(50);
   d6.getElementById('tr-ok').click(); await sleep(1500);
-  check('double validation : écran de troc (je donne / je reçois, bonus de rencontre), pas de révélation', d6.getElementById('trade').hidden && !d6.getElementById('troc').hidden && d6.getElementById('reveal').hidden && /Riffeuse/.test(d6.getElementById('troc-t').textContent) && /Bonus rencontre/.test(d6.getElementById('troc-get').textContent));
+  check('double validation : écran de troc (je donne / je reçois, bonus de rencontre), pas de révélation', d6.getElementById('trade').hidden && !d6.getElementById('troc').hidden && d6.getElementById('reveal').hidden && /Riffeuse/.test(d6.getElementById('troc-t').textContent) && /Bonus/.test(d6.getElementById('troc-get').textContent));
   check('échange conclu : le cri du pote retentit', [...d6.querySelectorAll('.toast')].some(t => /Le cri de/.test(t.textContent)));
   check('troc : bouton « Suivre » le pote', !d6.getElementById('troc-follow').hidden && /Suivre Riffeuse/.test(d6.getElementById('troc-follow').textContent));
   d6.getElementById('troc-follow').click(); await sleep(50);
@@ -462,7 +462,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   Object.defineProperty(tkIn, 'files', { configurable:true, value:[new w9.File(['%PDF-1.4'], 'billet.pdf', { type:'application/pdf' })] });
   tkIn.onchange(); await sleep(60);
   check('billet : PDF envoyé, puis affiché dans la fiche', tk9 && tk9.c === 'g2' && tk9.kind === 'pdf' && !!d9.querySelector('#gigd-in .tk-pdf') && !!d9.querySelector('#gigd-in [data-tk-del]'));
-  w9.confirm = () => true; d9.querySelector('#gigd-in [data-tk-del]').click(); await sleep(30);
+  d9.querySelector('#gigd-in [data-tk-del]').click(); await sleep(30); d9.getElementById('confirm-yes').click(); await sleep(30);
   check('billet : retiré', tkCleared === 'u1/ticket-g2.pdf' && /Ajouter mon billet/.test(d9.getElementById('gigd-in').textContent));
   d9.querySelector('.tl-acts[data-id="g2"] [data-act="pick"]').click(); await sleep(30);
   check('défis : liste de l\'admin, sans les défis en bande', !d9.getElementById('df-sheet').hidden && d9.querySelectorAll('#df-list .df-opt').length === 1);
@@ -488,7 +488,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.querySelector('.tl-acts[data-id="g2"] [data-act="band"]').click(); await sleep(60);
   check('bandes : « + Pote » seulement pour un membre qui n\'est pas pote', d9.querySelectorAll('#band-in [data-p]').length === 1);
   d9.querySelector('#band-in [data-p]').click(); await sleep(20);
-  check('bandes : membre ajouté en pote', befriended === 'b1/z3' && !d9.querySelector('#band-in [data-p]') && /Pote ✓/.test(d9.getElementById('band-in').textContent));
+  check('bandes : membre ajouté en pote', befriended === 'b1/z3' && !d9.querySelector('#band-in [data-p]') && /Pote/.test(d9.getElementById('band-in').textContent) && !!d9.querySelector('#band-in span.df svg'));
   band9.members.pop();
   d9.getElementById('band-close').click();
   d9.getElementById('band-open').click(); await sleep(10);

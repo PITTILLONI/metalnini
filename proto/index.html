@@ -21,7 +21,7 @@
   :root{
     --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94;
     --border:rgba(255,255,255,.1); --accent:#b23a3a; --accent-text:#e0605a; --gold:#eb9a26;
-    --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#eb9a26; --r-legendaire:#dc2626;
+    --r-commune:#c9c3b8; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#f5c542; --r-legendaire:#ef4444;   /* raretés : seule source (MASTER), le JS les relit */
     --display:"Big Shoulders Display","Arial Narrow",sans-serif; --gold-hi:#f4b243; --gold-lo:#b56c16; --ink:#0d0a08; --mono:"Barlow",system-ui,sans-serif; --gothic:"Pirata One","Big Shoulders Display",serif;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
@@ -132,7 +132,7 @@
   .ms-offers{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .ms-offer{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:64px; padding:10px}
   .ms-offer b{font:900 1.1rem/1 var(--display); letter-spacing:.04em; text-transform:uppercase} .ms-offer span{font:700 .95rem var(--mono)}
-  .ms-offer em{position:absolute; top:-9px; left:50%; transform:translateX(-50%); padding:2px 8px; border-radius:999px; background:var(--accent); color:#fff; font:700 .62rem/1.4 var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap}
+  .ms-offer em{position:absolute; top:-9px; left:50%; transform:translateX(-50%); padding:2px 8px; border-radius:999px; background:var(--accent); color:#fff; font:700 .7rem/1.4 var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap}
   .ms-earn{display:block; width:100%; min-height:44px; margin-top:12px; border:0; background:none; color:var(--muted); font:500 .82rem var(--mono); cursor:pointer} .ms-earn b{color:var(--text); text-decoration:underline}
   .as-fund{display:block; width:100%; margin:12px 0 0; padding:12px 14px; text-align:left} .as-fund b{display:block; font:900 1.05rem/1.1 var(--display); letter-spacing:.04em; text-transform:uppercase} .as-fund small{display:block; margin-top:3px; font:500 .76rem/1.3 var(--mono); opacity:.85}
   .choose.closed .pack-car{opacity:.5; pointer-events:none}
@@ -206,7 +206,7 @@
   .rank-stats{display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; padding-bottom:4px}
   .rank-stats > div:last-child:nth-child(odd){grid-column:1 / -1}   /* tuile seule sur sa ligne : toute la largeur */
   .rank-stats div{display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px; border:1px solid #2e251d; border-radius:12px; background:#15110f; box-shadow:0 4px 0 #000; text-align:center}
-  .rank-stats svg{color:var(--gold)} .rank-stats b{font:800 1.5rem/1 var(--display); color:var(--text)} .rank-stats span{font:600 .72rem var(--mono); color:var(--muted)} .rank-stats small{font:700 .68rem var(--mono); color:var(--gold-hi)}
+  .rank-stats svg{color:var(--gold)} .rank-stats b{font:800 1.5rem/1 var(--display); color:var(--text)} .rank-stats span{font:600 .72rem var(--mono); color:var(--muted)} .rank-stats small{font:700 .7rem var(--mono); color:var(--gold-hi)}
   /* chemin des titres : un trait qui se remplit d'or jusqu'au titre actuel (et en partie vers le suivant) ; le titre social à part */
   .road{list-style:none; margin:0 0 14px; padding:0}
   .road li{position:relative; display:flex; align-items:center; gap:14px; padding:0 0 30px}
@@ -232,9 +232,9 @@
   .bulk-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin:0 0 16px}
   .bulk-grid figure{position:relative; margin:0; opacity:0; transform:translateY(10px) scale(.96); animation:bulk-in .35s ease-out forwards; animation-delay:var(--d)}
   .bulk-grid img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:8px; border:2px solid var(--rc)}
-  .bulk-grid figcaption{margin-top:3px; font:600 .64rem/1.2 var(--mono); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .bulk-grid figcaption{margin-top:3px; font:600 .7rem/1.2 var(--mono); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .bulk-grid .count{position:absolute; top:5px; right:5px; padding:2px 7px; border-radius:6px; background:rgba(12,11,10,.88); border:1px solid rgba(235,154,38,.55); color:#fff; font:700 .8rem/1.2 var(--display)}
-  .bulk-grid .new{position:absolute; top:5px; left:5px; padding:2px 6px; border-radius:999px; background:var(--accent); color:#fff; font:700 .58rem/1.4 var(--mono); text-transform:uppercase}
+  .bulk-grid .new{position:absolute; top:5px; left:5px; padding:2px 6px; border-radius:999px; background:var(--accent); color:#fff; font:700 .7rem/1.4 var(--mono); text-transform:uppercase}
   @keyframes bulk-in{to{opacity:1; transform:none}}
   @media (prefers-reduced-motion: reduce){ .bulk-grid figure{animation:none; opacity:1; transform:none} }
   .pit{position:fixed; inset:0; z-index:72; overflow-y:auto; overscroll-behavior:contain; background:radial-gradient(120% 70% at 50% 30%, #2a1a10 0%, #0c0a09 70%)}
@@ -254,14 +254,14 @@
   #pit-lobby.with-cta{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
   .pit-gauges{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px; text-align:left}
   .pit-gauges div{padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
-  .pit-gauges small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .pit-gauges small{display:block; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .pit-gauges b{display:block; font:900 1.25rem/1.1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pit-gauges span{display:block; font:500 .74rem/1.3 var(--mono); color:var(--muted)} .pit-gauges span span{display:inline}
   .pit-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px} .pit .tr-qr-f{margin:12px auto 0}
   .pit-win{margin:4px 0 14px; padding:16px; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:var(--surface)}
   .pit-win b{display:block; font:900 1.6rem/1.1 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pit-win span{display:block; margin-top:4px; font:500 .86rem/1.4 var(--mono)}
   .pp-list{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; max-height:50dvh; overflow-y:auto} .pp-list .eyebrow{flex-basis:100%; margin:8px 0 0}
   #pit-pick .bsheet-in{max-height:88dvh; overflow-y:auto} #pit-pick #pp-go{margin-bottom:8px}
-  .pp-list [aria-pressed="true"]{border-color:var(--gold); background:rgba(235,154,38,.16)}
+  .pp-list [aria-pressed="true"]{background:var(--gold); color:var(--ink); box-shadow:0 4px 0 #8a5510} .pp-list .df small{font-size:.7rem}
   @keyframes pit-spin{to{transform:rotate(360deg)}}
   .pit-slot.wait .pit-av{opacity:.45; filter:grayscale(1)}   /* rejoint, pas encore couru */
   .pit-note{margin:0 0 10px; font:500 .84rem/1.4 var(--mono); color:var(--muted)}
@@ -285,7 +285,7 @@
   .pogo-zone.on{background:rgba(244,178,67,.22); border:2px solid var(--gold-hi)}
   .pogo-fx{position:absolute; z-index:4; left:50%; top:calc(50% - 64px); transform:translate(-50%, 0); font:900 1.3rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; opacity:0; pointer-events:none}
   .pogo-fx.good{color:var(--gold-hi)} .pogo-fx.bad{color:var(--accent-text)}
-  .pogo-pads{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 10px} .pogo-pad{min-height:76px; border-radius:16px; border:2px solid var(--border); background:var(--surface); color:var(--text); font:900 1.15rem var(--display); letter-spacing:.08em; text-transform:uppercase; touch-action:none; user-select:none; -webkit-user-select:none; transition:background-color .1s, border-color .1s}
+  .pogo-pads{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 10px} .pogo-pad{min-height:76px; border-radius:16px; border:2px solid var(--border); background:var(--surface); color:var(--text); font:900 1.15rem var(--display); letter-spacing:.08em; text-transform:uppercase; touch-action:none; user-select:none; -webkit-user-select:none; transition:background-color .1s, border-color .1s; display:flex; align-items:center; justify-content:center; gap:4px}
   .pogo-pad.on{background:var(--gold); border-color:var(--gold-hi); color:#1a0f05}
   .pogo-me{position:absolute; z-index:2; left:50%; top:50%; transform:translate(-50%, -50%); transition:transform .4s cubic-bezier(.5,0,.6,1.4), filter .4s} .pogo-me .pit-av.me{width:64px; height:64px}
   /* danseur qui arrive : silhouette tournée vers le joueur ; renvoyé, il bascule et pâlit */
@@ -303,14 +303,14 @@
     body.playing #pogo-in .pogo-bal{grid-area:bal; margin:8px 0 4px} body.playing #pogo-in .pit-note{grid-area:note; margin:0; font-size:.75rem}
   }
   .pogo-stake{display:flex; align-items:center; gap:12px; margin:4px 0 12px; padding:10px 12px; border:1px solid var(--border); border-radius:14px; background:var(--surface); text-align:left}
-  .pogo-stake small{display:block; font:600 .66rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-stake b{display:block; font:900 1.15rem/1.15 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pogo-stake span span{font:500 .8rem/1.3 var(--mono); color:var(--muted)}
+  .pogo-stake small{display:block; font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-stake b{display:block; font:900 1.15rem/1.15 var(--display); text-transform:uppercase; color:var(--gold-hi)} .pogo-stake span span{font:500 .8rem/1.3 var(--mono); color:var(--muted)}
   .pogo-c{flex:none; display:block; width:64px} .pogo-c img{display:block; width:100%; border-radius:6px}
   .pogo-loot{display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:0 0 16px} .pogo-loot .pogo-c{width:96px} .pogo-c.lost img{filter:grayscale(1) brightness(.5)} .pogo-c.won{box-shadow:0 0 22px rgba(244,178,67,.45)}
   .pogo-list{margin:0 0 12px; padding:0; list-style:none; text-align:left} .pogo-list li{display:flex; align-items:center; gap:10px; min-height:52px; padding:6px 0; border-bottom:1px solid var(--border)}
   .pogo-list li > span:not(.pit-av){flex:1; min-width:0} .pogo-list b{display:block; font-weight:700; font-size:.92rem; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .pogo-list small{font:500 .76rem/1.3 var(--mono); color:var(--muted)} .pogo-list li.down small{color:var(--accent-text)}
   #pogo-run{margin-bottom:10px}
   .pogo-gain{display:grid; gap:8px; margin:0 0 14px; padding:12px 14px; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:linear-gradient(180deg, rgba(235,154,38,.1), rgba(235,154,38,0)); text-align:left}
-  .pogo-gain small{font:600 .68rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-gain span{font:500 .82rem/1.35 var(--mono); color:var(--muted)} .pogo-gain b{display:block; font:800 .95rem/1.2 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--gold-hi)}
+  .pogo-gain small{font:600 .7rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-gain span{font:500 .82rem/1.35 var(--mono); color:var(--muted)} .pogo-gain b{display:block; font:800 .95rem/1.2 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--gold-hi)}
   .pogo-prime{position:relative; display:flex; flex-direction:column; align-items:center; gap:4px} .pogo-prime small{font:800 .7rem var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi)}
   /* les danses : une carte illustrée par mini-jeu, trois sur une ligne, carrousel au-delà ; le nom posé sur l'illustration */
   .dance-row{display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 -16px; padding:4px 16px 8px; scroll-padding:0 16px} .dance-row::-webkit-scrollbar{display:none}
@@ -341,7 +341,7 @@
   .trim-v{display:block; width:100%; max-height:46dvh; margin:12px 0; border-radius:12px; background:#000} #trim-r{width:100%; accent-color:var(--gold)} .trim-l{margin:6px 0; font:800 1.2rem var(--display); color:var(--gold-hi)}
   #call-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} .call-list{margin:8px 0 16px}
   .call-row{display:flex; align-items:center; gap:12px; min-height:56px; border-bottom:1px solid var(--border)} .call-row b{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700}
-  .call-row .df{min-height:40px} .call-ok{font:600 .8rem var(--mono); color:var(--muted)}
+  .call-row .df{min-height:44px} .call-ok{font:600 .8rem var(--mono); color:var(--muted)}
   /* foule des mini-jeux : silhouettes noires à liseré or, rang arrière plus petit et plus sombre */
   .crowd{position:absolute; left:0; right:0; bottom:0; height:100%; pointer-events:none; z-index:0}
   .fan-w{position:absolute; bottom:-6px; display:block; width:38px; height:68px; margin-left:-19px; will-change:transform} .fan-w.back{bottom:14px; transform:scale(.72); opacity:.5; z-index:-1}
@@ -399,8 +399,8 @@
   .tr-card{position:relative; padding:0; border:0; background:none; cursor:pointer; text-align:center; color:var(--muted)}
   .tr-card img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
   .tr-card small b{color:var(--text)}
-  .tr-card small{display:block; margin-top:3px; font:600 .66rem/1.2 var(--mono); text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .tr-card .last{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--accent); color:#fff; font:700 .6rem/16px var(--mono); text-transform:uppercase}
+  .tr-card small{display:block; margin-top:3px; font:600 .7rem/1.2 var(--mono); text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .tr-card .last{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--accent); color:#fff; font:700 .7rem/16px var(--mono); text-transform:uppercase}
   .tr-card:disabled{opacity:.35; cursor:default}
   .tr-add{aspect-ratio:2/3; border:1px dashed rgba(235,154,38,.55); border-radius:6px; background:none; color:var(--gold-hi); font:700 .78rem var(--mono); cursor:pointer}
   .tr-empty{grid-column:1 / -1; margin:0; color:var(--muted); font-size:.9rem}
@@ -443,10 +443,10 @@
   .troc-stage{display:flex; flex-direction:column; align-items:center; gap:12px; margin:8px 0}
   .troc-row{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%}
   .troc-row p{width:100%; margin:0; font:600 .72rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
-  .troc-row figure{position:relative; margin:0; width:min(22vw, 92px)} .troc-row.give figure{width:min(16vw, 64px); opacity:.55}
+  .troc-row figure{position:relative; margin:0; width:min(22vw, 92px)} .troc-row.give figure{width:min(16vw, 64px); opacity:.55} .troc-row.give figcaption{letter-spacing:0; white-space:nowrap; font-size:.7rem}
   .troc-row img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; box-shadow:0 10px 22px rgba(0,0,0,.6)}
-  .troc-row figcaption{margin-top:4px; font:600 .64rem/1.2 var(--mono); text-transform:uppercase}
-  .troc-row .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .58rem/15px var(--mono); text-transform:uppercase; background:rgba(10,8,7,.88); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold)}
+  .troc-row figcaption{margin-top:4px; font:600 .7rem/1.2 var(--mono); text-transform:uppercase}
+  .troc-row .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .7rem/15px var(--mono); text-transform:uppercase; background:rgba(10,8,7,.88); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold)}
   .troc-row .tag.bonus{background:var(--gold); color:var(--ink); box-shadow:none}
   .troc-swap{width:56px; height:56px; display:grid; place-items:center; color:var(--gold-hi)}
   .troc-note{margin:0; color:var(--muted); font-size:.88rem}
@@ -456,7 +456,7 @@
   .pote-go{display:flex; flex-direction:column; align-items:center; gap:5px; width:100%; min-height:44px; border:0; padding:0; background:none; cursor:pointer}
   .pote-go b{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .78rem var(--mono)}
   .pit-av.big{width:60px; height:60px; font-size:1.4rem}
-  .pote-b small{font:500 .68rem var(--mono); color:var(--muted)} .pote-b small.ok{color:#7fd18b}
+  .pote-b small{font:500 .7rem var(--mono); color:var(--muted)} .pote-b small.ok{color:#7fd18b}
   .pote-b .ask{min-height:32px; padding:0 10px; border:1px solid var(--accent-text); border-radius:999px; background:none; color:var(--accent-text); font:700 .7rem var(--mono); cursor:pointer}
   .hist-c{flex:none; width:156px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:12px 8px 10px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); scroll-snap-align:start; cursor:pointer}
   .hist-c b{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .82rem var(--mono)} .hist-c small{font:500 .7rem var(--mono); color:var(--muted)}
@@ -465,11 +465,11 @@
   .f-av{width:44px; height:44px; border-radius:50%; background:var(--surface-2) center/cover; border:1px solid var(--gold); display:grid; place-items:center; font:800 1.1rem var(--display); color:var(--gold-hi)}
   .friend b, .invite b{display:block; font:600 .9rem/1.25 var(--mono)} .friend small, .invite small{display:block; color:var(--muted); font:500 .74rem var(--mono)}
   .f-acts{display:flex; gap:6px} .f-acts button{min-height:40px; padding:0 12px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--gold-hi); font:600 .76rem var(--mono); cursor:pointer} .f-acts button.ask{border-color:var(--gold); background:var(--gold); color:var(--ink)} .f-acts button:disabled{color:var(--muted); cursor:default}
-  .h-cards{display:flex; gap:3px; margin-top:6px} .h-cards img{width:26px; aspect-ratio:2/3; object-fit:cover; border-radius:3px} .h-cards i{align-self:center; margin:0 4px; color:var(--muted); font-style:normal}
+  .h-cards{display:flex; gap:3px; margin-top:6px} .h-cards img{width:26px; aspect-ratio:2/3; object-fit:cover; border-radius:3px} .h-cards i{color:var(--muted); font-style:normal} .h-cards svg{flex:none; align-self:center; margin:0 4px; color:var(--muted)}
   .pub-miss{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px} .pub-miss img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px}
   #mastery-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} #mastery-sheet .pf-note{color:var(--muted)} #mastery-sheet .eyebrow{margin:14px 0 8px}
   .ms-crowned{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
-  .ms-crowned button{position:relative; padding:0; border:0; background:none; cursor:pointer; color:var(--text); font:600 .66rem/1.2 var(--mono); text-align:center}
+  .ms-crowned button{position:relative; padding:0; border:0; background:none; cursor:pointer; color:var(--text); font:600 .7rem/1.2 var(--mono); text-align:center}
   .ms-crowned img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; box-shadow:0 0 0 1px var(--gold)}
   .ms-crowned svg{position:absolute; top:-7px; left:50%; margin-left:-11px; color:var(--gold-hi); filter:drop-shadow(0 2px 3px rgba(0,0,0,.7))}
   .ms-crowned small{display:block; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -479,10 +479,10 @@
   .ms-row .num{font:700 .8rem var(--mono); color:var(--gold)}
   .tp-dup{min-height:44px; margin:4px 0 0; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:none; color:var(--muted); font:600 .8rem var(--mono); cursor:pointer}
   .tp-dup[aria-pressed="true"]{border-color:var(--gold); color:var(--gold-hi); background:rgba(235,154,38,.08)}
-  .tr-card .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .6rem/16px var(--mono); text-transform:uppercase; text-align:center}
+  .tr-card .tag{position:absolute; left:4px; right:4px; top:4px; padding:1px 0; border-radius:4px; font:700 .7rem/16px var(--mono); text-transform:uppercase; text-align:center}
   .tr-card .tag.want{background:var(--gold); color:var(--ink)} .tr-card .tag.new{background:rgba(10,8,7,.88); color:var(--gold-hi); box-shadow:inset 0 0 0 1px var(--gold)}
   .tp-item{position:relative} .tp-item.on .tr-card img{outline:2px solid var(--gold); outline-offset:1px}
-  .tp-item .gv{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--gold); color:var(--ink); font:700 .62rem/16px var(--mono); text-transform:uppercase; text-align:center; pointer-events:none}
+  .tp-item .gv{position:absolute; left:4px; right:4px; bottom:22px; padding:1px 0; border-radius:4px; background:var(--gold); color:var(--ink); font:700 .7rem/16px var(--mono); text-transform:uppercase; text-align:center; pointer-events:none}
   .tp-minus{position:absolute; top:-8px; left:-8px; z-index:2; width:32px; height:32px; display:grid; place-items:center; padding:0; border:1px solid var(--gold); border-radius:50%; background:var(--ink); color:var(--gold-hi); cursor:pointer}
   .tp-minus::before{content:""; position:absolute; inset:-6px}
   .tr-link{min-height:44px; margin:-10px 0 0; padding:0; border:0; background:none; color:var(--gold-hi); font:600 .8rem var(--mono); text-decoration:underline; text-underline-offset:3px; cursor:pointer}
@@ -532,7 +532,7 @@
   .btn.ghost:hover{background:#1e1812} .btn.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 2px 0 #000}
   .btn.danger{color:#fff; background:var(--accent); box-shadow:0 6px 0 #5a1414} .btn.danger:hover{background:#c44545} .btn.danger:active{box-shadow:0 2px 0 #5a1414}
   .btn.block{width:100%} .btn.block + .btn.block{margin-top:16px}   /* deux boutons empilés ne se touchent jamais */
-  .modal{position:fixed; inset:0; z-index:84; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
+  .modal{position:fixed; inset:0; z-index:93; display:grid; place-items:center; padding:24px; background:rgba(5,4,4,.82); animation:dfin .18s ease-out}
   .modal[hidden]{display:none}
   .modal-in{width:100%; max-width:380px; background:linear-gradient(180deg,#1b1511,#110d0a); border-radius:16px; padding:22px 20px 18px; text-align:center;
     border:1px solid rgba(235,154,38,.3); box-shadow:0 24px 60px rgba(0,0,0,.7)}
@@ -647,7 +647,7 @@
   .patch i{position:relative; width:64px; height:64px; border-radius:50%; background:#241a12 center 22%/200% auto; box-shadow:inset 0 0 0 3px #2c2016, inset 0 0 18px rgba(0,0,0,.65), 0 4px 10px rgba(0,0,0,.55)}
   .patch i::after{content:""; position:absolute; inset:4px; border-radius:50%; border:2px dashed rgba(244,178,67,.85)}
   .patch.off i{background:transparent; box-shadow:none} .patch.off i::after{inset:0; border-color:rgba(243,240,234,.2)}
-  .patch small{font:600 .68rem/1.2 var(--mono); color:var(--muted); max-width:78px} .patch:not(.off) small{color:var(--text)}
+  .patch small{font:600 .7rem/1.2 var(--mono); color:var(--muted); max-width:78px} .patch:not(.off) small{color:var(--text)}
   .pub-pins{display:flex; flex-wrap:wrap; gap:10px}
   .pub-pins .pin{width:44px; height:44px; border-radius:50%; background:center 20%/220% auto; border:2px solid var(--gold); box-shadow:0 0 0 2px var(--bg), 0 0 14px rgba(245,197,66,.35)}
   .pub-stats{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
@@ -660,31 +660,33 @@
   .talon.soon{border-style:dashed; border-color:var(--border)}
   .tl-ph{width:76px; flex:none; object-fit:cover; border-right:1px solid var(--border)}
   .tl-main{flex:1; min-width:0; padding:12px 44px 12px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px}
-  .tl-main small{font:600 .62rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)} .talon.soon .tl-main small{color:var(--muted)}
+  .tl-main small{font:600 .7rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)} .talon.soon .tl-main small{color:var(--muted)}
   .tl-main b{font:400 1.35rem/1.05 var(--gothic); color:var(--text); overflow-wrap:anywhere}
   .tl-main span{font:500 .8rem var(--mono); color:var(--muted)}
   .tl-stub{flex:none; width:68px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:2px dashed rgba(235,154,38,.45); background:var(--surface-2); color:var(--gold-hi)}
-  .tl-stub b{font:800 1.7rem/1 var(--display)} .tl-stub span{font:700 .78rem var(--display); letter-spacing:.12em; text-transform:uppercase} .tl-stub small{font:600 .66rem var(--mono); color:var(--muted)}
+  .tl-stub b{font:800 1.7rem/1 var(--display)} .tl-stub span{font:700 .78rem var(--display); letter-spacing:.12em; text-transform:uppercase} .tl-stub small{font:600 .7rem var(--mono); color:var(--muted)}
   .tl-x{position:absolute; top:0; right:68px; width:44px; height:44px; display:grid; place-items:center; background:none; border:0; color:var(--muted); cursor:pointer}
   .tl-x:hover{color:var(--text)}
   .gig{display:grid; gap:8px}
   .tl-acts{display:flex; flex-wrap:wrap; gap:6px}
-  .df{display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--text); font:600 .78rem var(--mono); cursor:pointer}
-  .df svg{flex:none; opacity:.7} span.df{cursor:default}
-  .df.done{border-color:rgba(235,154,38,.45); color:var(--gold-hi)} .df.off{color:var(--muted)}
-  .df.go{background:var(--gold); border-color:var(--gold); color:var(--ink)}
-  .df.add{border-style:dashed; color:var(--gold-hi)} #pote-open, #trade-open{justify-content:center; width:44px; padding:0; border:0; background:none; font:700 1.7rem/1 var(--display)}   /* une bulle : le QR, lui, est en grand juste au-dessus */
-  .df.claim{background:var(--accent); border-color:var(--accent); color:var(--text)}
+  /* petite action dans une ligne : même relief arcade que .btn, en compact (encre par défaut, or pour l'action à faire) ; en <span>, simple étiquette d'état */
+  .df{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; margin-bottom:4px; padding:0 14px; border:0; border-radius:10px; background:#15110f; color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 4px 0 #000;
+       font:800 .82rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase; cursor:pointer; transition:transform .08s ease, box-shadow .08s ease}
+  button.df:active{transform:translateY(3px); box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 1px 0 #000} button.df:disabled{opacity:.45; cursor:default; transform:none}
+  .df svg{flex:none} span.df{margin-bottom:0; align-self:flex-start; height:44px; padding:0 4px; background:none; box-shadow:none; cursor:default; color:var(--muted)}
+  .df.done{color:var(--gold-hi)} .df.off{color:var(--muted)}
+  .df.go, .df.claim{background:var(--gold); color:var(--ink); box-shadow:0 4px 0 #8a5510} button.df.go:active, button.df.claim:active{box-shadow:0 1px 0 #8a5510}
+  .df.add{box-shadow:0 4px 0 #000; outline:1px dashed rgba(235,154,38,.6); outline-offset:-1px} #pote-open, #trade-open{justify-content:center; width:44px; padding:0; border:0; background:none; box-shadow:none; outline:0; font:700 1.7rem/1 var(--display)}   /* une bulle : le QR, lui, est en grand juste au-dessus */
   .tl-df{display:flex; flex-wrap:wrap; gap:4px 10px; margin:4px 0 0} .tl-df span{font:600 .7rem var(--mono); color:var(--gold-hi)}
   #df-sheet .bsheet-in{max-height:86dvh; overflow-y:auto}
   .df-list{display:grid; gap:8px; margin:12px 0 14px}
   .df-opt{display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:60px; padding:10px 14px; text-align:left; background:var(--bg); border:1px solid var(--border); border-radius:12px; color:var(--text); cursor:pointer}
   .df-opt b{display:block; font:400 1.2rem/1.1 var(--gothic)} .df-opt small{display:block; margin-top:3px; font:500 .78rem/1.35 var(--mono); color:var(--muted)}
-  .df-opt em{flex:none; display:grid; justify-items:end; font:600 .64rem var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+  .df-opt em{flex:none; display:grid; justify-items:end; font:600 .7rem var(--mono); font-style:normal; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
   .df-opt em .num{font:800 1.4rem var(--display); letter-spacing:0; color:var(--gold-hi)}
   #gigs > .pf-row{margin-top:4px}
   #gigs .talons{gap:30px}   /* chaque concert et ses défis respirent avant le suivant */
-  .df.band{border-color:rgba(235,154,38,.45); color:var(--gold-hi)}
+  .df.band{color:var(--gold-hi)}
   .slam-box{margin:0 0 8px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .slam-box.land{border-color:var(--gold); background:rgba(235,154,38,.08)}
   .slam-box b{display:block; font:600 .95rem/1.3 var(--mono)} .slam-box small{display:block; margin-top:2px; color:var(--muted); font:500 .78rem/1.45 var(--mono)} .slam-box .btn{margin-top:12px}
   /* scène du slam : la foule (bras levés en or = porteurs), le slammeur sur la scène, porté, atterri ou écrasé */
@@ -702,7 +704,7 @@
   .st-crash .pit-rider{top:auto; bottom:6px; left:auto; right:12px; transform:rotate(80deg); animation:none; filter:grayscale(1) brightness(.7)}
   .pit-crowd{position:absolute; left:0; right:0; bottom:8px; display:grid; grid-template-columns:repeat(var(--n), 1fr); margin:0; padding:0 6px; list-style:none}
   .pit-crowd li{position:relative; display:flex; flex-direction:column; align-items:center; gap:3px; min-width:0}
-  .pit-crowd small{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .62rem/1.2 var(--mono); color:var(--muted)}
+  .pit-crowd small{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 .7rem/1.2 var(--mono); color:var(--muted)}
   .pit-crowd li.on small{color:var(--text)}
   .pit-crowd li.off .pit-av{border:2px dashed rgba(255,255,255,.22); background:transparent; color:rgba(255,255,255,.3)}
   .pit-arms{position:absolute; top:-15px; width:40px; height:18px; fill:none; stroke:var(--gold-hi); stroke-width:3; stroke-linecap:round; transform-origin:50% 100%; animation:pit-wave 1.1s ease-in-out var(--d) infinite}
@@ -717,8 +719,8 @@
   @media (prefers-reduced-motion: reduce){ .pit-stage *{animation:none !important; transition:none !important} }
   .band-inv{display:grid; gap:8px; margin-top:12px} .band-inv p{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:10px; background:var(--surface); font:500 .86rem/1.4 var(--mono)}
   .band-ms{list-style:none; margin:12px 0 4px; padding:0; display:grid; gap:8px}
-  .band-ms li{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg)} .band-ms li > div{flex:1; min-width:0} .band-ms .df{flex:none} .band-ms button.df{border-color:var(--gold)} .band-ms span.df{padding:0 4px; border-color:transparent; background:none; color:var(--muted)} .band-ms b{font:400 1.15rem var(--gothic)}
-  .band-ms small{margin-left:8px; font:600 .66rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)} .band-ms div span{display:block; margin-top:4px; font:600 .74rem var(--mono); color:var(--gold-hi)}
+  .band-ms li{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg)} .band-ms li > div{flex:1; min-width:0} .band-ms .df{flex:none} .band-ms b{font:400 1.15rem var(--gothic)}
+  .band-ms small{margin-left:8px; font:600 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)} .band-ms div span{display:block; margin-top:4px; font:600 .74rem var(--mono); color:var(--gold-hi)}
   .band-fr{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 4px} #band-sheet .bsheet-in{max-height:88dvh; overflow-y:auto} #band-sheet .eyebrow, #pote-sheet .eyebrow{margin:16px 0 6px} #pote-sheet .tr-join{margin-top:18px} #pote-close{margin-top:14px} .f-head{display:flex; align-items:center; justify-content:space-between; gap:12px} .f-head .df{margin:0}
   .band-leave{display:block; min-height:44px; margin:10px auto 0; padding:0 12px; background:none; border:0; color:var(--accent-text); font:600 .8rem var(--mono); text-decoration:underline; text-underline-offset:3px; cursor:pointer} #band-close{margin-top:10px}
   #gig-sheet .bsheet-in{max-height:92dvh; overflow-y:auto} #gig-sheet .pf-row{margin-top:12px} #gig-date{color-scheme:dark}
@@ -727,7 +729,7 @@
   .gig-empty{margin:4px 0 6px; padding:16px; border:1px dashed rgba(235,154,38,.45); border-radius:14px; background:var(--surface); font:500 .86rem/1.5 var(--mono); color:var(--muted)}
   .gig-empty p{margin:12px 0 6px} .gig-empty b{color:var(--text)} .gig-empty ul{margin:0; padding-left:18px} .gig-empty li{margin:4px 0}
   .ge-talon{display:grid; grid-template-columns:1fr 64px; align-items:center; border:1px solid rgba(235,154,38,.4); border-radius:10px; overflow:hidden; background:var(--bg)}
-  .ge-talon span{grid-column:1; padding:10px 12px 0; font:600 .64rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)}
+  .ge-talon span{grid-column:1; padding:10px 12px 0; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)}
   .ge-talon b{grid-column:1; padding:2px 12px 12px; font:400 1.4rem/1.1 var(--gothic); color:var(--text)}
   .ge-talon i{grid-column:2; grid-row:1 / span 2; align-self:stretch; display:grid; place-items:center; border-left:2px dashed rgba(235,154,38,.4); font:900 2rem var(--display); font-style:normal; color:var(--gold-hi)}
   .gig-photo{width:100%; min-height:96px; display:grid; place-items:center; border:1px dashed var(--border); border-radius:10px; background:var(--bg) center/cover no-repeat; color:var(--muted); font:600 .84rem var(--mono); cursor:pointer}
@@ -772,7 +774,7 @@
   @keyframes cdpop{0%{transform:translateX(-50%) scale(2.2); opacity:0}25%{transform:translateX(-50%) scale(1); opacity:1}80%{opacity:1}100%{transform:translateX(-50%) scale(.8); opacity:0}}
   .pf-row{display:flex; gap:10px} .pf-row .btn{flex:1; padding-left:10px; padding-right:10px}
   #pf-save{margin-top:10px}
-  .btn.rec{animation:recpulse 1s ease-in-out infinite}
+  .btn.rec{color:var(--accent-text); animation:recpulse 1s ease-in-out infinite}
   @keyframes recpulse{50%{filter:brightness(1.35)}}
   .stats-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font:500 .72rem var(--mono); color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
   .stats-row span{border:1px solid var(--border); border-radius:4px; padding:5px 9px}
@@ -816,11 +818,11 @@
   .zoom-x{position:absolute; top:calc(12px + env(safe-area-inset-top)); right:16px}
   .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:none}
   .flip.on + .glow{opacity:1; transition:opacity .6s ease .35s}
-  .glow[data-r="rare"]{box-shadow:0 0 38px 6px rgba(59,130,246,.55)}
-  .glow[data-r="holo"]{box-shadow:0 0 44px 10px rgba(167,139,250,.6), 0 0 80px 18px rgba(45,212,191,.25)}
-  .glow[data-r="signature"]{box-shadow:0 0 50px 12px rgba(235,154,38,.65)}
-  .glow[data-r="legendaire"]{box-shadow:0 0 60px 16px rgba(220,38,38,.7); animation:pulse 1.6s ease-in-out infinite}
-  @keyframes pulse{50%{box-shadow:0 0 80px 26px rgba(220,38,38,.85)}}
+  .glow[data-r="rare"]{box-shadow:0 0 38px 6px color-mix(in srgb, var(--r-rare) 55%, transparent)}
+  .glow[data-r="holo"]{box-shadow:0 0 44px 10px color-mix(in srgb, var(--r-holo) 60%, transparent), 0 0 80px 18px rgba(45,212,191,.25)}
+  .glow[data-r="signature"]{box-shadow:0 0 50px 12px color-mix(in srgb, var(--r-signature) 65%, transparent)}
+  .glow[data-r="legendaire"]{box-shadow:0 0 60px 16px color-mix(in srgb, var(--r-legendaire) 70%, transparent); animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:0 0 80px 26px color-mix(in srgb, var(--r-legendaire) 85%, transparent)}}
   .sheen{position:absolute; inset:0; border-radius:14px; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.22) 48%,transparent 62%); background-size:250% 100%; background-position:150% 0; opacity:0}
   .flip.on .sheen[data-r="holo"], .flip.on .sheen[data-r="signature"], .flip.on .sheen[data-r="legendaire"]{opacity:1; animation:sheen 2.8s ease .8s infinite}
   @keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
@@ -835,10 +837,10 @@
   .combo[data-r="commune"]{font-size:clamp(2.2rem, 11vw, 3rem)}
   .combo[data-r="triple"]{font-size:clamp(2.6rem, 13vw, 3.6rem); color:#b7f7a0; --cb:#6ee07a} .combo[data-r="triple"] span{transform:skewX(-8deg) rotate(-3deg)}
   .combo[data-r="triple"].go{animation:combo 3s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 4}
-  .combo[data-r="rare"]{font-size:clamp(2.5rem, 12.5vw, 3.4rem); color:#9cc2ff; --cb:#3b82f6}
-  .combo[data-r="holo"]{font-size:clamp(2.8rem, 14vw, 3.8rem); color:#d4c8ff; --cb:#a78bfa} .combo[data-r="holo"] span{box-shadow:0 0 28px rgba(167,139,250,.6)}
-  .combo[data-r="signature"]{font-size:clamp(3.1rem, 15.5vw, 4.2rem); color:var(--gold-hi); --cb:var(--gold)} .combo[data-r="signature"] span{box-shadow:0 0 34px rgba(235,154,38,.65)}
-  .combo[data-r="legendaire"]{font-size:clamp(3.4rem, 17vw, 4.6rem); font-weight:900; color:#ff7a6e; --cb:#ef4444} .combo[data-r="legendaire"] span{box-shadow:0 0 44px rgba(239,68,68,.8)}
+  .combo[data-r="rare"]{font-size:clamp(2.5rem, 12.5vw, 3.4rem); color:#9cc2ff; --cb:var(--r-rare)}
+  .combo[data-r="holo"]{font-size:clamp(2.8rem, 14vw, 3.8rem); color:#d4c8ff; --cb:var(--r-holo)} .combo[data-r="holo"] span{box-shadow:0 0 28px color-mix(in srgb, var(--r-holo) 60%, transparent)}
+  .combo[data-r="signature"]{font-size:clamp(3.1rem, 15.5vw, 4.2rem); color:var(--gold-hi); --cb:var(--r-signature)} .combo[data-r="signature"] span{box-shadow:0 0 34px color-mix(in srgb, var(--r-signature) 65%, transparent)}
+  .combo[data-r="legendaire"]{font-size:clamp(3.4rem, 17vw, 4.6rem); font-weight:900; color:#ff7a6e; --cb:var(--r-legendaire)} .combo[data-r="legendaire"] span{box-shadow:0 0 44px color-mix(in srgb, var(--r-legendaire) 80%, transparent)}
   .combo[data-r="celeste"]{font-size:clamp(2.6rem, 13vw, 3.6rem); color:#ffd9ea; --cb:#f4a6c8} .combo[data-r="celeste"] span{box-shadow:0 0 40px rgba(244,166,200,.8)}
   .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
@@ -885,8 +887,8 @@
   .binder-list.sub{grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px}
   @media (min-width:700px){ .binder-list.sub{grid-template-columns:repeat(5, minmax(0,1fr))} }
   .binder-list.sub .bcard{border-radius:10px} .binder-list.sub .plate{gap:4px; padding:26px 7px 8px}
-  .binder-list.sub .bcard b{font-size:1.02rem; line-height:1.02} .binder-list.sub .bcard small{font-size:.66rem} .binder-list.sub .bcard .bar{height:5px}
-  .binder-list.sub .bcard .done{top:6px; right:6px; padding:2px 6px; font-size:.6rem}
+  .binder-list.sub .bcard b{font-size:1.02rem; line-height:1.02} .binder-list.sub .bcard small{font-size:.7rem} .binder-list.sub .bcard .bar{height:5px}
+  .binder-list.sub .bcard .done{top:6px; right:6px; padding:2px 6px; font-size:.7rem}
   .bcard{position:relative; display:block; aspect-ratio:2/3; padding:0; border:0; border-radius:14px; overflow:hidden; cursor:pointer; text-align:center;
     background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 12px 28px rgba(0,0,0,.6), inset 0 0 0 1px rgba(235,154,38,.35); transition:transform .15s ease}
   .bcard:active{transform:scale(.97)}
@@ -917,10 +919,10 @@
   .style-info summary{min-height:48px; display:flex; align-items:center; gap:8px; list-style:none; cursor:pointer; font:600 .86rem var(--mono); color:var(--gold-hi)}
   .style-info summary::-webkit-details-marker{display:none} .style-info summary::after{content:""; margin-left:auto; width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); transition:transform .2s ease}
   .style-info[open] summary::after{transform:rotate(-135deg)} .style-info > div{padding:0 0 14px}
-  .si-era{margin:0 0 6px; font:600 .66rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)}
+  .si-era{margin:0 0 6px; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)}
   .si-txt{margin:0 0 10px; font-size:.9rem; line-height:1.5; color:var(--text)}
   .si-tags{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px} .si-tags span{padding:4px 10px; border:1px solid rgba(235,154,38,.4); border-radius:999px; font:600 .72rem var(--mono); color:var(--gold-hi)}
-  .si-play{margin:0; font:500 .8rem/1.5 var(--mono); color:var(--text)} .si-play b{display:block; margin-bottom:2px; font:600 .64rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .si-play span{color:var(--muted)}
+  .si-play{margin:0; font:500 .8rem/1.5 var(--mono); color:var(--text)} .si-play b{display:block; margin-bottom:2px; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .si-play span{color:var(--muted)}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
   .bar{flex:1; height:10px; background:#2b221c; border-radius:3px; overflow:hidden; -webkit-mask:repeating-linear-gradient(90deg, #000 0 calc(10% - 3px), transparent calc(10% - 3px) 10%); mask:repeating-linear-gradient(90deg, #000 0 calc(10% - 3px), transparent calc(10% - 3px) 10%)}
   .bar i{display:block; height:100%; background:var(--gold); width:0; transition:width .6s ease}
@@ -954,7 +956,7 @@
   .slot.ask .img{border:1.5px dashed rgba(235,154,38,.6); background:linear-gradient(160deg, rgba(235,154,38,.12), rgba(178,58,58,.08))}
   .slot.ask .ask-in b, .bcard.ask .ask-in b{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:var(--gold); color:#1a0f05; font:900 1.8rem/1 var(--display); box-shadow:0 3px 0 #8a5510}
   .slot.ask .ask-in span, .bcard.ask .ask-in span{font:800 .95rem/1.05 var(--display); letter-spacing:.03em; text-transform:uppercase; color:var(--text)}
-  .slot.ask .ask-in small, .bcard.ask .ask-in small{font:600 .68rem/1.2 var(--mono); color:var(--gold-hi)}
+  .slot.ask .ask-in small, .bcard.ask .ask-in small{font:600 .7rem/1.2 var(--mono); color:var(--gold-hi)}
   .slot.ask .cap{color:var(--gold-hi)}
   .slot .cap{display:block; font:500 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
@@ -1011,12 +1013,12 @@
   .stage.impact{animation:impact .5s cubic-bezier(.2,.9,.3,1.3)}
   @keyframes impact{0%{transform:scale(.92)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
   .face.back{transition:box-shadow .3s ease}
-  .charge-rare .face.back{box-shadow:inset 0 0 0 2px #3b82f6, 0 0 30px 4px rgba(59,130,246,.6)}
-  .charge-holo .face.back{animation:hue 0.7s linear infinite; box-shadow:inset 0 0 0 2px #a78bfa, 0 0 40px 8px rgba(167,139,250,.7)}
+  .charge-rare .face.back{box-shadow:inset 0 0 0 2px var(--r-rare), 0 0 30px 4px color-mix(in srgb, var(--r-rare) 60%, transparent)}
+  .charge-holo .face.back{animation:hue 0.7s linear infinite; box-shadow:inset 0 0 0 2px var(--r-holo), 0 0 40px 8px color-mix(in srgb, var(--r-holo) 70%, transparent)}
   @keyframes hue{to{filter:hue-rotate(360deg)}}
-  .charge-signature .face.back{box-shadow:inset 0 0 0 2px #eb9a26, 0 0 50px 12px rgba(235,154,38,.75)}
-  .charge-legendaire .face.back{box-shadow:inset 0 0 0 2px #dc2626, 0 0 70px 20px rgba(220,38,38,.85)}
-  .ring{position:fixed; left:50%; top:45%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--ring,#dc2626); pointer-events:none; z-index:46; animation:ring .9s ease-out forwards}
+  .charge-signature .face.back{box-shadow:inset 0 0 0 2px var(--r-signature), 0 0 50px 12px color-mix(in srgb, var(--r-signature) 75%, transparent)}
+  .charge-legendaire .face.back{box-shadow:inset 0 0 0 2px var(--r-legendaire), 0 0 70px 20px color-mix(in srgb, var(--r-legendaire) 85%, transparent)}
+  .ring{position:fixed; left:50%; top:45%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--ring, var(--r-legendaire)); pointer-events:none; z-index:46; animation:ring .9s ease-out forwards}
   @keyframes ring{from{transform:scale(.2); opacity:1}to{transform:scale(18); opacity:0}}
   .skip{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:47; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; padding:7px 12px; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer}
 
@@ -1042,7 +1044,7 @@
   @keyframes lootrise{from{opacity:0; transform:translate(-50%, 70px) scale(.5)} to{opacity:1; transform:translate(-50%, -20px) rotate(-5deg)}}
   .loot-item .gframe{display:block; width:124px; background-color:var(--ink); box-shadow:0 0 44px var(--lc, rgba(245,197,66,.55))} .loot-item img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:5px}
   .loot-ticket{display:flex; width:230px; height:92px; background:#e9dfc9; color:#1a1410; text-align:left; box-shadow:0 12px 26px rgba(0,0,0,.55)}
-  .loot-ticket span{flex:1; padding:12px 14px; border-right:2px dashed #b9b09c} .loot-ticket small{display:block; font:700 .64rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--accent)}
+  .loot-ticket span{flex:1; padding:12px 14px; border-right:2px dashed #b9b09c} .loot-ticket small{display:block; font:700 .7rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--accent)}
   .loot-ticket b{display:block; margin-top:4px; font:900 1.35rem/1 var(--display); text-transform:uppercase} .loot-ticket em{width:70px; display:grid; place-items:center; font:400 1.8rem var(--gothic); font-style:normal; color:var(--accent); transform:rotate(-8deg)}
   .loot-chips{display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:16px}
   .loot-chips > *{padding:8px 14px 7px; border-radius:12px; font:900 1.2rem/1 var(--display); text-transform:uppercase; animation:chippop .4s cubic-bezier(.2,1.6,.4,1) both}
@@ -1084,7 +1086,7 @@
     background:radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--sc) 55%, #fff), color-mix(in srgb, var(--sc) 75%, #000)); box-shadow:inset 0 -3px 0 rgba(0,0,0,.3), 0 3px 6px rgba(0,0,0,.5)}
   .seal.cur i{outline:2px solid var(--gold-hi); outline-offset:3px}
   .seal.off{cursor:default} .seal.off i{background:none; border:1px dashed color-mix(in srgb, var(--sc) 55%, transparent); color:color-mix(in srgb, var(--sc) 55%, transparent); box-shadow:none}
-  .seal small{font:600 .66rem var(--mono); letter-spacing:.04em; text-transform:uppercase} .seal{position:relative}
+  .seal small{font:600 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase} .seal{position:relative}
   .seal em{position:absolute; top:-4px; right:-2px; min-width:22px; height:22px; padding:0 5px; border-radius:11px; background:var(--ink); border:1px solid var(--gold); font:800 .72rem/20px var(--display); font-style:normal; color:var(--gold-hi)}
   .d-art summary{list-style:none; cursor:pointer; text-align:center} .d-art summary::-webkit-details-marker{display:none}
   .d-art .sub{margin:4px 0 8px}
@@ -1105,7 +1107,8 @@
   @keyframes tearl{15%{transform:translateX(-10px) rotate(-3deg)}100%{transform:translate(-60px, 110vh) rotate(-28deg); opacity:.4}}
   @keyframes tearr{15%{transform:translateX(10px) rotate(3deg)}100%{transform:translate(60px, 110vh) rotate(24deg); opacity:.4}}
   .slot .tf{position:absolute; left:50%; bottom:6px; transform:translateX(-50%); z-index:2; white-space:nowrap; background:var(--gold); color:var(--ink); border-radius:999px; font:700 .7rem/1 var(--mono); letter-spacing:.04em; padding:4px 8px; box-shadow:0 3px 10px rgba(0,0,0,.6)}
-  .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .7rem var(--mono); padding:2px 5px}
+  .rec-dot{display:inline-flex; color:var(--accent-text)} .btn svg, .pit-song svg, .call-ok svg, .tl-df svg, .band-ms div span svg, .pote-b small svg, .bcard .done svg{flex:none; vertical-align:-2px; margin-right:3px}
+  .slot .star{position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.75); color:var(--gold); border-radius:4px; font:600 .7rem var(--mono); padding:2px 5px; display:inline-flex; align-items:center; gap:3px}
   /* notification système : bandeau pleine largeur, descend du haut et y repart, sans fondu */
   .toast{position:fixed; left:12px; right:12px; top:calc(12px + env(safe-area-inset-top)); z-index:85; max-width:560px; margin:0 auto; padding:16px 18px; border-radius:16px;
     background:#1b1508; border:1px solid var(--gold); color:var(--text); font-size:.98rem; line-height:1.4; text-align:center; box-shadow:0 14px 36px rgba(0,0,0,.65);
@@ -1115,7 +1118,7 @@
   .stage{touch-action:none; user-select:none; -webkit-user-select:none}
   .deck{display:flex; gap:6px; justify-content:center; min-height:62px; align-items:flex-end}
   .deck i{display:block; width:36px; aspect-ratio:2/3; border-radius:4px; background:#140b0b url(cards/back.jpg) center/cover; box-shadow:0 4px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(235,154,38,.35); transition:transform .3s ease, opacity .3s ease}
-  .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc,#8a8a92)}
+  .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc, var(--r-commune))}
   .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
   .deck i.next{animation:bob 2.4s ease-in-out infinite}
   .deck i.done{cursor:pointer}
@@ -1144,7 +1147,7 @@
   @keyframes vig{from{transform:scale(1.6)}to{transform:scale(1)}}
   .pack.legend{animation:legend 2.4s cubic-bezier(.5,0,.8,.4) forwards; z-index:32}
   @keyframes legend{0%{transform:translateY(0)}20%{transform:translateY(-18px) scale(1.04)}100%{transform:translateY(-26px) scale(1.12)}}
-  .pack.legend .flap, .pack.legend::after{box-shadow:0 0 30px 8px #ef4444}
+  .pack.legend .flap, .pack.legend::after{box-shadow:0 0 30px 8px var(--r-legendaire)}
   .pack.legend::after{content:""; position:absolute; inset:0; border-radius:6px; pointer-events:none; animation:crack 2.4s steps(12) forwards;
          background:linear-gradient(115deg, transparent 46%, rgba(255,60,60,.95) 49%, transparent 52%), linear-gradient(35deg, transparent 58%, rgba(255,90,40,.9) 60%, transparent 62%), linear-gradient(160deg, transparent 30%, rgba(255,40,40,.9) 32%, transparent 34%)}
   @keyframes crack{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
@@ -1155,7 +1158,7 @@
   .tray p{margin:0; font:500 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
   .tray .cards{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:6px 3px 8px; margin:0 -3px}
   .tray .cards button{flex:0 0 auto; width:46px; border:0; padding:0; background:none; cursor:pointer}
-  .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc,#8a8a92)}
+  .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc, var(--r-commune))}
   body.placing #v-binder .grid, body.placing #v-binder .matrix{padding-bottom:200px}
   .flyer{position:fixed; z-index:55; pointer-events:none; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
   .flyer img{display:block; width:100%; height:100%; object-fit:cover}
@@ -1286,6 +1289,8 @@
 
   @media (prefers-reduced-motion:reduce){
     .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.onb-fan img,.coach,.pub-fan button,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    /* boucles décoratives : figées (l'état reste lisible : cadre or, pastille, flamme allumée) */
+    .tr-wait,.qz-play.on .qz-eq i,.goal.quest.claim::after,.goal.quest.claim .pc svg,.quest-n.claim,.btn.rec,.tilt.sway,.pack.sway,.charge-holo .face.back,.fzv.ready .flame,.deck i.next,.swipe-hint,.pack.charging,.stage.rumble,.ptilt.shake{animation:none!important}
   }
 </style>
 </head>
@@ -1315,9 +1320,9 @@
   </div>
   <div class="choose">
     <div class="car-wrap">
-      <button type="button" class="car-arrow prev" id="car-prev" aria-label="Paquet précédent">‹</button>
+      <button type="button" class="car-arrow prev" id="car-prev" aria-label="Paquet précédent"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg></button>
       <div class="pack-car" id="pack-picker" role="group" aria-label="Choisir un paquet"></div>
-      <button type="button" class="car-arrow next" id="car-next" aria-label="Paquet suivant">›</button>
+      <button type="button" class="car-arrow next" id="car-next" aria-label="Paquet suivant"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg></button>
     </div>
     <div class="dots" id="pc-dots" aria-hidden="true"></div>
     <div class="pack-info"><h2 id="pc-name"></h2><p class="pc-tag" id="pc-tag"></p></div>
@@ -1426,8 +1431,8 @@
       <div class="pf-count" id="pf-count" aria-live="assertive"></div>
       <div class="pf-meter" aria-hidden="true"><i id="pf-level"></i></div>
       <div class="pf-row">
-        <button type="button" class="btn danger" id="pf-rec">● Enregistrer</button>
-        <button type="button" class="btn ghost" id="pf-play" hidden>▶ Écouter</button>
+        <button type="button" class="btn ghost" id="pf-rec"><i class="rec-dot"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg></i>Enregistrer</button>
+        <button type="button" class="btn ghost" id="pf-play" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16l13 -8z"/></svg>Écouter</button>
       </div>
       <button type="button" class="btn block" id="pf-save" hidden>Garder ce cri</button>
     </section>
@@ -1787,7 +1792,7 @@
     <p class="eyebrow" id="confirm-e"></p>
     <h2 id="confirm-t"></h2>
     <p id="confirm-d"></p>
-    <div class="modal-actions"><button type="button" class="btn danger" id="confirm-yes"></button><button type="button" class="btn ghost" id="confirm-no"></button></div>
+    <div class="modal-actions"><button type="button" class="btn" id="confirm-yes"></button><button type="button" class="btn ghost" id="confirm-no"></button></div>
   </div>
 </div>
 <div id="fxlayer" aria-hidden="true"></div>
@@ -1800,7 +1805,7 @@
 <!-- ============ DÉTAIL ============ -->
 <div class="sheet" id="sheet" hidden>
   <div class="sheet-in detail" role="dialog" aria-modal="true" aria-label="Détail de la carte">
-    <button type="button" class="sheet-close" id="sheet-close" aria-label="Fermer">✕</button>
+    <button type="button" class="sheet-close" id="sheet-close" aria-label="Fermer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
     <div id="detail"></div>
   </div>
 </div>
@@ -2851,7 +2856,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       .concat((c.concert_picks || []).filter(function(p){ return p.proof_public && p.proof_path && p.done_at && !p.cancelled; }).map(function(p){ return {kind:p.proof_kind === 'video' ? 'video' : 'photo', path:p.proof_path, label:(p.concert_challenges || {}).title || 'Défi'}; }));
     var box = document.getElementById('pubgig-in');
     box.innerHTML = talonHtml(c, c.photo) + (mem.length ? '<div class="gigd-mem">' + mem.map(function(m, i){
-        return '<button type="button" data-mem="' + i + '"><span class="gm-m" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? '▶ ' : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
+        return '<button type="button" data-mem="' + i + '"><span class="gm-m" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? gl('play', 12) : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
       : '<p class="pit-note">Pas encore de souvenir partagé pour ce concert.</p>');
     mem.forEach(function(m, i){ var el = box.querySelector('[data-mem="' + i + '"] .gm-m'), put = function(u){ if(!u) return; m.url = u;
         el.innerHTML = m.kind === 'video' ? '<video src="' + esc(u) + '#t=0.5" muted playsinline preload="metadata"></video>' : '<img src="' + esc(u) + '" alt="">'; };
@@ -2939,7 +2944,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var countEl = document.getElementById('pf-count');
   function showCount(txt, go){ countEl.innerHTML = '<span' + (go ? ' class="go"' : '') + '>' + txt + '</span>'; }
   var recBtn = document.getElementById('pf-rec'), playBtn = document.getElementById('pf-play'), saveBtn = document.getElementById('pf-save'), level = document.getElementById('pf-level');
-  function resetCry(){ recBlob = null; saveBtn.hidden = true; playBtn.hidden = !crySrc(); recBtn.textContent = crySrc() ? '● Refaire mon cri' : '● Enregistrer'; level.style.width = '0'; }
+  function resetCry(){ recBlob = null; saveBtn.hidden = true; playBtn.hidden = !crySrc(); recBtn.innerHTML = '<i class="rec-dot">' + gl('rec') + '</i>' + (crySrc() ? 'Refaire mon cri' : 'Enregistrer'); level.style.width = '0'; }
   // micro refusé ou absent : la marche à suivre selon l'appareil
   function micHelp(e){
     var n = e && e.name, ios = /iPhone|iPad|iPod/.test(navigator.userAgent), android = /Android/.test(navigator.userAgent), mac = /Macintosh/.test(navigator.userAgent) && !('ontouchend' in document);
@@ -2984,7 +2989,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     rec.onstop = function(){
       recBlob = new Blob(chunks, { type: (rec.mimeType || type || 'audio/webm').split(';')[0] });
       if(recUrl) URL.revokeObjectURL(recUrl); recUrl = URL.createObjectURL(recBlob);
-      recBtn.textContent = '● Recommencer'; playBtn.hidden = false; saveBtn.hidden = false; level.style.width = '0';
+      recBtn.innerHTML = '<i class="rec-dot">' + gl('rec') + '</i>Recommencer'; playBtn.hidden = false; saveBtn.hidden = false; level.style.width = '0';
     };
     // vumètre
     try{
@@ -2994,14 +2999,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         level.style.width = Math.min(100, pk / 1.1) + '%'; if(counting || (rec && rec.state === 'recording')) meterRaf = requestAnimationFrame(meter); else ac.close(); })();
     }catch(e){}
     // 3, 2, 1… hurle ! puis 6 secondes de prise, secondes restantes sur le bouton
-    counting = true; recBtn.textContent = '■ Annuler'; playBtn.hidden = true; saveBtn.hidden = true;
+    counting = true; recBtn.innerHTML = gl('stop') + 'Annuler'; playBtn.hidden = true; saveBtn.hidden = true;
     [3, 2, 1].forEach(function(n, i){ countTimers.push(setTimeout(function(){ showCount(n); buzz([25]); }, i * 900)); });
     countTimers.push(setTimeout(function(){
       counting = false; showCount('Hurle !', true); buzz([60]);
       try{ rec.start(); }catch(e){ stopRec(); resetCry(); pfErr.textContent = 'L\'enregistrement n\'a pas démarré (' + esc(e.name || 'erreur') + '). Recharge l\'app et réessaie.'; return; }
       recBtn.classList.add('rec');
-      var left = 6; recBtn.textContent = '■ Stop · ' + left + ' s';
-      (function tick(){ countTimers.push(setTimeout(function(){ if(!rec || rec.state !== 'recording') return; left--; recBtn.textContent = '■ Stop · ' + left + ' s'; if(left > 0) tick(); }, 1000)); })();
+      var left = 6; recBtn.innerHTML = gl('stop') + 'Stop · ' + left + ' s';
+      (function tick(){ countTimers.push(setTimeout(function(){ if(!rec || rec.state !== 'recording') return; left--; recBtn.innerHTML = gl('stop') + 'Stop · ' + left + ' s'; if(left > 0) tick(); }, 1000)); })();
       recTimer = setTimeout(stopRec, 6000);
     }, 3 * 900));
   }
@@ -3780,7 +3785,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var empty = t.give.map(function(x){ return x.m; }).filter(function(id, i, a){ return a.indexOf(id) === i && total(id) - givenOf(id) <= 0 && !t.get.some(function(g){ return g.m === id; }); });
     if(!empty.length){ send(true); return; }
     var broken = BINDERS.filter(function(b){ return b.kind !== 'Collection' && binderDone(b) && b.ids.some(function(id){ return empty.indexOf(id) !== -1; }); });
-    askConfirm({eyebrow:'Échange', title:empty.length > 1 ? 'Tu donnes tes derniers exemplaires' : 'Tu donnes ton dernier ' + card(empty[0]).who,
+    askConfirm({danger:true, eyebrow:'Échange', title:empty.length > 1 ? 'Tu donnes tes derniers exemplaires' : 'Tu donnes ton dernier ' + card(empty[0]).who,
       text:(empty.length > 1 ? empty.length + ' cases de ton classeur redeviennent vides.' : 'Sa case de ton classeur redevient vide.') +
         (broken.length ? ' ' + broken.map(binderLabel).join(', ') + (broken.length > 1 ? ' ne seront plus complets.' : ' ne sera plus complet.') : ''),
       yes:'Valider quand même', no:'Je réfléchis'}, function(){ send(true); });
@@ -3812,7 +3817,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       return '<figure>' + (tag ? '<span class="tag ' + (cls || '') + '">' + tag + '</span>' : '') + '<img src="' + img(x.m, x.r) + '" alt="' + esc(card(x.m).who) + ', ' + rr.label + '"><figcaption style="color:' + rr.color + '">' + rr.label + (x.n > 1 ? ' ×' + x.n : '') + '</figcaption></figure>'; };
     document.getElementById('troc-t').textContent = 'avec ' + (t.partner || 'ton pote');
     document.getElementById('troc-give').innerHTML = '<p>Tu donnes</p>' + ((t.give || []).filter(function(x){ return card(x.m); }).map(function(x){ return fig(x); }).join('') || '<p>Rien : un vrai cadeau</p>');
-    document.getElementById('troc-get').innerHTML = '<p>Tu reçois</p>' + (got.map(function(x){ return fig(x, (state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1 && !best(x.m) ? 'Nouvelle' : ''); }).join('') || '') + (bonus ? fig(bonus, 'Bonus rencontre', 'bonus') : '') + (got.length || bonus ? '' : '<p>Rien en retour : tu as fait un cadeau</p>');
+    document.getElementById('troc-get').innerHTML = '<p>Tu reçois</p>' + (got.map(function(x){ return fig(x, (state.toPlace || []).indexOf(x.m + '|' + x.r) !== -1 && !best(x.m) ? 'Nouvelle' : ''); }).join('') || '') + (bonus ? fig(bonus, 'Bonus', 'bonus') : '') + (got.length || bonus ? '' : '<p>Rien en retour : tu as fait un cadeau</p>');
     document.getElementById('troc-note').textContent = got.length || bonus ? 'Tes nouvelles cartes t\'attendent dans le classeur, à ranger.' : '';
     document.getElementById('troc-go').hidden = !(got.length || bonus);
     var fb = document.getElementById('troc-follow'), pid = t.partner_id;
@@ -3931,7 +3936,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var list = friendsList.slice().sort(function(a, b){ return (here.indexOf(a.friend_id) >= 0) - (here.indexOf(b.friend_id) >= 0); });
       document.getElementById('call-list').innerHTML = list.length ? list.map(function(f){ var inn = here.indexOf(f.friend_id) >= 0, done = called.indexOf(f.friend_id) >= 0;
         return '<div class="call-row">' + avDisc({name:f.username, avatar:f.avatar_path}, '') + '<b>' + esc(f.username || 'Un pote') + '</b>' +
-          (inn ? '<span class="call-ok">Déjà là</span>' : done ? '<span class="call-ok">Appelé ✓</span>' : '<button type="button" class="df go" data-call="' + esc(f.friend_id) + '">Appeler</button>') + '</div>'; }).join('')
+          (inn ? '<span class="call-ok">Déjà là</span>' : done ? '<span class="call-ok">Appelé' + gl('check', 14) + '</span>' : '<button type="button" class="df go" data-call="' + esc(f.friend_id) + '">Appeler</button>') + '</div>'; }).join('')
         : '<p class="corner-empty">Pas encore de potes dans l\'app. Partage le lien.</p>';
       hydrateAvatars(document.getElementById('call-list'));
       [].forEach.call(document.querySelectorAll('#call-list [data-call]'), function(b){ b.onclick = function(){ var to = b.getAttribute('data-call'); b.disabled = true;
@@ -3982,7 +3987,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return them.length ? '<div class="fs-add">' + them.map(function(p){ return '<button type="button" class="df" data-fadd="' + esc(p.id) + '">+ ' + esc(p.name) + '</button>'; }).join('') + '</div>' : ''; }
   function bindFosseAdd(root){
     [].forEach.call(root.querySelectorAll('[data-fadd]'), function(b){ b.onclick = function(){ b.disabled = true;
-      ONLINE.fosseAddFriend(b.getAttribute('data-fadd')).then(function(name){ b.outerHTML = '<span class="df">' + esc(name) + ' ✓</span>'; snd('trade-join'); toast('<b>' + esc(name) + '</b> rejoint tes potes.'); renderSocial(); },
+      ONLINE.fosseAddFriend(b.getAttribute('data-fadd')).then(function(name){ b.outerHTML = '<span class="df">' + esc(name) + gl('check', 14) + '</span>'; snd('trade-join'); toast('<b>' + esc(name) + '</b> rejoint tes potes.'); renderSocial(); },
         function(e){ b.disabled = false; toast(esc(e.message)); }); }; });
   }
   // scène du slam : la foule (les porteurs, en avatars, bras levés ; les places libres en pointillé) et moi au-dessus,
@@ -4067,7 +4072,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!pit.over && !pitGo && Date.now() >= new Date(pit.ends_at)){ pit.over = true; snd('reward'); pitIn.innerHTML = ''; pitRefresh(); pitPaint(); }
   }
   function pitHead(st){
-    return '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">♪ <b>' + esc(trackName(st.track)) + '</b></p></div>';
+    return '<div class="pit-top"><p class="eyebrow">Circle pit · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pit-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">' + gl('music', 14) + ' <b>' + esc(trackName(st.track)) + '</b></p></div>';
   }
   function pitPaint(){
     if(pitGo) return;   // ma course occupe l'écran
@@ -4098,8 +4103,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       var link = function(){ return location.origin + location.pathname + '?pit=' + pit.id + (poteCode ? '&pote=' + poteCode : ''); };
       if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
       document.getElementById('pit-call').onclick = function(){ openCall('pit', pit.id, pit.runners.map(function(r){ return r.id; }), function(){ share('Circle pit sur Metalnini, il reste ' + pitLeft(pit.ends_at) + ' : viens faire ta course !' + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); }); };
-      var stop = document.getElementById('pit-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le circle pit ? Personne ne gagne rien, et tu pourras en relancer un.')) return;
-        stop.disabled = true; ONLINE.pitCancel(pit.id).then(function(){ toast('Pit annulé. Le cercle se disperse.'); pitClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
+      var stop = document.getElementById('pit-stop'); if(stop) stop.onclick = function(){ askConfirm({danger:true, eyebrow:'Circle pit', title:'Annuler le circle pit ?', text:'Personne ne gagne rien, et tu pourras en relancer un.', yes:'Annuler le pit', no:'On continue'}, function(){
+        stop.disabled = true; ONLINE.pitCancel(pit.id).then(function(){ toast('Pit annulé. Le cercle se disperse.'); pitClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); }); };
       document.getElementById('pit-qr-b').onclick = function(){ var b = document.getElementById('pit-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pit-qr', link()); };
     }
     var run = document.getElementById('pit-run'), late = new Date(st.ends_at) - Date.now() < (st.run_s + 2) * 1000;
@@ -4290,7 +4295,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!pogo.over && Date.now() >= new Date(pogo.ends_at)){ pogo.over = true; snd('reward'); pogoRefresh(); pogoPaint(); }
   }
   function pogoHead(st){
-    return '<div class="pit-top"><p class="eyebrow">Pogo · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pogo-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">Mise <b style="color:' + rarity(st.rarity).color + '">' + esc(rarLabel(st.rarity)) + '</b> · ♪ <b>' + esc(trackName(st.track)) + '</b></p></div>';
+    return '<div class="pit-top"><p class="eyebrow">Pogo · ' + (st.host ? 'le tien' : 'chez ' + esc(st.host_name)) + '</p><b class="pit-clock num" id="pogo-clock">' + pitLeft(st.ends_at) + '</b><p class="pit-song">Mise <b style="color:' + rarity(st.rarity).color + '">' + esc(rarLabel(st.rarity)) + '</b> · ' + gl('music', 14) + ' <b>' + esc(trackName(st.track)) + '</b></p></div>';
   }
   // les danseurs : où ils en sont, et « Relever » pour qui est à terre (si je suis resté debout dans ce pogo et n'ai encore relevé personne)
   function pogoPlayers(st){
@@ -4337,8 +4342,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(!poteCode) ONLINE.friendCode().then(function(c){ if(typeof c === 'string') poteCode = c; }).catch(function(){});
     document.getElementById('pogo-call').onclick = function(){ openCall('pogo', pogo.id, pogo.players.map(function(x){ return x.id; }), function(){ share((ran && me.fell && !me.lifted ? 'Je suis à terre dans le pogo : viens danser et relève-moi !' : 'Pogo sur Metalnini, mise ' + rarLabel(st.rarity) + ', il reste ' + pitLeft(pogo.ends_at) + ' : viens te faire bousculer !') + (poteCode ? ' Mon code de pote : ' + poteCode : ''), link(), 'Lien copié. Rameute la fosse.'); }); };
     document.getElementById('pogo-qr-b').onclick = function(){ var b = document.getElementById('pogo-qr-box'); b.hidden = !b.hidden; if(!b.hidden) paintQrInto('pogo-qr', link()); };
-    var stop = document.getElementById('pogo-stop'); if(stop) stop.onclick = function(){ if(!confirm('Annuler le pogo ? Chacun retrouve sa carte.')) return;
-      stop.disabled = true; ONLINE.pogoCancel(pogo.id).then(function(){ pogoInv(); toast('Pogo annulé. Chacun reprend sa carte.'); pogoClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); };
+    var stop = document.getElementById('pogo-stop'); if(stop) stop.onclick = function(){ askConfirm({danger:true, eyebrow:'Pogo', title:'Annuler le pogo ?', text:'Chacun retrouve sa carte.', yes:'Annuler le pogo', no:'On continue'}, function(){
+      stop.disabled = true; ONLINE.pogoCancel(pogo.id).then(function(){ pogoInv(); toast('Pogo annulé. Chacun reprend sa carte.'); pogoClose(); }, function(e){ stop.disabled = false; toast(esc(e.message)); }); }); };
     hydrateAvatars(pogoIn); bindPogoUp(); phaseIn(pogoIn, 'in-' + st.id + (ran ? '-ran' : ''));
   }
   function bindPogoUp(){ [].forEach.call(pogoIn.querySelectorAll('[data-up]'), function(b){ b.onclick = function(){ b.disabled = true; pogoLift(pogo.id, b.getAttribute('data-up'), function(){ b.disabled = false; }); }; }); }
@@ -4370,7 +4375,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div class="pogo-arena" id="pogo-arena">' + crowdHtml(8) + '<i class="pogo-zone l" id="pogo-zl"></i><i class="pogo-zone r" id="pogo-zr"></i><span class="pogo-me">' + avDisc(me, 'me') + '</span>' +
           '<b class="pogo-fx" id="pogo-fx" aria-live="polite"></b><b class="pit-count num" id="pogo-count">3</b></div>' +
         '<div class="pogo-bal" id="pogo-bal" aria-label="Équilibre"></div>' +
-        '<div class="pogo-pads"><button type="button" class="pogo-pad" data-side="-1" id="pogo-pl">‹ Gauche</button><button type="button" class="pogo-pad" data-side="1" id="pogo-pr">Droite ›</button></div>' +
+        '<div class="pogo-pads"><button type="button" class="pogo-pad" data-side="-1" id="pogo-pl">' + gl('left', 22) + 'Gauche</button><button type="button" class="pogo-pad" data-side="1" id="pogo-pr">Droite' + gl('right', 22) + '</button></div>' +
         '<p class="pit-note">Un danseur entre dans la zone dorée : coup d\'épaule de ce côté. Frapper dans le vide te déséquilibre, ' + maxHits + ' coups pris et tu es à terre.</p>';
       hydrateAvatars(pogoIn);
       var arena = document.getElementById('pogo-arena'), bal = document.getElementById('pogo-bal'), en = document.getElementById('pogo-en'), fx = document.getElementById('pogo-fx');
@@ -4584,14 +4589,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(document.querySelectorAll('[data-join]'), function(b){ b.onclick = function(){ tradeJoin(invitesList[+b.getAttribute('data-join')].code); }; });
   }
   // mes potes en carrousel : photo et pseudo, un toucher ouvre son profil (l'échange s'y propose) ;
-  // pendant mon slam, « Porte-moi » sous chaque bulle (puis « Demandé » ou « Te porte ✓ »)
+  // pendant mon slam, « Porte-moi » sous chaque bulle (puis « Demandé » ou « Te porte »)
   function paintFriends(){
     document.getElementById('friends-sec').hidden = !ONLINE;
     var box = document.getElementById('friends'), m = slamFlying();
     friendsSig = slamSig();
     box.innerHTML = friendsList.length ? '<div class="car-h">' + friendsList.map(function(f, i){
       var act = !m ? '<small>' + (f.trades ? f.trades + ' troc' + (f.trades > 1 ? 's' : '') : 'pote') + '</small>'
-        : m.carrier_ids.indexOf(f.friend_id) !== -1 ? '<small class="ok">Te porte ✓</small>'
+        : m.carrier_ids.indexOf(f.friend_id) !== -1 ? '<small class="ok">Te porte' + gl('check', 12) + '</small>'
         : m.asked_ids.indexOf(f.friend_id) !== -1 ? '<small>Demandé</small>'
         : '<button type="button" class="ask" data-fa="' + i + '">Porte-moi</button>';
       return '<div class="pote-b"><button type="button" class="pote-go" data-fp="' + i + '" aria-label="Profil de ' + esc(f.username || 'Pote') + '">' + avDisc({name:f.username || 'Pote', avatar:f.avatar_path}, 'big') + '<b>' + esc(f.username || 'Pote') + '</b></button>' + act + '</div>'; }).join('') + '</div>'
@@ -4616,7 +4621,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var friendOf = function(h){ return friendsList.filter(function(f){ return f.friend_id === h.partner_id; })[0] || {friend_id:h.partner_id, username:h.partner}; };
     document.getElementById('history').innerHTML = '<div class="car-h">' + rows.slice(0, 12).map(function(h, i){ var f = friendOf(h);
       return '<button type="button" class="hist-c" data-h="' + i + '">' + avDisc({name:h.partner || 'Pote', avatar:f.avatar_path}) + '<b>' + esc(h.partner || 'Pote') + '</b><small>' + new Date(h.done_at).toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) + '</small>' +
-        '<span class="h-cards">' + (mini(h.gave) || '<i>rien</i>') + '<i>⇄</i>' + (mini(h.got) || '<i>rien</i>') + '</span></button>'; }).join('') + '</div>';
+        '<span class="h-cards">' + (mini(h.gave) || '<i>rien</i>') + '' + gl('swap', 16) + '' + (mini(h.got) || '<i>rien</i>') + '</span></button>'; }).join('') + '</div>';
     hydrateAvatars(document.getElementById('history'));
     [].forEach.call(document.querySelectorAll('#history [data-h]'), function(b){ b.onclick = function(){ openFriend(friendOf(rows[+b.getAttribute('data-h')])); }; });
   }
@@ -4675,7 +4680,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     return '<article class="talon' + (past ? '' : ' soon') + '"' + (own ? ' data-id="' + esc(c.id) + '"' : '') + '>' +
       (photo ? '<img class="tl-ph" src="' + esc(photo) + '" alt="Photo du concert de ' + esc(c.artist) + '" loading="lazy">' : '') +
       '<div class="tl-main"><small>' + (past ? 'J\'y étais' : 'À venir') + '</small><b>' + esc(c.artist) + '</b>' + (where ? '<span>' + esc(where) + '</span>' : '') +
-        (!own && gigDone(c).length ? '<p class="tl-df">' + gigDone(c).map(function(x){ return '<span>✓ ' + esc(x.title) + '</span>'; }).join('') + '</p>' : '') + '</div>' +
+        (!own && gigDone(c).length ? '<p class="tl-df">' + gigDone(c).map(function(x){ return '<span>' + gl('check', 14) + esc(x.title) + '</span>'; }).join('') + '</p>' : '') + '</div>' +
       '<div class="tl-stub" role="img" aria-label="' + d.day + ' ' + esc(d.month) + ' ' + d.year + '"><b class="num">' + d.day + '</b><span>' + esc(d.month) + '</span><small class="num">' + d.year + '</small></div>' +
       (own ? '<button type="button" class="tl-x" aria-label="Retirer le concert de ' + esc(c.artist) + '">' + TL_X + '</button>' : '') + '</article>';
   }
@@ -4693,7 +4698,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function gigActs(c){
     var picks = c.concert_picks || [], open = gigOpen(c), live = open && gigPast(c), out = '';
     picks.forEach(function(p){ var ch = p.concert_challenges || {};
-      if(p.done_at) out += '<span class="df ' + (p.cancelled ? 'off' : 'done') + '">' + (p.cancelled ? 'Annulé · ' : '✓ ') + esc(ch.title) + (p.band_bonus && !p.cancelled ? ' · bande' : '') + '</span>';
+      if(p.done_at) out += '<span class="df ' + (p.cancelled ? 'off' : 'done') + '">' + (p.cancelled ? 'Annulé · ' : gl('check', 14)) + esc(ch.title) + (p.band_bonus && !p.cancelled ? ' · bande' : '') + '</span>';
       else if(live) out += '<button type="button" class="df go" data-act="prove" data-ch="' + esc(p.challenge_id) + '"><i class="new-dot" aria-hidden="true"></i>' + (ch.proof === 'video' ? 'Filmer' : 'Photo') + ' · ' + esc(ch.title) + '</button>';
       else if(open) out += '<button type="button" class="df" data-act="unpick" data-ch="' + esc(p.challenge_id) + '" aria-label="Retirer le défi ' + esc(ch.title) + '">' + esc(ch.title) + TL_X + '</button>';
       else out += '<span class="df off">' + esc(ch.title) + ' · raté</span>';
@@ -4715,7 +4720,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (bandInvites.length ? '<div class="band-inv">' + bandInvites.map(function(i){ var d = gigDate(i.played_on);
         return '<p><i class="new-dot" aria-hidden="true"></i><span><b>' + esc(i.from_name) + '</b> t\'invite dans sa bande pour <b>' + esc(i.artist) + '</b> · ' + d.day + ' ' + esc(d.month) + '</span><button type="button" class="df go" data-code="' + esc(i.code) + '">Rejoindre</button></p>'; }).join('') + '</div>' : '') + (list.length
       ? '<div class="talons">' + list.map(function(c){ var n = (gigActs(c).match(/new-dot/g) || []).length;
-          return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + '<button type="button" class="tl-open" data-open="' + esc(c.id) + '">' + (n ? '<i class="new-dot" aria-hidden="true"></i><b>' + n + ' à faire</b> · ' : '') + 'Souvenirs et objectifs<span aria-hidden="true">›</span></button></div>'; }).join('') + '</div>'
+          return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + '<button type="button" class="tl-open" data-open="' + esc(c.id) + '">' + (n ? '<i class="new-dot" aria-hidden="true"></i><b>' + n + ' à faire</b> · ' : '') + 'Souvenirs et objectifs' + gl('right', 16) + '</button></div>'; }).join('') + '</div>'
       : '<div class="gig-empty"><div class="ge-talon" aria-hidden="true"><span>J\'y étais</span><b>Ton premier talon</b><i>?</i></div>' +
         '<p><b>« J\'y étais, j\'y vais »</b> : garde un talon pour chaque concert, vu ou à venir. Importe ton billet (il ne quitte pas ton téléphone) ou note-le à la main.</p>' +
         '<ul><li>Chaque concert vu : <b>3 points de rang</b>, et la carte Rare de l\'artiste la première fois.</li><li>Une mission t\'attend : la <b>photo souvenir</b> d\'un concert passé, ou un <b>défi photo ou vidéo le jour J</b>.</li><li>Viens à plusieurs : ta <b>bande</b> gagne des points en plus.</li></ul></div>');
@@ -4724,8 +4729,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(box.querySelectorAll('.band-inv [data-code]'), function(b){ b.onclick = function(){ b.disabled = true; bandJoin(b.getAttribute('data-code')); }; });
     [].forEach.call(box.querySelectorAll('.tl-x'), function(b){ b.onclick = function(){
       var id = b.closest('.talon').getAttribute('data-id');
-      if(!confirm('Retirer ce concert de ta liste ?')) return;
-      ONLINE.deleteConcert(id, ((gigs || []).filter(function(c){ return c.id === id; })[0] || {}).ticket_path).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderCorner(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); });
+      askConfirm({danger:true, eyebrow:'Concert', title:'Retirer ce concert ?', text:'Il sort de ta liste, avec son billet.', yes:'Retirer', no:'Le garder'}, function(){
+        ONLINE.deleteConcert(id, ((gigs || []).filter(function(c){ return c.id === id; })[0] || {}).ticket_path).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderCorner(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); }); });
     }; });
     [].forEach.call(box.querySelectorAll('[data-open]'), function(b){ b.onclick = function(){ openGigDetail(b.getAttribute('data-open')); }; });
     [].forEach.call(box.querySelectorAll('.talon[data-id]'), function(t){ t.onclick = function(e){ if(!e.target.closest('.tl-x')) openGigDetail(t.getAttribute('data-id')); }; });
@@ -4756,7 +4761,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('gigd-in').innerHTML = talonHtml(c, gigPhotoUrl[c.photo_path], false) + (tkFirst ? tkHtml : '') +
       '<h3 class="gigd-h">Tes objectifs</h3>' + (acts || '<p class="pit-note">Rien à faire pour ce concert.</p>') +
       '<h3 class="gigd-h">Tes souvenirs</h3>' + (mem.length ? '<div class="gigd-mem">' + mem.map(function(m, i){
-        return '<button type="button" data-mem="' + i + '" aria-label="Voir en grand : ' + esc(m.label) + '"><span class="gm-m" data-path="' + esc(m.path) + '" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? '▶ ' : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
+        return '<button type="button" data-mem="' + i + '" aria-label="Voir en grand : ' + esc(m.label) + '"><span class="gm-m" data-path="' + esc(m.path) + '" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? gl('play', 12) : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
         : '<p class="pit-note">Pas encore de souvenir : la photo souvenir et tes défis photo ou vidéo s\'afficheront ici.</p>') +
       (tkFirst ? '' : tkHtml) +
       (cloakOpen(c) ? '<h3 class="gigd-h">Ticket de vestiaire</h3>' + (c.cloak_path
@@ -4770,12 +4775,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(box.querySelectorAll('[data-mem]'), function(b){ b.onclick = function(){ var m = b.querySelector('.gm-m'); openMedia(m.getAttribute('data-url'), m.getAttribute('data-kind')); }; });
     var tv = box.querySelector('[data-tk-view]'); if(tv) tv.onclick = function(){ openTicket(c); };
     [].forEach.call(box.querySelectorAll('[data-tk-new]'), function(b){ b.onclick = function(){ document.getElementById('ticket-file').click(); }; });
-    var td = box.querySelector('[data-tk-del]'); if(td) td.onclick = function(){ if(!confirm('Retirer ton billet de l\'app ?')) return; td.disabled = true;
-      ONLINE.clearTicket(c.id, c.ticket_path).then(function(){ c.ticket_path = c.ticket_kind = null; paintGigDetail(); toast('Billet retiré.'); }, function(e){ td.disabled = false; toast(esc(e.message)); }); };
+    var td = box.querySelector('[data-tk-del]'); if(td) td.onclick = function(){ askConfirm({danger:true, eyebrow:'Billet', title:'Retirer ton billet ?', text:'Il disparaît de l\'app. Garde l\'original quelque part avant le concert.', yes:'Retirer', no:'Le garder'}, function(){ td.disabled = true;
+      ONLINE.clearTicket(c.id, c.ticket_path).then(function(){ c.ticket_path = c.ticket_kind = null; paintGigDetail(); toast('Billet retiré.'); }, function(e){ td.disabled = false; toast(esc(e.message)); }); }); };
     var cv = box.querySelector('[data-cloak-view]'); if(cv) cv.onclick = function(){ openMedia(cv.querySelector('.gm-m').getAttribute('data-url'), 'photo'); };
     [].forEach.call(box.querySelectorAll('[data-cloak-new]'), function(b){ b.onclick = function(){ document.getElementById('cloak-file').click(); }; });
-    var cd = box.querySelector('[data-cloak-del]'); if(cd) cd.onclick = function(){ if(!confirm('Retirer la photo du ticket de vestiaire ?')) return; cd.disabled = true;
-      ONLINE.clearCloak(c.id, c.cloak_path).then(function(){ c.cloak_path = null; paintGigDetail(); toast('Ticket retiré.'); }, function(e){ cd.disabled = false; toast(esc(e.message)); }); };
+    var cd = box.querySelector('[data-cloak-del]'); if(cd) cd.onclick = function(){ askConfirm({danger:true, eyebrow:'Vestiaire', title:'Retirer la photo du ticket ?', text:'Ta bande ne le verra plus.', yes:'Retirer', no:'La garder'}, function(){ cd.disabled = true;
+      ONLINE.clearCloak(c.id, c.cloak_path).then(function(){ c.cloak_path = null; paintGigDetail(); toast('Ticket retiré.'); }, function(e){ cd.disabled = false; toast(esc(e.message)); }); }); };
     rise('#gigd-in > *', {stagger:.04});
   }
   document.getElementById('gigd-close').onclick = function(){ gigdSheet.hidden = true; };
@@ -4834,9 +4839,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('band-for').textContent = b.artist + ' · ' + d.day + ' ' + d.month + ' ' + d.year + (alone ? ' · à deux au moins, les défis en bande s\'ouvrent' : ' · bande de ' + b.members.length + ' : +' + bandBonus(b.members.length) + ' point' + (bandBonus(b.members.length) > 1 ? 's' : '') + ' au talon validé') + '. Jusqu\'à +5 à six.';
     document.getElementById('band-in').innerHTML = '<ul class="band-ms">' + b.members.map(function(m){
         return '<li><div><b>' + esc(m.name) + '</b>' + (m.me ? '<small>toi</small>' : m.host ? '<small>a monté la bande</small>' : '') +
-          (m.done.length ? '<span>' + m.done.map(function(t){ return '✓ ' + esc(t); }).join(' · ') + '</span>' : '') +
+          (m.done.length ? '<span>' + m.done.map(function(t){ return gl('check', 14) + esc(t); }).join(' · ') + '</span>' : '') +
           (m.cloak && !m.me ? '<button type="button" class="df" data-cloak="' + esc(m.cloak) + '">Ticket de vestiaire</button>' : '') + '</div>' +
-          (m.me ? '' : mine.indexOf(m.id) !== -1 ? '<span class="df">Pote ✓</span>' : '<button type="button" class="df" data-p="' + esc(m.id) + '">+ Pote</button>') + '</li>'; }).join('') + '</ul>' +
+          (m.me ? '' : mine.indexOf(m.id) !== -1 ? '<span class="df">Pote' + gl('check', 14) + '</span>' : '<button type="button" class="df" data-p="' + esc(m.id) + '">+ Pote</button>') + '</li>'; }).join('') + '</ul>' +
       '<p class="eyebrow">Le code de la bande</p><div class="gframe tr-qr-f"><div class="tr-qr" id="band-qr" role="img" aria-label="QR code de la bande"></div></div><p class="tr-code num">' + esc(b.code.slice(0, 3) + ' ' + b.code.slice(3)) + '</p>' +
       '<button type="button" class="btn block" id="band-share">Envoyer le lien</button>' +
       (friends.length ? '<p class="eyebrow">Inviter un pote</p><div class="band-fr">' + friends.map(function(f){ return '<button type="button" class="df" data-f="' + esc(f.friend_id) + '">' + esc(f.username || 'Pote') + '</button>'; }).join('') + '</div>' : '') +
@@ -4847,12 +4852,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       else (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Envoie-le à ta bande.'); }, function(){ toast('Code à donner : ' + esc(b.code)); }); };
     [].forEach.call(document.querySelectorAll('#band-in [data-cloak]'), function(btn){ btn.onclick = function(){ ONLINE.mediaUrl('concerts', btn.getAttribute('data-cloak')).then(function(u){ openMedia(u, 'photo'); }, function(e){ toast(esc(e.message)); }); }; });
     [].forEach.call(document.querySelectorAll('#band-in [data-p]'), function(btn){ btn.onclick = function(){ btn.disabled = true;
-      ONLINE.bandAddFriend(b.id, btn.getAttribute('data-p')).then(function(name){ btn.outerHTML = '<span class="df">Pote ✓</span>'; snd('trade-join'); toast('<b>' + esc(name) + '</b> rejoint tes potes.'); },
+      ONLINE.bandAddFriend(b.id, btn.getAttribute('data-p')).then(function(name){ btn.outerHTML = '<span class="df">Pote' + gl('check', 14) + '</span>'; snd('trade-join'); toast('<b>' + esc(name) + '</b> rejoint tes potes.'); },
         function(e){ btn.disabled = false; toast(esc(e.message)); }); }; });
     [].forEach.call(document.querySelectorAll('#band-in [data-f]'), function(btn){ btn.onclick = function(){ btn.disabled = true;
-      ONLINE.bandInvite(b.id, btn.getAttribute('data-f')).then(function(){ btn.textContent = '✓ ' + btn.textContent; toast('Invitation envoyée.'); }, function(e){ btn.disabled = false; toast(esc(e.message)); }); }; });
-    document.getElementById('band-leave').onclick = function(){ if(!confirm('Quitter la bande ? Le bonus de bande de tes défis disparaît.')) return;
-      ONLINE.bandLeave(c.id).then(function(){ bandSheet.hidden = true; toast('Tu as quitté la bande.'); return loadGigs(); }, function(e){ toast(esc(e.message)); }); };
+      ONLINE.bandInvite(b.id, btn.getAttribute('data-f')).then(function(){ btn.innerHTML = gl('check', 14) + esc(btn.textContent); toast('Invitation envoyée.'); }, function(e){ btn.disabled = false; toast(esc(e.message)); }); }; });
+    document.getElementById('band-leave').onclick = function(){ askConfirm({danger:true, eyebrow:'Bande', title:'Quitter la bande ?', text:'Le bonus de bande de tes défis disparaît.', yes:'Quitter', no:'Rester'}, function(){
+      ONLINE.bandLeave(c.id).then(function(){ bandSheet.hidden = true; toast('Tu as quitté la bande.'); return loadGigs(); }, function(e){ toast(esc(e.message)); }); }); };
   }
   function openJoin(code){
     document.getElementById('band-t').textContent = 'Rejoindre une bande';
@@ -4928,7 +4933,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var p = (c.concert_picks || []).filter(function(x){ return x.challenge_id === chId; })[0], ch = p && p.concert_challenges; if(!ch) return;
     var send = async function(blob){
       if(blob.size > 30 * 1048576) throw new Error('Vidéo trop lourde : 30 Mo au plus.');
-      var pub = confirm('Montrer cette preuve à tes potes ?');
+      var pub = await askYesNo({eyebrow:'Preuve', title:'Montrer cette preuve à tes potes\u00a0?', text:'Elle apparaît dans tes souvenirs du concert. Sinon, tu restes le seul à la voir.', yes:'La montrer', no:'Juste pour moi'});
       toast('Envoi de la preuve…');
       var pts = await ONLINE.proveChallenge(c.id, chId, blob, ch.proof, pub);
       snd('reward'); toast('Défi relevé : +' + pts + ' point' + (pts > 1 ? 's' : '') + ' de rang.');
@@ -5138,6 +5143,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     '<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"/>',
     '<path d="M12 10.941c2.333 -3.308 .167 -7.823 -1 -8.941c0 3.395 -2.235 5.299 -3.667 6.706c-1.43 1.408 -2.333 3.294 -2.333 5.588c0 3.704 3.134 6.706 7 6.706c3.866 0 7 -3.002 7 -6.706c0 -1.712 -1.232 -4.403 -2.333 -5.588c-2.084 3.353 -3.257 3.353 -4.667 2.235"/>'];
   var HORNS_ICON = '<path d="M11 11.5v-1a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 12v-6.5a1.5 1.5 0 0 1 3 0v10.5a6 6 0 0 1 -6 6h-2a4 4 0 0 1 -4 -4v-5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M8 16.5c1.6 -1.6 3.8 -2.1 6.2 -1.5"/>';
+  // icônes Tabler du jeu (jamais de glyphe Unicode comme icône)
+  function gl(k, w){ return icon({x:'<path d="M18 6l-12 12"/><path d="M6 6l12 12"/>', check:'<path d="M5 12l5 5l10 -10"/>', play:'<path d="M7 4v16l13 -8z"/>', rec:'<circle cx="12" cy="12" r="6" fill="currentColor"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>', left:'<path d="M15 6l-6 6l6 6"/>', right:'<path d="M9 6l6 6l-6 6"/>', swap:'<path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/>', music:'<path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M9 17v-13h10v13"/><path d="M9 8h10"/>'}[k], w || 16); }
   function icon(paths, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 24) + '" height="' + (w || 24) + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>'; }
   function renderCorner(){
     renderGoals(); renderGigs(); cornerTab();
@@ -5238,7 +5245,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
 
   // ---------- Effets : vibration, lumière ----------
-  var COLORS = {commune:'#c9c3b8', rare:'#3b82f6', holo:'#a78bfa', signature:'#f5c542', legendaire:'#ef4444'};
+  // couleurs de rareté lues dans les jetons CSS (--r-*) : une seule palette pour le CSS, les effets et le canevas de partage
+  var COLORS = {}; RARITIES.forEach(function(x){ COLORS[x.k] = getComputedStyle(document.documentElement).getPropertyValue('--r-' + x.k).trim(); });
   var CHARGE = {commune:0, rare:350, holo:850, signature:1400, legendaire:2300};
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // GSAP (animations d'interface) : chargé en arrière-plan ; tant qu'il manque, ou si le joueur réduit les animations, rien ne bouge et tout marche
@@ -5363,7 +5371,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   function rays(r){ var el = document.getElementById('rays'); el.className = ''; if(reduce || rank(r) < 2) return; el.style.setProperty('--rc', COLORS[r]); void el.offsetWidth; el.className = 'on' + (rank(r) >= 3 ? ' fast' : ''); }
   function quake(){ if(reduce) return; revealEl.classList.remove('quake'); void revealEl.offsetWidth; revealEl.classList.add('quake'); }
-  function flash(r){ if(reduce || r==='commune') return; var f = document.getElementById('flash'); f.style.setProperty('--flash', r==='rare' ? 'rgba(59,130,246,.5)' : COLORS[r]); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+  function flash(r){ if(reduce || r==='commune') return; var f = document.getElementById('flash'); f.style.setProperty('--flash', r==='rare' ? 'color-mix(in srgb, ' + COLORS.rare + ' 50%, transparent)' : COLORS[r]); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
   function ring(r, at){ if(reduce) return; var el = document.createElement('div'); el.className = 'ring'; if(at){ el.style.left = at.x + 'px'; el.style.top = at.y + 'px'; } el.style.setProperty('--ring', COLORS[r]); document.getElementById('fxlayer').appendChild(el); setTimeout(function(){ el.remove(); }, 950); }
 
   // ---------- Déchirer le paquet ----------
@@ -6038,7 +6046,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         var cover = ids.map(function(id){ var r = placed(id); return r ? {id:id, r:r} : null; }).filter(Boolean).sort(function(x, y){ return rank(y.r) - rank(x.r); })[0];
         return '<button type="button" class="bcard' + (cover ? ' has' : '') + '" data-b="' + b.k + '" aria-label="' + esc(binderLabel(b)) + ', ' + have.length + ' cartes sur ' + ids.length + '">' +
           '<span class="art" aria-hidden="true"' + (cover ? ' style="background-image:url(' + img(cover.id, cover.r) + ')"' : '') + '></span>' +
-          (binderDone(b) ? '<span class="done">Complet ✓</span>' : '') +
+          (binderDone(b) ? '<span class="done">Complet' + gl('check', 12) + '</span>' : '') +
           '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + crans(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
       }).join('');
       [].forEach.call(list.querySelectorAll('[data-b]'), function(c){ c.onclick = function(){ styleTap = true; openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
@@ -6081,7 +6089,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + pos[c.id] + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
-        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé">★ 5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
+        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg>5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
         '</span></span><span class="cap">' + pos[c.id] + ' · ' + esc(c.who) + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
@@ -6198,7 +6206,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       document.getElementById('d-trade').onclick = function(){ secretWarn(id, function(){ openTradeStart({m:id, r:r}); }); };
       document.getElementById('d-tear').onclick = function(){
         var n = state.owned[id+'|'+r] || 0;
-        askConfirm({eyebrow:'Déchirer', title:'Déchirer ' + c.who + ' ?', text:(c.secret && n < 2 ? 'C\'est la carte secrète : presque personne ne l\'a, et rien ne dit qu\'elle repassera un jour par tes paquets.' : 'Un exemplaire ' + rarity(r).label + ' part en lambeaux' + (n > 1 ? ' (il t\'en restera ' + (n - 1) + ').' : '. C\'était le dernier : la case redevient vide.')) + ' Impossible de revenir en arrière.', yes:'Oui, déchirer', no:'Non, je la garde'},
+        askConfirm({danger:true, eyebrow:'Déchirer', title:'Déchirer ' + c.who + ' ?', text:(c.secret && n < 2 ? 'C\'est la carte secrète : presque personne ne l\'a, et rien ne dit qu\'elle repassera un jour par tes paquets.' : 'Un exemplaire ' + rarity(r).label + ' part en lambeaux' + (n > 1 ? ' (il t\'en restera ' + (n - 1) + ').' : '. C\'était le dernier : la case redevient vide.')) + ' Impossible de revenir en arrière.', yes:'Oui, déchirer', no:'Non, je la garde'},
           function(){ tearCard(id, r); });
       };
     }
@@ -6616,24 +6624,27 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   document.getElementById('signout').addEventListener('click', signOut);
   // confirmation d'une action irréversible : le bouton « non » a le focus par défaut
-  var confirmEl = document.getElementById('confirm'), onConfirm = null;
+  var confirmEl = document.getElementById('confirm'), onConfirm = null, onCancel = null;
   // la carte secrète peut partir dans un troc, mais jamais sans prévenir
   function secretWarn(id, go){
     if(!card(id).secret || (state.owned[id + '|legendaire'] || 0) > 1){ go(); return; }
-    askConfirm({eyebrow:'Carte secrète', title:'Troquer ' + card(id).who + ' ?', text:'Presque personne ne l\'a. Une fois partie, rien ne dit qu\'elle repassera un jour par tes paquets.', yes:'Oui, je la troque', no:'Non, je la garde'}, go);
+    askConfirm({danger:true, eyebrow:'Carte secrète', title:'Troquer ' + card(id).who + ' ?', text:'Presque personne ne l\'a. Une fois partie, rien ne dit qu\'elle repassera un jour par tes paquets.', yes:'Oui, je la troque', no:'Non, je la garde'}, go);
   }
+  // bouton or ; rouge (danger) seulement pour ce qui détruit ou fait partir des cartes
   function askConfirm(o, yes){
     document.getElementById('confirm-e').textContent = o.eyebrow; document.getElementById('confirm-t').textContent = o.title; document.getElementById('confirm-d').textContent = o.text;
-    document.getElementById('confirm-yes').textContent = o.yes; document.getElementById('confirm-no').textContent = o.no;
-    onConfirm = yes; confirmEl.hidden = false; setTimeout(function(){ document.getElementById('confirm-no').focus(); }, 30);
+    var y = document.getElementById('confirm-yes'); y.textContent = o.yes; y.className = 'btn' + (o.danger ? ' danger' : ''); document.getElementById('confirm-no').textContent = o.no;
+    onConfirm = yes; onCancel = o.onNo || null; confirmEl.hidden = false; setTimeout(function(){ document.getElementById('confirm-no').focus(); }, 30);
   }
-  function closeConfirm(){ confirmEl.hidden = true; onConfirm = null; }
+  function closeConfirm(){ confirmEl.hidden = true; onConfirm = null; var c = onCancel; onCancel = null; if(c) c(); }
+  // oui ou non (fermer = non), pour un choix qui n'annule rien
+  function askYesNo(o){ return new Promise(function(res){ o.onNo = function(){ res(false); }; askConfirm(o, function(){ res(true); }); }); }
   document.getElementById('confirm-no').addEventListener('click', closeConfirm);
   confirmEl.addEventListener('click', function(e){ if(e.target === confirmEl) closeConfirm(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !confirmEl.hidden) closeConfirm(); });
-  document.getElementById('confirm-yes').addEventListener('click', function(){ var f = onConfirm; closeConfirm(); if(f) f(); });
+  document.getElementById('confirm-yes').addEventListener('click', function(){ var f = onConfirm; onCancel = null; closeConfirm(); if(f) f(); });
   document.getElementById('reset').addEventListener('click', function(){
-    askConfirm({eyebrow:'Réglages', title:'Tout brûler ?', text:'Ta collection, tes doublons et tes maîtrises partent en fumée. Impossible de revenir en arrière.', yes:'Oui, repartir de zéro', no:'Non, je garde tout'},
+    askConfirm({danger:true, eyebrow:'Réglages', title:'Tout brûler ?', text:'Ta collection, tes doublons et tes maîtrises partent en fumée. Impossible de revenir en arrière.', yes:'Oui, repartir de zéro', no:'Non, je garde tout'},
       function(){ resetAll(); go('packs'); toast('Collection brûlée. Le pit t\'attend.'); });
   });
 
