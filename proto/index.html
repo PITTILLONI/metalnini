@@ -321,7 +321,9 @@
   .gm-m{display:block; aspect-ratio:1; background:#120d0a} .gm-m img, .gm-m video{display:block; width:100%; height:100%; object-fit:cover} .gigd-mem small{display:block; padding:6px 8px; font:600 .7rem/1.2 var(--mono); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .cloak{display:flex; gap:12px; align-items:flex-start} .cloak-ph{flex:none; width:110px; padding:0; border:1px solid var(--gold); border-radius:10px; overflow:hidden; background:none; cursor:pointer} .cloak-ph .gm-m{aspect-ratio:3 / 4} .cloak .pit-note{margin:0 0 8px; text-align:left}
   .mview{position:fixed; inset:0; z-index:95; display:flex; align-items:center; justify-content:center; background:#000} .mview-in{width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:calc(56px + env(safe-area-inset-top)) 8px calc(16px + env(safe-area-inset-bottom))}
-  .mview-in img, .mview-in video{max-width:100%; max-height:100%; object-fit:contain} .mview .trade-x{position:fixed; z-index:2}
+  .mview-in img, .mview-in video{max-width:100%; max-height:100%; object-fit:contain}
+  .mview-in.tk-doc{flex-direction:column; justify-content:flex-start; gap:8px; overflow-y:auto; background:#fff} .mview-in.tk-doc canvas{display:block; max-width:100%; height:auto} .mview-in.tk-doc .pit-note{color:#333}
+  .tk-ph{aspect-ratio:3 / 4; display:flex; align-items:center; justify-content:center} .tk-pdf{font:700 1.1rem/1 var(--display, inherit); color:var(--gold); letter-spacing:.08em} .mview .trade-x{position:fixed; z-index:2}
   #cam, #trim{z-index:92}
   #pubgig-sheet{z-index:78} #pubgig-sheet .gigd-mem{margin-top:12px} .pub-gig{cursor:pointer}   /* au-dessus du profil public */
   #cam-acts:has(> :only-child){grid-template-columns:1fr}   /* au-dessus de la fiche du concert d'où on les ouvre */
@@ -1426,6 +1428,7 @@
     <p class="eyebrow" id="gigd-t">Ton concert</p>
     <div id="gigd-in"></div>
     <input type="file" id="cloak-file" accept="image/*" capture="environment" hidden>
+    <input type="file" id="ticket-file" accept="application/pdf,image/*" hidden>
     <button type="button" class="btn ghost block" id="gigd-close">Fermer</button>
   </div>
 </div>
@@ -1586,10 +1589,11 @@
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
     <h2 id="gig-t">J'y étais, j'y vais</h2>
-    <p class="pf-note">Concert vu ou billet pour le prochain. Ton billet reste sur ton téléphone : on n'en garde que l'artiste, la date et la salle.</p>
+    <p class="pf-note">Concert vu ou billet pour le prochain. Importe ton billet pour remplir les infos, et garde-le dans l'app si tu veux le retrouver à l'entrée.</p>
     <div class="pf-row gig-src"><button type="button" class="btn ghost" id="gig-file-b">Importer</button><button type="button" class="btn ghost" id="gig-cam-b">Photographier</button></div>
     <input type="file" id="gig-file" accept="application/pdf,image/*" hidden><input type="file" id="gig-cam" accept="image/*" capture="environment" hidden>
     <p class="gig-read" id="gig-read" aria-live="polite"></p>
+    <label class="as-prio" id="gig-keep-l" hidden><input type="checkbox" id="gig-keep" checked> <span>Garder mon billet dans l'app (toi seul peux l'ouvrir)</span></label>
     <label class="pf-label" for="gig-artist">Artiste ou groupe</label>
     <input id="gig-artist" class="as-in" maxlength="80" autocomplete="off" list="gig-artists" placeholder="ex. Gojira"><datalist id="gig-artists"></datalist>
     <label class="pf-label" for="gig-date">Date, passée ou à venir</label>
@@ -2030,8 +2034,8 @@ const api = {
     if(old) await sb.storage.from(bucket).remove([old]);
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
-  // concerts : le fichier du billet ne quitte pas le téléphone ; photo souvenir dans le dossier du joueur (bucket « concerts »)
-  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, cloak_path, claimed, band_id, band_size, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
+  // concerts : le billet n'est gardé que si le joueur le choisit (dossier privé, lui seul l'ouvre) ; photo souvenir dans le dossier du joueur (bucket « concerts »)
+  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, cloak_path, ticket_path, ticket_kind, claimed, band_id, band_size, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
   async challenges(){ return must(await sb.from('concert_challenges').select('id, title, hint, proof, points, band_only').eq('active', true).order('sort')); },
   async pickChallenge(c, ch){ must(await sb.rpc('pick_challenge', { p_concert: c, p_challenge: ch })); },
   async unpickChallenge(c, ch){ must(await sb.rpc('unpick_challenge', { p_concert: c, p_challenge: ch })); },
@@ -2095,7 +2099,14 @@ const api = {
     must(await sb.rpc('set_concert_photo', { p_id: id, p_path: path, p_public: !!pub }));
     return path;
   },
-  async deleteConcert(id){ const p = must(await sb.rpc('delete_concert', { p_id: id })); if(p) await sb.storage.from('concerts').remove([p]); },
+  async deleteConcert(id, ticket){ const p = must(await sb.rpc('delete_concert', { p_id: id })), rm = [p, ticket].filter(Boolean); if(rm.length) await sb.storage.from('concerts').remove(rm); },
+  // billet de concert (PDF ou photo) : dans mon dossier du stockage privé, moi seul peux l'ouvrir
+  async setTicket(concert, blob, kind, old){ const { data: { user } } = await sb.auth.getUser(), path = user.id + '/ticket-' + concert.slice(0, 8) + '-' + Date.now() + (kind === 'pdf' ? '.pdf' : '.jpg');
+    must(await sb.storage.from('concerts').upload(path, blob, { contentType: kind === 'pdf' ? 'application/pdf' : 'image/jpeg', upsert: false }));
+    must(await sb.rpc('concert_set_ticket', { p_concert: concert, p_path: path, p_kind: kind }));
+    if(old) await sb.storage.from('concerts').remove([old]);   // l'ancien billet, remplacé
+    return path; },
+  async clearTicket(concert, path){ must(await sb.rpc('concert_set_ticket', { p_concert: concert, p_path: null, p_kind: null })); if(path) await sb.storage.from('concerts').remove([path]); },
   async friendConcerts(f){ return must(await sb.rpc('friend_concerts', { p_friend: f })); },
   async username(){ const rows = must(await sb.from('profiles').select('username').eq('id', await myId())); return rows[0] ? rows[0].username : null; },
   async setUsername(n){ return must(await sb.rpc('set_username', { p_username: n })); },
@@ -4620,7 +4631,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
 
   // ---------- Concerts : « J'y étais, j'y vais » ----------
   // mes concerts, gardés en mémoire (liens des photos signés à la demande) ; le billet est lu sur le téléphone puis oublié
-  var gigs = null, gigPhotoUrl = {}, gigBlob = null, PDF_LIB = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+  var gigs = null, gigPhotoUrl = {}, gigBlob = null, gigTicket = null, PDF_LIB = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
   // mois écrits sur les billets, en entier ou abrégés (français et anglais) : numéro du mois
   var MONTH_N = {};
   [['janvier', 'janv', 'jan', 'january'], ['février', 'fevrier', 'févr', 'fevr', 'fév', 'fev', 'feb', 'february'], ['mars', 'mar', 'march'], ['avril', 'avr', 'apr', 'april'],
@@ -4701,7 +4712,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(box.querySelectorAll('.tl-x'), function(b){ b.onclick = function(){
       var id = b.closest('.talon').getAttribute('data-id');
       if(!confirm('Retirer ce concert de ta liste ?')) return;
-      ONLINE.deleteConcert(id).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderCorner(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); });
+      ONLINE.deleteConcert(id, ((gigs || []).filter(function(c){ return c.id === id; })[0] || {}).ticket_path).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderCorner(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); });
     }; });
     [].forEach.call(box.querySelectorAll('[data-open]'), function(b){ b.onclick = function(){ openGigDetail(b.getAttribute('data-open')); }; });
     [].forEach.call(box.querySelectorAll('.talon[data-id]'), function(t){ t.onclick = function(e){ if(!e.target.closest('.tl-x')) openGigDetail(t.getAttribute('data-id')); }; });
@@ -4725,11 +4736,16 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var mem = (c.photo_path ? [{kind:'photo', path:c.photo_path, label:'Photo souvenir'}] : []).concat((c.concert_picks || []).filter(function(p){ return p.done_at && !p.cancelled && p.proof_path; })
       .map(function(p){ return {kind:p.proof_kind === 'video' ? 'video' : 'photo', path:p.proof_path, label:(p.concert_challenges || {}).title || 'Défi'}; }));
     var acts = gigActs(c);
-    document.getElementById('gigd-in').innerHTML = talonHtml(c, gigPhotoUrl[c.photo_path], false) +
+    // le billet en tête jusqu'au jour du concert, après les souvenirs ensuite
+    var tkHtml = '<h3 class="gigd-h">Ton billet</h3>' + (c.ticket_path
+        ? '<div class="cloak"><button type="button" class="cloak-ph tk-ph" data-tk-view aria-label="Ouvrir le billet en grand">' + (c.ticket_kind === 'pdf' ? '<span class="tk-pdf">PDF</span>' : '<span class="gm-m" data-path="' + esc(c.ticket_path) + '" data-kind="photo"></span>') + '</button><div><p class="pit-note">Ouvre-le à l\'entrée. Toi seul peux le voir.</p><button type="button" class="df" data-tk-new>Remplacer</button> <button type="button" class="df" data-tk-del>Retirer</button></div></div>'
+        : '<button type="button" class="btn ghost block" data-tk-new>Ajouter mon billet</button><p class="pit-note">PDF ou photo, pour le retrouver à l\'entrée. Toi seul peux l\'ouvrir.</p>'), tkFirst = c.played_on >= today();
+    document.getElementById('gigd-in').innerHTML = talonHtml(c, gigPhotoUrl[c.photo_path], false) + (tkFirst ? tkHtml : '') +
       '<h3 class="gigd-h">Tes objectifs</h3>' + (acts || '<p class="pit-note">Rien à faire pour ce concert.</p>') +
       '<h3 class="gigd-h">Tes souvenirs</h3>' + (mem.length ? '<div class="gigd-mem">' + mem.map(function(m, i){
         return '<button type="button" data-mem="' + i + '" aria-label="Voir en grand : ' + esc(m.label) + '"><span class="gm-m" data-path="' + esc(m.path) + '" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? '▶ ' : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
         : '<p class="pit-note">Pas encore de souvenir : la photo souvenir et tes défis photo ou vidéo s\'afficheront ici.</p>') +
+      (tkFirst ? '' : tkHtml) +
       (cloakOpen(c) ? '<h3 class="gigd-h">Ticket de vestiaire</h3>' + (c.cloak_path
         ? '<div class="cloak"><button type="button" class="cloak-ph" data-cloak-view aria-label="Voir le ticket en grand"><span class="gm-m" data-path="' + esc(c.cloak_path) + '" data-kind="photo"></span></button><div><p class="pit-note">' + (c.band_id ? 'Ta bande peut l\'ouvrir sur son téléphone jusqu\'à 3 jours après le concert.' : 'Monte ta bande pour qu\'elle puisse l\'ouvrir si tu perds ton téléphone.') + '</p><button type="button" class="df" data-cloak-new>Remplacer</button> <button type="button" class="df" data-cloak-del>Retirer</button></div></div>'
         : '<button type="button" class="btn ghost block" data-cloak-new>Photographier mon ticket</button><p class="pit-note">Si tu perds ton téléphone, ta bande pourra l\'ouvrir sur le sien.</p>') : '');
@@ -4739,6 +4755,10 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         el.innerHTML = el.getAttribute('data-kind') === 'video' ? '<video src="' + esc(u) + '#t=0.5" muted playsinline preload="metadata"></video>' : '<img src="' + esc(u) + '" alt="">'; el.setAttribute('data-url', u); };
       if(gigdUrls[path]) put(gigdUrls[path]); else ONLINE.mediaUrl('concerts', path).then(function(u){ gigdUrls[path] = u; put(u); }).catch(function(){}); });
     [].forEach.call(box.querySelectorAll('[data-mem]'), function(b){ b.onclick = function(){ var m = b.querySelector('.gm-m'); openMedia(m.getAttribute('data-url'), m.getAttribute('data-kind')); }; });
+    var tv = box.querySelector('[data-tk-view]'); if(tv) tv.onclick = function(){ openTicket(c); };
+    [].forEach.call(box.querySelectorAll('[data-tk-new]'), function(b){ b.onclick = function(){ document.getElementById('ticket-file').click(); }; });
+    var td = box.querySelector('[data-tk-del]'); if(td) td.onclick = function(){ if(!confirm('Retirer ton billet de l\'app ?')) return; td.disabled = true;
+      ONLINE.clearTicket(c.id, c.ticket_path).then(function(){ c.ticket_path = c.ticket_kind = null; paintGigDetail(); toast('Billet retiré.'); }, function(e){ td.disabled = false; toast(esc(e.message)); }); };
     var cv = box.querySelector('[data-cloak-view]'); if(cv) cv.onclick = function(){ openMedia(cv.querySelector('.gm-m').getAttribute('data-url'), 'photo'); };
     [].forEach.call(box.querySelectorAll('[data-cloak-new]'), function(b){ b.onclick = function(){ document.getElementById('cloak-file').click(); }; });
     var cd = box.querySelector('[data-cloak-del]'); if(cd) cd.onclick = function(){ if(!confirm('Retirer la photo du ticket de vestiaire ?')) return; cd.disabled = true;
@@ -4752,11 +4772,32 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     try{ toast('Envoi du ticket…'); c.cloak_path = await ONLINE.setCloak(c.id, await shrinkPhoto(f, 1600), c.cloak_path);
       paintGigDetail(); toast('Ticket enregistré. ' + (c.band_id ? 'Ta bande peut l\'ouvrir.' : 'Monte ta bande pour qu\'elle puisse l\'ouvrir.')); snd('reward');
     }catch(e){ toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); } };
+  document.getElementById('ticket-file').onchange = async function(){ var inp = this, f = inp.files[0]; inp.value = ''; if(!f) return;
+    var c = (gigs || []).filter(function(x){ return x.id === gigdId; })[0]; if(!c) return;
+    try{ var t = await ticketBlob(f); toast('Envoi du billet…'); c.ticket_path = await ONLINE.setTicket(c.id, t.blob, t.kind, c.ticket_path); c.ticket_kind = t.kind;
+      paintGigDetail(); toast('Billet gardé. Ouvre-le depuis ce concert le jour J.'); snd('reward');
+    }catch(e){ toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); } };
+  // billet en grand : une photo telle quelle, un PDF dessiné page par page (3 pages au plus) pour s'afficher partout, app iOS comprise
+  function openTicket(c){
+    ONLINE.mediaUrl('concerts', c.ticket_path).then(function(u){
+      if(c.ticket_kind !== 'pdf') return openMedia(u, 'photo');
+      var inEl = document.getElementById('mview-in'); inEl.innerHTML = '<p class="pit-note">Ouverture du billet…</p>'; inEl.classList.add('tk-doc'); mviewEl.hidden = false;
+      return loadLib(PDF_LIB, 'pdfjsLib').then(function(pdfjs){
+        pdfjs.GlobalWorkerOptions.workerSrc = PDF_LIB.replace('pdf.min.js', 'pdf.worker.min.js');
+        return pdfjs.getDocument({url:u}).promise;
+      }).then(function(doc){ inEl.innerHTML = ''; var chain = Promise.resolve();
+        for(var i = 1; i <= Math.min(3, doc.numPages); i++) (function(n){ chain = chain.then(function(){ return doc.getPage(n); }).then(function(pg){
+          var w = Math.min(window.innerWidth - 16, 900), v0 = pg.getViewport({scale:1}), k = w / v0.width * Math.min(2, window.devicePixelRatio || 1), v = pg.getViewport({scale:k}), cv = document.createElement('canvas');
+          cv.width = v.width; cv.height = v.height; cv.style.width = w + 'px'; inEl.appendChild(cv);
+          return pg.render({canvasContext:cv.getContext('2d'), viewport:v}).promise; }); })(i);
+        return chain; });
+    }).catch(function(){ document.getElementById('mview-in').innerHTML = '<p class="pit-note">Billet illisible ici. Réessaie avec du réseau.</p>'; });
+  }
   // souvenir ou ticket en grand
   var mviewEl = document.getElementById('mview');
-  function openMedia(url, kind){ if(!url) return;
+  function openMedia(url, kind){ if(!url) return; document.getElementById('mview-in').classList.remove('tk-doc');
     document.getElementById('mview-in').innerHTML = kind === 'video' ? '<video src="' + esc(url) + '" controls autoplay playsinline></video>' : '<img src="' + esc(url) + '" alt="">'; mviewEl.hidden = false; }
-  document.getElementById('mview-x').onclick = function(){ mviewEl.hidden = true; document.getElementById('mview-in').innerHTML = ''; };
+  document.getElementById('mview-x').onclick = function(){ mviewEl.hidden = true; var m = document.getElementById('mview-in'); m.innerHTML = ''; m.classList.remove('tk-doc'); };
 
   // défis de concert : liste de l'admin (ceux « en bande » seulement dans une bande)
   var defis = null, dfSheet = document.getElementById('df-sheet');
@@ -4950,7 +4991,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ['gig-artist', 'gig-venue', 'gig-city', 'gig-date'].forEach(function(i){ gigEl(i).value = ''; });
     gigEl('gig-date').max = new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10);
     gigEl('gig-artists').innerHTML = gigNames().map(function(n){ return '<option value="' + esc(n) + '">'; }).join('');
-    gigEl('gig-read').textContent = ''; gigErr.textContent = ''; gigBlob = null; setGigPhoto(null);
+    gigEl('gig-read').textContent = ''; gigErr.textContent = ''; gigBlob = null; setGigPhoto(null); setGigTicket(null);
     gigSheet.hidden = false;
   }
   function closeGig(){ gigSheet.hidden = true; }
@@ -4971,9 +5012,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     g.venue = text.split(/\n|\s[-–—·|•]\s|\s{3,}/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length >= 4 && l.length <= 80 && VENUE_RE.test(l); })[0] || null;
     return g;
   }
+  // billet à garder dans l'app : le PDF tel quel (5 Mo au plus), une photo réduite (2000 px, le code-barres reste lisible)
+  function ticketBlob(f){ if(f.type === 'application/pdf') return f.size <= 5 * 1048576 ? Promise.resolve({blob:f, kind:'pdf'}) : Promise.reject(new Error('Billet trop lourd (5 Mo au plus).'));
+    return shrinkPhoto(f, 2000).then(function(b){ return {blob:b, kind:'photo'}; }, function(){ throw new Error('Photo du billet illisible. Essaie avec une autre.'); }); }
+  function setGigTicket(t){ gigTicket = t; gigEl('gig-keep-l').hidden = !t; gigEl('gig-keep').checked = true; }
   function readTicket(f){
     var out = gigEl('gig-read');
-    if(f.type !== 'application/pdf'){ out.textContent = 'Billet gardé sur ton téléphone. Remplis les infos ci-dessous.'; return; }
+    ticketBlob(f).then(setGigTicket, function(){ setGigTicket(null); });
+    if(f.type !== 'application/pdf'){ out.textContent = 'Photo du billet prête. Remplis les infos ci-dessous.'; return; }
     out.textContent = 'Lecture du billet…';
     loadLib(PDF_LIB, 'pdfjsLib').then(function(pdfjs){
       pdfjs.GlobalWorkerOptions.workerSrc = PDF_LIB.replace('pdf.min.js', 'pdf.worker.min.js');
@@ -5021,6 +5067,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     try{
       var id = await ONLINE.addConcert({artist:a, musician:gigMusician(a), date:dt, venue:gigEl('gig-venue').value.trim(), city:gigEl('gig-city').value.trim()});
       if(gigBlob) await ONLINE.concertPhoto(id, gigBlob, gigEl('gig-pub').checked).catch(function(){ toast('Concert noté, mais la photo n\'est pas passée.'); });
+      if(gigTicket && gigEl('gig-keep').checked) await ONLINE.setTicket(id, gigTicket.blob, gigTicket.kind, null).catch(function(){ toast('Concert noté, mais le billet n\'est pas passé. Ajoute-le depuis la fiche du concert.'); });
       closeGig(); toast(dt > today() ? 'Concert noté. Il comptera une fois passé.' : 'Talon ajouté. Les oreilles sifflent encore ?');
       await loadGigs();
     }catch(e){ gigErr.textContent = e.message; }
