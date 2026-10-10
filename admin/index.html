@@ -8,26 +8,36 @@
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="manifest" href="../icons/site.webmanifest">
 <title>Metalnini — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Pirata+One&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0c0b0a; --surface:#161412; --surface-2:#1e1b18; --text:#f3f0ea; --muted:#a49e94; --border:rgba(255,255,255,.1);
-    --accent:#b23a3a; --gold:#d4af37; --ok:#4ade80; --err:#f87171;
-    --r-commune:#8a8a92; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#d4af37; --r-legendaire:#dc2626;
-    --display:"Arial Narrow","Oswald",Impact,sans-serif; --mono:ui-monospace,Menlo,monospace;
+    --accent:#b23a3a; --accent-text:#e0605a; --gold:#eb9a26; --gold-hi:#f4b243; --ink:#0d0a08; --ok:#4ade80; --err:#f87171;   /* jetons du jeu (MASTER) */
+    --r-commune:#c9c3b8; --r-rare:#3b82f6; --r-holo:#a78bfa; --r-signature:#f5c542; --r-legendaire:#ef4444;
+    --display:"Big Shoulders Display","Arial Narrow",sans-serif; --gothic:"Pirata One","Big Shoulders Display",serif; --mono:"Barlow",system-ui,sans-serif;
   }
   *{box-sizing:border-box} html{color-scheme:dark}
-  body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; font-size:15px; line-height:1.45}
-  h1,h2,h3{font-family:var(--display); text-transform:uppercase; letter-spacing:.03em; margin:0 0 12px}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:"Barlow",system-ui,sans-serif; font-size:15px; line-height:1.45}
+  h1,h2{font-family:var(--gothic); font-weight:400; letter-spacing:0; margin:0 0 12px} h1{font-size:2.4rem; color:var(--gold-hi)} h2{font-size:1.7rem}
+  h3{font:800 1.15rem/1.15 var(--display); text-transform:uppercase; letter-spacing:.05em; margin:0 0 12px}
   .wrap{max-width:1100px; margin:0 auto; padding:0 16px}
-  .eyebrow{font:500 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .eyebrow{font:600 .72rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text); margin:0 0 6px}
   .muted{color:var(--muted)} .ok{color:var(--ok)} .err{color:var(--err)}
   .card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin:14px 0}
   input,select,button,textarea{font:inherit; color:inherit}
   input,select,textarea{background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:9px 11px; width:100%}
   input[type=number]{width:90px}
-  button{background:var(--accent); border:0; border-radius:999px; padding:9px 18px; font-family:var(--display); text-transform:uppercase; letter-spacing:.04em; cursor:pointer}
-  button.ghost{background:var(--surface-2); border:1px solid var(--border)}
-  button:disabled{opacity:.5; cursor:default}
+  /* boutons en relief du jeu : or pour l'action, encre (.ghost) pour le reste, rouge (.danger) seulement pour ce qui détruit */
+  button{min-height:40px; margin-bottom:4px; background:var(--gold); color:var(--ink); border:0; border-radius:10px; padding:9px 18px; font:800 .95rem/1 var(--display); text-transform:uppercase; letter-spacing:.06em; cursor:pointer;
+    box-shadow:0 4px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease}
+  button:active{transform:translateY(3px); box-shadow:0 1px 0 #8a5510}
+  button.ghost{background:#15110f; color:var(--gold-hi); box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 4px 0 #000} button.ghost:active{box-shadow:inset 0 0 0 1px rgba(235,154,38,.5), 0 1px 0 #000}
+  button.danger{background:var(--accent); color:#fff; box-shadow:0 4px 0 #5a1414} button.danger:active{box-shadow:0 1px 0 #5a1414}
+  button:disabled{opacity:.5; cursor:default; transform:none} button[aria-busy="true"]{cursor:progress}
+  .ask{max-width:min(440px, calc(100vw - 32px)); padding:20px; border:1px solid rgba(235,154,38,.5); border-radius:14px; background:var(--surface); color:var(--text)} .ask::backdrop{background:rgba(5,4,4,.8)}
+  .ask h3{margin:0 0 8px} .ask p#ask-d{margin:0 0 16px; overflow-wrap:anywhere}
+  td, h3{overflow-wrap:anywhere}
   button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
   label{display:block; font-size:.85rem; color:var(--muted); margin:10px 0 4px}
   .row{display:flex; gap:10px; align-items:end; flex-wrap:wrap}
@@ -43,11 +53,11 @@
   .po{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; padding:10px 0; border-top:1px solid var(--border)} .po img{width:96px; aspect-ratio:2/3; object-fit:cover; border-radius:6px; background:var(--surface-2)}
   .tabs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border); padding:10px 0; position:sticky; top:0; background:var(--bg); z-index:2}
   .tabs button{flex:0 0 auto; white-space:nowrap; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-size:.8rem; padding:9px 14px; display:inline-flex; align-items:center; gap:6px}
-  .tabs button[aria-current="page"]{color:#fff; border-color:var(--accent); background:var(--accent)}
+  .tabs button{box-shadow:none; margin:0} .tabs button[aria-current="page"]{color:var(--ink); border-color:var(--gold); background:var(--gold)}
   .badge{min-width:18px; height:18px; padding:0 5px; border-radius:99px; background:var(--gold); color:#000; font:700 .68rem/18px var(--mono); text-align:center}
   /* sections d'une page : ancres en tête, la barre d'onglets ne les recouvre pas */
   .anchors{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 0}
-  .anchors button{background:none; border:1px solid var(--border); color:var(--muted); font:500 .7rem var(--mono); letter-spacing:.06em; padding:6px 11px}
+  .anchors button{background:none; border:1px solid var(--border); color:var(--muted); box-shadow:none; font:600 .75rem var(--mono); letter-spacing:.06em; padding:6px 11px}
   .part, #player-detail{scroll-margin-top:70px}
   .todo{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border)} .todo b{font:700 1.3rem var(--display); color:var(--gold); margin-right:8px}
   /* menu du compte, en haut à droite */
@@ -76,10 +86,10 @@
   .vw-arrow{flex:0 0 auto; width:48px; height:48px; border-radius:50%; font-size:1.6rem; line-height:1; padding:0}
   .vw-arrow:disabled{opacity:.3}
   .vw-rars{display:flex; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap}
-  .vw-rar{display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:1px solid transparent; border-radius:10px; padding:4px; width:auto}
+  .vw-rar{display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:1px solid transparent; border-radius:10px; padding:4px; width:auto; box-shadow:none; color:var(--text)}
   .vw-rar img{width:60px; aspect-ratio:2/3; object-fit:cover; border-radius:6px} .vw-rar span{font:500 .66rem var(--mono)}
   .vw-rar.on{border-color:var(--gold)}
-  .thumb{background:none; border:0; padding:0; width:auto; cursor:zoom-in}
+  .thumb{background:none; border:0; padding:0; width:auto; min-height:0; margin:0; box-shadow:none; cursor:zoom-in}
   .warn-pill{background:rgba(245,197,66,.15); color:#f5c542; border-color:rgba(245,197,66,.4)}
   .warn{font-size:.85rem; color:#f5c542; border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:8px 10px}
   .steps{padding-left:18px; font-size:.88rem; line-height:1.5} .steps li{margin:6px 0}
@@ -91,7 +101,10 @@
   /* téléphone : chaque ligne de tableau devient une fiche (libellé de colonne devant chaque valeur), champs à 16 px (pas de zoom iOS) */
   @media (max-width:640px){
     body{font-size:16px} input,select,textarea{font-size:16px}
-    header h1{font-size:1.6rem} .card{padding:14px} .row > .fit{max-width:100%}
+    header h1{font-size:2rem} .card{padding:14px} .row > .fit{max-width:100%}
+    button, .tabs button, .anchors button{min-height:44px}
+    .tabs{flex-wrap:wrap}   /* toutes les rubriques visibles, sur deux lignes au besoin */
+    .part, #player-detail{scroll-margin-top:130px}
     table.cards-m tr:first-child{display:none}
     table.cards-m, table.cards-m tbody, table.cards-m tr, table.cards-m td{display:block; width:auto}
     table.cards-m tr{border:1px solid var(--border); border-radius:10px; padding:6px 10px; margin:0 0 10px}
@@ -171,11 +184,13 @@
     <nav class="tabs" id="tabs" aria-label="Rubriques"></nav>
     <div id="page"></div>
   </main>
+  <dialog id="ask" class="ask" aria-labelledby="ask-t"><p class="eyebrow" id="ask-e">Confirmer</p><h3 id="ask-t"></h3><p id="ask-d" class="muted"></p>
+    <div class="row"><button type="button" id="ask-yes" class="fit"></button><button type="button" id="ask-no" class="ghost fit">Annuler</button></div></dialog>
   <footer class="muted" style="font-size:.78rem; padding:30px 0 50px">Toutes les actions passent par des fonctions serveur qui vérifient le rôle admin et la double authentification, et sont inscrites au journal.</footer>
 </div>
 
 <script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm';   // version figée : la page a les droits admin
 
 // lien d'invitation (type=invite) : l'invité choisit d'abord son mot de passe
 let invited = /type=invite/.test(location.hash);
@@ -188,6 +203,24 @@ const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 const views = ['v-login','v-invite','v-mfa-enroll','v-mfa-verify','v-noadmin','v-app'];
 function show(v){ views.forEach(x => $(x).hidden = x !== v); }
 function say(el, text, ok){ el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
+// erreurs connues de Supabase en clair ; le reste tel quel
+function frErr(m){ m = String(m || '');
+  const known = [[/invalid login credentials/i, 'E-mail ou mot de passe incorrect.'], [/invalid totp code|invalid mfa/i, 'Code à 6 chiffres incorrect ou expiré : prends le suivant dans l\'app.'],
+    [/email not confirmed/i, 'Adresse pas encore confirmée : ouvre le lien reçu par e-mail.'], [/permission denied|not allowed|forbidden|admin only|aal2/i, 'Action refusée : droits admin ou double authentification requis.'],
+    [/p_reason|reason (is )?required/i, 'Motif manquant ou trop court.'], [/failed to fetch|network/i, 'Pas de connexion au serveur. Réessaie dans un instant.']];
+  const k = known.find(([re]) => re.test(m)); return k ? k[1] + (k[1] === m ? '' : ' (' + m + ')') : m; }
+// confirmation dans la page (jamais le confirm() du navigateur) : titre, récapitulatif, bouton d'action nommé ; Annuler a le focus
+function ask(title, text, yes, danger, no){ const d = $('ask'); $('ask-no').textContent = no || 'Annuler';
+  $('ask-t').textContent = title; $('ask-d').textContent = text || ''; $('ask-yes').textContent = yes || 'Confirmer'; $('ask-yes').className = 'fit' + (danger ? ' danger' : '');
+  return new Promise(res => { const end = v => { d.close(); res(v); }; $('ask-yes').onclick = () => end(true); $('ask-no').onclick = () => end(false); d.oncancel = e => { e.preventDefault(); end(false); }; d.showModal(); $('ask-no').focus(); }); }
+// un bouton d'action reste désactivé tant que son appel n'est pas fini : un double clic n'offre pas deux cadeaux
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || typeof b.onclick !== 'function' || b.closest('#ask')) return;
+  e.stopImmediatePropagation(); if(b.getAttribute('aria-busy') === 'true') return;
+  const r = b.onclick.call(b, e); if(!r || typeof r.then !== 'function') return;
+  const was = b.disabled; b.disabled = true; b.setAttribute('aria-busy', 'true');
+  r.finally(() => { b.removeAttribute('aria-busy'); if(b.isConnected && !was) b.disabled = false; });
+}, true);
 const fmt = d => d ? new Date(d).toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'}) : '—';
 let catalog = {musicians:[], packs:[], odds:[], cards:[]};
 
@@ -218,19 +251,19 @@ function paintWho(email, app){
 
 $('btn-login').onclick = async () => {
   const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
-  if(error) return say($('login-msg'), error.message);
+  if(error) return say($('login-msg'), frErr(error.message));
   route();
 };
 $('btn-signup').onclick = async () => {
   const { error } = await sb.auth.signUp({ email: $('email').value.trim(), password: $('password').value, options: { emailRedirectTo: location.href.split('#')[0] } });
-  if(error) return say($('login-msg'), error.message);
+  if(error) return say($('login-msg'), frErr(error.message));
   say($('login-msg'), 'Compte créé. Confirme ton adresse avec le lien reçu par e-mail, puis connecte-toi.', true);
 };
 async function startEnroll(){
   const { data: f } = await sb.auth.mfa.listFactors();
   for(const x of (f.all || [])) if(x.status !== 'verified') await sb.auth.mfa.unenroll({ factorId: x.id });
   const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Metalnini admin' });
-  if(error){ show('v-mfa-enroll'); return say($('enroll-msg'), error.message); }
+  if(error){ show('v-mfa-enroll'); return say($('enroll-msg'), frErr(error.message)); }
   $('qr').src = data.totp.qr_code; $('secret').textContent = data.totp.secret; $('otp-link').href = data.totp.uri; $('btn-enroll').dataset.f = data.id;
   show('v-mfa-enroll'); $('code-enroll').focus();
 }
@@ -243,14 +276,14 @@ $('copy-secret').onclick = async () => {
 };
 $('btn-enroll').onclick = async () => {
   const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: $('btn-enroll').dataset.f, code: $('code-enroll').value.trim() });
-  if(error) return say($('enroll-msg'), error.message);
+  if(error) return say($('enroll-msg'), frErr(error.message));
   route();
 };
 $('btn-verify').onclick = async () => {
   const { data: f } = await sb.auth.mfa.listFactors();
   const factor = (f.totp || [])[0];
   const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: factor.id, code: $('code-verify').value.trim() });
-  if(error) return say($('verify-msg'), error.message);
+  if(error) return say($('verify-msg'), frErr(error.message));
   route();
 };
 $('btn-recheck').onclick = route;
@@ -260,7 +293,7 @@ $('invite-form').addEventListener('submit', async e => {
   if(a.length < 12) return say($('invite-msg'), '12 caractères minimum.');
   if(a !== b) return say($('invite-msg'), 'Les deux mots de passe ne correspondent pas.');
   const { error } = await sb.auth.updateUser({ password: a });
-  if(error) return say($('invite-msg'), error.message);
+  if(error) return say($('invite-msg'), frErr(error.message));
   invited = false; history.replaceState(null, '', location.pathname); route();
 });
 $('code-enroll').addEventListener('keydown', e => { if(e.key === 'Enter') $('btn-enroll').click(); });
@@ -299,7 +332,7 @@ async function render(){
       + parts.map(x => `<div class="part" id="s-${x[0]}"><p class="muted">Chargement…</p></div>`).join('');
     window.scrollTo(0, 0);
     await Promise.all(parts.map(async ([k, , f]) => { const el = $('s-' + k);
-      try { await f(el); } catch(e){ el.innerHTML = `<p class="err">${esc(e.message || e)}</p>`; } }));
+      try { await f(el); } catch(e){ el.innerHTML = `<p class="err">${escfrErr(e.message || e)}</p>`; } }));
     if(cur !== p) return;
   }
   if(p === 'joueurs' && s && !parts.some(x => x[0] === s)){ const pl = (await allPlayers()).find(x => x.id === s); if(pl) return player(pl); }
@@ -424,9 +457,9 @@ async function gifts(el){
     const users = picked('gf-list'), why = $('gf-why').value.trim();
     if(!users.length) return say($('gf-msg'), 'Coche au moins un joueur.');
     if(!why) return say($('gf-msg'), 'Indique un motif.');
-    if(!confirm(`Offrir ${musicianName($('gf-m').value)} (${RLABEL[$('gf-r').value]}) à ${users.length} joueur${users.length > 1 ? 's' : ''} ?`)) return;
+    if(!await ask('Offrir cette carte ?', `${musicianName($('gf-m').value)} (${RLABEL[$('gf-r').value]}) à ${users.length} joueur${users.length > 1 ? 's' : ''}. Motif : ${why}`, 'Offrir')) return;
     const r = await sb.rpc('admin_gift_cards', { p_users: users, p_musician: $('gf-m').value, p_rarity: $('gf-r').value, p_reason: why });
-    say($('gf-msg'), r.error ? r.error.message : `Offerte à ${r.data} joueur${r.data > 1 ? 's' : ''}.`, !r.error);
+    say($('gf-msg'), r.error ? frErr(r.error.message) : `Offerte à ${r.data} joueur${r.data > 1 ? 's' : ''}.`, !r.error);
   };
 }
 
@@ -455,7 +488,7 @@ async function persoOrders(el){
     ${orders.length ? orders.map(o => `<div class="po">${urls[o.id] ? `<img src="${urls[o.id]}" alt="Carte de ${esc(o.username)}">` : '<img alt="">'}<div>
       <b>${esc(o.nickname)}</b> <span class="muted">· ${esc(o.username)} · ${new Date(o.created_at).toLocaleString('fr-FR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}</span>
       <p style="margin:4px 0">${PSTATUS[o.status] || o.status}${o.tries > 1 ? ' · essai ' + o.tries : ''}${o.error ? ` <span class="err">${esc(o.error)}</span>` : ''}</p>
-      <div class="row" style="margin:0">${o.status === 'ready' ? `<button class="fit" data-po="${o.id}" data-a="approve">Valider</button>` : ''}${['ready', 'error', 'paid', 'base'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="retry">Relancer</button><button class="ghost fit" data-po="${o.id}" data-a="reject">Refuser</button>` : ''}</div></div></div>`).join('') : '<p class="muted">Aucune commande pour l\'instant.</p>'}
+      <div class="row" style="margin:0">${o.status === 'ready' ? `<button class="fit" data-po="${o.id}" data-a="approve">Valider</button>` : ''}${['ready', 'error'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="retry">Relancer</button>` : ''}${['ready', 'error', 'paid', 'base'].includes(o.status) ? `<button class="ghost fit" data-po="${o.id}" data-a="reject">Refuser</button>` : ''}</div></div></div>`).join('') : '<p class="muted">Aucune commande pour l\'instant.</p>'}
     <p class="msg" id="po-msg"></p></div>
     <div class="card"><h3>Créer des cartes perso</h3>
     <p class="muted" style="font-size:.85rem; margin:0 0 10px">Offertes, sans paiement : une carte par joueur coché, à partir de sa photo de profil (les joueurs sans photo sont sautés). Surnom : son pseudo, sauf si tu en donnes un. Elles arrivent ici « à valider ».</p>
@@ -463,15 +496,17 @@ async function persoOrders(el){
     <div class="row"><div><label for="pc-nick">Surnom (facultatif, sinon le pseudo)</label><input id="pc-nick" maxlength="24"></div><div><label for="pc-why">Motif (obligatoire)</label><input id="pc-why" placeholder="ex. cadeau d'équipe"></div><div class="fit"><button id="pc-go">Lancer</button></div></div>
     <p class="msg" id="pc-msg"></p></div>`;
   el.querySelectorAll('[data-po]').forEach(b => b.onclick = async () => {
-    if(b.dataset.a === 'reject' && !confirm('Refuser cette carte ? Le joueur est prévenu (rembourse-le dans Stripe s\'il a payé).')) return;
+    if(b.dataset.a === 'reject' && !await ask('Refuser cette carte ?', 'Le joueur est prévenu. Rembourse-le dans Stripe s\'il a payé.', 'Refuser', true)) return;
+    if(b.dataset.a === 'retry' && !await ask('Relancer la génération ?', 'Une nouvelle génération Krea part : elle consomme du crédit.', 'Relancer')) return;
     b.disabled = true; const r = await sb.rpc('admin_perso_decide', { p_order: b.dataset.po, p_action: b.dataset.a });
-    if(r.error){ b.disabled = false; return say($('po-msg'), r.error.message); } persoOrders(el); pending(); });
+    if(r.error){ b.disabled = false; return say($('po-msg'), frErr(r.error.message)); } persoOrders(el); pending(); });
   $('pc-go').onclick = async () => {
     const users = picked('pc-list'), why = $('pc-why').value.trim();
     if(!users.length) return say($('pc-msg'), 'Coche au moins un joueur.');
     if(!why) return say($('pc-msg'), 'Indique un motif.');
+    if(!await ask('Lancer ' + users.length + ' carte' + (users.length > 1 ? 's' : '') + ' perso ?', 'Une génération Krea par joueur avec photo : elle consomme du crédit.', 'Lancer')) return;
     const r = await sb.rpc('admin_perso_create', { p_users: users, p_nickname: $('pc-nick').value.trim() || null, p_reason: why });
-    if(r.error) return say($('pc-msg'), r.error.message);
+    if(r.error) return say($('pc-msg'), frErr(r.error.message));
     say($('pc-msg'), `${r.data.started} carte${r.data.started > 1 ? 's' : ''} lancée${r.data.started > 1 ? 's' : ''}` + (r.data.skipped.length ? ` · sautés (sans photo ou déjà en cours) : ${r.data.skipped.join(', ')}` : '') + '.', true);
     setTimeout(() => persoOrders(el), 1500);
   };
@@ -520,30 +555,30 @@ async function player(p){
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Le mail de confirmation a été envoyé. S'il n'est pas arrivé (spam, messagerie d'entreprise), renvoie-le, ou confirme l'adresse toi-même si tu es sûr que c'est bien elle ou lui.</p>
       <div class="row"><button id="cf-resend" class="ghost fit">Renvoyer le mail de confirmation</button><button id="cf-go" class="fit">Confirmer à la main</button></div></div>` : ''}
     <div class="row" style="margin-bottom:10px"><button id="bonus-go" class="fit" data-pts="2">Offrir un paquet (2 points)</button><button id="push-test" class="ghost fit">Notification de test</button></div>
-    <div class="row"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button>
-      <button id="clr-go" class="ghost fit">Vider la collection</button></div>
     <h3 style="margin-top:18px">Donner une carte</h3>
-    <div class="row"><div><label>Musicien</label><select id="adj-m">${catalog.musicians.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</select></div>
-      <div><label>Rareté</label><select id="adj-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div>
-      <div class="fit"><label>Exemplaires (+/−)</label><input id="adj-d" type="number" value="1"></div>
+    <div class="row"><div><label for="adj-m">Musicien</label><select id="adj-m">${catalog.musicians.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.band)}</option>`).join('')}</select></div>
+      <div><label for="adj-r">Rareté</label><select id="adj-r">${RARITIES.map(r => `<option value="${r}">${RLABEL[r]}</option>`).join('')}</select></div>
+      <div class="fit"><label for="adj-d">Exemplaires</label><input id="adj-d" type="number" min="1" value="1"></div>
       <div class="fit"><label style="display:flex; gap:6px; align-items:center; margin:0 0 10px"><input id="adj-n" type="checkbox" checked style="width:auto"> Prévenir le joueur</label></div>
       <div class="fit"><button id="adj-go">Appliquer</button></div></div>
-    <p class="muted" style="font-size:.8rem; margin:6px 0 0">« Prévenir le joueur » : la carte lui est révélée comme un cadeau du Grand Architecte et attend d'être rangée. Décoché (et avec les boutons − / +), c'est une correction silencieuse.</p>
+    <p class="muted" style="font-size:.8rem; margin:6px 0 0">« Prévenir le joueur » : la carte lui est révélée comme un cadeau du Grand Architecte et attend d'être rangée. Décoché, c'est une correction silencieuse. Pour retirer des exemplaires : les boutons − du classeur.</p>
     <details class="pl-inv" id="pl-inv"${invOpen ? ' open' : ''}><summary>Classeur · ${inv.reduce((a, i) => a + i.copies, 0)} carte(s), ${inv.length} variante(s)</summary>
     <div class="grid-cards">${inv.map(i => `<figure>${cardImg(i.musician_id, i.rarity)}
       <span class="r-${i.rarity}">${RLABEL[i.rarity]}</span> ×${i.copies}${i.placed ? '' : ' · à ranger'}<br>${esc(musicianName(i.musician_id))}
       <span class="row" style="gap:4px; margin-top:4px"><button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="-1" style="padding:4px 10px" aria-label="Retirer un exemplaire">−</button>
       <button class="ghost fit q" data-m="${esc(i.musician_id)}" data-r="${i.rarity}" data-d="1" style="padding:4px 10px" aria-label="Ajouter un exemplaire">+</button></span></figure>`).join('') || '<p class="muted">Aucune carte.</p>'}</div></details>
     <div style="margin-top:18px; border:1px solid rgba(248,113,113,.4); border-radius:10px; padding:12px">
-      <p class="err" style="margin:0 0 6px; font-weight:600">Supprimer le joueur</p>
+      <p class="err" style="margin:0 0 6px; font-weight:600">Zone rouge</p>
+      <div class="row" style="margin:0 0 14px"><button id="blk-go" class="ghost fit">${p.blocked ? 'Débloquer le compte' : 'Bloquer le compte'}</button><button id="clr-go" class="danger fit">Vider la collection</button></div>
+      <p style="margin:0 0 6px; font-weight:600">Supprimer le joueur</p>
       <p class="muted" style="margin:0 0 8px; font-size:.85rem">Efface définitivement le compte, sa collection et son historique de paquets. Irréversible. Impossible sur un admin.</p>
       <div class="row"><div><label for="del-confirm">Tape SUPPRIMER pour confirmer</label><input id="del-confirm" autocomplete="off"></div>
-        <div class="fit"><button id="del-go" style="background:#7f1d1d">Supprimer définitivement</button></div></div></div></div>
+        <div class="fit"><button id="del-go" class="danger">Supprimer définitivement</button></div></div></div></div>
     <div class="card"><h3>Ses échanges</h3><div id="pl-trades" class="muted">Chargement…</div></div>`;
   $('pl-inv').ontoggle = () => { invOpen = $('pl-inv').open; };
   signPerso(d);
   d.scrollIntoView({ behavior: 'smooth' });
-  sb.rpc('admin_trades', { p_user: p.id, p_limit: 50 }).then(r => { $('pl-trades').className = ''; $('pl-trades').innerHTML = r.error ? esc(r.error.message) : tradesTable(r.data); });
+  sb.rpc('admin_trades', { p_user: p.id, p_limit: 50 }).then(r => { $('pl-trades').className = ''; $('pl-trades').innerHTML = r.error ? esc(frErr(r.error.message)) : tradesTable(r.data); });
   // photo et cri : fichiers privés, lus par lien signé (1 h)
   if(p.avatar_path || p.cry_path || p.metal_power){
     const url = async (bucket, path) => path ? ((await sb.storage.from(bucket).createSignedUrl(path, 3600)).data || {}).signedUrl : null;
@@ -561,49 +596,54 @@ async function player(p){
   const adjust = async (m, r, delta, notify = false) => {
     if(needWhy()) return;
     const res = await sb.rpc('admin_adjust_card', { p_user: p.id, p_musician: m, p_rarity: r, p_delta: delta, p_reason: why(), p_notify: notify });
-    if(res.error) return say($('adj-msg'), res.error.message);
+    if(res.error) return say($('adj-msg'), frErr(res.error.message));
     const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), 'Fait, et inscrit au journal.', true);
   };
   d.querySelectorAll('button.q').forEach(b => b.onclick = () => adjust(b.dataset.m, b.dataset.r, parseInt(b.dataset.d, 10)));
-  $('adj-go').onclick = () => adjust($('adj-m').value, $('adj-r').value, parseInt($('adj-d').value, 10) || 0, $('adj-n').checked);
+  $('adj-go').onclick = () => { const n = parseInt($('adj-d').value, 10); if(!(n >= 1)) return say($('adj-msg'), 'Donne au moins un exemplaire.');
+    return adjust($('adj-m').value, $('adj-r').value, n, $('adj-n').checked); };
   if($('cf-resend')) $('cf-resend').onclick = async () => {
     const { error } = await sb.auth.resend({ type: 'signup', email: p.email, options: { emailRedirectTo: location.origin + location.pathname.replace(/admin\/.*$/, 'proto/') } });
-    say($('adj-msg'), error ? error.message : 'Mail de confirmation renvoyé à ' + p.email + '. Dis-lui de regarder aussi dans les spams.', !error);
+    say($('adj-msg'), error ? frErr(error.message) : 'Mail de confirmation renvoyé à ' + p.email + '. Dis-lui de regarder aussi dans les spams.', !error);
   };
   if($('cf-go')) $('cf-go').onclick = async () => {
     if(needWhy()) return;
     const res = await sb.rpc('admin_confirm_email', { p_user: p.id, p_reason: why() });
-    if(res.error) return say($('adj-msg'), res.error.message);
+    if(res.error) return say($('adj-msg'), frErr(res.error.message));
     p.email_confirmed = true; await player(p); say($('adj-msg'), 'Adresse confirmée et inscrite au journal : le compte peut se connecter.', true);
   };
   // le joueur voit le cadeau à sa prochaine visite (« Le Grand Architecte t'offre… »)
   // notification de test : arrive sur chaque appareil où le joueur a activé les notifications
   $('push-test').onclick = async () => {
     const res = await sb.rpc('admin_test_push', { p_user: p.id });
-    say($('adj-msg'), res.error ? res.error.message : res.data ? `Notification envoyée à ${res.data} appareil${res.data > 1 ? 's' : ''}.` : 'Aucun appareil abonné : le joueur doit activer les notifications dans les réglages de l\'app.', !res.error && !!res.data);
+    say($('adj-msg'), res.error ? frErr(res.error.message) : res.data ? `Notification envoyée à ${res.data} appareil${res.data > 1 ? 's' : ''}.` : 'Aucun appareil abonné : le joueur doit activer les notifications dans les réglages de l\'app.', !res.error && !!res.data);
   };
   ['bonus-go'].forEach(id => { $(id).onclick = async () => {
     if(needWhy()) return;
     const res = await sb.rpc('admin_give_bonus', { p_user: p.id, p_points: +$(id).dataset.pts, p_reason: why() });
-    say($('adj-msg'), res.error ? res.error.message : 'Cadeau envoyé : ' + res.data + ' point(s) bonus en réserve, le joueur sera prévenu à sa prochaine visite.', !res.error);
+    say($('adj-msg'), res.error ? frErr(res.error.message) : 'Cadeau envoyé : ' + res.data + ' point(s) bonus en réserve, le joueur sera prévenu à sa prochaine visite.', !res.error);
   }; });
+  const who = p.username || p.email || 'ce joueur';
   $('blk-go').onclick = async () => {
     if(needWhy()) return;
+    if(!await ask((p.blocked ? 'Débloquer ' : 'Bloquer ') + who + ' ?', p.blocked ? 'Il peut de nouveau se connecter et jouer.' : 'Il ne peut plus se connecter ni jouer. Motif : ' + why(), p.blocked ? 'Débloquer' : 'Bloquer', !p.blocked)) return;
     const r = await sb.rpc('admin_set_blocked', { p_user: p.id, p_blocked: !p.blocked, p_reason: why() });
-    if(r.error) return say($('adj-msg'), r.error.message);
+    if(r.error) return say($('adj-msg'), frErr(r.error.message));
     p.blocked = !p.blocked; const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), p.blocked ? 'Compte bloqué.' : 'Compte débloqué.', true);
   };
   $('clr-go').onclick = async () => {
     if(needWhy()) return;
+    const n = inv.reduce((a, i) => a + i.copies, 0);
+    if(!await ask('Vider la collection de ' + who + ' ?', n + ' carte' + (n > 1 ? 's' : '') + ' effacée' + (n > 1 ? 's' : '') + '. Irréversible. Motif : ' + why(), 'Vider la collection', true)) return;
     const r = await sb.rpc('admin_clear_inventory', { p_user: p.id, p_reason: why() });
-    if(r.error) return say($('adj-msg'), r.error.message);
+    if(r.error) return say($('adj-msg'), frErr(r.error.message));
     const keep = why(); await player(p); $('why').value = keep; say($('adj-msg'), `Collection vidée (${r.data} carte(s)).`, true);
   };
   $('del-go').onclick = async () => {
     if(needWhy()) return;
     if($('del-confirm').value.trim() !== 'SUPPRIMER') return say($('adj-msg'), 'Tape SUPPRIMER dans le champ de confirmation.');
     const r = await sb.rpc('admin_delete_player', { p_user: p.id, p_reason: why() });
-    if(r.error) return say($('adj-msg'), r.error.message);
+    if(r.error) return say($('adj-msg'), frErr(r.error.message));
     await go('joueurs', '', true); const m = document.createElement('p'); m.className = 'msg ok'; m.textContent = 'Joueur supprimé et inscrit au journal.';
     $('page').prepend(m);
   };
@@ -615,19 +655,23 @@ async function packs(el){
   el.innerHTML = catalog.packs.map(p => {
     const w = r => (catalog.odds.find(o => o.pack_type_id === p.id && o.rarity === r) || {}).weight ?? 0;
     return `<div class="card" data-pack="${esc(p.id)}"><h3>${esc(p.label)} <span class="muted" style="font:500 .7rem var(--mono)">${p.size} cartes · ${p.binder_id ? 'classeur ' + esc(p.binder_id) : 'tous les musiciens'}</span></h3>
-      <div class="row">${RARITIES.map(r => `<div class="fit"><label class="r-${r}">${RLABEL[r]}</label><input type="number" min="0" step="0.5" data-r="${r}" value="${w(r)}"></div>`).join('')}
+      <div class="row">${RARITIES.map(r => `<div class="fit"><label class="r-${r}" for="od-${esc(p.id)}-${r}">${RLABEL[r]}</label><input id="od-${esc(p.id)}-${r}" type="number" min="0" step="0.5" data-r="${r}" value="${w(r)}"></div>`).join('')}
         <div class="fit"><label>Total</label><p class="total" style="margin:8px 0 0"></p></div></div>
-      <label>Motif (obligatoire)</label><input class="why" placeholder="ex. test d'un taux de Légendaire plus généreux">
+      <label for="why-${esc(p.id)}">Motif (obligatoire)</label><input class="why" id="why-${esc(p.id)}" placeholder="ex. test d'un taux de Légendaire plus généreux">
       <div class="row" style="margin-top:10px"><button class="save fit">Enregistrer</button></div><p class="msg"></p></div>`;
   }).join('');
   el.querySelectorAll('[data-pack]').forEach(card => {
     const inputs = [...card.querySelectorAll('input[data-r]')], tot = card.querySelector('.total');
-    const upd = () => { const t = inputs.reduce((a, i) => a + (parseFloat(i.value) || 0), 0); tot.textContent = t + ' %'; tot.className = 'total ' + (Math.abs(t - 100) < .01 ? 'ok' : 'err'); };
-    inputs.forEach(i => i.oninput = upd); upd();
-    card.querySelector('.save').onclick = async () => {
+    const save = card.querySelector('.save'), why = card.querySelector('.why');
+    const upd = () => { const t = inputs.reduce((a, i) => a + (parseFloat(i.value) || 0), 0), good = Math.abs(t - 100) < .01;
+      tot.textContent = t + ' %' + (good ? '' : ' · il faut 100 %'); tot.className = 'total ' + (good ? 'ok' : 'err'); save.disabled = !good || !why.value.trim(); };
+    inputs.forEach(i => i.oninput = upd); why.oninput = upd; upd();
+    save.onclick = async () => {
+      upd(); if(save.disabled) return;
       const weights = Object.fromEntries(inputs.map(i => [i.dataset.r, parseFloat(i.value) || 0]));
       const r = await sb.rpc('admin_set_odds', { p_pack_type: card.dataset.pack, p_weights: weights, p_reason: card.querySelector('.why').value });
-      say(card.querySelector('.msg'), r.error ? r.error.message : 'Probabilités enregistrées et inscrites au journal.', !r.error);
+      say(card.querySelector('.msg'), r.error ? frErr(r.error.message) : 'Probabilités enregistrées et inscrites au journal.', !r.error);
+      setTimeout(upd);   // après la garde anti double clic : le bouton suit de nouveau le total
     };
   });
 }
@@ -635,16 +679,20 @@ async function gameSettings(el){
   const settings = await sb.from('settings').select('*').then(must), setting = k => (settings.find(s => s.key === k) || {}).value;
   el.innerHTML = `<div class="card"><h3>Réglages de jeu</h3>
     <p class="muted" style="font-size:.85rem; margin:0 0 6px">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
-    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
-    <div class="row"><div class="fit"><label>Points de paquet par jour (un paquet, standard ou mini, = 2)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
-      <div class="fit"><label>Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
-    <div class="row"><div class="fit"><label>Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
-      <div class="fit"><label>Jours de paquets gardés en réserve pendant une absence (1 = pas de report)</label><input id="set-catchup" type="number" min="1" max="30" value="${esc(setting('pack_catchup_days'))}"></div>
-      <div class="fit"><label>Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
-    <label>Motif (obligatoire)</label><input id="set-why">
+    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}" for="fz-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input id="fz-${r}" data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
+    <div class="row"><div class="fit"><label for="set-ppd">Points de paquet par jour (un paquet, standard ou mini, = 2)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
+      <div class="fit"><label for="set-welcome">Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
+    <div class="row"><div class="fit"><label for="set-dph">Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
+      <div class="fit"><label for="set-catchup">Jours de paquets gardés en réserve pendant une absence (1 = pas de report)</label><input id="set-catchup" type="number" min="1" max="30" value="${esc(setting('pack_catchup_days'))}"></div>
+      <div class="fit"><label for="set-budget">Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
+    <label for="set-why">Motif (obligatoire)</label><input id="set-why">
     <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
   $('set-go').onclick = async () => {
-    const why = $('set-why').value;
+    const why = $('set-why').value.trim(), nums = [...el.querySelectorAll('input[type=number]')];
+    const bad = nums.find(i => i.value.trim() === '' || isNaN(+i.value) || (i.min !== '' && +i.value < +i.min) || (i.max !== '' && +i.value > +i.max));
+    if(bad){ bad.focus(); return say($('set-msg'), 'Valeur manquante ou hors limites : « ' + (bad.closest('div').querySelector('label') || {}).textContent + ' ».'); }
+    if(!why){ $('set-why').focus(); return say($('set-msg'), 'Indique d\'abord un motif.'); }
+    if(!await ask('Enregistrer les réglages de jeu ?', 'Ils s\'appliquent tout de suite à tous les joueurs. Motif : ' + why, 'Enregistrer')) return;
     let a = { error: null };
     for (const inp of el.querySelectorAll('[data-fuse]')) {
       a = await sb.rpc('admin_set_setting', { p_key: 'fusion_cost_' + inp.dataset.fuse, p_value: parseInt(inp.value, 10), p_reason: why });
@@ -655,7 +703,7 @@ async function gameSettings(el){
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'daily_push_hour', p_value: Math.max(-1, Math.min(23, parseInt($('set-dph').value, 10))), p_reason: why });
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'pack_catchup_days', p_value: Math.max(1, Math.min(30, parseInt($('set-catchup').value, 10) || 1)), p_reason: why });
     if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'push_daily_budget', p_value: Math.max(0, parseInt($('set-budget').value, 10) || 0), p_reason: why });
-    say($('set-msg'), (a.error || b.error) ? (a.error || b.error).message : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
+    say($('set-msg'), (a.error || b.error) ? 'Enregistrement interrompu, une partie des réglages est peut-être passée : recharge la page pour voir les valeurs actuelles. ' + frErr((a.error || b.error).message) : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
   };
 }
 
@@ -677,7 +725,7 @@ async function bcAudience(){
   if(!$('bc-aud')) return;
   $('bc-pick').hidden = $('bc-who').value !== 'pick';
   const r = await sb.rpc('admin_audience', { p_filter: bcFilter() });
-  if(r.error){ $('bc-aud').textContent = r.error.message; return; }
+  if(r.error){ $('bc-aud').textContent = frErr(r.error.message); return; }
   const a = r.data, inbox = a.players - a.push;
   $('bc-aud').textContent = `${a.players} joueur${a.players > 1 ? 's' : ''} : ${a.push} par notification, ${inbox} dans l'app` + ($('bc-mail').checked ? `, ${a.mail} par e-mail` : '');
 }
@@ -688,14 +736,16 @@ document.addEventListener('click', async e => {
   const pr = e.target.closest('[data-preset]'); if(pr){ [$('bc-title').value, $('bc-body').value] = BC_PRESETS[pr.dataset.preset]; return; }
   if(e.target.id !== 'bc-go') return;
   const t = $('bc-title').value.trim(), b = $('bc-body').value.trim(), why = $('bc-why').value.trim(), to = $('bc-to').value, f = bcFilter();
+  if(!t || !b){ say($('bc-msg'), 'Écris un titre et un message.'); $(t ? 'bc-body' : 'bc-title').focus(); return; }
   if(!why) return say($('bc-msg'), 'Indique d\'abord un motif.');
   if(f.users && !f.users.length) return say($('bc-msg'), 'Coche au moins un joueur.');
-  if(!confirm(`Envoyer « ${t} » à ${$('bc-aud').textContent} ?`)) return;
+  $('bc-msg').textContent = '';
+  if(!await ask('Envoyer « ' + t + ' » ?', b + (to ? ' (ouvre : ' + to + ')' : '') + ' · À : ' + $('bc-aud').textContent, 'Envoyer')) return;
   e.target.disabled = true;
   const url = 'https://pittilloni.github.io/metalnini/proto/' + (to ? '?vue=' + to : '');
   const r = await sb.rpc('admin_send_message', { p_title: t, p_body: b, p_url: url, p_filter: f, p_reason: why, p_force: $('bc-force').checked, p_mail: $('bc-mail').checked });
   e.target.disabled = false;
-  say($('bc-msg'), r.error ? r.error.message : `Envoyé : ${r.data.push} notification${r.data.push > 1 ? 's' : ''}, ${r.data.inbox} message${r.data.inbox > 1 ? 's' : ''} dans l'app (ceux sans notifications ou déjà à leur limite du jour)` + (r.data.mail ? `, ${r.data.mail} e-mail${r.data.mail > 1 ? 's' : ''} en route` : '') + '.', !r.error);
+  say($('bc-msg'), r.error ? frErr(r.error.message) : `Envoyé : ${r.data.push} notification${r.data.push > 1 ? 's' : ''}, ${r.data.inbox} message${r.data.inbox > 1 ? 's' : ''} dans l'app (ceux sans notifications ou déjà à leur limite du jour)` + (r.data.mail ? `, ${r.data.mail} e-mail${r.data.mail > 1 ? 's' : ''} en route` : '') + '.', !r.error);
 });
 
 // ---------------------------------------------------------------- catalogue
@@ -723,9 +773,9 @@ async function catalogTab(el){
     </div>
     </div>
     <div class="card viewer"><h3>Visuels des cartes</h3>
-      <div class="vw-stage"><button class="vw-arrow" id="vw-prev" aria-label="Musicien précédent">‹</button>
+      <div class="vw-stage"><button class="vw-arrow ghost" id="vw-prev" aria-label="Musicien précédent">‹</button>
         <figure class="vw-card"><span id="vw-pic"></span><figcaption id="vw-cap"></figcaption></figure>
-        <button class="vw-arrow" id="vw-next" aria-label="Musicien suivant">›</button></div>
+        <button class="vw-arrow ghost" id="vw-next" aria-label="Musicien suivant">›</button></div>
       <div class="vw-rars" id="vw-rars"></div>
       <p class="muted" style="font-size:.8rem; text-align:center; margin:8px 0 0">Flèches du clavier ← → pour changer de musicien, ↑ ↓ pour changer de rareté.</p></div>
     <div class="card"><h3>Musiciens <span class="muted" id="cat-count"></span></h3><p class="muted" style="font-size:.85rem">Chaque modification est inscrite au journal. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
@@ -780,7 +830,7 @@ async function catalogTab(el){
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
     const r = await sb.from('musicians').update(patch).eq('id', tr.dataset.id).select();
     const m = tr.querySelector('.msg');
-    if(r.error) say(m, r.error.message); else if(!r.data.length) say(m, 'Refusé (droits).'); else say(m, 'Enregistré', true);
+    if(r.error) say(m, frErr(r.error.message)); else if(!r.data.length) say(m, 'Refusé (droits).'); else say(m, 'Enregistré', true);
   });
 }
 
@@ -813,36 +863,38 @@ async function requests(el){
   el.innerHTML = `<div class="card"><h3>Demandes d'artistes (${groups.length})</h3>${groups.length ? groups.map((g, i) => `<div class="po" style="grid-template-columns:1fr"><div>
       <b>${esc(g.name)}</b>${g.rows.some(x => x.priority) ? ' <span class="ok" style="font-size:.75rem">★ prioritaire</span>' : ''} <span class="muted" style="font-size:.8rem">· ${fmt(g.rows[0].created_at)}</span>
       <div style="font-size:.85rem; margin:4px 0 8px">${g.rows.map(x => `<div>${esc(x.username)}${x.priority ? ' <span class="ok">★ ticket</span>' : ''}${x.note ? ` <span class="muted">« ${esc(x.note)} »</span>` : ''}</div>`).join('')}</div>
-      <div class="row" style="margin:0">${jobOf(g) ? `<span class="pill fit">${JSTATUS[jobOf(g).status]}</span>` : `<button class="fit" data-req="${i}" data-out="launch">Lancer l'agent</button><button class="ghost fit" data-req="${i}" data-out="added">Déjà en ligne</button><button class="ghost fit" data-req="${i}" data-out="refused">Refuser</button>`}</div></div></div>`).join('') + `
+      <div class="row" style="margin:0">${jobOf(g) ? `<span class="pill fit">${JSTATUS[jobOf(g).status]}</span>` : `<button class="fit" data-req="${i}" data-out="launch">Lancer l'agent</button><button class="ghost fit" data-req="${i}" data-out="added">Déjà en ligne</button><button class="ghost fit" data-req="${i}" data-out="refused">Refuser</button>`}</div><p class="msg"></p></div></div>`).join('') + `
     <p class="muted" style="font-size:.85rem">Lancer l'agent : il vérifie l'artiste, génère les cartes et prépare le catalogue à son prochain passage (9 h, 13 h, 18 h), puis la demande revient ci-dessous. Déjà en ligne : seulement si l'artiste est déjà dans le jeu ; le demandeur est prévenu tout de suite qu'il débarque. Refuser : le demandeur est prévenu, le ticket prioritaire est rendu.</p>`
     : '<p class="muted" style="margin:0">Aucune demande en attente.</p>'}</div>
     ${jobs.length ? `<div class="card"><h3>Préparées par l'agent</h3>${jobs.map(jobCard).join('')}</div>` : ''}`;
   el.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
     const g = groups[+b.dataset.req], out = b.dataset.out, n = g.rows.length + ' joueur' + (g.rows.length > 1 ? 's' : '');
+    const msg = b.closest('.po').querySelector('.msg');
     if(out === 'launch'){
+      if(!await ask('Lancer l\'agent pour « ' + g.name + ' » ?', 'Il vérifie l\'artiste et génère les cartes à son prochain passage : la génération consomme du crédit.', 'Lancer l\'agent')) return;
       const res = await sb.rpc('admin_job_launch', { p_ids: g.rows.map(x => x.id), p_artist: g.name });
-      if(res.error) return say(b, res.error.message);
+      if(res.error) return say(msg, frErr(res.error.message));
     } else {
-      if(!confirm(out === 'added' ? '« ' + g.name + ' » est-il déjà dans le jeu ? ' + n + ' vont recevoir « ' + g.name + ' débarque dans les paquets ». Pour le faire préparer, utilise plutôt « Lancer l\'agent ».'
-        : 'Refuser « ' + g.name + ' » et prévenir ' + n + ' ?')) return;
+      if(!await (out === 'added' ? ask('« ' + g.name + ' » est déjà dans le jeu ?', n + ' vont recevoir « ' + g.name + ' débarque dans les paquets ». Pour le faire préparer, utilise plutôt « Lancer l\'agent ».', 'Prévenir ' + n)
+        : ask('Refuser « ' + g.name + ' » ?', n + ' seront prévenus.', 'Refuser', true))) return;
       const res = await sb.rpc('admin_request_handle', { p_ids: g.rows.map(x => x.id), p_outcome: out });
-      if(res.error) return say(b, res.error.message);
+      if(res.error) return say(msg, frErr(res.error.message));
     }
     requests(el); pending();
   });
   el.querySelectorAll('[data-ja]').forEach(b => b.onclick = async () => {
     const box = b.closest('[data-job]'), j = jobs.find(x => x.id === +box.dataset.job), note = $('jn-' + j.id).value.trim(), msg = box.querySelector('.msg'), a = b.dataset.ja;
     if(a === 'go' && j.status === 'review' && !note) return say(msg, 'Écris ta décision pour l\'agent (ex. « OK, on l\'ajoute » ou « classe-le en Thrash »).');
-    if(a === 'refuse' && !confirm('Refuser « ' + j.artist + ' » et prévenir les demandeurs ?')) return;
-    if(a === 'publish' && !confirm('Publier « ' + j.artist + ' » : fusion dans main, seed appliquée, demandeurs prévenus ?')) return;
+    if(a === 'refuse' && !await ask('Refuser « ' + j.artist + ' » ?', 'Les demandeurs sont prévenus.', 'Refuser', true)) return;
+    if(a === 'publish' && !await ask('Publier « ' + j.artist + ' » ?', 'Fusion dans main, seed appliquée, demandeurs prévenus. Le jeu se met à jour dans une minute ou deux.', 'Publier')) return;
     b.disabled = true;
     if(a === 'publish'){
       const { data, error } = await sb.functions.invoke('artist-publish', { body: { job: j.id } });
-      if(error){ let m = error.message; try { m = (await error.context.json()).error || m; } catch(_){} b.disabled = false; return say(msg, m); }
+      if(error){ let m = frErr(error.message); try { m = (await error.context.json()).error || m; } catch(_){} b.disabled = false; return say(msg, m); }
       say(msg, `Publiée : en ligne dans une minute ou deux, ${data.told} joueur${data.told > 1 ? 's' : ''} prévenu${data.told > 1 ? 's' : ''}.`, true);
     } else {
       const res = await sb.rpc('admin_job_decide', { p_job: j.id, p_action: a, p_note: note || null });
-      if(res.error){ b.disabled = false; return say(msg, res.error.message); }
+      if(res.error){ b.disabled = false; return say(msg, frErr(res.error.message)); }
     }
     setTimeout(() => { requests(el); pending(); }, a === 'publish' ? 1500 : 0);
   });
@@ -900,7 +952,7 @@ async function challenges(el){
     if(row.title.length < 2){ msg.textContent = ' Titre trop court'; return; }
     b.disabled = true;
     try { await (id === 'new' ? sb.from('concert_challenges').insert(row) : sb.from('concert_challenges').update(row).eq('id', id)).then(must); await challenges(el); }
-    catch(e){ b.disabled = false; msg.textContent = ' ' + (e.message || e); }
+    catch(e){ b.disabled = false; msg.textContent = ' ' + frErr(e.message || e); }
   });
 }
 // preuves envoyées par les joueurs, validées d'office : on peut les voir et les annuler
@@ -919,12 +971,14 @@ async function proofs(el){
   el.querySelectorAll('[data-proof]').forEach(b => b.onclick = async () => {
     const p = picks[+b.closest('tr').dataset.i], w = window.open('', '_blank');
     try { const r = await sb.storage.from('concerts').createSignedUrl(p.proof_path, 600).then(must); w.location = r.signedUrl; }
-    catch(e){ w.close(); b.closest('tr').querySelector('.msg').textContent = ' ' + (e.message || e); }
+    catch(e){ w.close(); b.closest('tr').querySelector('.msg').textContent = ' ' + frErr(e.message || e); }
   });
   el.querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => {
-    const p = picks[+b.closest('tr').dataset.i]; b.disabled = true;
+    const p = picks[+b.closest('tr').dataset.i];
+    if(b.dataset.cancel === '1' && !await ask('Annuler cette preuve ?', 'Le défi est retiré au joueur, avec ses points. « Rétablir » le lui rend.', 'Annuler la preuve', true, 'Garder')) return;
+    b.disabled = true;
     try { await sb.rpc('admin_cancel_challenge', { p_concert: p.concert_id, p_challenge: p.challenge_id, p_cancel: b.dataset.cancel === '1' }).then(must); await proofs(el); }
-    catch(e){ b.disabled = false; b.closest('tr').querySelector('.msg').textContent = ' ' + (e.message || e); }
+    catch(e){ b.disabled = false; b.closest('tr').querySelector('.msg').textContent = ' ' + frErr(e.message || e); }
   });
 }
 
@@ -952,13 +1006,17 @@ async function team(el){
   const why = tr => { const r = $('team-why').value.trim(); if(!r){ say(tr.querySelector('.msg'), 'Indique d\'abord un motif.'); $('team-why').focus(); } return r; };
   el.querySelectorAll('[data-revoke]').forEach(b => b.onclick = async () => {
     const tr = b.closest('tr'), r = why(tr); if(!r) return;
+    if(!await ask('Retirer ' + tr.querySelector('b').textContent + ' de l\'équipe ?', 'Il perd l\'accès à l\'admin tout de suite. Motif : ' + r, 'Retirer', true)) return;
     const { error: e } = await sb.rpc('admin_revoke', { p_user: tr.dataset.u, p_reason: r });
-    if(e) say(tr.querySelector('.msg'), e.message); else team(el);
+    if(e) say(tr.querySelector('.msg'), frErr(e.message)); else team(el);
   });
   el.querySelectorAll('[data-role]').forEach(sel => sel.onchange = async () => {
-    const tr = sel.closest('tr'), r = why(tr); if(!r){ sel.value = sel.value === 'owner' ? 'admin' : 'owner'; return; }
+    const tr = sel.closest('tr'), r = why(tr), back = () => { sel.value = sel.value === 'owner' ? 'admin' : 'owner'; }; if(!r){ back(); return; }
+    const who = tr.querySelector('b').textContent;
+    if(!await (sel.value === 'owner' ? ask('Faire de ' + who + ' un Propriétaire ?', 'Il pourra nommer et retirer des admins, et changer les rôles. Motif : ' + r, 'Nommer Propriétaire')
+      : ask('Repasser ' + who + ' en Admin ?', 'Il ne pourra plus gérer l\'équipe. Motif : ' + r, 'Repasser en Admin'))){ back(); return; }
     const { error: e } = await sb.rpc('admin_set_role', { p_user: tr.dataset.u, p_role: sel.value, p_reason: r });
-    if(e){ say(tr.querySelector('.msg'), e.message); } else team(el);
+    if(e){ say(tr.querySelector('.msg'), frErr(e.message)); } else team(el);
   });
   $('adm-go').onclick = async () => {
     const email = $('adm-mail').value.trim(), reason = $('adm-why').value.trim();
@@ -966,7 +1024,7 @@ async function team(el){
     $('adm-go').disabled = true;
     const { data, error: e } = await sb.functions.invoke('admin-invite', { body: { email, reason } });
     $('adm-go').disabled = false;
-    if(e){ let m = e.message; try { m = (await e.context.json()).error || m; } catch(_){} return say($('adm-msg'), m); }
+    if(e){ let m = frErr(e.message); try { m = (await e.context.json()).error || m; } catch(_){} return say($('adm-msg'), m); }
     say($('adm-msg'), data.invited ? 'Invitation envoyée à ' + email + '. Il apparaît dans l\'équipe dès maintenant.' : email + ' est admin. À sa prochaine connexion à l\'admin, il activera la double authentification.', true);
     $('adm-mail').value = ''; $('adm-why').value = ''; setTimeout(() => team(el), 1200);
   };
@@ -1023,7 +1081,7 @@ async function account(el){
     const v = $('un').value.trim();
     if(!/^[A-Za-z0-9_.-]{3,20}$/.test(v)) return say($('un-msg'), 'Pseudo invalide : 3 à 20 caractères, lettres, chiffres, point, tiret ou tiret bas.');
     const { data, error } = await sb.rpc('set_username', { p_username: v });
-    if(error) return say($('un-msg'), error.message);
+    if(error) return say($('un-msg'), frErr(error.message));
     say($('un-msg'), 'Pseudo enregistré : ' + esc(data) + '.', true); setTimeout(() => account(el), 900);
   };
   $('pw-go').onclick = async () => {
@@ -1031,13 +1089,13 @@ async function account(el){
     if(a.length < 12) return say($('pw-msg'), '12 caractères minimum.');
     if(a !== b) return say($('pw-msg'), 'Les deux mots de passe ne correspondent pas.');
     const { error } = await sb.auth.updateUser({ password: a });
-    if(error) return say($('pw-msg'), error.message);
+    if(error) return say($('pw-msg'), frErr(error.message));
     $('pw1').value = $('pw2').value = ''; say($('pw-msg'), 'Mot de passe changé. Utilise-le à ta prochaine connexion.', true);
   };
   $('em-go').onclick = async () => {
     const email = $('em').value.trim(); if(!email) return say($('em-msg'), 'Indique une adresse.');
     const { error } = await sb.auth.updateUser({ email }, { emailRedirectTo: location.href.split('#')[0] });
-    if(error) return say($('em-msg'), error.message);
+    if(error) return say($('em-msg'), frErr(error.message));
     say($('em-msg'), 'Lien de confirmation envoyé. Selon les réglages, il faut confirmer depuis l\'ancienne et la nouvelle adresse.', true);
   };
   $('all-out').onclick = async () => { await sb.auth.signOut({ scope: 'global' }); route(); };

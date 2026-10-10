@@ -1955,7 +1955,7 @@
 <script src="sounds/manifest.js"></script>
 <script type="module">
 // Connexion au serveur : joueur anonyme + pseudo, tirage et collection côté serveur. Clé publique uniquement.
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm';   // version figée (même que l'admin)
 const sb = createClient('https://mdnevzmczljycmgbsrsu.supabase.co', 'sb_publishable_5icL9XXH9Hmn4sQMxm5F3Q_PtClnwQs');
 const must = r => { if(r.error) throw new Error(frMsg(r.error.message)); return r.data; };
 // ses propres lignes : toujours filtrées sur son compte (un admin a le droit de lire celles de tous les joueurs)
