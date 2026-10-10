@@ -434,12 +434,17 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.claimConcert = async id => { claimedId = id; return null; };
   fake9.challenges = async () => [{ id:'c1', title:'Circle pit', hint:'Un tour complet.', proof:'video', points:3, band_only:false }, { id:'c2', title:'Slam en bande', proof:'video', points:5, band_only:true }];
   fake9.pickChallenge = async (c, ch) => { picked = ch; gigs9.find(g => g.id === c).concert_picks = [{ challenge_id:ch, picked_early:false, done_at:null, cancelled:false, concert_challenges:{ title:'Circle pit', points:3, proof:'video' } }]; };
-  d9.querySelector('#gigs [data-act="claim"]').click(); await sleep(30);
+  d9.querySelector('#gigs [data-open="g1"]').click(); await sleep(30);
+  check('concerts : la fiche du concert s\'ouvre (objectifs, souvenirs)', !d9.getElementById('gigd-sheet').hidden && /Tes objectifs/.test(d9.getElementById('gigd-in').textContent) && /Tes souvenirs/.test(d9.getElementById('gigd-in').textContent));
+  d9.querySelector('#gigd-in [data-act="claim"]').click(); await sleep(30);
+  d9.getElementById('gigd-close').click();
   check('défis : talon passé validé', claimedId === 'g1');
   fake9.addConcert = async c => { gigs9.unshift({ id:'g2', artist:c.artist, musician_id:null, played_on:c.date, venue:null, city:null, photo_path:null, photo_public:false, claimed:false, concert_picks:[] }); return 'g2'; };
   d9.getElementById('gig-open').click(); await sleep(10);
   d9.getElementById('gig-artist').value = 'Gojira'; d9.getElementById('gig-date').value = iso9;
   d9.getElementById('gig-send').click(); await sleep(80);
+  d9.querySelector('#gigs [data-open="g2"]').click(); await sleep(30);
+  check('concerts : concert du jour, ticket de vestiaire proposé', /Photographier mon ticket/.test(d9.getElementById('gigd-in').textContent));
   d9.querySelector('.tl-acts[data-id="g2"] [data-act="pick"]').click(); await sleep(30);
   check('défis : liste de l\'admin, sans les défis en bande', !d9.getElementById('df-sheet').hidden && d9.querySelectorAll('#df-list .df-opt').length === 1);
   d9.querySelector('#df-list .df-opt').click(); await sleep(80);

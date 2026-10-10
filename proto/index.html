@@ -309,6 +309,17 @@
   .dance-t b{display:block; font:900 1rem/1.05 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--gold-hi)} .dance-t small{display:block; margin-top:3px; font:600 .7rem/1.2 var(--mono); color:var(--text)}
   .dance-n{position:absolute; top:6px; right:6px; min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:var(--accent); color:#fff; font:800 .72rem/22px var(--display); font-style:normal; text-align:center; box-shadow:0 0 0 2px var(--bg)}
   .now-g{font-style:normal; color:var(--gold-hi)}
+  /* concerts : accès à la fiche sous le talon, fiche (objectifs, souvenirs, ticket de vestiaire), visionneuse, découpe vidéo */
+  .talon[data-id]{cursor:pointer}
+  .tl-open{display:flex; align-items:center; gap:6px; width:100%; min-height:44px; padding:0 4px; border:0; background:none; color:var(--muted); font:600 .82rem var(--mono); text-align:left; cursor:pointer}
+  .tl-open b{color:var(--gold-hi)} .tl-open span{margin-left:auto; font-size:1.2rem; color:var(--gold-hi)} .tl-open .new-dot{position:static; flex:none; width:10px; height:10px; border-radius:50%; background:#e11d2e; box-shadow:0 0 8px #e11d2e}
+  #gigd-sheet .bsheet-in{max-height:90dvh; overflow-y:auto} .gigd-h{margin:18px 0 8px; font:400 1.35rem/1 var(--gothic); color:var(--text)}
+  .gigd-mem{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px} .gigd-mem button{padding:0; border:1px solid var(--border); border-radius:10px; background:var(--surface); overflow:hidden; color:var(--text); text-align:left; cursor:pointer}
+  .gm-m{display:block; aspect-ratio:1; background:#120d0a} .gm-m img, .gm-m video{display:block; width:100%; height:100%; object-fit:cover} .gigd-mem small{display:block; padding:6px 8px; font:600 .7rem/1.2 var(--mono); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .cloak{display:flex; gap:12px; align-items:flex-start} .cloak-ph{flex:none; width:110px; padding:0; border:1px solid var(--gold); border-radius:10px; overflow:hidden; background:none; cursor:pointer} .cloak-ph .gm-m{aspect-ratio:3 / 4} .cloak .pit-note{margin:0 0 8px; text-align:left}
+  .mview{position:fixed; inset:0; z-index:95; display:flex; align-items:center; justify-content:center; background:#000} .mview-in{width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:calc(56px + env(safe-area-inset-top)) 8px calc(16px + env(safe-area-inset-bottom))}
+  .mview-in img, .mview-in video{max-width:100%; max-height:100%; object-fit:contain} .mview .trade-x{position:fixed; z-index:2}
+  .trim-v{display:block; width:100%; max-height:46dvh; margin:12px 0; border-radius:12px; background:#000} #trim-r{width:100%; accent-color:var(--gold)} .trim-l{margin:6px 0; font:800 1.2rem var(--display); color:var(--gold-hi)}
   #call-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} .call-list{margin:8px 0 16px}
   .call-row{display:flex; align-items:center; gap:12px; min-height:56px; border-bottom:1px solid var(--border)} .call-row b{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700}
   .call-row .df{min-height:40px} .call-ok{font:600 .8rem var(--mono); color:var(--muted)}
@@ -1400,6 +1411,31 @@
     <p class="err" id="pf-err"></p>
   </div>
 </main>
+<div class="bsheet" id="gigd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="gigd-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <p class="eyebrow" id="gigd-t">Ton concert</p>
+    <div id="gigd-in"></div>
+    <input type="file" id="cloak-file" accept="image/*" capture="environment" hidden>
+    <button type="button" class="btn ghost block" id="gigd-close">Fermer</button>
+  </div>
+</div>
+<div class="mview" id="mview" hidden role="dialog" aria-modal="true" aria-label="En grand">
+  <button type="button" class="icon-btn trade-x" id="mview-x" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
+  <div class="mview-in" id="mview-in"></div>
+</div>
+<div class="pit" id="trim" hidden role="dialog" aria-modal="true" aria-labelledby="trim-t">
+  <div class="pit-in">
+    <p class="eyebrow">Ta preuve</p>
+    <h2 id="trim-t">Garde 10 secondes</h2>
+    <video class="trim-v" id="trim-v" playsinline muted></video>
+    <label class="pf-label" for="trim-r">Fais glisser pour choisir le passage</label>
+    <input type="range" id="trim-r" min="0" max="0" step="0.1" value="0">
+    <p class="trim-l num" id="trim-l"></p>
+    <p class="pit-note" id="trim-msg"></p>
+    <div class="pit-acts"><button type="button" class="btn" id="trim-go">Couper et envoyer</button><button type="button" class="btn ghost" id="trim-x">Annuler</button></div>
+  </div>
+</div>
 <div class="bsheet" id="power-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ps-t">
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
@@ -1950,7 +1986,7 @@ const api = {
     return (must(await sb.storage.from(bucket).createSignedUrl(path, 3600))).signedUrl;
   },
   // concerts : le fichier du billet ne quitte pas le téléphone ; photo souvenir dans le dossier du joueur (bucket « concerts »)
-  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, claimed, band_id, band_size, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
+  async concerts(){ return must(await sb.from('concerts').select('id, artist, musician_id, played_on, venue, city, photo_path, photo_public, cloak_path, claimed, band_id, band_size, concert_picks(challenge_id, picked_early, proof_path, proof_kind, proof_public, done_at, cancelled, band_bonus, concert_challenges(title, points, proof))').eq('user_id', await myId()).order('played_on', { ascending: false })); },
   async challenges(){ return must(await sb.from('concert_challenges').select('id, title, hint, proof, points, band_only').eq('active', true).order('sort')); },
   async pickChallenge(c, ch){ must(await sb.rpc('pick_challenge', { p_concert: c, p_challenge: ch })); },
   async unpickChallenge(c, ch){ must(await sb.rpc('unpick_challenge', { p_concert: c, p_challenge: ch })); },
@@ -1961,6 +1997,13 @@ const api = {
     must(await sb.storage.from('concerts').upload(path, blob, { contentType: blob.type || (kind === 'video' ? 'video/mp4' : 'image/jpeg'), upsert: false }));
     return must(await sb.rpc('complete_challenge', { p_concert: c, p_challenge: ch, p_path: path, p_kind: kind, p_public: !!pub }));
   },
+  // ticket de vestiaire : la photo va dans mon dossier du stockage privé, ma bande peut l'ouvrir
+  async setCloak(concert, blob, old){ const { data: { user } } = await sb.auth.getUser(), path = user.id + '/cloak-' + concert.slice(0, 8) + '-' + Date.now() + '.jpg';
+    must(await sb.storage.from('concerts').upload(path, blob, { contentType: 'image/jpeg', upsert: false }));
+    must(await sb.rpc('concert_set_cloak', { p_concert: concert, p_path: path }));
+    if(old) await sb.storage.from('concerts').remove([old]);   // l'ancienne photo, remplacée
+    return path; },
+  async clearCloak(concert, path){ must(await sb.rpc('concert_set_cloak', { p_concert: concert, p_path: null })); if(path) await sb.storage.from('concerts').remove([path]); },
   async claimConcert(id){ return must(await sb.rpc('claim_concert', { p_concert: id })); },
   // bandes : le même concert à plusieurs (code, invitation d'un pote, bonus quand toute la bande a relevé un défi)
   async bandCreate(concert){ return must(await sb.rpc('band_create', { p_concert: concert })); },
@@ -4553,7 +4596,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     box.innerHTML = '<div class="pf-row"><button type="button" class="btn" id="gig-open" aria-label="Ajouter un concert">+ Concert</button><button type="button" class="btn ghost" id="band-open">Code de bande</button></div>' +
       (bandInvites.length ? '<div class="band-inv">' + bandInvites.map(function(i){ var d = gigDate(i.played_on);
         return '<p><i class="new-dot" aria-hidden="true"></i><span><b>' + esc(i.from_name) + '</b> t\'invite dans sa bande pour <b>' + esc(i.artist) + '</b> · ' + d.day + ' ' + esc(d.month) + '</span><button type="button" class="df go" data-code="' + esc(i.code) + '">Rejoindre</button></p>'; }).join('') + '</div>' : '') + (list.length
-      ? '<div class="talons">' + list.map(function(c){ return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + gigActs(c) + '</div>'; }).join('') + '</div>'
+      ? '<div class="talons">' + list.map(function(c){ var n = (gigActs(c).match(/new-dot/g) || []).length;
+          return '<div class="gig">' + talonHtml(c, gigPhotoUrl[c.photo_path], true) + '<button type="button" class="tl-open" data-open="' + esc(c.id) + '">' + (n ? '<i class="new-dot" aria-hidden="true"></i><b>' + n + ' à faire</b> · ' : '') + 'Souvenirs et objectifs<span aria-hidden="true">›</span></button></div>'; }).join('') + '</div>'
       : '<div class="gig-empty"><div class="ge-talon" aria-hidden="true"><span>J\'y étais</span><b>Ton premier talon</b><i>?</i></div>' +
         '<p><b>« J\'y étais, j\'y vais »</b> : garde un talon pour chaque concert, vu ou à venir. Importe ton billet (il ne quitte pas ton téléphone) ou note-le à la main.</p>' +
         '<ul><li>Chaque concert vu : <b>3 points de rang</b>, et la carte Rare de l\'artiste la première fois.</li><li>Une mission t\'attend : la <b>photo souvenir</b> d\'un concert passé, ou un <b>défi photo ou vidéo le jour J</b>.</li><li>Viens à plusieurs : ta <b>bande</b> gagne des points en plus.</li></ul></div>');
@@ -4565,16 +4609,61 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       if(!confirm('Retirer ce concert de ta liste ?')) return;
       ONLINE.deleteConcert(id).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderCorner(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); });
     }; });
-    [].forEach.call(box.querySelectorAll('.tl-acts [data-act]'), function(b){ b.onclick = function(){
-      var id = b.closest('.tl-acts').getAttribute('data-id'), c = gigs.filter(function(x){ return x.id === id; })[0], act = b.getAttribute('data-act'), ch = b.getAttribute('data-ch');
-      if(act === 'pick') openDefis(c);
-      else if(act === 'unpick') ONLINE.unpickChallenge(id, ch).then(loadGigs, function(e){ toast(esc(e.message)); });
-      else if(act === 'prove') proveDefi(c, ch);
-      else if(act === 'claim') claimGig(c, b);
-      else if(act === 'band') openBand(c);
-      else if(act === 'photo'){ gigMission = c; gigEl('gig-mission').click(); }
-    }; });
+    [].forEach.call(box.querySelectorAll('[data-open]'), function(b){ b.onclick = function(){ openGigDetail(b.getAttribute('data-open')); }; });
+    [].forEach.call(box.querySelectorAll('.talon[data-id]'), function(t){ t.onclick = function(e){ if(!e.target.closest('.tl-x')) openGigDetail(t.getAttribute('data-id')); }; });
+    if(!gigdSheet.hidden) paintGigDetail();
   }
+  // une action d'un de mes concerts (défis, preuve, talon, bande, photo souvenir)
+  function gigAct(c, act, ch, b){
+    if(act === 'pick') openDefis(c);
+    else if(act === 'unpick') ONLINE.unpickChallenge(c.id, ch).then(loadGigs, function(e){ toast(esc(e.message)); });
+    else if(act === 'prove') proveDefi(c, ch);
+    else if(act === 'claim') claimGig(c, b);
+    else if(act === 'band') openBand(c);
+    else if(act === 'photo'){ gigMission = c; gigEl('gig-mission').click(); }
+  }
+  // ---------- Fiche d'un concert : talon, objectifs, souvenirs (photo souvenir, preuves), ticket de vestiaire ----------
+  var gigdSheet = document.getElementById('gigd-sheet'), gigdId = null, gigdUrls = {};
+  function openGigDetail(id){ gigdId = id; paintGigDetail(); gigdSheet.hidden = false; }
+  function cloakOpen(c){ var end = new Date(c.played_on + 'T12:00:00'); end.setDate(end.getDate() + 3); return new Date() <= end; }
+  function paintGigDetail(){
+    var c = (gigs || []).filter(function(x){ return x.id === gigdId; })[0]; if(!c){ gigdSheet.hidden = true; return; }
+    var mem = (c.photo_path ? [{kind:'photo', path:c.photo_path, label:'Photo souvenir'}] : []).concat((c.concert_picks || []).filter(function(p){ return p.done_at && !p.cancelled && p.proof_path; })
+      .map(function(p){ return {kind:p.proof_kind === 'video' ? 'video' : 'photo', path:p.proof_path, label:(p.concert_challenges || {}).title || 'Défi'}; }));
+    var acts = gigActs(c);
+    document.getElementById('gigd-in').innerHTML = talonHtml(c, gigPhotoUrl[c.photo_path], false) +
+      '<h3 class="gigd-h">Tes objectifs</h3>' + (acts || '<p class="pit-note">Rien à faire pour ce concert.</p>') +
+      '<h3 class="gigd-h">Tes souvenirs</h3>' + (mem.length ? '<div class="gigd-mem">' + mem.map(function(m, i){
+        return '<button type="button" data-mem="' + i + '" aria-label="Voir en grand : ' + esc(m.label) + '"><span class="gm-m" data-path="' + esc(m.path) + '" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? '▶ ' : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
+        : '<p class="pit-note">Pas encore de souvenir : la photo souvenir et tes défis photo ou vidéo s\'afficheront ici.</p>') +
+      (cloakOpen(c) ? '<h3 class="gigd-h">Ticket de vestiaire</h3>' + (c.cloak_path
+        ? '<div class="cloak"><button type="button" class="cloak-ph" data-cloak-view aria-label="Voir le ticket en grand"><span class="gm-m" data-path="' + esc(c.cloak_path) + '" data-kind="photo"></span></button><div><p class="pit-note">' + (c.band_id ? 'Ta bande peut l\'ouvrir sur son téléphone jusqu\'à 3 jours après le concert.' : 'Monte ta bande pour qu\'elle puisse l\'ouvrir si tu perds ton téléphone.') + '</p><button type="button" class="df" data-cloak-new>Remplacer</button> <button type="button" class="df" data-cloak-del>Retirer</button></div></div>'
+        : '<button type="button" class="btn ghost block" data-cloak-new>Photographier mon ticket</button><p class="pit-note">Si tu perds ton téléphone, ta bande pourra l\'ouvrir sur le sien.</p>') : '');
+    var box = document.getElementById('gigd-in');
+    [].forEach.call(box.querySelectorAll('.tl-acts [data-act]'), function(b){ b.onclick = function(){ gigAct(c, b.getAttribute('data-act'), b.getAttribute('data-ch'), b); }; });
+    [].forEach.call(box.querySelectorAll('.gm-m'), function(el){ var path = el.getAttribute('data-path'), put = function(u){ if(!u) return;
+        el.innerHTML = el.getAttribute('data-kind') === 'video' ? '<video src="' + esc(u) + '#t=0.5" muted playsinline preload="metadata"></video>' : '<img src="' + esc(u) + '" alt="">'; el.setAttribute('data-url', u); };
+      if(gigdUrls[path]) put(gigdUrls[path]); else ONLINE.mediaUrl('concerts', path).then(function(u){ gigdUrls[path] = u; put(u); }).catch(function(){}); });
+    [].forEach.call(box.querySelectorAll('[data-mem]'), function(b){ b.onclick = function(){ var m = b.querySelector('.gm-m'); openMedia(m.getAttribute('data-url'), m.getAttribute('data-kind')); }; });
+    var cv = box.querySelector('[data-cloak-view]'); if(cv) cv.onclick = function(){ openMedia(cv.querySelector('.gm-m').getAttribute('data-url'), 'photo'); };
+    [].forEach.call(box.querySelectorAll('[data-cloak-new]'), function(b){ b.onclick = function(){ document.getElementById('cloak-file').click(); }; });
+    var cd = box.querySelector('[data-cloak-del]'); if(cd) cd.onclick = function(){ if(!confirm('Retirer la photo du ticket de vestiaire ?')) return; cd.disabled = true;
+      ONLINE.clearCloak(c.id, c.cloak_path).then(function(){ c.cloak_path = null; paintGigDetail(); toast('Ticket retiré.'); }, function(e){ cd.disabled = false; toast(esc(e.message)); }); };
+    rise('#gigd-in > *', {stagger:.04});
+  }
+  document.getElementById('gigd-close').onclick = function(){ gigdSheet.hidden = true; };
+  gigdSheet.addEventListener('click', function(e){ if(e.target === gigdSheet) gigdSheet.hidden = true; });
+  document.getElementById('cloak-file').onchange = async function(){ var inp = this, f = inp.files[0]; inp.value = ''; if(!f) return;
+    var c = (gigs || []).filter(function(x){ return x.id === gigdId; })[0]; if(!c) return;
+    try{ toast('Envoi du ticket…'); c.cloak_path = await ONLINE.setCloak(c.id, await shrinkPhoto(f, 1600), c.cloak_path);
+      paintGigDetail(); toast('Ticket enregistré. ' + (c.band_id ? 'Ta bande peut l\'ouvrir.' : 'Monte ta bande pour qu\'elle puisse l\'ouvrir.')); snd('reward');
+    }catch(e){ toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); } };
+  // souvenir ou ticket en grand
+  var mviewEl = document.getElementById('mview');
+  function openMedia(url, kind){ if(!url) return;
+    document.getElementById('mview-in').innerHTML = kind === 'video' ? '<video src="' + esc(url) + '" controls autoplay playsinline></video>' : '<img src="' + esc(url) + '" alt="">'; mviewEl.hidden = false; }
+  document.getElementById('mview-x').onclick = function(){ mviewEl.hidden = true; document.getElementById('mview-in').innerHTML = ''; };
+
   // défis de concert : liste de l'admin (ceux « en bande » seulement dans une bande)
   var defis = null, dfSheet = document.getElementById('df-sheet');
   // ---------- Bandes : le même concert à plusieurs ----------
@@ -4597,7 +4686,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('band-for').textContent = b.artist + ' · ' + d.day + ' ' + d.month + ' ' + d.year + (alone ? ' · à deux au moins, les défis en bande s\'ouvrent' : ' · bande de ' + b.members.length + ' : +' + bandBonus(b.members.length) + ' point' + (bandBonus(b.members.length) > 1 ? 's' : '') + ' au talon validé') + '. Jusqu\'à +5 à six.';
     document.getElementById('band-in').innerHTML = '<ul class="band-ms">' + b.members.map(function(m){
         return '<li><div><b>' + esc(m.name) + '</b>' + (m.me ? '<small>toi</small>' : m.host ? '<small>a monté la bande</small>' : '') +
-          (m.done.length ? '<span>' + m.done.map(function(t){ return '✓ ' + esc(t); }).join(' · ') + '</span>' : '') + '</div>' +
+          (m.done.length ? '<span>' + m.done.map(function(t){ return '✓ ' + esc(t); }).join(' · ') + '</span>' : '') +
+          (m.cloak && !m.me ? '<button type="button" class="df" data-cloak="' + esc(m.cloak) + '">Ticket de vestiaire</button>' : '') + '</div>' +
           (m.me ? '' : mine.indexOf(m.id) !== -1 ? '<span class="df">Pote ✓</span>' : '<button type="button" class="df" data-p="' + esc(m.id) + '">+ Pote</button>') + '</li>'; }).join('') + '</ul>' +
       '<p class="eyebrow">Le code de la bande</p><div class="gframe tr-qr-f"><div class="tr-qr" id="band-qr" role="img" aria-label="QR code de la bande"></div></div><p class="tr-code num">' + esc(b.code.slice(0, 3) + ' ' + b.code.slice(3)) + '</p>' +
       '<button type="button" class="btn block" id="band-share">Envoyer le lien</button>' +
@@ -4607,6 +4697,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('band-share').onclick = function(){ var url = bandLink(b.code), txt = 'Rejoins ma bande pour ' + b.artist + ' sur Metalnini. Code : ' + b.code;
       if(navigator.share) navigator.share({title:'Metalnini', text:txt, url:url}).catch(function(){});
       else (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ toast('Lien copié. Envoie-le à ta bande.'); }, function(){ toast('Code à donner : ' + esc(b.code)); }); };
+    [].forEach.call(document.querySelectorAll('#band-in [data-cloak]'), function(btn){ btn.onclick = function(){ ONLINE.mediaUrl('concerts', btn.getAttribute('data-cloak')).then(function(u){ openMedia(u, 'photo'); }, function(e){ toast(esc(e.message)); }); }; });
     [].forEach.call(document.querySelectorAll('#band-in [data-p]'), function(btn){ btn.onclick = function(){ btn.disabled = true;
       ONLINE.bandAddFriend(b.id, btn.getAttribute('data-p')).then(function(name){ btn.outerHTML = '<span class="df">Pote ✓</span>'; snd('trade-join'); toast('<b>' + esc(name) + '</b> rejoint tes potes.'); },
         function(e){ btn.disabled = false; toast(esc(e.message)); }); }; });
@@ -4649,6 +4740,39 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   document.getElementById('df-cancel').onclick = function(){ dfSheet.hidden = true; };
   dfSheet.addEventListener('click', function(e){ if(e.target === dfSheet) dfSheet.hidden = true; });
+  // découpe : je choisis 10 s dans une vidéo plus longue, l'app les réenregistre sur le téléphone (image dessinée sur un canevas,
+  // son pris par Web Audio, MediaRecorder) ; sans ces outils, on demande de la couper dans Photos
+  function trimVideo(f){ return new Promise(function(ok, ko){
+    var C = window.MediaRecorder, can = document.createElement('canvas');
+    if(!C || !can.captureStream) return ko(new Error('Vidéo trop longue : coupe-la à 10 secondes dans Photos, puis réessaie.'));
+    var el = document.getElementById('trim'), v = document.getElementById('trim-v'), r = document.getElementById('trim-r'), lab = document.getElementById('trim-l'), msg = document.getElementById('trim-msg'), go = document.getElementById('trim-go'), url = URL.createObjectURL(f), dur = 0;
+    var mmss = function(t){ t = Math.max(0, Math.round(t)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+    var paint = function(){ var a = +r.value; lab.textContent = mmss(a) + ' → ' + mmss(a + 10); };
+    var close = function(){ el.hidden = true; v.pause(); v.removeAttribute('src'); v.load(); URL.revokeObjectURL(url); };
+    v.src = url; v.onloadedmetadata = function(){ dur = v.duration; r.max = Math.max(0, dur - 10).toFixed(1); r.value = 0; paint(); v.currentTime = 0; v.play().catch(function(){}); };
+    v.ontimeupdate = function(){ if(v.currentTime > +r.value + 10 || v.currentTime < +r.value - .3) v.currentTime = +r.value; };
+    r.oninput = function(){ paint(); v.currentTime = +r.value; };
+    msg.textContent = ''; go.disabled = false; el.hidden = false;
+    document.getElementById('trim-x').onclick = function(){ close(); var e = new Error(''); e.cancel = true; ko(e); };
+    go.onclick = function(){ go.disabled = true; msg.textContent = 'Découpe en cours… 10 secondes.'; v.pause();
+      var a = +r.value, src = document.createElement('video'); src.src = url; src.playsInline = true; src.preload = 'auto';
+      src.onloadedmetadata = function(){
+        var k = Math.min(1, 1280 / Math.max(src.videoWidth, src.videoHeight)), w = Math.round(src.videoWidth * k / 2) * 2, h = Math.round(src.videoHeight * k / 2) * 2, g2 = can.getContext('2d');
+        can.width = w; can.height = h;
+        var stream = can.captureStream(30), ctx = sndInit();
+        if(ctx){ try{ var dst = ctx.createMediaStreamDestination(); ctx.createMediaElementSource(src).connect(dst); dst.stream.getAudioTracks().forEach(function(t){ stream.addTrack(t); }); }catch(_){} }
+        var type = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].filter(function(t){ return C.isTypeSupported && C.isTypeSupported(t); })[0] || '';
+        var rec = new C(stream, type ? {mimeType:type, videoBitsPerSecond:4e6} : {videoBitsPerSecond:4e6}), parts = [];
+        rec.ondataavailable = function(e){ if(e.data && e.data.size) parts.push(e.data); };
+        rec.onstop = function(){ close(); ok(new Blob(parts, {type:(rec.mimeType || type || 'video/mp4').split(';')[0]})); };
+        src.currentTime = a;
+        src.onseeked = function(){ src.onseeked = null; rec.start(250);
+          src.play().then(function(){ (function draw(){ g2.drawImage(src, 0, 0, w, h); msg.textContent = 'Découpe en cours… ' + Math.max(0, Math.ceil(a + 10 - src.currentTime)) + ' s';
+            if(src.currentTime >= a + 10 || src.ended){ src.pause(); rec.stop(); return; } requestAnimationFrame(draw); })(); },
+            function(){ close(); ko(new Error('Découpe impossible : coupe-la à 10 secondes dans Photos, puis réessaie.')); }); };
+      };
+    };
+  }); }
   function videoLength(f){ return new Promise(function(ok){ var v = document.createElement('video'), u = URL.createObjectURL(f); v.preload = 'metadata';
     v.onloadedmetadata = function(){ URL.revokeObjectURL(u); ok(v.duration || 0); }; v.onerror = function(){ URL.revokeObjectURL(u); ok(0); }; v.src = u; }); }
   // preuve : photo réduite, ou vidéo de 10 s au plus (30 Mo) envoyée telle quelle ; validée tout de suite, l'admin contrôle après
@@ -4659,15 +4783,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       try{
         var blob = f;
         if(ch.proof === 'video'){
-          if(await videoLength(f) > 10.5) throw new Error('Vidéo trop longue : 10 secondes au plus.');
-          if(f.size > 30 * 1048576) throw new Error('Vidéo trop lourde : 30 Mo au plus.');
+          if(await videoLength(f) > 10.5) blob = await trimVideo(f);
+          if(blob.size > 30 * 1048576) throw new Error('Vidéo trop lourde : 30 Mo au plus.');
         } else blob = await shrinkPhoto(f, 1600);
         var pub = confirm('Montrer cette preuve à tes potes ?');
         toast('Envoi de la preuve…');
         var pts = await ONLINE.proveChallenge(c.id, chId, blob, ch.proof, pub);
         snd('reward'); toast('Défi relevé : +' + pts + ' point' + (pts > 1 ? 's' : '') + ' de rang.');
         await loadGigs();
-      }catch(e){ toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); }
+      }catch(e){ if(e && e.cancel) return; toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); }
     };
     inp.click();
   }
