@@ -426,6 +426,9 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('concerts : enregistré avec le musicien du jeu, talon affiché', added && added.musician === 'korn' && added.date === '2026-06-20' && d9.getElementById('gig-sheet').hidden && /Korn/.test(d9.querySelector('#gigs .talon').textContent));
   d9.getElementById('pf-pub-open').click(); await sleep(20);
   check('concerts : talon sur le profil public', /Les talons · 1 concert/.test(d9.getElementById('pub-in').textContent));
+  d9.querySelector('#pub-in [data-pg="0"]').click(); await sleep(30);
+  check('concerts : sur le profil, le talon ouvre ses souvenirs partagés', !d9.getElementById('pubgig-sheet').hidden && !!d9.querySelector('#pubgig-in .talon'));
+  d9.getElementById('pubgig-close').click();
   d9.getElementById('pub-x').click();
 
   // 15. Défis de concert : talon passé à valider (carte bonus), défi choisi pour un concert du jour, puis bouton de preuve
@@ -546,7 +549,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.pogoRunStart = async () => pogoCopy();
   fake9.pogoRunFinish = async (id, e, f) => { pogoRun = { e, f }; pogoSt.players[3].energy = e; pogoSt.players[3].fell = f; pogoSt.can_lift = !f; return pogoCopy(); };
   fake9.pogoLift = async (id, u) => { pogoLifted = u; pogoSt.players[1].lifted = true; pogoSt.players[1].lifter = 'Moi'; return pogoCopy(); };
-  fake9.pogoClaim = async () => { pogoClaimed++; return { result:'won', stake:{ m:'morello', r:'commune' }, won:[{ m:'morello', r:'commune' }], points:2, energy:5, fell:false, lifter:null }; };
+  fake9.pogoClaim = async () => { pogoClaimed++; return { result:'won', stake:{ m:'morello', r:'commune' }, won:[{ m:'morello', r:'commune', prime:true }], points:2, energy:5, fell:false, lifter:null }; };
   fake9.pogoMission = async k => { pogoMission = k; pogoMissions[1].claimed = true; return { kind:'points', points:2 }; };
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
   check('pogo : pote à terre, pogo ouvert, mission de la semaine', !d9.getElementById('pogo-sec').hidden && !!d9.querySelector('#pogos [data-lift="g1|f2"]') && !!d9.querySelector('#pogos [data-pogo="g1"]') && /Pogo de la semaine : 1\/3/.test(d9.getElementById('pogos').textContent));
@@ -560,6 +563,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.querySelector('#pogos [data-lift="g1|f2"]').click(); await sleep(60);
   check('pogo : relever un pote à terre', pogoLifted === 'f2');
   d9.querySelector('#pogos [data-pogo="g1"]').click(); await sleep(60);
+  check('pogo : avant d\'entrer, les gains sont annoncés (prime, cartes en jeu)', /La prime/.test(d9.getElementById('pogo-in').textContent) && /cartes? en jeu/.test(d9.getElementById('pogo-in').textContent));
   check('pogo : avant d\'entrer, la mise est annoncée', !d9.getElementById('pogo').hidden && /miser une Commune/.test(d9.getElementById('pogo-join').textContent) && pogoJoined === 0);
   d9.getElementById('pogo-join').click(); await sleep(60);
   check('pogo : pas encore dansé, pas de bouton Relever', !d9.querySelector('#pogo-in [data-up]'));
@@ -576,7 +580,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   pogoSt.over = true; pogoSt.ends_at = new Date(Date.now() - 1000).toISOString();
   d9.getElementById('pogo-x').click(); await sleep(20); d9.querySelector('#pogos [data-pogo="g1"]').click(); await sleep(60);
   d9.getElementById('pogo-claim').click(); await sleep(80);
-  check('pogo : ramassage, mise rendue et carte ramassée', pogoClaimed === 1 && /Tu ramasses 1 carte/.test(d9.getElementById('pogo-in').textContent) && d9.querySelectorAll('.pogo-loot .pogo-c').length === 2);
+  check('pogo : ramassage, mise rendue et prime remportée', pogoClaimed === 1 && /Tu remportes la prime/.test(d9.getElementById('pogo-in').textContent) && !!d9.querySelector('.pogo-prime') && d9.querySelectorAll('.pogo-loot .pogo-c').length === 2);
   d9.getElementById('pogo-done').click(); await sleep(20);
   d9.querySelector('#pogo-quests [data-pm="first"]').click(); await sleep(80);
   check('pogo : mission récupérée', pogoMission === 'first');

@@ -301,6 +301,9 @@
   .pogo-list{margin:0 0 12px; padding:0; list-style:none; text-align:left} .pogo-list li{display:flex; align-items:center; gap:10px; min-height:52px; padding:6px 0; border-bottom:1px solid var(--border)}
   .pogo-list li > span:not(.pit-av){flex:1; min-width:0} .pogo-list b{display:block; font-weight:700; font-size:.92rem; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .pogo-list small{font:500 .76rem/1.3 var(--mono); color:var(--muted)} .pogo-list li.down small{color:var(--accent-text)}
   #pogo-run{margin-bottom:10px}
+  .pogo-gain{display:grid; gap:8px; margin:0 0 14px; padding:12px 14px; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:linear-gradient(180deg, rgba(235,154,38,.1), rgba(235,154,38,0)); text-align:left}
+  .pogo-gain small{font:600 .68rem var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .pogo-gain span{font:500 .82rem/1.35 var(--mono); color:var(--muted)} .pogo-gain b{display:block; font:800 .95rem/1.2 var(--display); letter-spacing:.04em; text-transform:uppercase; color:var(--gold-hi)}
+  .pogo-prime{position:relative; display:flex; flex-direction:column; align-items:center; gap:4px} .pogo-prime small{font:800 .7rem var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--gold-hi)}
   /* les danses : une carte illustrée par mini-jeu, trois sur une ligne, carrousel au-delà ; le nom posé sur l'illustration */
   .dance-row{display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 -16px; padding:4px 16px 8px; scroll-padding:0 16px} .dance-row::-webkit-scrollbar{display:none}
   .dance-t{position:relative; flex:0 0 calc((100% - 20px) / 3); min-width:100px; aspect-ratio:3 / 4; scroll-snap-align:start; padding:0; border:1px solid rgba(235,154,38,.45); border-radius:14px; background:#120d0a; overflow:hidden; color:var(--text); text-align:left; cursor:pointer; box-shadow:0 10px 22px rgba(0,0,0,.5)}
@@ -319,6 +322,12 @@
   .cloak{display:flex; gap:12px; align-items:flex-start} .cloak-ph{flex:none; width:110px; padding:0; border:1px solid var(--gold); border-radius:10px; overflow:hidden; background:none; cursor:pointer} .cloak-ph .gm-m{aspect-ratio:3 / 4} .cloak .pit-note{margin:0 0 8px; text-align:left}
   .mview{position:fixed; inset:0; z-index:95; display:flex; align-items:center; justify-content:center; background:#000} .mview-in{width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:calc(56px + env(safe-area-inset-top)) 8px calc(16px + env(safe-area-inset-bottom))}
   .mview-in img, .mview-in video{max-width:100%; max-height:100%; object-fit:contain} .mview .trade-x{position:fixed; z-index:2}
+  #cam, #trim{z-index:92}
+  #pubgig-sheet{z-index:78} #pubgig-sheet .gigd-mem{margin-top:12px} .pub-gig{cursor:pointer}   /* au-dessus du profil public */
+  #cam-acts:has(> :only-child){grid-template-columns:1fr}   /* au-dessus de la fiche du concert d'où on les ouvre */
+  .cam-box{position:relative; margin:12px 0; border-radius:14px; overflow:hidden; background:#000; aspect-ratio:9 / 16; max-height:58dvh; margin-left:auto; margin-right:auto}
+  .cam-box video{display:block; width:100%; height:100%; object-fit:cover} .cam-count{position:absolute; inset:0; display:grid; place-items:center; font:900 5rem/1 var(--display); color:var(--gold-hi); text-shadow:0 4px 20px rgba(0,0,0,.8); pointer-events:none}
+  .cam-bar{position:absolute; left:0; bottom:0; height:6px; width:0; background:var(--accent)} #vid-pick .btn{margin-bottom:8px}
   .trim-v{display:block; width:100%; max-height:46dvh; margin:12px 0; border-radius:12px; background:#000} #trim-r{width:100%; accent-color:var(--gold)} .trim-l{margin:6px 0; font:800 1.2rem var(--display); color:var(--gold-hi)}
   #call-sheet .bsheet-in{max-height:86dvh; overflow-y:auto} .call-list{margin:8px 0 16px}
   .call-row{display:flex; align-items:center; gap:12px; min-height:56px; border-bottom:1px solid var(--border)} .call-row b{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700}
@@ -1424,6 +1433,33 @@
   <button type="button" class="icon-btn trade-x" id="mview-x" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="mview-in" id="mview-in"></div>
 </div>
+<div class="bsheet" id="pubgig-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="pubgig-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <p class="eyebrow" id="pubgig-t">Souvenirs du concert</p>
+    <div id="pubgig-in"></div>
+    <button type="button" class="btn ghost block" id="pubgig-close">Fermer</button>
+  </div>
+</div>
+<div class="bsheet" id="vid-pick" hidden role="dialog" aria-modal="true" aria-labelledby="vp-t">
+  <div class="bsheet-in">
+    <i class="grab" aria-hidden="true"></i>
+    <h2 id="vp-t">Ta preuve vidéo</h2>
+    <p class="pf-note">10 secondes au plus. Filme sur le vif, ou choisis une vidéo déjà prise (tu pourras la couper).</p>
+    <button type="button" class="btn block" id="vp-cam">Filmer maintenant</button>
+    <button type="button" class="btn ghost block" id="vp-roll">Choisir dans ma pellicule</button>
+    <button type="button" class="btn ghost block" id="vp-x">Plus tard</button>
+  </div>
+</div>
+<div class="pit" id="cam" hidden role="dialog" aria-modal="true" aria-labelledby="cam-t">
+  <div class="pit-in">
+    <p class="eyebrow">Ta preuve</p>
+    <h2 id="cam-t">Filme 10 secondes</h2>
+    <div class="cam-box"><video id="cam-v" playsinline muted autoplay></video><b class="cam-count num" id="cam-count"></b><i class="cam-bar" id="cam-bar"></i></div>
+    <p class="pit-note" id="cam-msg"></p>
+    <div class="pit-acts" id="cam-acts"></div>
+  </div>
+</div>
 <div class="pit" id="trim" hidden role="dialog" aria-modal="true" aria-labelledby="trim-t">
   <div class="pit-in">
     <p class="eyebrow">Ta preuve</p>
@@ -1762,7 +1798,7 @@
   <button type="button" class="icon-btn trade-x" id="salle-x" aria-label="Revenir à la fosse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <div class="salle-hero"><img id="salle-img" alt=""><div class="salle-cap"><h2 class="salle-t" id="salle-t"></h2><p class="salle-tag" id="salle-tag"></p></div></div>
   <div class="salle-in">
-  <section class="salle-p" id="pogo-sec" data-dance="pogo" hidden><div class="fs-how how" id="pogo-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304z"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/></svg></i><span><b>Choisis la mise</b>Chaque danseur y laisse une carte de cette rareté, tirée au hasard. Même sa dernière.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg></i><span><b>Danse 15 s</b>Touche le côté d’où ils foncent pour les renvoyer. 4 coups pris et tu tombes.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Relève dans la fosse</b>Resté debout, tu peux relever une personne à terre. Sans relève, elle perd sa carte.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21l8 0"/><path d="M12 17l0 4"/><path d="M7 4l10 0"/><path d="M17 4v8a5 5 0 0 1 -10 0v-8"/><path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/></svg></i><span><b>Ramasse</b>Le premier tiers des danseurs restés debout seuls ramasse les cartes tombées. 3 danseurs au moins.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Cartes ramassées</span><span>Points de rang</span><span>Missions de pogo</span></p></div>
+  <section class="salle-p" id="pogo-sec" data-dance="pogo" hidden><div class="fs-how how" id="pogo-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304z"/><path d="M15 4h1a1 1 0 0 1 1 1v3.5"/><path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374"/></svg></i><span><b>Choisis la mise</b>Chaque danseur y laisse une carte de cette rareté, tirée au hasard. Même sa dernière.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/></svg></i><span><b>Danse 15 s</b>Touche le côté d’où ils foncent pour les renvoyer. 4 coups pris et tu tombes.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Relève dans la fosse</b>Resté debout, tu peux relever une personne à terre. Sans relève, elle perd sa carte.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21l8 0"/><path d="M12 17l0 4"/><path d="M7 4l10 0"/><path d="M17 4v8a5 5 0 0 1 -10 0v-8"/><path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/></svg></i><span><b>Gagne</b>Le meilleur danseur resté debout seul remporte la prime : une carte de la rareté misée. Le premier tiers ramasse aussi les cartes tombées. 3 danseurs au moins.</span></li></ol><p class="how-gain"><small>À gagner</small><span>La prime : 1 carte de la mise</span><span>Cartes ramassées</span><span>Points de rang</span><span>Missions de pogo</span></p></div>
     <div id="pogos"></div></section>
   <section class="salle-p" id="pit-sec" data-dance="pit" hidden><div class="fs-how how" id="pit-how"><ol class="how-steps"><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M9 17v-13h10v13"/><path d="M9 8h10"/></svg></i><span><b>Lance sur un morceau</b>Tes potes sont prévenus : ils ont 15 minutes pour venir.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/></svg></i><span><b>Fais tourner le pit</b>Dessine des cercles du doigt pendant 20 s, à la bonne vitesse.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"/></svg></i><span><b>Le cercle accélère</b>Chaque course rend le pit plus rapide pour le suivant.</span></li><li><i class="hs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg></i><span><b>Gagnez ensemble</b>Plus de courses, plus de précision : meilleur palier pour tous.</span></li></ol><p class="how-gain"><small>À gagner</small><span>Points de rang</span><span>Carte ou paquet aux hauts paliers</span><span>3 pits récompensés par jour</span></p></div>
     <div id="pits"></div></section>
@@ -2629,7 +2665,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       api.claims().then(function(keys){ state.claims = {}; keys.forEach(function(k){ state.claims[k] = true; }); save(); renderGoals(); }).catch(function(){});
       if(pendingTroc){ var troc = pendingTroc; pendingTroc = null; setTimeout(function(){ cornerTab('potes'); go('corner'); tradeJoin(troc); }, 600); }
       if(pendingBand){ var bd = pendingBand; pendingBand = null; setTimeout(function(){ cornerTab('fosse'); go('corner'); bandJoin(bd); }, 600); }
-      if(pendingSlam || pendingPote || pendingPit || pendingPogo || pendingVue){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || '') + '&pogo=' + (pendingPogo || '') + '&vue=' + (pendingVue || ''); pendingSlam = pendingPote = pendingPit = pendingPogo = pendingVue = null; setTimeout(function(){ openLink(lk); }, 600); }
+      if(pendingSlam || pendingPote || pendingPit || pendingPogo || pendingProfil || pendingVue){ var lk = '?slam=' + (pendingSlam || '') + '&pote=' + (pendingPote || '') + '&pit=' + (pendingPit || '') + '&pogo=' + (pendingPogo || '') + '&profil=' + (pendingProfil || '') + '&vue=' + (pendingVue || ''); pendingSlam = pendingPote = pendingPit = pendingPogo = pendingProfil = pendingVue = null; setTimeout(function(){ openLink(lk); }, 600); }
       else api.tradeActive().then(function(t){ if(t && !trade){ trade = t; tradeWatch(); paintPill(); } }).catch(function(){});
       api.tradeInvites().then(function(list){ if(list && list.length && !pendingTroc) setTimeout(function(){ toast('<b>' + esc(list[0].from_name || 'Un pote') + '</b> te propose un échange. Rendez-vous dans Metal Corner.'); }, 2600); }).catch(function(){});   // échange en cours retrouvé : la pastille permet d'y revenir
       refreshMedia(function(){ sendLocalCry(); });
@@ -2761,7 +2797,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       '<section class="pub-sec"><p class="eyebrow">Les pin\'s de maîtrise</p>' + (d.pins.length ? '<div class="pub-pins">' + d.pins.map(function(k){ var p = k.split('|');
         return '<i class="pin" role="img" aria-label="Maîtrise de ' + esc(card(p[0]).who) + '" style="background-image:url(' + kImg(k) + ')"></i>'; }).join('') + '</div>' : '<p class="pub-empty">Les 5 raretés d\'un même musicien : le premier pin\'s.</p>') + '</section>' +
       (d.concerts.length ? '<section class="pub-sec"><p class="eyebrow">Les talons · ' + d.concerts.length + ' concert' + (d.concerts.length > 1 ? 's' : '') + (gigTitle(d.concerts.length).label ? ' · ' + esc(gigTitle(d.concerts.length).label) : '') + '</p><div class="talons">' +
-        d.concerts.map(function(c){ return talonHtml(c, c.photo); }).join('') + '</div></section>' : '') +
+        d.concerts.map(function(c, i){ return '<div class="pub-gig" role="button" tabindex="0" data-pg="' + i + '" aria-label="Souvenirs du concert de ' + esc(c.artist) + '">' + talonHtml(c, c.photo) + '</div>'; }).join('') + '</div></section>' : '') +
       '<section class="pub-sec"><p class="eyebrow">La setlist</p><div class="pub-stats">' +
         '<div><b>' + d.stats.cards + '<small style="font-size:.55em; color:var(--muted)">/' + d.stats.total + '</small></b><span>musiciens</span></div>' +
         '<div><b>' + d.stats.legend + '</b><span>Légendaire' + (d.stats.legend > 1 ? 's' : '') + '</span></div>' +
@@ -2769,12 +2805,30 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         '<div><b style="font-size:1.15rem; line-height:1.15">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>' +
       (d.friend ? '<section class="pub-sec"><p class="eyebrow">Il lui manque, tu l\'as en double</p>' + (d.missing.length ? '<div class="pub-miss">' + d.missing.map(function(k){ return '<img src="' + kImg(k) + '" alt="' + esc(card(k.split('|')[0]).who) + '">'; }).join('') + '</div>' : '<p class="pub-empty">Rien pour l\'instant : tes doublons, il les a déjà.</p>') +
         '<button type="button" class="btn block" id="pub-trade" style="margin-top:14px">Lui proposer un échange</button></section>' : '');
+    [].forEach.call(document.querySelectorAll('#pub-in [data-pg]'), function(el){ el.onclick = function(){ openPubGig(d.concerts[+el.getAttribute('data-pg')]); }; });
     var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ cryPlay(new Audio(d.cry)).catch(function(){ toast('Lecture impossible : recharge l\'app et réessaie.'); }); };
     var pt = document.getElementById('pub-trade'); if(pt) pt.onclick = function(){ closePub(); inviteFriend(d.friend, pt); };
     [].forEach.call(document.querySelectorAll('.pub-fan button'), function(b){ b.onclick = function(){ if(!d.own) return; closePub(); openDetail(b.getAttribute('data-k').split('|')[0]); }; });
   }
   var pubEl = document.getElementById('pub');
   function openPub(d){ renderPub(d); pubEl.hidden = false; pubEl.scrollTop = 0; }
+  // souvenirs d'un concert vus depuis un profil : la photo souvenir et les preuves que le joueur a choisi de montrer
+  var pubGigEl = document.getElementById('pubgig-sheet');
+  function openPubGig(c){
+    var mem = (c.photo ? [{kind:'photo', url:c.photo, label:'Photo souvenir'}] : []).concat((c.picks || []).filter(function(p){ return p.proof_path; }).map(function(p){ return {kind:p.proof_kind === 'video' ? 'video' : 'photo', path:p.proof_path, label:p.title}; }))
+      .concat((c.concert_picks || []).filter(function(p){ return p.proof_public && p.proof_path && p.done_at && !p.cancelled; }).map(function(p){ return {kind:p.proof_kind === 'video' ? 'video' : 'photo', path:p.proof_path, label:(p.concert_challenges || {}).title || 'Défi'}; }));
+    var box = document.getElementById('pubgig-in');
+    box.innerHTML = talonHtml(c, c.photo) + (mem.length ? '<div class="gigd-mem">' + mem.map(function(m, i){
+        return '<button type="button" data-mem="' + i + '"><span class="gm-m" data-kind="' + m.kind + '"></span><small>' + (m.kind === 'video' ? '▶ ' : '') + esc(m.label) + '</small></button>'; }).join('') + '</div>'
+      : '<p class="pit-note">Pas encore de souvenir partagé pour ce concert.</p>');
+    mem.forEach(function(m, i){ var el = box.querySelector('[data-mem="' + i + '"] .gm-m'), put = function(u){ if(!u) return; m.url = u;
+        el.innerHTML = m.kind === 'video' ? '<video src="' + esc(u) + '#t=0.5" muted playsinline preload="metadata"></video>' : '<img src="' + esc(u) + '" alt="">'; };
+      if(m.url) put(m.url); else ONLINE.mediaUrl('concerts', m.path).then(put).catch(function(){}); });
+    [].forEach.call(box.querySelectorAll('[data-mem]'), function(b){ b.onclick = function(){ var m = mem[+b.getAttribute('data-mem')]; openMedia(m.url, m.kind); }; });
+    pubGigEl.hidden = false;
+  }
+  document.getElementById('pubgig-close').onclick = function(){ pubGigEl.hidden = true; };
+  pubGigEl.addEventListener('click', function(e){ if(e.target === pubGigEl) pubGigEl.hidden = true; });
   function closePub(){ pubEl.hidden = true; }
   document.getElementById('pub-x').addEventListener('click', closePub);
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !pubEl.hidden) closePub(); });
@@ -3394,6 +3448,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var pendingSlam = (/[?&]slam=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
   var pendingPit = (/[?&]pit=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;
   var pendingPogo = (/[?&]pogo=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // lien ou notification d'un pogo : ouvert une fois en ligne
+  var pendingProfil = (/[?&]profil=([0-9a-f-]{36})/.exec(location.search) || [])[1] || null;   // notification d'un souvenir : le profil du pote
   var pendingVue = (/[?&]vue=([a-z]+)/.exec(location.search) || [])[1] || null;   // notification de l'admin : l'écran à ouvrir   // lien ou notification d'un circle pit : on rejoint le cercle une fois en ligne   // lien ou notification d'un slam : rejoint la foule une fois en ligne
   var pendingPote = (/[?&]pote=([A-Za-z0-9]{6})/.exec(location.search) || [])[1] || null;   // lien de pote : ajouté une fois en ligne
   // lien de slam ou de pote ouvert sans être connecté (sur iPhone, un lien s'ouvre dans Safari, pas dans l'app installée)
@@ -3404,7 +3459,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
          text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Troc, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
          yes:'Me connecter ici', no:'OK'}, function(){ showAuth('login'); });
   }
-  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit || pendingPogo || pendingVue) history.replaceState(null, '', location.pathname + location.hash);
+  if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit || pendingPogo || pendingProfil || pendingVue) history.replaceState(null, '', location.pathname + location.hash);
   function loadLib(src, name){ return window[name] ? Promise.resolve(window[name]) : new Promise(function(ok, ko){
     var el = document.createElement('script'); el.src = src; el.onload = function(){ ok(window[name]); }; el.onerror = ko; document.head.appendChild(el); }); }
   function tradeLink(code){ return location.origin + location.pathname + '?troc=' + code; }
@@ -4186,6 +4241,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       return '<li class="' + (down ? 'down' : '') + '">' + avDisc(p, '') + '<span><b>' + esc(p.name) + (p.me ? ' (toi)' : '') + '</b><small>' + txt + '</small></span>' +
         (can ? '<button type="button" class="df" data-up="' + esc(p.id) + '">Relever</button>' : '') + '</li>'; }).join('') + '</ul>';
   }
+  function pogoGains(st){ var n = st.players.length;
+    return '<div class="pogo-gain"><small>À gagner</small><span><b>La prime</b>1 carte ' + esc(rarLabel(st.rarity)) + ' au meilleur danseur resté debout</span><span><b>' + n + ' carte' + (n > 1 ? 's' : '') + ' en jeu</b>celles des danseurs restés à terre</span><span><b>Points de rang</b>1 par manche, +1 au premier tiers</span></div>'; }
   function pogoCard(m, r, cls){ return card(m) ? '<span class="gframe pogo-c' + (cls ? ' ' + cls : '') + '" style="--lc:' + rarity(r).color + '"><img src="' + img(m, r) + '" alt="' + esc(card(m).who + ', ' + rarLabel(r)) + '"></span>' : ''; }
   function pogoPaint(){
     if(pogoGo) return;   // ma manche occupe l'écran
@@ -4200,7 +4257,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     }
     if(!st.in){
       var n2 = stakeable(st.rarity);
-      pogoIn.innerHTML = pogoHead(st) + '<div class="pit-win"><b>Saute dans la fosse</b><span>Tu mises une carte <b>' + esc(rarLabel(st.rarity)) + '</b> tirée au hasard dans ta collection, même ta dernière. Danse ' + st.run_s + ' s sans tomber, ou fais-toi relever par un danseur resté debout : sinon ta carte reste par terre.</span></div>' +
+      pogoIn.innerHTML = pogoHead(st) + '<div class="pit-win"><b>Saute dans la fosse</b><span>Tu mises une carte <b>' + esc(rarLabel(st.rarity)) + '</b> tirée au hasard dans ta collection, même ta dernière. Danse ' + st.run_s + ' s sans tomber, ou fais-toi relever par un danseur resté debout : sinon ta carte reste par terre.</span></div>' + pogoGains(st) +
         pogoPlayers(st) + (n2 ? '<button type="button" class="btn block" id="pogo-join">Entrer · miser une ' + esc(rarLabel(st.rarity)) + '</button>' : '<p class="pit-note">Tu n\'as aucune carte ' + esc(rarLabel(st.rarity)) + ' à miser.</p>') + '<button type="button" class="btn ghost block" id="pogo-done">Plus tard</button>';
       var jn = document.getElementById('pogo-join'); if(jn) jn.onclick = function(){ jn.disabled = true;
         ONLINE.pogoJoin(st.id).then(function(s){ snd('rumble'); pogoInv(); pogo = s; pogoPaint(); loadPogos(); }, function(e){ jn.disabled = false; toast(esc(e.message)); }); };
@@ -4210,7 +4267,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var ran = me && me.energy != null;
     var top = ran ? '<div class="pit-win"><b>' + (me.fell ? (me.lifted ? 'Relevé par ' + esc(me.lifter || 'un pote') : 'À terre') : 'Debout jusqu\'au bout') + '</b><span>' + me.energy + ' coup' + (me.energy > 1 ? 's' : '') + ' d\'épaule. ' +
         (me.fell && !me.lifted ? 'Seul un danseur resté debout peut te relever : rameute du monde dans la fosse avant la fin.' : me.fell ? 'Ta carte est sauvée, mais un relevé ne ramasse pas.' : (st.can_lift ? 'Tu peux relever une personne à terre. ' : '') + 'Ta carte est sauve pour l\'instant. Le ramassage se fait à la fin du pogo.') + '</span></div>'
-      : '<div class="pogo-stake">' + pogoCard(st.stake, st.rarity) + '<span><small>Dans ta poche</small><b>' + esc(card(st.stake) ? card(st.stake).who : 'Une carte') + '</b><span>Reste debout pour la garder.</span></span></div>' +
+      : '<div class="pogo-stake">' + pogoCard(st.stake, st.rarity) + '<span><small>Dans ta poche</small><b>' + esc(card(st.stake) ? card(st.stake).who : 'Une carte') + '</b><span>Reste debout pour la garder.</span></span></div>' + pogoGains(st) +
         '<button type="button" class="btn block" id="pogo-run"' + (late ? ' disabled' : '') + '>' + (late ? 'Trop tard, le pogo retombe' : 'Danser · ' + st.run_s + ' s') + '</button>' +
         '<p class="pit-note">Violence du pogo : ' + st.heat + '/8. Chaque manche jouée la fait monter.</p>';
     pogoIn.innerHTML = pogoHead(st) + top + pogoPlayers(st) +
@@ -4229,11 +4286,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ramassage : ma mise (gardée ou perdue) et les cartes ramassées
   function pogoResult(r){
     pogoInv(); loadSlam(); loadPogos();
-    var lost = r.result === 'lost', won = r.won || [];
+    var lost = r.result === 'lost', won = r.won || [], prime = won.some(function(c){ return c.prime; });
     snd(lost ? 'tear' : 'reward');
-    pogoIn.innerHTML = pogoHead(pogo) + '<div class="pit-win"><b>' + (won.length ? 'Tu ramasses ' + won.length + ' carte' + (won.length > 1 ? 's' : '') : lost ? 'Ta carte est restée par terre' : 'Carte sauvée') + '</b><span>' +
+    pogoIn.innerHTML = pogoHead(pogo) + '<div class="pit-win"><b>' + (prime ? 'Tu remportes la prime' + (won.length > 1 ? ' et ' + (won.length - 1) + ' carte' + (won.length > 2 ? 's' : '') : '') : won.length ? 'Tu ramasses ' + won.length + ' carte' + (won.length > 1 ? 's' : '') : lost ? 'Ta carte est restée par terre' : 'Carte sauvée') + '</b><span>' +
         (lost ? 'Personne ne t\'a relevé à temps.' : r.lifter ? 'Relevé par ' + esc(r.lifter) + '.' : r.energy == null ? 'Tu n\'as pas dansé : ta mise t\'est rendue.' : 'Tu es resté debout.') + (r.points ? ' +' + r.points + ' point' + (r.points > 1 ? 's' : '') + ' de rang.' : '') + '</span></div>' +
-      '<div class="pogo-loot">' + pogoCard(r.stake.m, r.stake.r, lost ? 'lost' : '') + won.map(function(c){ return pogoCard(c.m, c.r, 'won'); }).join('') + '</div>' +
+      '<div class="pogo-loot">' + pogoCard(r.stake.m, r.stake.r, lost ? 'lost' : '') + won.map(function(c){ return c.prime ? '<span class="pogo-prime">' + pogoCard(c.m, c.r, 'won') + '<small>La prime</small></span>' : pogoCard(c.m, c.r, 'won'); }).join('') + '</div>' +
       '<button type="button" class="btn block" id="pogo-done">Fermer</button>';
     document.getElementById('pogo-done').onclick = pogoClose;
     pogoIn.setAttribute('data-phase', 'result');
@@ -4415,8 +4472,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // lien de slam ou de pote (au démarrage, ou notification touchée alors que l'app était ouverte)
   function openLink(q){
-    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1], pt = (/[?&]pit=([0-9a-f-]{36})/.exec(q) || [])[1], pg = (/[?&]pogo=([0-9a-f-]{36})/.exec(q) || [])[1];
-    var vu = (/[?&]vue=([a-z]+)/.exec(q) || [])[1]; if(vu && !sl && !pc && !pt && !pg){ openVue(vu); return; }
+    var sl = (/[?&]slam=([0-9a-f-]{36})/.exec(q) || [])[1], pc = (/[?&]pote=([A-Za-z0-9]{6})/.exec(q) || [])[1], pt = (/[?&]pit=([0-9a-f-]{36})/.exec(q) || [])[1], pg = (/[?&]pogo=([0-9a-f-]{36})/.exec(q) || [])[1], pr = (/[?&]profil=([0-9a-f-]{36})/.exec(q) || [])[1];
+    var vu = (/[?&]vue=([a-z]+)/.exec(q) || [])[1]; if(vu && !sl && !pc && !pt && !pg && !pr){ openVue(vu); return; }
+    if(pr){ ONLINE.friends().then(function(l){ var f = (l || []).filter(function(x){ return x.friend_id === pr; })[0]; if(f) openFriend(f); }).catch(function(){}); return; }
     if(pg){ cornerTab('fosse'); go('corner'); pogoEnter(pg); if(pc) ONLINE.addFriend(pc).catch(function(){}); return; }
     if(pt){ cornerTab('fosse'); go('corner'); pitEnter(pt); if(pc) ONLINE.addFriend(pc).catch(function(){}); return; }
     if(!sl && !pc) return;
@@ -4775,26 +4833,67 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }); }
   function videoLength(f){ return new Promise(function(ok){ var v = document.createElement('video'), u = URL.createObjectURL(f); v.preload = 'metadata';
     v.onloadedmetadata = function(){ URL.revokeObjectURL(u); ok(v.duration || 0); }; v.onerror = function(){ URL.revokeObjectURL(u); ok(0); }; v.src = u; }); }
-  // preuve : photo réduite, ou vidéo de 10 s au plus (30 Mo) envoyée telle quelle ; validée tout de suite, l'admin contrôle après
+  // preuve : photo réduite, ou vidéo de 10 s (filmée dans l'app, ou prise dans la pellicule et coupée au besoin) ; validée tout de suite, l'admin contrôle après
   function proveDefi(c, chId){
     var p = (c.concert_picks || []).filter(function(x){ return x.challenge_id === chId; })[0], ch = p && p.concert_challenges; if(!ch) return;
-    var inp = document.getElementById('df-file'); inp.accept = ch.proof === 'video' ? 'video/*' : 'image/*';
-    inp.onchange = async function(){ var f = inp.files[0]; inp.value = ''; if(!f) return;
-      try{
-        var blob = f;
-        if(ch.proof === 'video'){
-          if(await videoLength(f) > 10.5) blob = await trimVideo(f);
-          if(blob.size > 30 * 1048576) throw new Error('Vidéo trop lourde : 30 Mo au plus.');
-        } else blob = await shrinkPhoto(f, 1600);
-        var pub = confirm('Montrer cette preuve à tes potes ?');
-        toast('Envoi de la preuve…');
-        var pts = await ONLINE.proveChallenge(c.id, chId, blob, ch.proof, pub);
-        snd('reward'); toast('Défi relevé : +' + pts + ' point' + (pts > 1 ? 's' : '') + ' de rang.');
-        await loadGigs();
-      }catch(e){ if(e && e.cancel) return; toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); }
+    var send = async function(blob){
+      if(blob.size > 30 * 1048576) throw new Error('Vidéo trop lourde : 30 Mo au plus.');
+      var pub = confirm('Montrer cette preuve à tes potes ?');
+      toast('Envoi de la preuve…');
+      var pts = await ONLINE.proveChallenge(c.id, chId, blob, ch.proof, pub);
+      snd('reward'); toast('Défi relevé : +' + pts + ' point' + (pts > 1 ? 's' : '') + ' de rang.');
+      await loadGigs();
     };
-    inp.click();
+    var fail = function(e){ if(e && e.cancel) return; toast(esc((e && e.message) || 'Envoi impossible. Réessaie.')); };
+    var roll = function(){ var inp = document.getElementById('df-file'); inp.accept = ch.proof === 'video' ? 'video/*' : 'image/*';
+      inp.onchange = async function(){ var f = inp.files[0]; inp.value = ''; if(!f) return;
+        try{ await send(ch.proof === 'video' ? (await videoLength(f) > 10.5 ? await trimVideo(f) : f) : await shrinkPhoto(f, 1600)); }catch(e){ fail(e); } };
+      inp.click(); };
+    if(ch.proof !== 'video' || !navigator.mediaDevices || !window.MediaRecorder){ roll(); return; }
+    var pick = document.getElementById('vid-pick'); pick.hidden = false;
+    document.getElementById('vp-cam').onclick = function(){ pick.hidden = true; recordProof().then(send).catch(fail); };
+    document.getElementById('vp-roll').onclick = function(){ pick.hidden = true; roll(); };
+    document.getElementById('vp-x').onclick = function(){ pick.hidden = true; };
   }
+  // tournage dans l'app : caméra arrière et micro, 3, 2, 1, puis 10 s qui s'arrêtent seules ; aperçu, puis Envoyer ou Recommencer
+  function recordProof(){ return new Promise(function(ok, ko){
+    var el = document.getElementById('cam'), v = document.getElementById('cam-v'), cnt = document.getElementById('cam-count'), bar = document.getElementById('cam-bar'), msg = document.getElementById('cam-msg'), acts = document.getElementById('cam-acts');
+    var stream = null, rec = null, url = null, timers = [], raf = 0, T = 10000;
+    var stopAll = function(){ timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf); if(rec && rec.state === 'recording') rec.stop();
+      if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); stream = null; audioSession('playback'); duckBack(); };
+    var close = function(){ stopAll(); v.pause(); v.srcObject = null; v.removeAttribute('src'); if(url) URL.revokeObjectURL(url); el.hidden = true; };
+    var cancel = function(){ close(); var e = new Error(''); e.cancel = true; ko(e); };
+    var btns = function(h){ acts.innerHTML = h; var x = document.getElementById('cam-x'); if(x) x.onclick = cancel; };
+    var live = function(){
+      msg.textContent = 'Cadre ton défi, puis lance le tournage.'; cnt.textContent = ''; bar.style.width = '0'; v.muted = true; v.controls = false; v.loop = false;
+      btns('<button type="button" class="btn" id="cam-go">Filmer 10 s</button><button type="button" class="btn ghost" id="cam-x">Annuler</button>');
+      audioSession('play-and-record'); duck(0);
+      navigator.mediaDevices.getUserMedia({video:{facingMode:'environment', width:{ideal:1280}, height:{ideal:720}}, audio:true}).then(function(st){
+        stream = st; if(url){ URL.revokeObjectURL(url); url = null; } v.removeAttribute('src'); v.srcObject = st; v.play().catch(function(){});
+        document.getElementById('cam-go').onclick = shoot;
+      }, function(e){ stopAll();
+        msg.textContent = e && e.name === 'NotAllowedError' ? 'Autorise la caméra et le micro pour Metalnini (Réglages de l\'iPhone), ou choisis une vidéo dans ta pellicule.' : 'Caméra indisponible : choisis une vidéo dans ta pellicule.';
+        btns('<button type="button" class="btn ghost" id="cam-x">Fermer</button>'); });
+    };
+    var shoot = function(){
+      var type = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].filter(function(t){ return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t); })[0] || '';
+      var parts = []; rec = new MediaRecorder(stream, type ? {mimeType:type, videoBitsPerSecond:4e6} : {videoBitsPerSecond:4e6});
+      rec.ondataavailable = function(e){ if(e.data && e.data.size) parts.push(e.data); };
+      rec.onstop = function(){ var blob = new Blob(parts, {type:(rec.mimeType || type || 'video/mp4').split(';')[0]}); review(blob); };
+      btns('<button type="button" class="btn ghost" id="cam-x">Annuler</button>'); msg.textContent = 'Prêt…';
+      [3, 2, 1].forEach(function(n, i){ timers.push(setTimeout(function(){ cnt.textContent = n; buzz(8); pop(cnt, 2.2); }, i * 700)); });
+      timers.push(setTimeout(function(){ cnt.textContent = ''; buzz(20); msg.textContent = 'Ça tourne !'; rec.start(250); var t0 = performance.now();
+        btns('<button type="button" class="btn" id="cam-stop">Arrêter</button>'); document.getElementById('cam-stop').onclick = function(){ rec.stop(); };
+        (function f(){ var k = Math.min(1, (performance.now() - t0) / T); bar.style.width = (k * 100) + '%'; msg.textContent = 'Ça tourne ! ' + Math.ceil((T - (performance.now() - t0)) / 1000) + ' s';
+          if(k >= 1){ if(rec.state === 'recording') rec.stop(); return; } raf = requestAnimationFrame(f); })(); }, 2100));
+    };
+    var review = function(blob){ stopAll(); url = URL.createObjectURL(blob); v.srcObject = null; v.src = url; v.muted = false; v.loop = true; v.controls = true; v.play().catch(function(){});
+      msg.textContent = 'Ta preuve est prête.'; bar.style.width = '100%';
+      btns('<button type="button" class="btn" id="cam-send">Envoyer</button><button type="button" class="btn ghost" id="cam-again">Recommencer</button>');
+      document.getElementById('cam-send').onclick = function(){ close(); ok(blob); };
+      document.getElementById('cam-again').onclick = live; };
+    el.hidden = false; live();
+  }); }
   // talon validé : 3 points de rang, et la carte Rare de l'artiste la première fois qu'on le voit (s'il est dans le jeu)
   function claimGig(c, b){ b.disabled = true;
     ONLINE.claimConcert(c.id).then(function(res){ c.claimed = true; renderCorner();
