@@ -11,7 +11,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="manifest" href="icons/site.webmanifest">
-<title>Metalnini — User flows</title>
+<title>Metalnini : User flows</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
@@ -79,6 +79,10 @@
   .btn:disabled{opacity:.45; cursor:default; transform:none;}
 
   /* ---------- Header ---------- */
+  /* bandeau : version de conception, antérieure au prototype */
+  .era{max-width:860px; margin:16px auto 0; padding:0 20px; position:relative; z-index:2;}
+  .era p{margin:0; padding:12px 16px; border:1px solid rgba(235,154,38,.55); border-radius:12px; background:var(--surface); font-size:.95rem;}
+  .era b{font:800 .8rem/1.2 var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-hi); margin-right:6px;}
   .wrap.head{padding:clamp(56px,11vw,90px) 20px 36px;}
   .head h1{font-size:clamp(2.8rem,9vw,4.4rem); line-height:0.95;}
   .head .tagline{margin-top:14px; color:var(--muted); max-width:56ch;}
@@ -382,9 +386,9 @@
 
 <div id="gate" class="gate">
   <form id="gate-form" class="gate-form">
-    <p class="eyebrow">Accès privé</p>
+    <p class="eyebrow">Pour les proches</p>
     <h1 class="gate-title"><img src="proto/cards/logo.webp" alt="Metalnini" width="900" height="534"></h1>
-    <p class="gate-copy">Document de travail interne. Mot de passe requis.</p>
+    <p class="gate-copy">Un rideau tiré entre proches, pas un coffre-fort. Le mot de passe est celui qu'on t'a donné.</p>
     <label for="gate-input" class="gate-label">Mot de passe</label>
     <input id="gate-input" type="password" class="gate-input" autocomplete="off" autofocus>
     <button type="submit" class="btn">Entrer</button>
@@ -396,8 +400,10 @@
 
 <a class="skip" href="#contenu">Aller au contenu</a>
 
+<div class="era" role="note"><p><b>14 septembre 2026</b>Version de conception (antérieure au prototype) : le jeu réel est dans le <a href="proto/">prototype</a>.</p></div>
+
 <header class="wrap head">
-  <p class="eyebrow">Document de travail — conception</p>
+  <p class="eyebrow">Document de travail : conception</p>
   <h1>User flows</h1>
   <p class="tagline">Les 8 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes — plus l'architecture des boucles de rétention qui les relie.</p>
   <p class="meta">Basé sur concept.html (onglet Architecture) · Motion : Rive · Aucun visuel de carte requis à ce stade</p>
@@ -754,7 +760,7 @@
 
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Carnet de concert — note déclarative</h4>
+      <h4>Carnet de concert : note déclarative</h4>
       <p>Ambiance, son, intensité du pit, moment marquant, photo optionnelle. Ce carnet a une valeur en soi, indépendamment de l'avatar : c'est un journal de ses shows.</p>
     </li>
 
@@ -986,7 +992,7 @@
   <ol class="flow">
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Bandeau missions — Accueil</h4>
+      <h4>Bandeau missions : Accueil</h4>
       <p>2 à 3 missions actives, mêlant les cadences : une quotidienne légère, une hebdomadaire, occasionnellement une saisonnière liée à un événement réel (tournée, sortie d'album majeure, festival). Progression visible sur chacune.</p>
     </li>
 
@@ -1085,7 +1091,7 @@
   <p class="flow-sub">Tous les endroits clés où une animation porte le moment plutôt que de le décorer — classés par le soin qu'ils demandent, pas par ordre d'apparition. <b style="color:var(--text)">Motion : Rive</b> partout (voir <a href="concept.html#da">la direction artistique</a>) ; le reste reste du polish d'interface standard, sans state machine dédiée.</p>
 
   <div class="block">
-    <h3 class="lvl-1">Niveau 1 — Séquences majeures (state machine, plusieurs variables exposées)</h3>
+    <h3 class="lvl-1">Niveau 1 : séquences majeures (state machine, plusieurs variables exposées)</h3>
     <ul>
       <li><a href="#flow-b">Flow B</a> <b>Reveal de pack</b> — rareté et type de carte pilotent la scène ; c'est le seul endroit où les effets riches (foil, shimmer, grain) sont autorisés.</li>
       <li><a href="#flow-c">Flow C</a> <b>Évolution de carte</b> — avant/après ; doit rester lisible même joué en rafale pour un utilisateur qui revient après une absence avec plusieurs évolutions en attente.</li>
@@ -1096,7 +1102,7 @@
   </div>
 
   <div class="block">
-    <h3 class="lvl-2">Niveau 2 — Confirmations & feedback courts</h3>
+    <h3 class="lvl-2">Niveau 2 : confirmations & feedback courts</h3>
     <ul>
       <li><a href="#flow-d">Flow D</a> <b>Scan de billet réussi</b> — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.</li>
       <li><a href="#flow-d">Flow D</a> <b>Barre XP qui se remplit</b> au retour du carnet — motif réutilisable partout où l'XP change (concert, mission, palier).</li>
@@ -1108,7 +1114,7 @@
   </div>
 
   <div class="block">
-    <h3>Niveau 3 — Micro-interactions</h3>
+    <h3>Niveau 3 : micro-interactions</h3>
     <ul>
       <li>Sélection des tuiles sous-genre/artiste (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation — du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.</li>
     </ul>
@@ -1184,7 +1190,7 @@
   </p>
 
   <div class="block">
-    <h3>Budget de notifications — la gouvernance qui empêche le cumul de devenir du spam</h3>
+    <h3>Budget de notifications. La gouvernance qui empêche le cumul de devenir du spam</h3>
     <p style="font-size:0.9rem; color:var(--muted); max-width:66ch; margin:0 0 14px">Empiler des boucles authentiques ne dispense pas d'arbitrer : c'est le <i>cumul</i> de plusieurs boucles qui notifient le même jour, pas une boucle isolée, qui produirait le spam que cette communauté sanctionnerait.</p>
     <p style="font-size:0.85rem; color:var(--muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues — au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
     <ol class="priority">

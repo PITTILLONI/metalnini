@@ -840,7 +840,7 @@
   .combo[data-r="rare"]{font-size:clamp(2.5rem, 12.5vw, 3.4rem); color:#9cc2ff; --cb:var(--r-rare)}
   .combo[data-r="holo"]{font-size:clamp(2.8rem, 14vw, 3.8rem); color:#d4c8ff; --cb:var(--r-holo)} .combo[data-r="holo"] span{box-shadow:0 0 28px color-mix(in srgb, var(--r-holo) 60%, transparent)}
   .combo[data-r="signature"]{font-size:clamp(3.1rem, 15.5vw, 4.2rem); color:var(--gold-hi); --cb:var(--r-signature)} .combo[data-r="signature"] span{box-shadow:0 0 34px color-mix(in srgb, var(--r-signature) 65%, transparent)}
-  .combo[data-r="legendaire"]{font-size:clamp(3.4rem, 17vw, 4.6rem); font-weight:900; color:#ff7a6e; --cb:var(--r-legendaire)} .combo[data-r="legendaire"] span{box-shadow:0 0 44px color-mix(in srgb, var(--r-legendaire) 80%, transparent)}
+  .combo[data-r="legendaire"]{font-size:clamp(3rem, 14vw, 4.6rem); font-weight:900; color:#ff7a6e; --cb:var(--r-legendaire)} .combo[data-r="legendaire"] span{box-shadow:0 0 44px color-mix(in srgb, var(--r-legendaire) 80%, transparent)}
   .combo[data-r="celeste"]{font-size:clamp(2.6rem, 13vw, 3.6rem); color:#ffd9ea; --cb:#f4a6c8} .combo[data-r="celeste"] span{box-shadow:0 0 40px rgba(244,166,200,.8)}
   .combo[data-r="legendaire"].go{animation:combo 3.4s cubic-bezier(.2,.9,.3,1) forwards, comboshake .12s linear .25s 6}
   @keyframes combo{0%{opacity:0; transform:scale(2.4) rotate(-6deg)}10%{opacity:1; transform:scale(.94) rotate(2deg)}16%{transform:scale(1.04) rotate(-1deg)}22%{transform:none}84%{opacity:1; transform:none}100%{opacity:0; transform:translateY(-50px) scale(1.08)}}
@@ -1099,7 +1099,7 @@
   .mv-ico{width:44px; height:44px; display:grid; place-items:center; border-radius:12px; background:var(--gold); color:#1a0f05; box-shadow:0 3px 0 #8a5510}
   .move-in small{display:block; font:900 .72rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-hi)} .move-in b{display:block; margin:2px 0; font:400 1.4rem/1.05 var(--gothic); color:var(--text)} .move-in p{margin:0; font-size:.86rem; color:#cfc3ad}
   .facts{display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; margin:0} .facts dt{font:800 .72rem var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)} .facts dd{margin:2px 0 0; font:600 .88rem/1.3 var(--mono); color:var(--text)}
-  .detail-actions{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:10px; margin-top:18px; padding-bottom:6px}
+  .detail-actions{display:grid; grid-template-columns:1fr 1.4fr 1fr; gap:10px; margin-top:18px; padding-bottom:6px}
   .detail-actions .relief{min-height:50px; font:900 1rem var(--display); letter-spacing:.1em; text-transform:uppercase} .detail-actions .tear{color:var(--accent-text); border-color:rgba(224,96,90,.45)}
   .tearfx i{position:fixed; background-size:cover; background-position:center; border-radius:10px; will-change:transform}
   .tearfx .l{clip-path:polygon(0 0, 52% 0, 46% 18%, 55% 34%, 45% 52%, 54% 70%, 47% 86%, 52% 100%, 0 100%); animation:tearl 1s cubic-bezier(.5,0,.8,.4) forwards}
@@ -1358,13 +1358,13 @@
   <h1 class="g-title">Metal Corner</h1>
   <div class="kind-chips corner-tabs" id="corner-tabs" role="tablist" aria-label="Rubriques de Metal Corner"></div>
   <section class="corner-sec" data-ct="potes">
-    <h2 class="g-sub">Croisé un fan ?</h2><p class="corner-lead">Troc, pote ou bande : montre ton QR, ou scanne le sien.</p>
-    <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon QR</b><small>Troc, pote ou bande</small></span></button>
+    <h2 class="g-sub">Croisé un fan ?</h2><p class="corner-lead">Échange, pote ou bande : montre ou scanne un QR.</p>
+    <div class="tr-go"><button type="button" class="tr-tile relief" id="tr-host"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 17l0 .01"/><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M7 7l0 .01"/><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"/><path d="M17 7l0 .01"/><path d="M14 14l3 0"/><path d="M20 14l0 .01"/><path d="M14 14l0 3"/><path d="M14 20l3 0"/><path d="M17 17l3 0"/><path d="M20 17l0 3"/></svg></span><span><b>Mon QR</b><small>Montre-le à ton pote</small></span></button>
       <button type="button" class="tr-tile relief ink" id="tr-scan"><span class="tr-ico"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M3 7v-2a2 2 0 0 1 2 -2h2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M17 21h2a2 2 0 0 0 2 -2v-2"/></svg></span><span><b>Scanner</b><small>Son QR ou son code</small></span></button></div>
   </section>
   <section class="corner-sec" id="friends-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Mes potes</h2><button type="button" class="df add" id="pote-open" aria-label="Ajouter un pote">+</button></div><div id="friends"></div></section>
-  <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un troc</h2><div id="invites"></div></section>
-  <section class="corner-sec" id="history-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Tes trocs</h2><button type="button" class="df add" id="trade-open" aria-label="Lancer un troc">+</button></div><div id="history"></div></section>
+  <section class="corner-sec" id="invites-sec" data-ct="potes" hidden><h2 class="g-sub">On te propose un échange</h2><div id="invites"></div></section>
+  <section class="corner-sec" id="history-sec" data-ct="potes" hidden><div class="f-head"><h2 class="g-sub">Tes échanges</h2><button type="button" class="df add" id="trade-open" aria-label="Lancer un échange">+</button></div><div id="history"></div></section>
   <section class="corner-sec" id="now-sec" data-ct="fosse" hidden><h2 class="g-sub">En ce moment</h2><div id="now"></div></section>
   <section class="corner-sec" id="dance-sec" data-ct="fosse" hidden><h2 class="g-sub">Les danses</h2><div class="dance-row" id="dance-row"></div></section>
   <section class="corner-sec" id="gigs-sec" data-ct="fosse"><h2 class="g-sub">Tes concerts</h2><div id="gigs"></div></section>
@@ -1420,7 +1420,7 @@
     </section>
     <section class="pf-card pf-perso" id="pf-perso" hidden>
       <p class="eyebrow">Ta carte perso</p>
-      <p class="pf-note">Ta propre carte Légendaire, gravée à partir de ta photo de profil, avec ton surnom. Elle rejoint ton classeur « Perso », et tu peux la partager ou la troquer.</p>
+      <p class="pf-note">Ta propre carte Légendaire, gravée à partir de ta photo de profil, avec ton surnom. Elle rejoint ton classeur « Perso », et tu peux la partager ou l'échanger.</p>
       <p class="pf-note pf-perso-st" id="pf-perso-st" hidden></p>
       <button type="button" class="btn block" id="pf-perso-go">Fabrique ma carte · 4,99 €</button>
     </section>
@@ -1572,7 +1572,7 @@
   <div class="bsheet-in">
     <i class="grab" aria-hidden="true"></i>
     <h2 id="pote-t">Ajouter un pote</h2>
-    <p class="pf-note">Donne ton code ou tape le sien : vous devenez potes tous les deux. Pas besoin de troc pour te porter quand tu slammes.</p>
+    <p class="pf-note">Donne ton code ou tape le sien : vous devenez potes tous les deux. Pas besoin d'échange pour te porter quand tu slammes.</p>
     <div class="gframe tr-qr-f"><div class="tr-qr" id="pote-qr" role="img" aria-label="QR code de pote"></div></div><p class="eyebrow">Ton code de pote</p><p class="tr-code num" id="pote-code">···</p>
     <button type="button" class="btn block" id="pote-share">Envoyer mon lien</button>
     <form class="tr-join" id="pote-join"><label class="pf-label" for="pote-in">Ou tape son code</label><div class="pf-row"><input class="as-in" id="pote-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="ABC 234"><button type="submit" class="btn">Ajouter</button></div></form>
@@ -1585,7 +1585,7 @@
     <h2 id="qr-t">Que veux-tu faire ?</h2>
     <p class="pf-note">Choisis d'abord, ton QR suit : chacun ouvre autre chose chez ton pote.</p>
     <div class="qr-ch">
-      <button type="button" class="qr-op relief" id="qr-troc"><b>Troquer des cartes</b><small>Vous échangez maintenant, côte à côte ou à distance</small></button>
+      <button type="button" class="qr-op relief" id="qr-troc"><b>Échanger des cartes</b><small>Maintenant, côte à côte ou à distance</small></button>
       <button type="button" class="qr-op relief ink" id="qr-pote"><b>Devenir potes</b><small>Il te suit, te porte quand tu slammes, voit ton classeur</small></button>
       <button type="button" class="qr-op relief ink" id="qr-bande"><b>L'inviter dans ma bande</b><small>Pour un concert de tes talons</small></button>
     </div>
@@ -1845,7 +1845,7 @@
     <p class="pf-note">Le Grand Architecte grave ta carte Légendaire à partir de ta photo de profil (de face, bien éclairée, c'est mieux), puis la vérifie avant de te l'envoyer. Compte quelques heures.</p>
     <label class="pf-label" for="ps-nick">Ton surnom, en titre de la carte</label>
     <input id="ps-nick" class="as-in" maxlength="24" autocomplete="off" placeholder="ex. Fabich'">
-    <label class="as-prio"><input type="checkbox" id="ps-ok"> <span>J'ai compris : ma carte se partage et se troque comme les autres, <b>les autres joueurs pourront voir mon portrait</b>.</span></label>
+    <label class="as-prio"><input type="checkbox" id="ps-ok"> <span>J'ai compris : ma carte se partage et s'échange comme les autres, <b>les autres joueurs pourront voir mon portrait</b>.</span></label>
     <p class="err" id="ps-err"></p>
     <div class="pf-row"><button type="button" class="btn ghost" id="ps-cancel">Annuler</button><button type="button" class="btn" id="ps-go">Payer 4,99 €</button></div>
   </div>
@@ -1899,7 +1899,7 @@
 <button type="button" class="trade-pill" id="slam-pill" hidden></button>
 <div class="troc" id="troc" hidden role="dialog" aria-modal="true" aria-labelledby="troc-t">
   <div class="troc-in">
-    <p class="eyebrow">Troc conclu</p><h2 id="troc-t"></h2>
+    <p class="eyebrow">Échange conclu</p><h2 id="troc-t"></h2>
     <div class="troc-stage"><div class="troc-row give" id="troc-give"></div><div class="troc-swap" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></div><div class="troc-row get" id="troc-get"></div></div>
     <p class="troc-note" id="troc-note"></p>
     <button type="button" class="btn block" id="troc-go">Ranger dans le classeur</button>
@@ -3028,7 +3028,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var box = document.getElementById('uname'), inp = document.getElementById('uname-in'), err = document.getElementById('uname-err'), btn = document.getElementById('uname-go'), no = document.getElementById('uname-cancel');
     document.getElementById('uname-k').textContent = edit ? 'Backstage' : 'Bienvenue dans le pit';
     document.getElementById('uname-t').textContent = edit ? 'Nouveau nom de scène' : 'Ton nom de scène';
-    document.getElementById('uname-note').textContent = edit ? 'Un changement par semaine. Tes potes, ta bande et tes trocs suivent sous le nouveau nom. Pas de haine dans le pit : les pseudos racistes, sexistes ou homophobes sont refusés.' : 'C\'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.';
+    document.getElementById('uname-note').textContent = edit ? 'Un changement par semaine. Tes potes, ta bande et tes échanges suivent sous le nouveau nom. Pas de haine dans le pit : les pseudos racistes, sexistes ou homophobes sont refusés.' : 'C\'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.';
     btn.textContent = edit ? 'Changer' : 'Sur scène !'; no.hidden = !edit; no.onclick = function(){ box.hidden = true; };
     inp.value = edit ? state.username || '' : ''; err.textContent = '';
     box.hidden = false; setTimeout(function(){ inp.focus(); if(edit) inp.select(); }, 50);
@@ -3520,7 +3520,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var code = pendingPote ? pendingPote.toUpperCase().slice(0, 3) + ' ' + pendingPote.toUpperCase().slice(3) : null;
     askConfirm(standalone() ? {eyebrow:pendingSlam ? 'Slam' : 'Pote', title:'Connecte-toi d\'abord', text:'Le lien t\'attend : une fois connecté, il s\'ouvre tout seul.', yes:'Me connecter', no:'Plus tard'}
       : {eyebrow:pendingSlam ? 'Slam' : 'Pote', title:'Tu n\'es pas connecté ici',
-         text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Troc, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
+         text:'Le lien s\'est ouvert dans le navigateur, pas dans ton app. Ouvre Metalnini depuis ton écran d\'accueil' + (code ? ', puis tape le code ' + code + ' dans Metal Corner, Potes, « + Pote »' + (pendingSlam ? ' : son slam apparaîtra.' : '.') : '.') + ' Ou connecte-toi ici.',
          yes:'Me connecter ici', no:'OK'}, function(){ showAuth('login'); });
   }
   if(pendingTroc || pendingBand || pendingSlam || pendingPote || pendingPit || pendingPogo || pendingProfil || pendingVue) history.replaceState(null, '', location.pathname + location.hash);
@@ -3662,9 +3662,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function renderTradeIn(){
     var t = trade, who = t && t.partner ? esc(t.partner) : 'Ton pote';
     if(tradeScan){
-      tradeIn.innerHTML = '<p class="eyebrow">Scanner</p><h2>Scanne son QR</h2><p class="pf-note" id="tr-cam-note">Troc, pote ou bande : l\'app reconnaît son QR toute seule.</p>' +
+      tradeIn.innerHTML = '<p class="eyebrow">Scanner</p><h2>Scanne son QR</h2><p class="pf-note" id="tr-cam-note">Échange, pote ou bande : l\'app reconnaît son QR toute seule.</p>' +
         '<div class="tr-cam"><video id="tr-video" playsinline muted></video><i aria-hidden="true"></i></div>' +
-        '<form class="tr-join" id="tr-join"><label class="pf-label" for="tr-code-in">Ou tape son code</label><div class="scan-as" role="radiogroup" aria-label="Ce code sert à">' + [['troc', 'Troc'], ['pote', 'Pote'], ['bande', 'Bande']].map(function(x){ return '<button type="button" class="df" role="radio" aria-checked="' + (scanAs === x[0]) + '" data-as="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div><div class="pf-row"><input class="as-in" id="tr-code-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="7" placeholder="ABC 234"><button type="submit" class="btn">Rejoindre</button></div></form>';
+        '<form class="tr-join" id="tr-join"><label class="pf-label" for="tr-code-in">Ou tape son code</label><div class="scan-as" role="radiogroup" aria-label="Ce code sert à">' + [['troc', 'Échange'], ['pote', 'Pote'], ['bande', 'Bande']].map(function(x){ return '<button type="button" class="df" role="radio" aria-checked="' + (scanAs === x[0]) + '" data-as="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div><div class="pf-row"><input class="as-in" id="tr-code-in" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="7" placeholder="ABC 234"><button type="submit" class="btn">Rejoindre</button></div></form>';
       document.getElementById('tr-join').onsubmit = function(e){ e.preventDefault(); if(!scanRoute(document.getElementById('tr-code-in').value)) toast('Un code, c\'est 6 caractères.'); };
       [].forEach.call(tradeIn.querySelectorAll('[data-as]'), function(x){ x.onclick = function(){ scanAs = x.getAttribute('data-as'); [].forEach.call(tradeIn.querySelectorAll('[data-as]'), function(y){ y.setAttribute('aria-checked', String(y === x)); }); }; });
       
@@ -4595,7 +4595,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var box = document.getElementById('friends'), m = slamFlying();
     friendsSig = slamSig();
     box.innerHTML = friendsList.length ? '<div class="car-h">' + friendsList.map(function(f, i){
-      var act = !m ? '<small>' + (f.trades ? f.trades + ' troc' + (f.trades > 1 ? 's' : '') : 'pote') + '</small>'
+      var act = !m ? '<small>' + (f.trades ? f.trades + ' échange' + (f.trades > 1 ? 's' : '') : 'pote') + '</small>'
         : m.carrier_ids.indexOf(f.friend_id) !== -1 ? '<small class="ok">Te porte' + gl('check', 12) + '</small>'
         : m.asked_ids.indexOf(f.friend_id) !== -1 ? '<small>Demandé</small>'
         : '<button type="button" class="ask" data-fa="' + i + '">Porte-moi</button>';
@@ -5465,7 +5465,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     revealEl.classList.remove('dim'); clearTarget();
     document.getElementById('card-info').classList.remove('on');
     document.getElementById('counter').textContent = x.c.cursed ? 'Carte maudite' : x.c.secret ? 'Carte secrète' : 'Carte ' + (idx+1) + ' / ' + current.length;
-    document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la retourner. Ça mord pas.';
+    document.getElementById('hint').textContent = (FINE ? 'Clique' : 'Glisse') + ' pour la retourner' + (idx ? '' : '. Ça mord pas.');   // la vanne, une fois par paquet
     renderDeck();
     document.getElementById('flip-img').src = img(x.c.id, x.r);
     document.getElementById('flip-img').alt = x.c.who + ', ' + rarity(x.r).label;
@@ -5475,27 +5475,38 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     anim(function(g){ g.fromTo(stage, {y:46, scale:.92, opacity:0}, {y:0, scale:1, opacity:1, duration:.42, ease:'back.out(1.5)', clearProps:'transform,opacity'}); });
   }
   var LINES = {
-    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Commune. Même le roadie en a une.', 'Commune. Tiède comme une bière de festival.', 'Wallah, c\'est une Commune.', 'C\'est carré. Mais c\'est gris.', 'Le public applaudit. Poliment.', 'Askip ça vaut rien. Askip.', 'Ma gueule, c\'est la base. On respecte.', 'Première partie, au mieux.'],
-    rare:['Oh, ça commence à chauffer.', 'Rare. Le vigile te laisse passer.', 'Joli tirage, le pit approuve.', 'En sah, pas mal du tout.', 'Wesh, ça pogote au premier rang.', 'Rare. T\'as un peu de rizz, là.'],
-    holo:['Holo ! Lève les cornes !', 'Ça brille ! Le pit s\'ouvre !', 'C\'est un banger, frérot !', 'Holo. Ton aura vient de monter.', 'Wallah ça brille trop !', 'Fraté… c\'est une Holo !', 'Les briquets sont levés !'],
-    signature:['Signée ! Tu peux hurler.', 'Chokbar : une Signature !', 'Signée à la main, ma gueule !', 'Wall of death autorisé !', 'Masterclass. Rien à dire.', 'Signature. Les PNJ peuvent sortir.'],
-    legendaire:['Légendaire. Arrête tout.', 'Wallah… LÉGENDAIRE !', 'Le pit entier se retourne !', 'Légendaire. Appelle ta mère.', 'T\'as cassé le jeu, fraté.', 'Légendaire. Aura infinie.', 'Les autres peuvent rentrer chez eux.']
+    commune:['Un classique. Ça fait toujours plaisir.', 'Pas de paillettes, juste du son.', 'Commune. Même le roadie en a une.', 'Commune. Tiède comme une bière de festival.', 'Commune. On dirait les balances.', 'C\'est carré. Mais c\'est gris.', 'Le public applaudit. Poliment.', 'Commune. Garde tes bouchons d\'oreilles.', 'Ma gueule, c\'est la base. On respecte.', 'Première partie, au mieux.'],
+    rare:['Oh, ça commence à chauffer.', 'Rare. Le vigile te laisse passer.', 'Joli tirage, le pit approuve.', 'Rare. Le circle pit démarre.', 'Wesh, ça pogote au premier rang.', 'Rare. Accès backstage, ou presque.'],
+    holo:['Holo ! Lève les cornes !', 'Ça brille ! Le pit s\'ouvre !', 'C\'est un banger, frérot !', 'Holo ! Départ en crowd surfing !', 'Holo. L\'ingé lumière est jaloux.', 'Holo ! Le premier rang filme.', 'Les briquets sont levés !'],
+    signature:['Signée ! Tu peux hurler.', 'Signée. T\'as chopé la setlist.', 'Signée. T\'as attrapé la baguette.', 'Wall of death autorisé !', 'Masterclass. Rien à dire.', 'Signée. Le chanteur t\'a pointé.'],
+    legendaire:['Légendaire. Arrête tout.', 'LÉGENDAIRE ! Larsen dans la salle.', 'Le pit entier se retourne !', 'Légendaire. La salle exige un rappel.', 'T\'as cassé le jeu, fraté.', 'Légendaire. Viens sur scène !', 'Les autres peuvent rentrer chez eux.']
   };
   var CELESTE_LINES = ['Céline. Personne ne va te croire.', 'Le cœur continue. Le tien aussi ?', 'Carte secrète. Respire.', 'Céline Dion ? Dans le pit ?!'];
-  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Encore ? Il te suit ou quoi ?', 'T\'as déjà le t-shirt, papy.', 'Doublon. Le destin a de l\'humour.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Red flag, fraté.'];
+  var DUP_LINES = ['Encore lui ! Direction la pile.', 'Doublon. Il servira pour une transformation.', 'Encore ? Il te suit ou quoi ?', 'T\'as déjà le t-shirt, papy.', 'Doublon. Le destin a de l\'humour.', 'Rappel non demandé.', 'Encore lui. Il a pris un abonnement.', 'Doublon. Il refait les balances.'];
   // même carte trois fois dans le paquet : le destin s'acharne
-  var TRIPLE_LINES = ['Trois fois la même. T\'es maudit, avoue.', 'Triplé ! Cheh.', 'Trois fois ? Le seum, ma gueule.', 'Tu collectionnes ou tu te venges ?', 'Wallah, trois fois la même. C\'est un complot.'];
-  var TWICE_LINES = ['Encore elle, dans le même paquet ?!', 'Deux fois. Le paquet bégaie.', 'Doublé dans le même paquet. Gênant, papy.'];
-  // paquet faible : une pique au moment de ranger
-  var WEAK_PACK = ['Que des Communes. Cheh.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Le seum.', 'Que des Communes, papy. Demain, tu souffles sur le paquet.'];
-  var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf, fraté. Transforme tout ça.', 'Que des doublons. Même le PNJ est déçu.'];
+  var TRIPLE_LINES = ['Trois fois la même. T\'es maudit, avoue.', 'Triplé ! Cheh.', 'Trois fois ? Même la setlist varie plus.', 'Tu collectionnes ou tu te venges ?', 'Trois fois la même. Le roadie a mal mélangé.'];
+  var TWICE_LINES = ['Encore elle, dans le même paquet ?!', 'Deux fois. Le paquet bégaie.', 'Deux fois. C\'est l\'écho de la salle.'];
+  // paquet faible : la pique remplace la phrase de la dernière carte (une vanne par écran)
+  var WEAK_PACK = ['Que des Communes. C\'était la première partie.', 'Paquet tout gris. On dira que c\'était l\'échauffement.', 'Pas une seule rareté. Le seum.', 'Que des Communes. Demain, tu souffles sur le paquet.'];
+  var DUP_PACK = ['Que des doublons. Tu collectionnes les échos ?', 'Rien de neuf, fraté. Transforme tout ça.', 'Que des doublons. Même le roadie bâille.'];
   function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
-  function fillInfo(x){
+  // pique de fin de paquet (que des doublons, ou que des Communes), sinon rien
+  function packJab(){
+    if(current.length < 2) return null;
+    if(current.every(function(x){ return !x.isNew; })) return pick(DUP_PACK);
+    if(current.every(function(x){ return x.r === 'commune'; })) return pick(WEAK_PACK);
+    return null;
+  }
+  function sayCombo(text, r){
     var line = document.getElementById('combo');
-    var same = current.slice(0, idx + 1).filter(function(y){ return y.c.id === x.c.id && y.r === x.r; }).length;
-    var text = x.c.cursed ? 'Une carte maudite s\'est glissée dans ton paquet. Déchire-la pour lever la malédiction.' : x.c.secret ? pick(CELESTE_LINES) : same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : !x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]);
-    line.innerHTML = '<span>' + esc(text) + '</span>'; line.setAttribute('data-r', x.c.secret ? 'celeste' : same >= 3 ? 'triple' : x.r);
+    line.innerHTML = '<span>' + esc(text) + '</span>'; line.setAttribute('data-r', r);
     line.classList.remove('go'); void line.offsetWidth; if(!reduce) line.classList.add('go'); else line.style.opacity = 1;
+  }
+  function fillInfo(x){
+    var same = current.slice(0, idx + 1).filter(function(y){ return y.c.id === x.c.id && y.r === x.r; }).length;
+    var jab = idx === current.length - 1 && !x.c.cursed && !x.c.secret && same < 2 ? packJab() : null;
+    var text = x.c.cursed ? 'Une carte maudite s\'est glissée dans ton paquet. Déchire-la pour lever la malédiction.' : x.c.secret ? pick(CELESTE_LINES) : same >= 3 ? pick(TRIPLE_LINES) : same === 2 ? pick(TWICE_LINES) : jab || (!x.isNew && rank(x.r) < 2 ? pick(DUP_LINES) : pick(LINES[x.r]));
+    sayCombo(text, x.c.secret ? 'celeste' : same >= 3 ? 'triple' : jab && text === jab ? 'commune' : x.r);   // la pique garde le petit format
     var ri = document.getElementById('ci-r'); ri.textContent = x.c.secret ? 'Carte secrète' : rarity(x.r).label; ri.style.color = x.c.secret ? '#f4a6c8' : rarity(x.r).color;
     document.getElementById('ci-n').innerHTML = esc(x.c.who) + (x.isNew ? '<span class="tag new">Nouveau</span>' : '<span class="tag dup">Doublon</span>');
     document.getElementById('ci-bio').textContent = BIOS[x.c.id] || '';
@@ -5565,12 +5576,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // toutes les cartes vues : on range directement, pas d'écran de résumé
   function showDone(){
-    var wasDone = !document.getElementById('to-binder').hidden;
     document.getElementById('hint').style.visibility = 'hidden'; document.getElementById('skip').hidden = true;
-    if(!wasDone && current.length > 1){
-      if(current.every(function(x){ return !x.isNew; })) toast(pick(DUP_PACK));
-      else if(current.every(function(x){ return x.r === 'commune'; })) toast(pick(WEAK_PACK));
-    }
     document.getElementById('to-binder').hidden = false; document.getElementById('share').hidden = false;
     // quand revenir : le paquet du jour vient d'être ouvert (en ligne, hors compte illimité)
     paintNext();
@@ -5696,6 +5702,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   document.getElementById('skip').addEventListener('click', function(){
     if(busy) return; var b = 0; current.forEach(function(x, i){ if(rank(x.r) > rank(current[b].r)) b = i; });
     seenUpTo = current.length - 1; viewCard(b); SFX[current[b].r](); showDone();
+    var jab = packJab(); if(jab) sayCombo(jab, 'commune');   // la pique de fin de paquet, seule vanne de l'écran
   });
   // Partager la meilleure carte du paquet : image générée à la volée
   document.getElementById('share').addEventListener('click', function(){
@@ -6178,7 +6185,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       // carte secrète : ni maîtrise ni sceaux, une seule rareté
       (c.cursed ? '<div class="cursed-facts"><p class="eyebrow">Carte maudite · ne se garde pas</p>' + (c.facts || []).map(function(f){ return '<div class="cf"><b>' + esc(f.head) + '</b><p>' + esc(f.text) + '</p></div>'; }).join('') +
         '<p class="cf-src">Sources : ' + (c.sources || []).map(function(x){ return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + '</a>'; }).join(' · ') + '</p><p class="cf-src">Faits établis par la justice ou reconnus publiquement, jamais d\'accusation.</p></div>' :
-      c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · partagée ou troquée, son portrait est visible des autres joueurs</span></p><div class="seals"></div>' :
+      c.perso ? '<p class="mst done"><span class="mst-l">Carte perso · partagée ou échangée, son portrait est visible des autres joueurs</span></p><div class="seals"></div>' :
       c.secret ? '<p class="mst done"><span class="mst-l">Carte secrète · presque personne ne l\'a</span></p><div class="seals"></div>' :
       !r ? '<p class="mst"><span class="mst-l">5 raretés à trouver</span></p>' :
       masteryHead(id) + '<div class="seals">' + RARITIES.map(function(x){
@@ -6194,7 +6201,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
            '<div class="listen" id="d-listen" hidden></div>'
          : '<h2 class="d-name">Carte mystère</h2><p class="sub">Elle t\'attend quelque part dans un paquet.</p>') +
       (r && c.cursed ? '<div class="detail-actions"><button type="button" class="relief curse-go" id="d-curse">Déchirer la carte<small>récompense surprise</small></button></div>' :
-       r ? '<div class="detail-actions"><button type="button" class="relief" id="d-trade">Troquer</button><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
+       r ? '<div class="detail-actions"><button type="button" class="relief ink" id="d-share">Partager</button><button type="button" class="relief" id="d-trade">Échanger</button><button type="button" class="relief ink tear" id="d-tear">Déchirer</button></div>' : '');
     if(r && c.cursed){
       document.getElementById('d-curse').onclick = function(){ var b = this; b.disabled = true;
         ONLINE.curseTear(id).then(function(res){ sheet.hidden = true; snd('tear'); return ONLINE.inventory().then(function(rows){ applyInventory(rows); renderBinder(); renderStats(); rewardArrived(res, 'Malédiction levée · ' + c.who); }); },
@@ -6628,7 +6635,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // la carte secrète peut partir dans un troc, mais jamais sans prévenir
   function secretWarn(id, go){
     if(!card(id).secret || (state.owned[id + '|legendaire'] || 0) > 1){ go(); return; }
-    askConfirm({danger:true, eyebrow:'Carte secrète', title:'Troquer ' + card(id).who + ' ?', text:'Presque personne ne l\'a. Une fois partie, rien ne dit qu\'elle repassera un jour par tes paquets.', yes:'Oui, je la troque', no:'Non, je la garde'}, go);
+    askConfirm({danger:true, eyebrow:'Carte secrète', title:'Échanger ' + card(id).who + ' ?', text:'Presque personne ne l\'a. Une fois partie, rien ne dit qu\'elle repassera un jour par tes paquets.', yes:'Oui, je l\'échange', no:'Non, je la garde'}, go);
   }
   // bouton or ; rouge (danger) seulement pour ce qui détruit ou fait partir des cartes
   function askConfirm(o, yes){

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="description" content="Metalnini, le classeur de cartes du metal et du rock : la page de pitch du projet, document de travail partagé avec des proches.">
+<meta name="description" content="Metalnini, le classeur de cartes du metal et du rock : un paquet par jour, des échanges entre potes et la Fosse. Page de pitch partagée avec des proches.">
 <meta property="og:title" content="Metalnini">
-<meta property="og:description" content="Le classeur de cartes du metal et du rock : la page de pitch du projet, document de travail partagé avec des proches.">
+<meta property="og:description" content="Le classeur de cartes du metal et du rock : un paquet par jour, des échanges entre potes et la Fosse. Page de pitch partagée avec des proches.">
 <meta name="theme-color" content="#0c0b0a">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -64,16 +64,17 @@
 
   a{color:var(--gold-hi);}
   :focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px;}
+  img{max-width:100%;}
 
   /* lien d'évitement, visible seulement au clavier */
   .skip{position:absolute; left:12px; top:-80px; z-index:60; padding:12px 16px; background:var(--surface-2); color:var(--gold-hi); font:800 .85rem/1 var(--display); letter-spacing:.12em; text-transform:uppercase; text-decoration:none; border-radius:8px;}
   .skip:focus{top:12px;}
 
-  .wrap{max-width:760px; margin:0 auto; padding:0 24px; position:relative; z-index:2;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 20px; position:relative; z-index:2;}
   main:focus{outline:none;}
 
   h1,h2{font-family:var(--gothic); font-weight:400; text-wrap:balance; margin:0; line-height:1.05;}
-  h3{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin:0;}
+  h3{font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin:0; line-height:1.15;}
 
   .eyebrow{
     font:800 0.8rem/1.2 var(--display);
@@ -84,7 +85,7 @@
   }
 
   /* ---------- Bouton principal (recette .btn du proto) ---------- */
-  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 22px; border:0; border-radius:12px; cursor:pointer;
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 22px; border:0; border-radius:12px; cursor:pointer; text-decoration:none;
     font:900 1.1rem/1 var(--display); letter-spacing:.1em; text-transform:uppercase; color:#1a0f05; background:var(--gold);
     box-shadow:0 6px 0 #8a5510; transition:transform .08s ease, box-shadow .08s ease, background .15s ease;}
   .btn:hover{background:var(--gold-hi);}
@@ -96,146 +97,102 @@
   .btn.block{width:100%;}
   .btn svg{width:20px; height:20px; flex:0 0 auto;}
 
+  /* cadre à filet or simple autour d'une carte (un seul filet, jamais double) */
+  .gframe{display:block; margin:0; padding:8px; border:1px solid rgba(235,154,38,.7); border-radius:20px; background:#0d0a08;}
+  .gframe img{display:block; width:100%; height:auto; border-radius:13px;}
+
+  /* ruban rouge : titre de la section principale */
+  .ribbon{display:block; width:max-content; max-width:100%; margin:0 0 22px; padding:8px 38px 7px; background:var(--accent); color:#fff;
+    font:400 clamp(1.6rem,4.4vw,2.1rem)/1 var(--gothic); clip-path:polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%);}
+
+  /* jauge à crans (étapes de la boucle) */
+  .notch{display:flex; gap:3px; width:90px;}
+  .notch i{flex:1; height:8px; border-radius:2px; background:#2b221c;}
+  .notch i.on{background:var(--gold);}
+
   /* ---------- Hero ---------- */
   .hero{
-    padding:clamp(72px,14vw,120px) 0 clamp(56px,10vw,88px);
-    border-bottom:1px solid var(--border);
+    display:grid; gap:28px 48px; align-items:center;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"logo" "tag" "card" "pitch" "cta";
+    padding:clamp(36px,8vw,96px) 0 clamp(48px,8vw,80px);
   }
-  .hero h1{
-    font-size:clamp(3.2rem,11vw,5.4rem);
-    line-height:0.95;
-  }
-  .hero .tagline{
-    margin-top:18px;
-    font-size:clamp(1.1rem,2.6vw,1.35rem);
-    color:var(--muted);
-    max-width:34ch;
-    font-weight:400;
-  }
-  .hero .pitch{
-    margin-top:32px;
-    max-width:60ch;
-    font-size:1.05rem;
+  .hero h1{grid-area:logo; margin:0;}
+  .hero h1 img{display:block; width:min(340px,82%); height:auto;}
+  .hero .tagline{grid-area:tag; margin:-12px 0 0; font-size:clamp(1.15rem,2.6vw,1.45rem); line-height:1.4; max-width:30ch;}
+  .hero .pitch{grid-area:pitch; margin:0; max-width:52ch; color:var(--muted);}
+  .hero .cta{grid-area:cta; display:flex; flex-wrap:wrap; gap:16px 14px;}
+  .hero .gframe{grid-area:card; justify-self:center; width:min(300px,78vw);}
+  .hero figcaption{margin-top:10px; text-align:center; font-size:.85rem; color:var(--muted);}
+  @media (min-width:760px){
+    .hero{grid-template-columns:minmax(0,1fr) 320px; grid-template-areas:"logo card" "tag card" "pitch card" "cta card";}
+    .hero .gframe{width:320px;}
   }
 
   /* ---------- Sections ---------- */
   section{
     padding:clamp(48px,9vw,80px) 0;
-    border-bottom:1px solid var(--border);
+    border-top:1px solid var(--border);
   }
   section.reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease;}
   section.reveal.is-visible{opacity:1; transform:none;}
 
-  h2{font-size:clamp(1.9rem,4.4vw,2.6rem); margin-bottom:22px;}
-  section p{max-width:64ch;}
+  h2{font-size:clamp(1.9rem,4.4vw,2.6rem); margin-bottom:18px;}
+  section p{max-width:64ch; margin:0;}
   section p + p{margin-top:14px;}
+  .fig-note{margin-top:14px; font-size:0.85rem; color:var(--muted);}
 
-  .lede{
-    font-size:clamp(1.25rem,2.8vw,1.6rem);
-    font-weight:500;
-    line-height:1.4;
-    color:var(--text);
-    border-left:3px solid var(--gold);
-    padding-left:20px;
-    margin:0 0 8px;
-  }
-
-  /* ---------- Boucle (étapes réelles) ---------- */
-  .loop{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:18px;
-    margin-top:28px;
-  }
-  .loop-step{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:4px;
-    padding:18px 16px;
-  }
-  .loop-step .n{
-    font:900 1.5rem/1 var(--display);
-    color:var(--gold);
-    font-variant-numeric:tabular-nums;
-  }
-  .loop-step h3{
-    margin-top:10px;
-    font-size:1.1rem;
-  }
-  .loop-step p{margin-top:8px; font-size:0.92rem; color:var(--muted);}
-
-  /* ---------- Cartes (bande des raretés) ---------- */
-  .fig-note{margin-top:14px; font-size:0.85rem; color:var(--muted); font-style:italic;}
-
-  .rarity-strip{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-top:24px;}
+  /* ---------- Bande des raretés ---------- */
+  .rarity-strip{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin:26px 0 0; padding:0; list-style:none;}
   .rarity-strip figure{margin:0;}
-  .rarity-strip img{width:100%; height:auto; aspect-ratio:2/3; object-fit:cover; display:block; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.45);}
-  .rarity-strip figcaption{font:600 0.72rem/1.3 var(--body); letter-spacing:0.14em; text-transform:uppercase; margin-top:8px; color:var(--r-commune);}
+  .rarity-strip img{width:100%; height:auto; aspect-ratio:400/597; object-fit:cover; display:block; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.45);}
+  .rarity-strip figcaption{font:800 0.8rem/1.3 var(--display); letter-spacing:0.14em; text-transform:uppercase; margin-top:8px; color:var(--r-commune);}
   .rarity-strip [data-r="rare"] figcaption{color:var(--r-rare);}
   .rarity-strip [data-r="holo"] figcaption{color:var(--r-holo);}
   .rarity-strip [data-r="signature"] figcaption{color:var(--r-signature);}
   .rarity-strip [data-r="legendaire"] figcaption{color:var(--r-legendaire);}
   @media (max-width:640px){
     .rarity-strip{grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:42%; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px;}
-    .rarity-strip figure{scroll-snap-align:start;}
+    .rarity-strip li{scroll-snap-align:start;}
   }
 
-  /* ---------- Titres d'avatar ---------- */
-  .titles{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
-  .title-pill{
-    font:600 0.75rem/1.2 var(--body);
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-    padding:9px 14px;
-    border:1px solid var(--border);
-    border-radius:999px;
-    color:var(--muted);
-    background:var(--surface);
-  }
+  /* ---------- Boucle de jeu : frise ---------- */
+  .frise{list-style:none; margin:30px 0 0; padding:0 0 0 22px; border-left:1px solid rgba(235,154,38,.4); display:flex; flex-direction:column; gap:26px;}
+  .step h3{font-size:1.25rem; margin:10px 0 6px;}
+  .step p{color:var(--muted);}
+  .step p b{color:var(--text); font-weight:600;}
+  .extras{margin-top:30px; padding-top:22px; border-top:1px solid var(--border);}
 
-  /* ---------- Plus tard (roadmap) ---------- */
-  .later{
-    display:flex; flex-direction:column; gap:10px; margin-top:24px;
-  }
-  .later-item{
-    display:flex; gap:14px; align-items:baseline;
-    padding:14px 0; border-top:1px solid var(--border);
-  }
-  .later-item:first-child{border-top:none;}
-  .later-item .tag{
-    flex:0 0 auto;
-    font:600 0.72rem/1.3 var(--body);
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-    color:var(--accent-text);
-    width:88px;
-  }
-  .later-item p{margin:0; color:var(--muted); font-size:0.95rem;}
+  /* captures du prototype : une rangée, qui défile sur téléphone */
+  .shots{display:flex; gap:18px; margin-top:32px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px;}
+  .shot{flex:0 0 min(240px,62vw); margin:0; scroll-snap-align:start;}
+  .shot img{display:block; width:100%; height:auto; border-radius:22px; border:1px solid var(--border);}
+  .shot figcaption{margin-top:10px; font:800 .8rem/1.2 var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
 
-  /* ---------- Craintes ---------- */
-  .fears{margin-top:24px; display:flex; flex-direction:column; gap:16px;}
-  .fear{
-    padding:16px 18px;
-    background:var(--surface);
-    border-left:3px solid var(--accent);
-    border-radius:2px;
-  }
-  .fear strong{display:block; margin-bottom:4px; font:800 1.05rem/1.2 var(--display); text-transform:uppercase; letter-spacing:0.06em;}
-  .fear span{font-size:0.92rem; color:var(--muted);}
+  /* ---------- Fosse ---------- */
+  .dances{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:26px;}
+  .dance{padding:18px 18px 16px; background:var(--surface); border:1px solid var(--border); border-radius:14px;}
+  .dance h3{font-size:1.2rem; color:var(--gold-hi); margin-bottom:6px;}
+  .dance p{font-size:0.95rem; color:var(--muted);}
 
-  /* ---------- Questions (closing) ---------- */
-  .ask{
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:6px;
-    padding:clamp(24px,5vw,36px);
-    margin-top:24px;
-  }
-  .ask .eyebrow{margin-bottom:16px;}
-  .ask h2{margin-bottom:8px;}
-  .ask-intro{color:var(--muted); font-size:0.92rem; margin:0 0 20px;}
+  /* ---------- Payant ---------- */
+  .prices{list-style:none; margin:24px 0 0; padding:0; max-width:640px;}
+  .prices li{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:2px 16px; padding:14px 0; border-top:1px solid var(--border);}
+  .prices li:last-child{border-bottom:1px solid var(--border);}
+  .prices b{font:800 1.1rem/1.2 var(--display); letter-spacing:.06em; text-transform:uppercase;}
+  .prices .price{font:900 1.3rem/1.1 var(--display); color:var(--gold-hi); font-variant-numeric:tabular-nums; text-align:right;}
+  .prices small{grid-column:1 / -1; font-size:.92rem; color:var(--muted);}
 
-  /* ---------- Feedback form ---------- */
+  /* ---------- Ce qui reste ouvert ---------- */
+  .fears{margin-top:24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+  .fear{padding:16px 18px; background:var(--surface); border:1px solid var(--border); border-radius:14px;}
+  .fear h3{font-size:1.05rem; margin-bottom:6px;}
+  .fear p{font-size:0.93rem; color:var(--muted);}
+  .fear .check{display:block; margin-top:8px; font-size:.85rem; color:var(--accent-text);}
+
+  /* ---------- Avis ---------- */
+  .ask{max-width:700px;}
+  .ask-intro{color:var(--muted); font-size:0.95rem; margin:0 0 22px;}
   .feedback-form label{display:block; margin-top:18px;}
   .feedback-form label:first-of-type{margin-top:0;}
   .feedback-form .q{display:block; margin-bottom:7px; font-size:0.95rem;}
@@ -243,7 +200,7 @@
   .feedback-form textarea{
     width:100%; font-family:var(--body); font-size:1rem; line-height:1.5;
     padding:11px 13px; background:var(--surface); border:1px solid var(--border);
-    border-radius:5px; color:var(--text); resize:vertical;
+    border-radius:8px; color:var(--text); resize:vertical;
   }
   .feedback-form textarea{min-height:60px;}
   .feedback-form input:focus-visible, .feedback-form textarea:focus-visible{outline-offset:1px;}
@@ -254,12 +211,13 @@
   .voice-status{font-size:0.85rem; color:var(--muted);}
   .voice-preview{display:block; margin-top:10px; width:100%; max-width:320px;}
   .submit-row{margin-top:26px;}
-  .form-msg{margin-top:14px; font-size:0.9rem;}
+  .form-msg{margin-top:14px; font-size:0.95rem;}
   .form-msg.success{color:var(--text);}
   .form-msg.error{color:var(--accent-text);}
 
   footer.wrap{
-    padding:32px 24px 60px;
+    padding:32px 20px 60px;
+    border-top:1px solid var(--border);
     font-size:0.85rem;
     color:var(--muted);
   }
@@ -301,9 +259,9 @@
 
 <div id="gate" class="gate">
   <form id="gate-form" class="gate-form">
-    <p class="eyebrow">Accès privé</p>
+    <p class="eyebrow">Pour les proches</p>
     <h1 class="gate-title"><img src="proto/cards/logo.webp" alt="Metalnini" width="900" height="534"></h1>
-    <p class="gate-copy">Document de travail partagé avec des proches. Mot de passe requis.</p>
+    <p class="gate-copy">Un rideau tiré entre proches, pas un coffre-fort. Le mot de passe est celui qu'on t'a donné.</p>
     <label for="gate-input" class="gate-label">Mot de passe</label>
     <input id="gate-input" type="password" class="gate-input" autocomplete="off" autofocus>
     <button type="submit" class="btn block">Entrer</button>
@@ -318,166 +276,156 @@
 <main id="contenu" class="wrap" tabindex="-1">
 
 <header class="hero">
-  <p class="eyebrow">Projet en gestation — document de travail</p>
-  <h1>Metalnini</h1>
-  <p class="tagline">Le classeur Panini du metal et du rock, réinventé pour une génération qui vit sa passion en ligne comme en fosse.</p>
-  <p class="pitch">Ce document explique où en est l'idée : la vision, comment le jeu fonctionnerait, ce qui nous excite, et ce qui nous fait encore hésiter. Pas de jargon technique — on veut votre avis de fans avant d'aller plus loin.</p>
+  <h1><img src="proto/cards/logo.webp" alt="Metalnini" width="900" height="534"></h1>
+  <p class="tagline">Le classeur de cartes du metal et du rock. Un paquet par jour, des potes, et une fosse.</p>
+  <figure class="gframe">
+    <img src="assets/pitch/lemmy-legendaire.webp" width="483" height="720" fetchpriority="high" alt="Carte Légendaire de Lemmy Kilmister, arcane XXV « Ace of Spades » : Lemmy à la basse, cadre noir et rouge, auréole de flammes.">
+  </figure>
+  <p class="pitch">Des musiciens gravés façon tarot, à collectionner, à transformer et à échanger avec ses potes. Ce n'est plus une idée : le prototype tourne sur de vrais téléphones, avec de vrais joueurs. Cette page dit ce qui existe, ce qui se paie, et ce qui nous fait encore hésiter.</p>
+  <div class="cta">
+    <a class="btn" href="proto/">Essayer le prototype</a>
+    <a class="btn ghost" href="#avis">Donner ton avis</a>
+  </div>
 </header>
 
-<section class="reveal">
-  <p class="eyebrow">Le constat</p>
-  <h2>On collectionnait des vignettes. Aujourd'hui, on scrolle.</h2>
-  <p>Il y a vingt ans, compléter l'album Panini de son équipe, c'était une obsession partagée : on échangeait dans la cour, on avait "les doubles", on montrait sa collection avec fierté. La musique metal et rock a la même culture de la fidélité et du fanatisme — mais aucun objet de collection à sa mesure aujourd'hui.</p>
-  <p>Metalnini part de ce manque : donner à une communauté très soudée, souvent qualifiée de "nerd" (et on l'assume), un objet à collectionner, à montrer, à s'échanger — construit autour des artistes qu'elle suit vraiment.</p>
+<section class="reveal" aria-labelledby="t-raretes">
+  <h2 id="t-raretes">Une carte, cinq raretés</h2>
+  <p>Chaque musicien existe en Commune, Rare, Holo, Signature et Légendaire. L'illustration ne bouge pas : seuls le cadre et la finition montent en gamme, du papier mat de la Commune à l'or de la Signature et au foil noir et rouge de la Légendaire.</p>
+  <ul class="rarity-strip">
+    <li><figure data-r="commune"><img src="assets/pitch/landmvrks-commune.webp" width="400" height="597" decoding="async" loading="lazy" alt="Carte de Florent Salfati (Landmvrks), rareté Commune"><figcaption>Commune</figcaption></figure></li>
+    <li><figure data-r="rare"><img src="assets/pitch/landmvrks-rare.webp" width="400" height="597" decoding="async" loading="lazy" alt="Même carte, rareté Rare"><figcaption>Rare</figcaption></figure></li>
+    <li><figure data-r="holo"><img src="assets/pitch/landmvrks-holo.webp" width="400" height="597" decoding="async" loading="lazy" alt="Même carte, rareté Holo"><figcaption>Holo</figcaption></figure></li>
+    <li><figure data-r="signature"><img src="assets/pitch/landmvrks-signature.webp" width="400" height="597" decoding="async" loading="lazy" alt="Même carte, rareté Signature"><figcaption>Signature</figcaption></figure></li>
+    <li><figure data-r="legendaire"><img src="assets/pitch/landmvrks-legendaire.webp" width="400" height="597" decoding="async" loading="lazy" alt="Même carte, rareté Légendaire"><figcaption>Légendaire</figcaption></figure></li>
+  </ul>
+  <p class="fig-note">Une vraie carte du jeu : Florent Salfati, chanteur de Landmvrks, en arcane VIII « Lost in the Waves ». Illustrations générées par IA à partir de photos sous licence libre ; usage privé, le groupe n'a pas été consulté.</p>
+  <p class="fig-note"><a href="export/metalnini-cartes.html">Voir tous les artistes et leurs raretés</a></p>
 </section>
 
-<section class="reveal">
-  <p class="eyebrow">Le concept</p>
-  <p class="lede">Une appli où tu ouvres des paquets de cartes d'artistes metal/rock, tu construis ta collection, et tes cartes évoluent avec la vraie actu des groupes — le tout sans jamais pouvoir acheter la victoire.</p>
-  <p>Pense "Panini" pour l'objet, "Pokémon" pour l'envie de compléter et de voir grandir sa collection dans le temps — appliqué à un univers musical qu'aucune de ces références ne couvre.</p>
-  <p>Le ton qu'on vise : humour, fun, moderne, gamifié — assumé comme un jeu, pas comme une simulation sérieuse. Pour l'instant, on teste directement avec les vrais noms et de vraies inspirations visuelles (voir plus bas), tant que ça reste un usage privé — la question des droits reste à régler avant toute sortie publique.</p>
+<section class="reveal" aria-labelledby="t-boucle">
+  <p class="eyebrow">La boucle</p>
+  <h2 id="t-boucle" class="ribbon">Comment on joue</h2>
+  <ol class="frise">
+    <li class="step">
+      <span class="notch" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></span>
+      <h3>Le paquet du jour</h3>
+      <p>Chaque jour, un paquet gratuit. Standard, 5 cartes, ou Mini, 2 cartes avec de meilleures chances. Une fois ouvert, <b>le merch est fermé</b> jusqu'au lendemain.</p>
+    </li>
+    <li class="step">
+      <span class="notch" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>
+      <h3>La révélation</h3>
+      <p>On déchire le sachet, on retourne les cartes une à une. Une phrase claque sur chaque carte, plus fort selon la rareté. À la fin, un extrait de 30 secondes du morceau de la carte.</p>
+    </li>
+    <li class="step">
+      <span class="notch" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>
+      <h3>Le classeur</h3>
+      <p>Chaque carte a sa case : par style, par instrument, par groupe. Un classeur complété rapporte une récompense. Il manque un artiste ? Ça se demande depuis le classeur.</p>
+    </li>
+    <li class="step">
+      <span class="notch" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+      <h3>Maîtrise et transformation</h3>
+      <p>Les 5 raretés d'un même musicien : c'est la maîtrise, avec sa couronne et un blind test à jouer. Les doublons, eux, se transforment en une carte de la rareté au-dessus. On garde toujours un exemplaire.</p>
+    </li>
+    <li class="step">
+      <span class="notch" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+      <h3>L'échange</h3>
+      <p>Un code ou un QR, sur place ou à distance : carte contre carte avec ses potes. Premier échange avec un fan, une carte bonus. Les doublons, c'est fait pour ça.</p>
+    </li>
+  </ol>
+  <div class="shots">
+    <figure class="shot"><img src="assets/pitch/proto-revelation.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Capture du prototype : révélation d'une carte Légendaire de Tom Morello, « Killing in the Name », sur fond de flammes, avec le bouton « Ranger dans le classeur »."><figcaption>La révélation</figcaption></figure>
+    <figure class="shot"><img src="assets/pitch/proto-classeur.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Capture du prototype : le classeur « Toutes les cartes », 25 musiciens sur 78, cartes trouvées et cases encore vides, et la case « Il manque un artiste ? »."><figcaption>Le classeur</figcaption></figure>
+    <figure class="shot"><img src="assets/pitch/proto-maitrise.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Capture du prototype : fiche de la carte Légendaire de Jimi Hendrix, « Purple Haze », avec la maîtrise 5 sur 5 et les cinq sceaux de rareté."><figcaption>La maîtrise</figcaption></figure>
+  </div>
+  <p class="extras">Autour de la boucle : des épreuves à récompense, un rang qui monte de Groupie à Légende du pit, et ton cri enregistré, qui retentit chez ton pote à la fin d'un échange.</p>
 </section>
 
-<section class="reveal">
-  <p class="eyebrow">La mécanique</p>
-  <h2>Comment ça marche</h2>
-  <p>La boucle de base, pensée pour rester simple à comprendre dès la première ouverture :</p>
-  <div class="loop">
-    <div class="loop-step">
-      <div class="n">01</div>
-      <h3>Ouvrir</h3>
-      <p>Un paquet gratuit régulier, ou payant, ou gagné lors d'un concert.</p>
+<section class="reveal" aria-labelledby="t-fosse">
+  <h2 id="t-fosse">La Fosse</h2>
+  <p>Le coin de Metal Corner où l'on joue ensemble, avec ses potes de l'app. Les danses de concert, sans les bleus.</p>
+  <div class="dances">
+    <div class="dance">
+      <h3>Slam</h3>
+      <p>Une fois par jour, tu plonges dans la foule. Il faut 5 potes pour te porter en 2 heures. Atterris, et toi comme tes porteurs gagnez quelque chose. Sinon, tu t'écrases.</p>
     </div>
-    <div class="loop-step">
-      <div class="n">02</div>
-      <h3>Collectionner</h3>
-      <p>Ranger les cartes par artiste, par style, par festival, ou même par musicien — voir sa progression.</p>
+    <div class="dance">
+      <h3>Circle pit</h3>
+      <p>Tu le lances sur un morceau, tes potes ont 15 minutes pour venir. Chacun fait tourner le pit du doigt pendant 20 secondes, et chaque course accélère le cercle.</p>
     </div>
-    <div class="loop-step">
-      <div class="n">03</div>
-      <h3>Voir évoluer</h3>
-      <p>Une carte change quand l'artiste sort un album, un clip, ou joue près de chez toi.</p>
+    <div class="dance">
+      <h3>Pogo</h3>
+      <p>Chaque danseur mise une carte. 15 secondes pour renvoyer ceux qui foncent, 4 coups et tu tombes. Le meilleur resté debout gagne la prime, les cartes tombées se ramassent.</p>
     </div>
-    <div class="loop-step">
-      <div class="n">04</div>
-      <h3>Échanger</h3>
-      <p>Un doublon se propose en échange à d'autres fans — jamais contre de l'argent.</p>
+    <div class="dance">
+      <h3>J'y étais</h3>
+      <p>Tes concerts, vus ou à venir, et ton billet rangé dans l'app si tu veux. Le jour J, des défis en photo ou en vidéo de 10 secondes, seul ou en bande. Talon validé : des points de rang, et une carte Rare de l'artiste s'il est dans le jeu.</p>
     </div>
   </div>
-</section>
-
-<section class="reveal">
-  <p class="eyebrow">Les cartes</p>
-  <h2>Un même objet, plusieurs degrés de rareté</h2>
-  <p>Chaque carte suit un même gabarit visuel — seule la rareté change le traitement (bordure, texture, effet). Ça permet d'en produire beaucoup, tout en gardant un objet cohérent et reconnaissable.</p>
-  <div class="rarity-strip" role="list">
-    <figure role="listitem" data-r="commune"><img src="proto/cards/landmvrks-commune.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Commune" loading="lazy"><figcaption>Commune</figcaption></figure>
-    <figure role="listitem" data-r="rare"><img src="proto/cards/landmvrks-rare.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Rare" loading="lazy"><figcaption>Rare</figcaption></figure>
-    <figure role="listitem" data-r="holo"><img src="proto/cards/landmvrks-holo.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Holo" loading="lazy"><figcaption>Holo</figcaption></figure>
-    <figure role="listitem" data-r="signature"><img src="proto/cards/landmvrks-signature.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Signature" loading="lazy"><figcaption>Signature</figcaption></figure>
-    <figure role="listitem" data-r="legendaire"><img src="proto/cards/landmvrks-legendaire.jpg" width="400" height="600" decoding="async" alt="Carte Landmvrks, rareté Légendaire" loading="lazy"><figcaption>Légendaire</figcaption></figure>
+  <div class="shots">
+    <figure class="shot"><img src="assets/pitch/proto-fosse.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Capture du prototype : la Fosse, avec « En ce moment » (un pote à relever au pogo, un slam à porter) et les trois danses illustrées, pogo, circle pit et slam."><figcaption>La Fosse</figcaption></figure>
+    <figure class="shot"><img src="assets/pitch/proto-concerts.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Capture du prototype : « Tes concerts », une invitation dans une bande et des talons de concert « J'y étais » et « À venir »."><figcaption>Tes concerts</figcaption></figure>
   </div>
-  <p class="fig-note">Une vraie carte : Florent Salfati, chanteur de Landmvrks, en arcane VIII « Lost in the Waves ». L'illustration ne change pas d'une rareté à l'autre ; seuls le cadre et la finition montent en gamme, du papier mat de la Commune à l'or de la Signature et au foil noir et rouge de la Légendaire. Illustration générée par IA à partir d'une photo sous licence libre ; usage privé, le groupe n'a pas été consulté.</p>
-  <p class="fig-note"><a href="export/metalnini-cartes.html">Voir tous les artistes et leurs raretés</a> · <a href="proto/">Essayer d'ouvrir un paquet</a></p>
+  <p class="fig-note">Captures du prototype avec des joueurs fictifs.</p>
 </section>
 
-<section class="reveal">
-  <p class="eyebrow">Les classeurs</p>
-  <h2>Une carte par musicien, pas juste par groupe</h2>
-  <p>Chaque membre d'un groupe a aussi sa propre carte, avec son instrument — un batteur ou un bassiste que tu suis à travers plusieurs groupes devient une collection à part entière, transversale à tous ses groupes.</p>
-  <p>Finir un classeur (par artiste, par style...) débloque une récompense garantie, jamais du hasard — juste la reconnaissance d'avoir fini. Et en plus des classeurs officiels, tu peux te construire les tiens, à ta sauce, pour montrer ce que tu veux mettre en avant sur ton profil.</p>
+<section class="reveal" aria-labelledby="t-payant">
+  <h2 id="t-payant">Ce qui est payant</h2>
+  <p>Le paquet du jour est gratuit, tous les jours, et le reste du jeu aussi : classeurs, échanges, Fosse, concerts. La boutique est ouverte, paiement par Stripe, prix TTC. Quand le merch est fermé, l'app le dit à sa façon : « Pas la patience ? Le stand rouvre pour toi. »</p>
+  <ul class="prices">
+    <li><b>1 paquet</b><span class="price">1,49 €</span></li>
+    <li><b>3 paquets</b><span class="price">2,99 €</span></li>
+    <li><b>Carte d'artiste financée</b><span class="price">2,99 €</span><small>Un artiste manque ? Tu finances son arrivée, il passe en tête de la liste. S'il est refusé, on rembourse.</small></li>
+    <li><b>Ta carte perso</b><span class="price">4,99 €</span><small>Ta propre carte Légendaire, gravée à partir de ta photo de profil, vérifiée avant de t'arriver.</small></li>
+  </ul>
+  <p style="margin-top:20px">Aucune carte ne se revend entre joueurs : l'échange se fait carte contre carte, jamais contre de l'argent.</p>
 </section>
 
-<section class="reveal">
-  <p class="eyebrow">L'évolution</p>
-  <h2>Une raison réelle de revenir, pas un minuteur artificiel</h2>
-  <p>Le point qu'on veut vraiment réussir : ne pas faire revenir les gens avec des comptes à rebours bidons ("plus que 2h !"). À la place, une carte évolue quand quelque chose de <em>vrai</em> se passe chez l'artiste.</p>
-  <p>Exemple : tu as la carte "Iron Wraith" de base. Le groupe sort un nouvel album → ta carte se transforme, avec la pochette, en édition limitée dans le temps. Tu étais au concert de la tournée ? Une variante spéciale de cette date se débloque, rien qu'à toi.</p>
-</section>
-
-<section class="reveal">
-  <p class="eyebrow">Le terrain</p>
-  <h2>Ton avatar grandit avec ce que tu vis en concert</h2>
-  <p>À côté des cartes d'artistes, un deuxième fil : ton propre avatar de fan, qui évolue avec ta collection, ton vécu live, et le type de spectateur que tu es. Un carnet de concerts, une note d'ambiance après le show, et des titres qui racontent qui tu es — sur le terrain comme dans ta collection.</p>
-  <div class="titles">
-    <span class="title-pill">Roi du pogo</span>
-    <span class="title-pill">As des airs</span>
-    <span class="title-pill">Metal Corner</span>
-    <span class="title-pill">Vétéran de festival</span>
-  </div>
-  <p style="margin-top:18px">Même si tu as fini de collectionner un artiste, ton avatar te donne toujours une raison d'ouvrir l'appli après un concert.</p>
-</section>
-
-<section class="reveal">
-  <p class="eyebrow">La rencontre</p>
-  <h2>Croiser d'autres fans, pas juste des inconnus en ligne</h2>
-  <p>Au moment du check-in, tu peux choisir de te rendre visible aux autres fans présents ce soir-là — seulement si eux aussi ont fait la même démarche. Depuis cette liste éphémère, tu peux proposer un échange en direct, sans repasser par une recherche globale.</p>
-  <p>Première rencontre confirmée avec quelqu'un à un concert ? Une carte bonus garantie, et ton titre "Metal Corner" avance pour de vrai. Rien d'automatique ni de visible par défaut — ça reste toi qui décides de te montrer, et seulement à ceux qui font la même démarche.</p>
-</section>
-
-<section class="reveal">
-  <p class="eyebrow">Le collectif</p>
-  <h2>Échanger, pas spéculer</h2>
-  <p>Le troc se fait carte contre carte, entre fans — jamais contre de l'argent réel. On veut éviter à tout prix l'effet "marché" qui a fini par abîmer d'autres jeux de cartes à collectionner.</p>
-  <p>Des groupes par sous-genre (le fan de black metal norvégien et celui de nu-metal n'ont pas la même culture) permettent de se retrouver entre gens qui se comprennent, avec leurs propres classements internes.</p>
-</section>
-
-<section class="reveal">
-  <p class="eyebrow">Plus tard</p>
-  <h2>Ce qu'on garde de côté pour l'instant</h2>
-  <div class="later">
-    <div class="later-item">
-      <span class="tag">Phase 2</span>
-      <p>Des paquets physiques en vrai, avec un QR code qui débloque la version numérique — pour l'instant on reste 100% digital, le temps de valider le concept.</p>
-    </div>
-    <div class="later-item">
-      <span class="tag">Phase 2</span>
-      <p>Des bornes en festival pour débloquer des cartes exclusives sur place, en plus du système de base par géolocalisation.</p>
-    </div>
-    <div class="later-item">
-      <span class="tag">À explorer</span>
-      <p>Des rencontres facilitées entre fans présents au même concert.</p>
-    </div>
-    <div class="later-item">
-      <span class="tag">Phase 2</span>
-      <p>Une vraie solution sur les droits (accords de licence avec labels/artistes, ou autre approche) avant toute ouverture publique — vrais noms et portraits ressemblants restent un usage privé pour l'instant.</p>
-    </div>
-  </div>
-</section>
-
-<section class="reveal">
-  <p class="eyebrow">Ce qui nous inquiète</p>
-  <h2>On préfère le dire clairement</h2>
+<section class="reveal" aria-labelledby="t-ouvert">
+  <p class="eyebrow">Ce qui reste ouvert</p>
+  <h2 id="t-ouvert">Ce qui nous inquiète</h2>
+  <p>On préfère le dire. Les points juridiques ne sont pas tranchés ici : ils sont à faire valider par une personne compétente.</p>
   <div class="fears">
     <div class="fear">
-      <strong>Les droits des artistes</strong>
-      <span>On teste pour l'instant avec les vrais noms de groupes et des portraits IA qui s'inspirent de vrais visages — un usage qu'on garde volontairement privé, entre proches, tant qu'on n'a pas trouvé de solution sur les droits (accords de licence, ou autre approche). Aucune diffusion publique ou commerciale tant que ce n'est pas réglé, et à faire trancher par un juriste avant toute suite.</span>
+      <h3>Les droits des artistes</h3>
+      <p>Vrais noms, portraits générés par IA d'après des photos sous licence libre, et une boutique ouverte. La question des droits n'est pas réglée.</p>
+      <span class="check">À faire valider par une personne compétente.</span>
     </div>
     <div class="fear">
-      <strong>L'effet "loot-box"</strong>
-      <span>Des paquets à ouvrir contre de l'argent, ça peut vite ressembler à un système de hasard payant mal vu (et parfois encadré par la loi selon les pays). À valider avant tout modèle payant.</span>
+      <h3>Des paquets payants au hasard</h3>
+      <p>Payer un paquet sans savoir ce qu'il contient, c'est le principe des « loot boxes », un sujet sensible. Le paquet du jour reste gratuit.</p>
+      <span class="check">À faire valider par une personne compétente.</span>
     </div>
     <div class="fear">
-      <strong>La spéculation</strong>
-      <span>Sans garde-fous, un système de rareté peut transformer la passion en marché — c'est justement pour ça qu'on retire toute revente contre argent réel dès le départ.</span>
+      <h3>Le pogo se joue avec des cartes</h3>
+      <p>On mise une carte de sa collection, jamais de l'argent. Mais certaines cartes sortent de paquets payants, et on peut perdre sa mise.</p>
+      <span class="check">À faire valider par une personne compétente.</span>
     </div>
     <div class="fear">
-      <strong>Rester authentique</strong>
-      <span>La communauté metal déteste le marketing qui sonne faux. Tout ce qui ressemble à une pression artificielle pour faire ouvrir l'appli est à bannir.</span>
+      <h3>Les cartes maudites</h3>
+      <p>Quelques artistes ont une carte maudite, glissée dans les paquets, à déchirer. La règle : uniquement des faits établis et sourcés, jamais une accusation. La liste reste à valider.</p>
+      <span class="check">À faire valider par une personne compétente.</span>
+    </div>
+    <div class="fear">
+      <h3>Les données des joueurs</h3>
+      <p>Photos de profil, cris, souvenirs et billets de concert. Ils sont rangés dans un stockage privé, et le billet n'est lisible que par son propriétaire.</p>
+      <span class="check">À faire valider par une personne compétente.</span>
+    </div>
+    <div class="fear">
+      <h3>Rester authentique</h3>
+      <p>Compte à rebours du paquet, notifications, offres sous le merch fermé : la frontière avec la pression commerciale est fine. Les notifications ont déjà un budget par joueur et par jour.</p>
     </div>
   </div>
 </section>
 
-<section class="reveal">
+<section class="reveal" id="avis" aria-labelledby="t-avis">
   <div class="ask">
-    <p class="eyebrow">On a besoin de vous</p>
-    <h2>Ce qu'on aimerait savoir</h2>
-    <p class="ask-intro">Réponds à ce que tu veux, ignore le reste. Ça part directement par mail — pas besoin de créer de compte.</p>
+    <h2 id="t-avis">Ton avis</h2>
+    <p class="ask-intro">Réponds à ce que tu veux, ignore le reste. Ça part par mail, sans créer de compte.</p>
 
     <form id="feedback-form" class="feedback-form" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="access_key" value="32acdb51-a679-4ea0-8159-3e5dc3d544a0">
-      <input type="hidden" name="subject" value="Nouveau retour — page de pitch Metalnini">
-      <input type="hidden" name="from_name" value="Metalnini — page de pitch">
+      <input type="hidden" name="subject" value="Nouveau retour : page de pitch Metalnini">
+      <input type="hidden" name="from_name" value="Metalnini, page de pitch">
       <input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
 
       <label>
@@ -485,23 +433,23 @@
         <input type="text" name="name" placeholder="Pour qu'on sache qui a répondu">
       </label>
       <label>
-        <span class="q">Est-ce que t'ouvrirais un paquet de cartes régulièrement, ou ça te paraît gadget ?</span>
+        <span class="q">Tu ouvrirais un paquet tous les jours, ou ça te paraît gadget ?</span>
         <textarea name="q1_pack" rows="2"></textarea>
       </label>
       <label>
-        <span class="q">Le troc sans jamais pouvoir vendre contre de l'argent — ça te semble juste, ou frustrant ?</span>
-        <textarea name="q2_troc" rows="2"></textarea>
+        <span class="q">Ce qui est payant te semble honnête, ou ça te refroidit ?</span>
+        <textarea name="q2_payant" rows="2"></textarea>
       </label>
       <label>
-        <span class="q">L'idée d'un avatar qui évolue avec tes concerts, ça te parle ou c'est too much ?</span>
-        <textarea name="q3_avatar" rows="2"></textarea>
+        <span class="q">La Fosse (slam, circle pit, pogo, concerts), ça te donne envie d'y traîner avec tes potes ?</span>
+        <textarea name="q3_fosse" rows="2"></textarea>
       </label>
       <label>
-        <span class="q">Qu'est-ce qui te ferait le plus peur ou le plus hésiter dans un projet comme ça ?</span>
+        <span class="q">Qu'est-ce qui te ferait hésiter dans un projet comme ça ?</span>
         <textarea name="q4_peur" rows="2"></textarea>
       </label>
       <label>
-        <span class="q">Un truc qu'on n'a clairement pas pensé et qui te semble évident ?</span>
+        <span class="q">Un truc évident qu'on n'a pas vu ?</span>
         <textarea name="q5_manque" rows="2"></textarea>
       </label>
 
@@ -518,7 +466,7 @@
       <div class="submit-row">
         <button type="submit" class="btn">Envoyer</button>
       </div>
-      <p id="form-msg" class="form-msg" hidden></p>
+      <p id="form-msg" class="form-msg" role="status" hidden></p>
     </form>
   </div>
 </section>
@@ -527,7 +475,7 @@
 
 <footer class="wrap">
   <nav class="site-nav" aria-label="Pages du projet"><a href="index.html" aria-current="page">Pitch</a><a href="concept.html">Concept</a><a href="flows.html">Flows</a><a href="sons.html">Sons</a><a href="proto/">Prototype</a></nav>
-  Document de travail — à partager, commenter, démonter si besoin.
+  Document de travail. À partager, commenter, démonter si besoin.
 </footer>
 
 </div>
@@ -641,7 +589,7 @@
           recording = false;
           voiceBtn.classList.remove('is-recording');
           setVoiceBtn(MIC, 'Réenregistrer');
-          setStatus('Vocal prêt — envoyé avec le formulaire.');
+          setStatus('Vocal prêt : il part avec le formulaire.');
         });
         mediaRecorder.start();
         recording = true;
@@ -649,7 +597,7 @@
         setVoiceBtn(STOP, 'Arrêter');
         setStatus('Enregistrement en cours…');
       }).catch(function(){
-        setStatus("Micro indisponible ou refusé — pas grave, tu peux répondre par écrit.");
+        setStatus("Micro indisponible ou refusé. Pas grave, réponds par écrit.");
       });
     });
   } else if(voiceBtn){
@@ -672,12 +620,12 @@
         form.reset();
         voicePreview.hidden = true;
         setStatus('');
-        showMsg('Merci, c\'est bien envoyé !', 'success');
+        showMsg('Reçu. On lit ça entre deux pogos.', 'success');
       } else {
-        showMsg("Un souci à l'envoi — réessaie, ou écris directement à l'adresse qu'on t'a partagée.", 'error');
+        showMsg("Un souci à l'envoi. Réessaie, ou écris directement à l'adresse qu'on t'a partagée.", 'error');
       }
     }).catch(function(){
-      showMsg("Un souci à l'envoi — réessaie, ou écris directement à l'adresse qu'on t'a partagée.", 'error');
+      showMsg("Un souci à l'envoi. Réessaie, ou écris directement à l'adresse qu'on t'a partagée.", 'error');
     }).finally(function(){
       if(submitBtn) submitBtn.disabled = false;
     });
