@@ -53,7 +53,7 @@ __fake.pitRunStart = async function(){ __pitState.runners[3].rps = .4; return __
 __fake.pitClaim = async function(){ return {points:2, tier:__pitState.tier, loot:null}; }; })();
 // pogo : celui de Riffeuse (mise Rare), Bob à terre à relever, missions en cours
 (function(){ var end = new Date(Date.now() + 412e3).toISOString();
-__pogoState = {id:'g1', rarity:'rare', track:'morello', ends_at:end, over:false, cancelled:false, host:false, host_name:'Riffeuse', heat:3, run_s:15, hits:4, min_players:3, in:true, stake:'morello', result:null, won:[], claimed:false,
+__pogoState = {id:'g1', rarity:'rare', track:'morello', ends_at:end, over:false, cancelled:false, host:false, host_name:'Riffeuse', heat:3, run_s:15, hits:4, min_players:3, in:true, can_lift:true, stake:'morello', result:null, won:[], claimed:false,
   players:[{id:'f1', name:'Riffeuse', url:'cards/amy-lee-base.jpg', energy:14, fell:false, lifted:false, friend:true}, {id:'f2', name:'Bob le Slammeur', url:'cards/hetfield-base.jpg', energy:4, fell:true, lifted:false, friend:true},
            {id:'x9', name:'Moshzilla', energy:9, fell:true, lifted:true, lifter:'Riffeuse', friend:false}, {id:'u1', name:'Antoine', energy:null, fell:null, lifted:false, me:true}]};
 var missions = [{key:'week:2026-41', title:'Pogo de la semaine', hint:'Danse 3 pogos cette semaine', reward:'1 paquet', goal:3, n:1, weekly:true, claimed:false},

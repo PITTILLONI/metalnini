@@ -529,8 +529,8 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   // 18 quater. Pogo : un pote à terre à relever, entrer en misant, danser, ramassage, mission récupérée
   let pogoJoined = 0, pogoRun = null, pogoLifted = null, pogoClaimed = 0, pogoMission = null; const pogoEnd = new Date(Date.now() + 500e3).toISOString();
   const pogoSt = { id:'g1', rarity:'commune', track:'morello', ends_at:pogoEnd, over:false, cancelled:false, host:false, host_name:'Riffeuse', heat:2, run_s:1, hits:4, min_players:3,
-    in:false, stake:null, result:null, won:[], claimed:false,
-    players:[{ id:'f1', name:'Riffeuse', energy:12, fell:false, lifted:false, friend:true }, { id:'f2', name:'Bob', energy:3, fell:true, lifted:false, friend:true }] };
+    in:false, can_lift:false, stake:null, result:null, won:[], claimed:false,
+    players:[{ id:'f1', name:'Riffeuse', energy:12, fell:false, lifted:false, friend:true }, { id:'f2', name:'Bob', energy:3, fell:true, lifted:false, friend:true }, { id:'f3', name:'Moshzilla', energy:2, fell:true, lifted:false, friend:false }] };
   const pogoCopy = () => JSON.parse(JSON.stringify(pogoSt));
   const pogoMissions = [{ key:'week:2026-41', title:'Pogo de la semaine', hint:'Danse 3 pogos cette semaine', reward:'1 paquet', goal:3, n:1, weekly:true, claimed:false },
     { key:'first', title:'Premier pogo', hint:'Danse ta première manche de pogo', reward:'Une Commune pas encore trouvée', goal:1, n:1, weekly:false, claimed:false }];
@@ -539,7 +539,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.pogoState = async () => pogoCopy();
   fake9.pogoJoin = async () => { pogoJoined++; pogoSt.in = true; pogoSt.stake = 'morello'; pogoSt.players.push({ id:'u1', name:'Moi', energy:null, fell:null, lifted:false, me:true, friend:false }); return pogoCopy(); };
   fake9.pogoRunStart = async () => pogoCopy();
-  fake9.pogoRunFinish = async (id, e, f) => { pogoRun = { e, f }; pogoSt.players[2].energy = e; pogoSt.players[2].fell = f; return pogoCopy(); };
+  fake9.pogoRunFinish = async (id, e, f) => { pogoRun = { e, f }; pogoSt.players[3].energy = e; pogoSt.players[3].fell = f; pogoSt.can_lift = !f; return pogoCopy(); };
   fake9.pogoLift = async (id, u) => { pogoLifted = u; pogoSt.players[1].lifted = true; pogoSt.players[1].lifter = 'Moi'; return pogoCopy(); };
   fake9.pogoClaim = async () => { pogoClaimed++; return { result:'won', stake:{ m:'morello', r:'commune' }, won:[{ m:'morello', r:'commune' }], points:2, energy:5, fell:false, lifter:null }; };
   fake9.pogoMission = async k => { pogoMission = k; pogoMissions[1].claimed = true; return { kind:'points', points:2 }; };
@@ -557,6 +557,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.querySelector('#pogos [data-pogo="g1"]').click(); await sleep(60);
   check('pogo : avant d\'entrer, la mise est annoncée', !d9.getElementById('pogo').hidden && /miser une Commune/.test(d9.getElementById('pogo-join').textContent) && pogoJoined === 0);
   d9.getElementById('pogo-join').click(); await sleep(60);
+  check('pogo : pas encore dansé, pas de bouton Relever', !d9.querySelector('#pogo-in [data-up]'));
   check('pogo : entré, carte dans la poche, bouton Danser', pogoJoined === 1 && /Dans ta poche/.test(d9.getElementById('pogo-in').textContent) && !!d9.getElementById('pogo-run'));
   let called9 = null; fake9.fosseCalled = async () => []; fake9.fosseCall = async (k, id, to) => { called9 = k + '|' + id + '|' + to; return true; };
   d9.getElementById('pogo-call').click(); await sleep(60);
@@ -565,6 +566,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('pogo-run').click(); await sleep(60);
   check('pogo : manche lancée, arène et décompte', !!d9.getElementById('pogo-arena') && d9.getElementById('pogo-count').textContent === '3' && d9.querySelectorAll('#pogo-bal i').length === 4);
   await sleep(3700);
+  check('pogo : resté debout, je peux relever le danseur à terre', !!d9.querySelector('#pogo-in [data-up="f3"]'));
   check('pogo : manche finie, énergie et chute envoyées', pogoRun && pogoRun.f === false && pogoRun.e >= 0 && /Debout jusqu'au bout/.test(d9.getElementById('pogo-in').textContent));
   pogoSt.over = true; pogoSt.ends_at = new Date(Date.now() - 1000).toISOString();
   d9.getElementById('pogo-x').click(); await sleep(20); d9.querySelector('#pogos [data-pogo="g1"]').click(); await sleep(60);
