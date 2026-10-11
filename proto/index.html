@@ -39,10 +39,17 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html{color-scheme:dark; overflow-x:hidden; overflow-x:clip; overscroll-behavior:none}
   body{overflow-x:hidden; overflow-x:clip}
+  .svg-defs{position:absolute} #haptic{position:fixed; left:-99px; top:0; opacity:0; pointer-events:none}   /* définitions SVG et interrupteur caché (vibration iOS) */
   #fxlayer{position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:var(--z-fx)}
   .forge{position:fixed; inset:0; z-index:var(--z-system); overflow:hidden; pointer-events:none; background:rgba(5,4,4,.9)}
-  .forge img{position:absolute; left:50%; top:50%; width:90px; aspect-ratio:2/3; margin:-67px 0 0 -45px; object-fit:cover; border-radius:6px; box-shadow:0 0 0 1px rgba(235,154,38,.35); opacity:0}
-  .forge i{position:absolute; left:50%; top:50%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; background:var(--fc); opacity:0; box-shadow:0 0 40px var(--fc)}
+  .forge img{position:absolute; left:50%; top:50%; width:120px; aspect-ratio:2/3; margin:-90px 0 0 -60px; object-fit:cover; border-radius:8px; box-shadow:0 0 0 1px rgba(235,154,38,.5), 0 6px 0 #000; opacity:0}
+  /* éclat : cœur de la couleur visée, bord transparent, rayons comme #rays ; --fs = 1,2 × le grand côté de l'écran */
+  .forge i, .forge .rays{position:absolute; left:50%; top:50%; width:var(--fs); height:var(--fs); margin:calc(var(--fs) / -2) 0 0 calc(var(--fs) / -2); border-radius:50%; opacity:0}
+  .forge i{background:radial-gradient(closest-side, #fff8e8, var(--fc) 16%, color-mix(in srgb, var(--fc) 45%, transparent) 40%, transparent 72%)}
+  .forge .rays{background:repeating-conic-gradient(var(--fc) 0deg 6deg, transparent 6deg 22deg); -webkit-mask:radial-gradient(closest-side, #000 18%, transparent 70%); mask:radial-gradient(closest-side, #000 18%, transparent 70%)}
+  .forge p{position:absolute; left:16px; right:16px; top:max(calc(16px + env(safe-area-inset-top)), calc(50% - 30vmin - 184px)); margin:0; text-align:center; opacity:0}
+  .forge p .eyebrow{margin:0 0 6px} .forge p b{display:block; font:400 2rem/1 var(--gothic); color:var(--text)}
+  .forge.still p, .forge.still img:first-of-type{opacity:1} .forge.still i{opacity:.6}   /* mouvement réduit : une image fixe, sans convergence ni rayons */
   body{margin:0; background:var(--bg); color:var(--text); font-family:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; line-height:1.45;
        padding-bottom:calc(84px + var(--safe-b) + var(--pill, 0px)); overscroll-behavior:none}
   button{font:inherit; color:inherit}
@@ -576,7 +583,8 @@
   .onb-fan img:nth-child(1){transform:translateX(-122%) rotate(-11deg); animation-delay:-1.3s} .onb-fan img:nth-child(2){transform:translateX(-50%); z-index:1} .onb-fan img:nth-child(3){transform:translateX(22%) rotate(11deg); animation-delay:-2.6s}
   @keyframes onbfloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
   .onb-logo{width:min(62%, 230px); margin:0 auto}
-  .onb .stick{position:sticky; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:var(--z-sticky); box-shadow:0 -10px 24px 10px rgba(12,11,10,.85)}
+  .onb .stick{position:sticky; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:var(--z-sticky)}   /* le bouton garde son relief ; le voile sombre est derrière lui */
+  .onb .stick::before{content:""; position:absolute; z-index:-1; left:-20px; right:-20px; top:-26px; bottom:calc(-10px - env(safe-area-inset-bottom)); background:linear-gradient(rgba(12,11,10,0), rgba(12,11,10,.94) 26px); pointer-events:none}
   @media (max-height:720px){ .onb-in{gap:10px} .onb-fan{height:clamp(140px, 38vw, 170px)} .onb h1{font-size:1.9rem} .onb-logo{width:min(48%, 180px)} .tile{min-height:84px} }
   .tiles{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; text-align:left}
   .tile{position:relative; min-height:96px; padding:10px 12px; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#140f0b; color:var(--text); cursor:pointer; display:flex; flex-direction:column; justify-content:flex-end; transition:transform .15s ease, border-color .15s ease}
@@ -662,20 +670,20 @@
   .pub-stats{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
   .pub-stats div{padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
   .pub-stats b{display:block; font:800 1.7rem/1 var(--display); color:var(--gold-hi); font-variant-numeric:tabular-nums}
+  .pub-stats small.of{font-size:.55em; color:var(--muted)} .pub-stats b.fav{font-size:1.15rem; line-height:1.15} .pub-stats .wide{grid-column:1 / -1} #pub-trade{margin-top:14px}
   .pub-stats span{display:block; margin-top:4px; font:500 .74rem var(--mono); color:var(--muted)}
   /* concerts : talons de billet (filet or, souche datée séparée par une perforation) */
   .talons{display:grid; gap:10px; margin-top:12px}
   .talon{position:relative; display:flex; align-items:stretch; min-height:84px; background:var(--surface); border:1px solid rgba(235,154,38,.45); border-radius:10px; overflow:hidden; text-align:left}
   .talon.soon{border-style:dashed; border-color:var(--border)}
   .tl-ph{width:76px; flex:none; object-fit:cover; border-right:1px solid var(--border)}
-  .tl-main{flex:1; min-width:0; padding:12px 44px 12px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px}
+  .tl-main{flex:1; min-width:0; padding:12px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px}
   .tl-main small{font:600 .7rem var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)} .talon.soon .tl-main small{color:var(--muted)}
   .tl-main b{font:400 1.35rem/1.05 var(--gothic); color:var(--text); overflow-wrap:anywhere}
   .tl-main span{font:500 .8rem var(--mono); color:var(--muted)}
   .tl-stub{flex:none; width:68px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:2px dashed rgba(235,154,38,.45); background:var(--surface-2); color:var(--gold-hi)}
   .tl-stub b{font:800 1.7rem/1 var(--display)} .tl-stub span{font:700 .78rem var(--display); letter-spacing:.12em; text-transform:uppercase} .tl-stub small{font:600 .7rem var(--mono); color:var(--muted)}
-  .tl-x{position:absolute; top:0; right:68px; width:44px; height:44px; display:grid; place-items:center; background:none; border:0; color:var(--muted); cursor:pointer}
-  .tl-x:hover{color:var(--text)}
+  .gigd-del{display:block; margin:24px auto 4px}
   .gig{display:grid; gap:8px}
   .tl-acts{display:flex; flex-wrap:wrap; gap:6px}
   /* petite action dans une ligne : même relief arcade que .btn, en compact (encre par défaut, or pour l'action à faire) ; en <span>, simple étiquette d'état */
@@ -809,6 +817,7 @@
   .face.front{transform:rotateY(180deg) translateZ(2px); background:#000}
   .face.back{transform:translateZ(2px)}
   .edge{position:absolute; inset:0; border-radius:14px; background:#cbbd9c; box-shadow:inset 0 0 0 1px rgba(90,60,30,.55); pointer-events:none}
+  .edge:nth-of-type(1){transform:translateZ(1.4px)} .edge:nth-of-type(2){transform:translateZ(.7px)} .edge:nth-of-type(3){transform:translateZ(0)} .edge:nth-of-type(4){transform:translateZ(-.7px)} .edge:nth-of-type(5){transform:translateZ(-1.4px)}   /* épaisseur de la carte en 5 couches */
   .face.front img{width:100%; height:100%; object-fit:cover; display:block}
   .glare{position:absolute; inset:0; pointer-events:none; border-radius:14px;
          background:radial-gradient(circle at var(--gx,50%) var(--gy,35%), rgba(255,255,255,calc(var(--ga,.35) * .45)), transparent 58%)}
@@ -922,26 +931,26 @@
   @media (prefers-reduced-motion: reduce){ .bsheet, .bsheet-in, .sheet, .sheet-in{animation:none} }
   .bsheet .grab{display:block; width:40px; height:4px; border-radius:2px; background:rgba(255,255,255,.2); margin:0 auto 12px}
   .bsheet h2{font-size:1.5rem; margin-bottom:10px}
-  .bsheet .eyebrow{margin:14px 0 8px}
+  .bsheet .eyebrow{margin:14px 0 8px} .bsheet .eyebrow.sh-k{margin:16px 0 6px}
   .opts{display:flex; gap:8px} .opts button{flex:1; min-height:48px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); font:600 .84rem var(--mono); cursor:pointer}
   .opts button[aria-checked="true"]{border-color:var(--gold); background:rgba(235,154,38,.12); color:var(--gold-hi)}
   #sort-done{margin-top:18px}
   /* fiche du style : repliable, époque, présentation, repères, morceaux à écouter */
-  .style-info{margin:12px 0 4px; padding:0 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface)} .style-info[hidden]{display:none}
-  .style-info summary{min-height:48px; display:flex; align-items:center; gap:8px; list-style:none; cursor:pointer; font:600 .86rem var(--mono); color:var(--gold-hi)}
+  .style-info{margin:12px 0 4px; padding:0 16px} .style-info[hidden]{display:none}
+  .style-info summary{min-height:48px; display:flex; align-items:center; gap:8px; list-style:none; cursor:pointer; font:700 .88rem var(--mono); color:#7a2a12}
   .style-info summary::-webkit-details-marker{display:none} .style-info summary::after{content:""; margin-left:auto; width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); transition:transform .2s ease}
   .style-info[open] summary::after{transform:rotate(-135deg)} .style-info > div{padding:0 0 14px}
-  .si-era{margin:0 0 6px; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-text)}
-  .si-txt{margin:0 0 10px; font-size:.9rem; line-height:1.5; color:var(--text)}
-  .si-tags{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px} .si-tags span{padding:4px 10px; border:1px solid rgba(235,154,38,.4); border-radius:999px; font:600 .72rem var(--mono); color:var(--gold-hi)}
-  .si-play{margin:0; font:500 .8rem/1.5 var(--mono); color:var(--text)} .si-play b{display:block; margin-bottom:2px; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)} .si-play span{color:var(--muted)}
+  .si-era{margin:0 0 6px; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#7a2a12}
+  .si-txt{margin:0 0 10px; font-size:.9rem; line-height:1.5}
+  .si-tags{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px} .si-tags span{padding:4px 10px; border:1px solid rgba(107,63,12,.55); border-radius:999px; font:600 .72rem var(--mono); color:#6b3f0c}
+  .si-play{margin:0; font:500 .8rem/1.5 var(--mono)} .si-play b{display:block; margin-bottom:2px; font:600 .7rem var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#5c4630} .si-play span{color:#5c4630}
   .progress{margin:14px 0 4px; display:flex; align-items:center; gap:10px; font:500 .74rem var(--mono); color:var(--muted)}
   .bar{flex:1; height:10px; background:#2b221c; border-radius:3px; overflow:hidden; -webkit-mask:repeating-linear-gradient(90deg, #000 0 calc(10% - 3px), transparent calc(10% - 3px) 10%); mask:repeating-linear-gradient(90deg, #000 0 calc(10% - 3px), transparent calc(10% - 3px) 10%)}
-  .bar i{display:block; height:100%; background:var(--gold); width:0; transition:width .6s ease}
+  .bar i{display:block; height:100%; background:var(--gold); transform:translateX(calc(var(--p, 0%) - 100% - 1.5px)); transition:transform .6s ease}   /* le bord tombe au milieu d'un espace entre crans */
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px 0 30px}
   @media (min-width:700px){ .grid{grid-template-columns:repeat(5,minmax(0,1fr))} }
   .matrix{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr)); gap:6px; padding:14px 0 30px; align-items:center}
-  .matrix .mh{min-width:0; cursor:default; justify-content:flex-end} .matrix .mh i{width:30px; height:30px; font-size:1rem}   /* en-têtes : mini-sceaux C R H S L, le nom entier en aria-label */
+  .matrix .mh{min-width:0; cursor:default; justify-content:flex-end} .matrix .mh i{width:30px; height:30px; font-size:1rem} .matrix .mh i::before{inset:14%}   /* en-têtes : mini-sceaux C R H S L, le nom entier en aria-label */
   .matrix .who{font:500 .7rem var(--mono); text-transform:uppercase; color:var(--muted); line-height:1.3; overflow:hidden}
   .matrix .who b{display:block; color:var(--text); font-family:var(--display); font-size:.8rem; letter-spacing:.02em}
   .matrix .cell{border:0; padding:0; background:none; cursor:pointer; position:relative}
@@ -956,8 +965,9 @@
   .slot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
   .slot .empty{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:rgba(255,255,255,.4); font-family:var(--display); font-size:1.4rem}
   .slot .empty::before{content:""; position:absolute; inset:0; background:#140b0b url(cards/back.jpg) center/cover; opacity:.16}
+  .slot .empty > *{position:relative}
   .slot .empty small{font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:0 6px}
-  .slot .count{position:absolute; top:6px; right:6px; z-index:2; background:rgba(12,11,10,.88); border:1px solid rgba(235,154,38,.55); border-radius:6px; font:700 1rem/1 var(--display); letter-spacing:.02em; color:#fff; padding:4px 7px; box-shadow:0 2px 0 #000}
+  .slot .count{flex:none; display:inline-block; margin-left:auto; font:800 .86rem/1 var(--display); letter-spacing:.02em; color:var(--gold-hi); transform-origin:100% 50%}   /* nombre d'exemplaires : dans la légende, jamais sur l'illustration */
   /* point rouge : ce qui est nouveau ou attend une action, à l'endroit même (même compte que la pastille de Metal Corner) */
   .goal, .invite, .df, .band-inv p{position:relative}
   .goal > .new-dot, .invite > .new-dot, .df > .new-dot, .band-inv p > .new-dot{position:absolute; top:-4px; right:-4px; z-index:3; width:12px; height:12px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 2px var(--bg)}
@@ -970,7 +980,8 @@
   .slot.ask .ask-in span, .bcard.ask .ask-in span{font:800 .95rem/1.05 var(--display); letter-spacing:.03em; text-transform:uppercase; color:var(--text)}
   .slot.ask .ask-in small, .bcard.ask .ask-in small{font:600 .7rem/1.2 var(--mono); color:var(--gold-hi)}
   .slot.ask .cap{color:var(--gold-hi)}
-  .slot .cap{display:block; font:500 .7rem var(--mono); font-variant-numeric:tabular-nums; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .slot .cap{display:flex; align-items:baseline; gap:4px; font:500 .7rem var(--mono); font-variant-numeric:tabular-nums; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-top:5px; white-space:nowrap}
+  .slot .cap > span{min-width:0; overflow:hidden; text-overflow:ellipsis}
 
   /* ---------- Détail ---------- */
   .sheet{position:fixed; inset:0; z-index:var(--z-detail); background:rgba(0,0,0,.88); display:flex; align-items:flex-end; justify-content:center; animation:bs-dim .34s ease-out}
@@ -993,6 +1004,10 @@
   .field .total{font:500 .74rem var(--mono); color:var(--muted); margin-top:8px}
   .field .total.bad{color:var(--accent-text)}
   .note{font:500 .72rem var(--mono); color:var(--muted); line-height:1.5}
+  .set-act{margin:10px 0 0}
+  /* banc d'essai des sons (?sons) */
+  .snd-bench{position:fixed; inset:0; z-index:var(--z-fatal); overflow:auto; background:var(--bg); padding:20px 16px; font:14px var(--mono); color:var(--text)} .snd-bench h2{margin:0 0 6px} .snd-bench p{margin:0 0 14px; color:var(--muted)}
+  .snd-bench button{display:flex; justify-content:space-between; width:100%; min-height:44px; margin:0 0 6px; padding:0 14px; border:0; border-radius:8px; background:var(--surface); color:#6d675e; font:600 14px var(--mono); cursor:pointer} .snd-bench button.ok{color:var(--gold-hi)} .note.set-credits{margin-top:16px}
 
 
   /* ---------- Déchirure du paquet ---------- */
@@ -1049,7 +1064,7 @@
   .loot-t{margin:6px 0 0; font:400 3rem/.95 var(--gothic); text-transform:none; letter-spacing:0; text-shadow:0 4px 0 var(--accent)}
   .loot-sub{margin:8px 0 0; font:600 .95rem var(--mono); color:#e7dccb}
   .loot-stage{position:relative; width:250px; height:270px; margin-top:6px}
-  .chest{position:absolute; left:15px; bottom:0; width:220px; height:150px; overflow:visible}
+  .chest{position:absolute; left:15px; bottom:0; width:220px; height:150px; overflow:visible; color:var(--gold); filter:drop-shadow(0 6px 0 #000)} .chest > g{fill:var(--ink-2)}   /* gravé : encre, hachures et filets or */
   .chest .lid{transform-box:fill-box; transform-origin:0 100%; animation:lidopen .5s cubic-bezier(.3,1.6,.5,1) .25s both}
   @keyframes lidopen{from{transform:none} to{transform:translate(4px, -46px) rotate(-9deg)}}
   .loot-item{position:absolute; left:50%; bottom:70px; z-index:1; transform:translateX(-50%); animation:lootrise .7s cubic-bezier(.2,1.4,.4,1) .55s both}
@@ -1085,7 +1100,7 @@
   .fzv .flame{width:16px; height:22px; color:rgba(243,240,234,.25)} .fzv.ready .flame{color:var(--fc); filter:drop-shadow(0 0 6px var(--fc)); animation:flicker 1.4s ease-in-out infinite}
   @keyframes flicker{0%, 100%{transform:scaleY(1)} 40%{transform:scaleY(1.12) translateX(-1px)} 70%{transform:scaleY(.92)}}
   .fzv-bar{position:relative; width:22px; height:170px; border:1px solid rgba(235,154,38,.5); border-radius:4px 4px 2px 2px; background:#1a130c; overflow:hidden}
-  .fzv-bar i{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(#e7d9b8, #c9b893); transition:height .5s ease}
+  .fzv-bar i{position:absolute; inset:0; background:linear-gradient(#e7d9b8, #c9b893); transform:scaleY(var(--f, 0)); transform-origin:50% 100%; transition:transform .5s ease}
   .fzv-bar::after{content:""; position:absolute; inset:0; background:repeating-linear-gradient(to top, transparent 0 calc(100% / var(--n) - 1px), rgba(12,11,10,.45) calc(100% / var(--n) - 1px) calc(100% / var(--n)))}
   .fzv b{font:900 1rem/1 var(--display); color:var(--text)} .fzv small{font:900 .72rem/1 var(--display); letter-spacing:.06em; text-transform:uppercase; color:var(--fc)}
   /* maîtrise : un sceau de cire par rareté ; possédé, il se touche et montre la carte ; la rareté affichée est cerclée d'or */
@@ -1094,10 +1109,14 @@
   .mst small{font:500 .74rem var(--mono); color:var(--muted)} .mst.done .mst-l, .mst.done .mst-l b{color:var(--gold-hi)}
   .seals{display:flex; justify-content:center; gap:10px; margin:0 0 22px}
   .seal{display:flex; flex-direction:column; align-items:center; gap:4px; min-width:48px; padding:0; border:0; background:none; color:var(--muted); cursor:pointer}
-  .seal i{width:46px; height:46px; display:grid; place-items:center; border-radius:50%; font:400 1.25rem/1 var(--gothic); font-style:normal; color:color-mix(in srgb, var(--sc) 30%, #000);
-    background:radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--sc) 55%, #fff), color-mix(in srgb, var(--sc) 75%, #000)); box-shadow:inset 0 -3px 0 rgba(0,0,0,.3), 0 3px 6px rgba(0,0,0,.5)}
+  /* cire : bord coulé un peu irrégulier, empreinte en creux (anneau net), lettre gravée, ombre pleine courte */
+  .seal i, .wax{position:relative; display:grid; place-items:center; border-radius:44% 56% 52% 48% / 55% 45% 57% 43%; font-family:var(--gothic); font-weight:400; font-style:normal; line-height:1; color:color-mix(in srgb, var(--sc) 26%, #000); text-shadow:0 1px 0 color-mix(in srgb, var(--sc) 55%, #fff);
+    background:radial-gradient(closest-side, color-mix(in srgb, var(--sc) 82%, #000) 67%, transparent 68%), linear-gradient(165deg, color-mix(in srgb, var(--sc) 90%, #fff), color-mix(in srgb, var(--sc) 72%, #000)); box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 3px 0 color-mix(in srgb, var(--sc) 28%, #000)}
+  .seal i::before, .wax::before{content:""; position:absolute; inset:16%; border-radius:50%; box-shadow:inset 0 2px 0 color-mix(in srgb, var(--sc) 42%, #000), inset 0 -1px 0 color-mix(in srgb, var(--sc) 55%, #fff); pointer-events:none}
+  .seal:nth-child(2n) i{border-radius:56% 44% 43% 57% / 46% 56% 44% 54%} .seal:nth-child(3n) i{border-radius:49% 51% 57% 43% / 43% 54% 46% 57%}
+  .seal i{width:46px; height:46px; font-size:1.25rem}
   .seal.cur i{outline:2px solid var(--gold-hi); outline-offset:3px}
-  .seal.off{cursor:default} .seal.off i{background:none; border:1px dashed color-mix(in srgb, var(--sc) 55%, transparent); color:color-mix(in srgb, var(--sc) 55%, transparent); box-shadow:none}
+  .seal.off{cursor:default} .seal.off i{border-radius:50%; background:none; border:1px dashed color-mix(in srgb, var(--sc) 55%, transparent); color:color-mix(in srgb, var(--sc) 55%, transparent); text-shadow:none; box-shadow:none} .seal.off i::before{display:none}
   .seal small{font:600 .7rem var(--mono); letter-spacing:.04em; text-transform:uppercase} .seal{position:relative}
   .seal em{position:absolute; top:-4px; right:-2px; min-width:22px; height:22px; padding:0 5px; border-radius:11px; background:var(--ink); border:1px solid var(--gold); font:800 .72rem/20px var(--display); font-style:normal; color:var(--gold-hi)}
   .d-art summary{list-style:none; cursor:pointer; text-align:center} .d-art summary::-webkit-details-marker{display:none}
@@ -1106,7 +1125,11 @@
   .d-more svg{transition:transform .2s ease} .d-art[open] .d-more svg{transform:rotate(180deg)}
   .d-art[open] > .artist{animation:dfin .25s ease both}
   .d-art{margin:0 0 18px} .artist{margin:18px 0 0}
-  .artist .bio{margin:0 0 16px; font-size:.95rem; line-height:1.55; color:#d8cfbf}
+  /* parchemin (collector) : textes longs sur os texturé, à l'encre, filet simple, ombre pleine */
+  .parch{color:#2a1c10; border:1px solid #8a6a3e; border-radius:6px; box-shadow:0 4px 0 #000;
+    background:radial-gradient(ellipse at 16% 6%, rgba(255,250,236,.6), transparent 55%), radial-gradient(ellipse at 90% 98%, rgba(140,98,48,.26), transparent 60%),
+      repeating-linear-gradient(177deg, rgba(110,78,40,.06) 0 1px, transparent 1px 4px), repeating-linear-gradient(87deg, rgba(110,78,40,.04) 0 1px, transparent 1px 7px), linear-gradient(#e8dcc2, #d9c9a6)}
+  .artist .bio{margin:0 0 16px; padding:14px 16px; font-size:.95rem; line-height:1.55}
   .move-in{display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center; margin:0 0 16px; padding:12px; border:1px solid rgba(235,154,38,.6); border-radius:12px; background:#1a120b; box-shadow:0 4px 0 #000}
   .mv-ico{width:44px; height:44px; display:grid; place-items:center; border-radius:12px; background:var(--gold); color:var(--ink-text); box-shadow:0 3px 0 var(--gold-shadow)}
   .move-in small{display:block; font:900 .72rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-hi)} .move-in b{display:block; margin:2px 0; font:400 1.4rem/1.05 var(--gothic); color:var(--text)} .move-in p{margin:0; font-size:.86rem; color:#cfc3ad}
@@ -1133,7 +1156,8 @@
   .deck i.done{background-size:cover; opacity:.9; transform:translateY(4px) scale(.92); box-shadow:0 0 0 2px var(--rc, var(--r-commune))}
   .deck i.cur{width:42px; transform:translateY(-6px); box-shadow:0 0 0 2px var(--gold), 0 8px 18px rgba(0,0,0,.6)}
   .deck i.next{animation:bob 2.4s ease-in-out infinite}
-  .deck i.done{cursor:pointer}
+  .deck i.done{position:relative; cursor:pointer}
+  .deck .wax{position:absolute; right:-7px; bottom:-7px; width:20px; height:20px; --sc:var(--rc, var(--r-commune)); font-size:.78rem} .deck .wax::before{inset:3px; box-shadow:inset 0 1px 0 color-mix(in srgb, var(--sc) 42%, #000)}   /* mini-sceau : la rareté en lettre, pas seulement en couleur */
   .rev-done{max-width:420px; margin-top:16px}
   .rev-next{margin:10px 0 0; font:600 .82rem var(--mono); letter-spacing:.04em; color:var(--gold-hi); text-align:center}
   .rev-share{position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:5}
@@ -1141,6 +1165,7 @@
   /* (3) paquet fermé en parallaxe */
   .ptilt{perspective:900px; position:relative; z-index:var(--z-pack)}
   .ptilt > .pack{transition:transform .12s linear}
+  .pack .ext:nth-of-type(1){transform:translateZ(-2px)} .pack .ext:nth-of-type(2){transform:translateZ(-4px)} .pack .ext:nth-of-type(3){transform:translateZ(-6px)} .pack .ext:nth-of-type(4){transform:translateZ(-8px)}   /* tranche du sachet en 4 couches */
   .pack .ext{position:absolute; inset:1.2% 2.5%; border-radius:5px; pointer-events:none; background:linear-gradient(90deg,#0b0908,#2a221c 50%,#0b0908); box-shadow:inset 0 0 0 1px rgba(235,154,38,.18)}
   .pack .pshadow{position:absolute; left:0; right:0; bottom:-7%; height:14%; border-radius:50%; background:radial-gradient(closest-side, rgba(0,0,0,.75), transparent); transform:translateZ(-30px); pointer-events:none}
   .pack .flap, .pack .tear, .pack .grip, .pack .glare{transform-style:flat}
@@ -1220,7 +1245,7 @@
   .slot.stacked .layers i:nth-child(3){--fx:18px; --fr:14deg}
   @keyframes fan{35%{transform:translate(var(--fx),10px) rotate(var(--fr))}}
   .slot.stacked .count, .slot.upgraded .count{animation:countpop .7s cubic-bezier(.2,1.8,.4,1) .12s both}
-  @keyframes countpop{0%{transform:scale(2.4) rotate(-8deg); background:var(--gold); color:#0c0b0a}55%{transform:scale(.88)}100%{transform:none}}
+  @keyframes countpop{0%{transform:scale(2.4) rotate(-8deg)}55%{transform:scale(.88)}100%{transform:none}}
   .slot .plus{position:absolute; left:50%; top:34%; z-index:6; pointer-events:none; white-space:nowrap; font:700 1.5rem/1 var(--display); color:var(--rc); text-shadow:0 2px 0 #000, 0 0 18px var(--rc);
     animation:rise 1.1s cubic-bezier(.2,.8,.3,1) forwards}
   .slot .plus small{display:block; font:600 .7rem var(--mono); letter-spacing:.1em; text-transform:uppercase; text-align:center; margin-top:4px}
@@ -1300,7 +1325,7 @@
   .dev-row{flex-wrap:wrap} #inst-safari{flex:1 1 100%}
 
   @media (prefers-reduced-motion:reduce){
-    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.onb-fan img,.coach,.pub-fan button,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
+    .flip{transition:none} #rays,#vignette,.flames{display:none!important} .welcome .wl-pack,.combo,.onb-fan img,.coach,.pub-fan button,.dealfx .box,.splash img,.splash p,.pf-count span,.dupfx,.df-card img,.df-card i,.df-plus,.df-sub,.slot.stacked .img,.slot.stacked .layers i,.slot.upgraded .img,.slot .plus,.slot.stacked .count,.slot.upgraded .count,.reveal.quake,.pack.legend,.ptilt.shake,.slot.landed .img,.pile.pull,.pack.shake,.pack.charging,.stage.rumble,.stage.impact,.swipe-hint,#deck i{transition:none!important} #flash,.ring,#fx{display:none} .glow[data-r="legendaire"]{animation:none} .sheen{display:none}
     /* boucles décoratives : figées (l'état reste lisible : cadre or, pastille, flamme allumée) */
     .tr-wait,.qz-play.on .qz-eq i,.goal.quest.claim::after,.goal.quest.claim .pc svg,.quest-n.claim,.btn.rec,.tilt.sway,.pack.sway,.charge-holo .face.back,.fzv.ready .flame,.deck i.next,.swipe-hint,.pack.charging,.stage.rumble,.ptilt.shake{animation:none!important}
   }
@@ -1353,7 +1378,7 @@
         <span class="flap"><span class="tear"></span></span><span class="grip" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M6 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M8.6 8.6l10.4 10.4"/><path d="M8.6 15.4l10.4 -10.4"/></svg></span>
         
         <span class="glare"></span>
-        <i class="ext" style="transform:translateZ(-2px)"></i><i class="ext" style="transform:translateZ(-4px)"></i><i class="ext" style="transform:translateZ(-6px)"></i><i class="ext" style="transform:translateZ(-8px)"></i><i class="pshadow"></i>
+        <i class="ext"></i><i class="ext"></i><i class="ext"></i><i class="ext"></i><i class="pshadow"></i>
       </button>
       </div>
       <p class="swipe-hint">Glisse pour l'éventrer →</p>
@@ -1400,7 +1425,7 @@
       <button type="button" class="back-btn" id="binder-back"></button>
       <div class="bp-row"><h2 id="binder-title"></h2><button type="button" class="icon-btn sm" id="binder-trade" aria-label="Échanger des cartes avec un pote"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></button><button type="button" class="icon-btn sm" id="sort-open" aria-label="Trier et afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></button></div>
       <div class="progress"><span id="prog-txt" class="num"></span><div class="bar"><i id="prog-bar"></i></div><span id="prog-pct" class="num"></span></div>
-      <details class="style-info" id="style-info" hidden><summary id="si-sum"></summary><div id="si-body"></div></details>
+      <details class="style-info parch" id="style-info" hidden><summary id="si-sum"></summary><div id="si-body"></div></details>
       <div class="listen si-listen" id="si-listen" hidden></div>
     </div>
   <div class="grid" id="grid"></div>
@@ -1657,7 +1682,7 @@
     <div class="field">
       <p class="dev-t">Compte</p>
       <p class="note" id="acct"></p>
-      <p style="margin:10px 0 0"><button type="button" class="btn ghost" id="signout" hidden>Quitter la scène</button></p>
+      <p class="set-act"><button type="button" class="btn ghost" id="signout" hidden>Quitter la scène</button></p>
     </div>
     <div class="field">
       <p class="dev-t">Sur ton téléphone</p>
@@ -1678,9 +1703,9 @@
     <div class="field">
       <p class="dev-t">Zone rouge</p>
       <p class="note">Efface toute ta collection (sur ton compte si tu es connecté). Pas de retour possible.</p>
-      <p style="margin:10px 0 0"><button type="button" class="btn danger" id="reset">Repartir de zéro</button></p>
+      <p class="set-act"><button type="button" class="btn danger" id="reset">Repartir de zéro</button></p>
     </div>
-    <p class="note" style="margin-top:16px">Prototype pour tester les sensations. Illustrations générées par IA à partir de photos sous licence libre ; usage privé, les artistes n'ont pas été consultés.</p>
+    <p class="note set-credits">Prototype pour tester les sensations. Illustrations générées par IA à partir de photos sous licence libre ; usage privé, les artistes n'ont pas été consultés.</p>
   </div>
 </main>
 
@@ -1693,8 +1718,13 @@
     <h2 class="loot-t" id="loot-t">Le butin</h2>
     <p class="loot-sub" id="loot-sub"></p>
     <div class="loot-stage"><div class="loot-item" id="loot-item"></div>
-      <svg class="chest" viewBox="0 0 220 150" aria-hidden="true"><path d="M14 58h192v76a8 8 0 0 1-8 8H22a8 8 0 0 1-8-8z" fill="#5a2e0c"/><path d="M14 58h192v12H14z" fill="#eb9a26"/><path d="M14 100h192v6H14z" fill="#b56c16"/><rect x="99" y="64" width="22" height="30" rx="2" fill="#f4d58a"/>
-        <g class="lid"><path d="M14 58C14 30 50 16 110 16s96 14 96 42z" fill="#8a4b12"/><path d="M40 58C44 38 70 26 110 26s66 12 70 32" fill="none" stroke="#5a2e0c" stroke-width="3"/><path d="M14 50h192v8H14z" fill="#eb9a26"/><rect x="99" y="44" width="22" height="16" rx="2" fill="#f4d58a"/></g></svg></div>
+      <svg class="chest" viewBox="0 0 220 150" aria-hidden="true"><defs><pattern id="ch-d" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><path d="M0 0v5" stroke="currentColor" stroke-width=".9" opacity=".45"/></pattern>
+          <pattern id="ch-v" width="4.5" height="4" patternUnits="userSpaceOnUse"><path d="M0 0v4" stroke="currentColor" stroke-width=".8" opacity=".32"/></pattern></defs>
+        <g stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14 58h192v78a6 6 0 0 1-6 6H20a6 6 0 0 1-6-6z"/><path d="M15.5 110h189v26a4.5 4.5 0 0 1-4.5 4.5H20a4.5 4.5 0 0 1-4.5-4.5z" fill="url(#ch-d)" stroke="none"/><path d="M14 82h192M14 110h192" fill="none" stroke-width="1" opacity=".75"/>
+          <path d="M34 58h14v84H34zM172 58h14v84h-14z"/><path d="M38 62v76M176 62v76" fill="none" stroke-width=".8" opacity=".6"/><path d="M95 62h30v28l-15 9-15-9z"/><path d="M99 66h22v22l-11 6.5-11-6.5z" fill="url(#ch-d)" stroke-width=".8"/>
+          <g fill="currentColor" stroke="none"><circle cx="41" cy="70" r="2"/><circle cx="41" cy="96" r="2"/><circle cx="41" cy="128" r="2"/><circle cx="179" cy="70" r="2"/><circle cx="179" cy="96" r="2"/><circle cx="179" cy="128" r="2"/><circle cx="110" cy="74" r="3.6"/><path d="M108.4 76h3.2l1 9h-5.2z"/></g></g>
+        <g class="lid" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14 58C14 30 50 16 110 16s96 14 96 42z"/><path d="M14 58C14 30 50 16 110 16s96 14 96 42z" fill="url(#ch-v)" stroke="none"/><path d="M30 50C34 34 64 25 110 25s76 9 80 25" fill="none" stroke-width="1" opacity=".75"/>
+          <path d="M34 50V31.5l14-5V50zM172 26.5l14 5V50h-14z"/><path d="M14 50h192v8H14z"/><path d="M101 42h18v18h-18z"/><g fill="currentColor" stroke="none"><circle cx="41" cy="38" r="2"/><circle cx="179" cy="38" r="2"/><circle cx="24" cy="54" r="1.6"/><circle cx="196" cy="54" r="1.6"/><circle cx="110" cy="51" r="2.4"/></g></g></svg></div>
     <div class="loot-chips" id="loot-chips"></div>
     <p class="loot-p" id="loot-p"></p>
     <button type="button" class="relief loot-go" id="loot-go"></button>
@@ -1715,7 +1745,7 @@
       <div class="tilt" id="tilt">
         <div class="flip" id="flip" role="button" tabindex="0" aria-label="Retourner la carte">
           <div class="face back"></div>
-          <i class="edge" style="transform:translateZ(1.4px)"></i><i class="edge" style="transform:translateZ(.7px)"></i><i class="edge" style="transform:translateZ(0)"></i><i class="edge" style="transform:translateZ(-.7px)"></i><i class="edge" style="transform:translateZ(-1.4px)"></i>
+          <i class="edge"></i><i class="edge"></i><i class="edge"></i><i class="edge"></i><i class="edge"></i>
           <div class="face front"><img id="flip-img" alt=""><div class="sheen" id="sheen"></div><div class="glare" id="glare"></div></div>
         </div>
         <div class="glow" id="glow"></div>
@@ -1728,7 +1758,7 @@
   </div>
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="heat" x="-10%" y="-10%" width="120%" height="120%">
+<svg class="svg-defs" width="0" height="0" aria-hidden="true"><filter id="heat" x="-10%" y="-10%" width="120%" height="120%">
   <feTurbulence type="fractalNoise" baseFrequency="0.008 0.02" numOctaves="1" seed="3" result="n"><animate attributeName="baseFrequency" dur="5s" values="0.008 0.02;0.01 0.03;0.008 0.02" repeatCount="indefinite"/></feTurbulence>
   <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 <div class="flames" id="flames-pack" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -1736,7 +1766,7 @@
   <div class="uname-in">
     <p class="eyebrow" id="uname-k">Bienvenue dans le pit</p>
     <h2 id="uname-t">Ton nom de scène</h2>
-    <p class="note" id="uname-note" style="color:var(--muted)">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
+    <p class="note" id="uname-note">C'est le nom que verront les autres fans. Ta collection est sauvegardée sur le serveur.</p>
     <input id="uname-in" aria-labelledby="uname-t" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo">
     <p class="note">3 à 20 caractères : lettres, chiffres, point, tiret ou tiret bas.</p>
     <p class="err" id="uname-err"></p>
@@ -1749,8 +1779,8 @@
   <form class="uname-in auth" id="auth-form" data-mode="loading" novalidate>
     <img class="auth-logo" src="cards/logo.webp" alt="Metalnini" width="900" height="534">
     <h2 id="auth-t"><span data-only="loading">Balances en cours…</span><span data-only="signup">Rejoins le pit</span><span data-only="login">Re-bienvenue</span><span data-only="forgot">Trou de mémoire ?</span><span data-only="sent">Check tes mails</span><span data-only="newpw">Nouveau mot de passe</span></h2>
-    <p class="note" data-only="signup" style="color:var(--muted)" id="auth-intro">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
-    <p class="note" data-only="sent" style="color:var(--muted)" id="auth-sent"></p>
+    <p class="note" data-only="signup" id="auth-intro">On garde ta collection au chaud. Tu reçois un lien par e-mail pour prouver que t'es pas un bot.</p>
+    <p class="note" data-only="sent" id="auth-sent"></p>
     <p class="auth-spam" data-only="sent"><b>Rien dans ta boîte ?</b> Regarde dans <em>Spam</em> ou <em>Promotions</em>, puis marque le mail « Pas un spam » : les suivants arriveront au bon endroit.</p>
     <div data-only="signup"><label for="au-name">Pseudo</label><input id="au-name" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="ex. Roi_du_pogo"></div>
     <div data-only="signup login forgot"><label for="au-mail">E-mail</label><input id="au-mail" type="email" autocomplete="email" autocapitalize="off" spellcheck="false"></div>
@@ -1814,7 +1844,7 @@
 <div id="vignette" aria-hidden="true"></div>
 <div class="dupfx" id="dupfx" hidden><p class="df-skip" id="df-skip"></p><div class="df-card" id="df-card"><i></i><i></i><i></i><img id="df-img" alt=""><div class="df-plus" id="df-plus"></div></div><div class="df-sub" id="df-sub"></div><div class="df-tf" id="df-tf" hidden><button type="button" class="btn" id="df-go"></button><button type="button" class="btn ghost" id="df-later">Plus tard</button></div></div>
 <div class="tray" id="tray" hidden><div class="tray-in"><p class="coach" id="coach" hidden>Touche une carte : elle file à sa place dans ton classeur.</p><p id="tray-n">À ranger</p><div class="cards" id="tray-cards"></div><button type="button" class="btn block" id="tray-all">Tout ranger d'un coup</button></div></div>
-<label id="haptic" aria-hidden="true" style="position:fixed;left:-99px;top:0;opacity:0;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
+<label id="haptic" aria-hidden="true"><input type="checkbox" switch tabindex="-1"></label>
 <div id="flash" aria-hidden="true"></div>
 
 <!-- ============ DÉTAIL ============ -->
@@ -2851,12 +2881,12 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (d.concerts.length ? '<section class="pub-sec"><p class="eyebrow">Les talons · ' + d.concerts.length + ' concert' + (d.concerts.length > 1 ? 's' : '') + (gigTitle(d.concerts.length).label ? ' · ' + esc(gigTitle(d.concerts.length).label) : '') + '</p><div class="talons">' +
         d.concerts.map(function(c, i){ return '<div class="pub-gig" role="button" tabindex="0" data-pg="' + i + '" aria-label="Souvenirs du concert de ' + esc(c.artist) + '">' + talonHtml(c, c.photo) + '</div>'; }).join('') + '</div></section>' : '') +
       '<section class="pub-sec"><p class="eyebrow">La setlist</p><div class="pub-stats">' +
-        '<div><b>' + d.stats.cards + '<small style="font-size:.55em; color:var(--muted)">/' + d.stats.total + '</small></b><span>musiciens</span></div>' +
+        '<div><b>' + d.stats.cards + '<small class="of">/' + d.stats.total + '</small></b><span>musiciens</span></div>' +
         '<div><b>' + d.stats.legend + '</b><span>Légendaire' + (d.stats.legend > 1 ? 's' : '') + '</span></div>' +
         (d.stats.packs == null ? '' : '<div><b>' + d.stats.packs + '</b><span>paquets ouverts</span></div>') +
-        '<div' + (d.stats.packs == null ? ' style="grid-column:1 / -1"' : '') + '><b style="font-size:1.15rem; line-height:1.15">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>' +
+        '<div' + (d.stats.packs == null ? ' class="wide"' : '') + '><b class="fav">' + esc(d.stats.fav) + '</b><span>musicien fétiche</span></div></div></section>' +
       (d.friend ? '<section class="pub-sec"><p class="eyebrow">Il lui manque, tu l\'as en double</p>' + (d.missing.length ? '<div class="pub-miss">' + d.missing.map(function(k){ return '<img src="' + kImg(k) + '" alt="' + esc(card(k.split('|')[0]).who) + '">'; }).join('') + '</div>' : '<p class="pub-empty">Rien pour l\'instant : tes doublons, il les a déjà.</p>') +
-        '<button type="button" class="btn block" id="pub-trade" style="margin-top:14px">Lui proposer un échange</button></section>' : '');
+        '<button type="button" class="btn block" id="pub-trade">Lui proposer un échange</button></section>' : '');
     [].forEach.call(document.querySelectorAll('#pub-in [data-pg]'), function(el){ el.onclick = function(){ openPubGig(d.concerts[+el.getAttribute('data-pg')]); }; });
     var cry = document.getElementById('pub-cry'); if(cry) cry.onclick = function(){ cryPlay(new Audio(d.cry)).catch(function(){ toast('Lecture impossible : recharge l\'app et réessaie.'); }); };
     var pt = document.getElementById('pub-trade'); if(pt) pt.onclick = function(){ closePub(); inviteFriend(d.friend, pt); };
@@ -2913,7 +2943,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function openAvatarPick(){
     var keys = ownedKeys().sort(byRarity);
     document.getElementById('av-step').innerHTML = '<button type="button" class="btn block" id="av-photo">Prendre ou choisir une photo</button>' +
-      '<p class="eyebrow" style="margin:16px 0 6px">Ou une de tes cartes</p>' + (keys.length ? '<div class="sh-grid" id="av-grid">' + keys.map(function(k){ var p = k.split('|');
+      '<p class="eyebrow sh-k">Ou une de tes cartes</p>' + (keys.length ? '<div class="sh-grid" id="av-grid">' + keys.map(function(k){ var p = k.split('|');
         return '<button type="button" data-k="' + esc(k) + '" aria-label="' + esc(card(p[0]).who + ', ' + rarity(p[1]).label) + '"><img src="' + kImg(k) + '" alt="" loading="lazy"></button>'; }).join('') + '</div>'
         : '<p class="pf-note">Pas encore de carte : ouvre un paquet.</p>') +
       '<p class="pf-note">Une carte en photo de profil compte comme une photo. Pour commander ta carte perso, il faudra une vraie photo de toi.</p>';
@@ -4686,15 +4716,14 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // défis : choisis jusqu'à 2 jours après le concert, preuve à partir du jour même
   function gigOpen(c){ var end = new Date(c.played_on + 'T12:00:00'); end.setDate(end.getDate() + 2);
     return today() <= end.getFullYear() + '-' + String(end.getMonth() + 1).padStart(2, '0') + '-' + String(end.getDate()).padStart(2, '0'); }
-  // talon : artiste, salle et ville, souche datée ; la photo souvenir à gauche ; own : bouton pour le retirer
+  // talon : artiste, salle et ville, souche datée ; la photo souvenir à gauche ; own : il ouvre la fiche du concert
   function talonHtml(c, photo, own){
     var d = gigDate(c.played_on), where = [c.venue, c.city].filter(Boolean).join(' · '), past = gigPast(c);
     return '<article class="talon' + (past ? '' : ' soon') + '"' + (own ? ' data-id="' + esc(c.id) + '" tabindex="0"' : '') + '>' +
       (photo ? '<img class="tl-ph" src="' + esc(photo) + '" alt="Photo du concert de ' + esc(c.artist) + '" loading="lazy">' : '') +
       '<div class="tl-main"><small>' + (c.played_on === today() ? 'Ce soir' : past ? 'J\'y étais' : 'À venir') + '</small><b>' + esc(c.artist) + '</b>' + (where ? '<span>' + esc(where) + '</span>' : '') +
         (!own && gigDone(c).length ? '<p class="tl-df">' + gigDone(c).map(function(x){ return '<span>' + gl('check', 14) + esc(x.title) + '</span>'; }).join('') + '</p>' : '') + '</div>' +
-      '<div class="tl-stub" role="img" aria-label="' + d.day + ' ' + esc(d.month) + ' ' + d.year + '"><b class="num">' + d.day + '</b><span>' + esc(d.month) + '</span><small class="num">' + d.year + '</small></div>' +
-      (own ? '<button type="button" class="tl-x" aria-label="Retirer le concert de ' + esc(c.artist) + '">' + TL_X + '</button>' : '') + '</article>';
+      '<div class="tl-stub" role="img" aria-label="' + d.day + ' ' + esc(d.month) + ' ' + d.year + '"><b class="num">' + d.day + '</b><span>' + esc(d.month) + '</span><small class="num">' + d.year + '</small></div></article>';
   }
   function loadGigs(){
     if(!ONLINE) return Promise.resolve();
@@ -4739,13 +4768,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('gig-open').onclick = openGig;
     document.getElementById('band-open').onclick = function(){ openJoin(''); };
     [].forEach.call(box.querySelectorAll('.band-inv [data-code]'), function(b){ b.onclick = function(){ b.disabled = true; bandJoin(b.getAttribute('data-code')); }; });
-    [].forEach.call(box.querySelectorAll('.tl-x'), function(b){ b.onclick = function(){
-      var id = b.closest('.talon').getAttribute('data-id');
-      askConfirm({danger:true, eyebrow:'Concert', title:'Retirer ce concert ?', text:'Il sort de ta liste, avec son billet.', yes:'Retirer', no:'Le garder'}, function(){
-        ONLINE.deleteConcert(id, ((gigs || []).filter(function(c){ return c.id === id; })[0] || {}).ticket_path).then(function(){ gigs = gigs.filter(function(c){ return c.id !== id; }); renderCorner(); toast('Concert retiré.'); }, function(e){ toast(esc(e.message)); }); });
-    }; });
     [].forEach.call(box.querySelectorAll('[data-open]'), function(b){ b.onclick = function(){ openGigDetail(b.getAttribute('data-open')); }; });
-    [].forEach.call(box.querySelectorAll('.talon[data-id]'), function(t){ t.onclick = function(e){ if(!e.target.closest('.tl-x')) openGigDetail(t.getAttribute('data-id')); };
+    [].forEach.call(box.querySelectorAll('.talon[data-id]'), function(t){ t.onclick = function(){ openGigDetail(t.getAttribute('data-id')); };
       t.onkeydown = function(e){ if(e.target === t && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); openGigDetail(t.getAttribute('data-id')); } }; });
     if(!gigdSheet.hidden) paintGigDetail();
   }
@@ -4779,7 +4803,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
       (tkFirst ? '' : tkHtml) +
       (cloakOpen(c) ? '<h3 class="gigd-h">Ticket de vestiaire</h3>' + (c.cloak_path
         ? '<div class="cloak"><button type="button" class="cloak-ph" data-cloak-view aria-label="Voir le ticket en grand"><span class="gm-m" data-path="' + esc(c.cloak_path) + '" data-kind="photo"></span></button><div><p class="pit-note">' + (c.band_id ? 'Ta bande peut l\'ouvrir sur son téléphone jusqu\'à 3 jours après le concert.' : 'Monte ta bande pour qu\'elle puisse l\'ouvrir si tu perds ton téléphone.') + '</p><span class="cloak-acts"><button type="button" class="link" data-cloak-new>Remplacer</button><button type="button" class="link red" data-cloak-del>Retirer</button></span></div></div>'
-        : '<button type="button" class="btn ghost block" data-cloak-new>Photographier mon ticket</button><p class="pit-note">Si tu perds ton téléphone, ta bande pourra l\'ouvrir sur le sien.</p>') : '');
+        : '<button type="button" class="btn ghost block" data-cloak-new>Photographier mon ticket</button><p class="pit-note">Si tu perds ton téléphone, ta bande pourra l\'ouvrir sur le sien.</p>') : '') +
+      '<button type="button" class="link red gigd-del" data-gig-del>Supprimer ce concert</button>';
     var box = document.getElementById('gigd-in');
     [].forEach.call(box.querySelectorAll('.tl-acts [data-act]'), function(b){ b.onclick = function(){ gigAct(c, b.getAttribute('data-act'), b.getAttribute('data-ch'), b); }; });
     [].forEach.call(box.querySelectorAll('.gm-m'), function(el){ var path = el.getAttribute('data-path'), put = function(u){ if(!u) return;
@@ -4794,6 +4819,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(box.querySelectorAll('[data-cloak-new]'), function(b){ b.onclick = function(){ document.getElementById('cloak-file').click(); }; });
     var cd = box.querySelector('[data-cloak-del]'); if(cd) cd.onclick = function(){ askConfirm({danger:true, eyebrow:'Vestiaire', title:'Retirer la photo du ticket ?', text:'Ta bande ne le verra plus.', yes:'Retirer', no:'La garder'}, function(){ cd.disabled = true;
       ONLINE.clearCloak(c.id, c.cloak_path).then(function(){ c.cloak_path = null; paintGigDetail(); toast('Ticket retiré.'); }, function(e){ cd.disabled = false; toast(esc(e.message)); }); }); };
+    var gd = box.querySelector('[data-gig-del]'); gd.onclick = function(){
+      askConfirm({danger:true, eyebrow:'Concert', title:'Supprimer ce concert ?', text:'Il sort de ta liste, avec son billet.', yes:'Supprimer', no:'Le garder'}, function(){ gd.disabled = true;
+        ONLINE.deleteConcert(c.id, c.ticket_path).then(function(){ gigs = gigs.filter(function(x){ return x.id !== c.id; }); gigdSheet.hidden = true; renderCorner(); toast('Concert supprimé.'); }, function(e){ gd.disabled = false; toast(esc(e.message)); }); }); };
     rise('#gigd-in > *', {stagger:.04});
   }
   document.getElementById('gigd-close').onclick = function(){ gigdSheet.hidden = true; };
@@ -5465,7 +5493,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   var current = [], idx = 0, flipped = false, busy = false, side = 1, seenUpTo = -1;   // seenUpTo : dernière carte déjà retournée
   function renderDeck(){
     document.getElementById('deck').innerHTML = current.map(function(x, i){
-      if(i <= seenUpTo) return '<i class="done' + (i === idx ? ' cur' : '') + '" data-i="' + i + '" role="button" tabindex="0" aria-label="Revoir ' + esc(x.c.who) + '" style="background-image:url(' + img(x.c.id, x.r) + ');--rc:' + COLORS[x.r] + '"></i>';
+      if(i <= seenUpTo) return '<i class="done' + (i === idx ? ' cur' : '') + '" data-i="' + i + '" role="button" tabindex="0" aria-label="Revoir ' + esc(x.c.who) + ', ' + rarity(x.r).label + '" style="background-image:url(' + img(x.c.id, x.r) + ');--rc:' + COLORS[x.r] + '"><b class="wax" aria-hidden="true">' + rarity(x.r).label.charAt(0) + '</b></i>';
       return '<i class="' + (i === idx ? 'cur' : 'next') + '" style="animation-delay:' + (i*120) + 'ms"></i>';
     }).join('');
   }
@@ -6069,7 +6097,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         return '<button type="button" class="bcard' + (cover ? ' has' : '') + '" data-b="' + b.k + '" aria-label="' + esc(binderLabel(b)) + ', ' + have.length + ' cartes sur ' + ids.length + '">' +
           '<span class="art" aria-hidden="true"' + (cover ? ' style="background-image:url(' + img(cover.id, cover.r) + ')"' : '') + '></span>' +
           (binderDone(b) ? '<span class="done">Complet' + gl('check', 12) + '</span>' : '') +
-          '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="width:' + crans(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
+          '<span class="plate"><b>' + esc(binderLabel(b)) + '</b><small class="num">' + have.length + '/' + ids.length + ' cartes</small><span class="bar"><i style="--p:' + crans(have.length / Math.max(1, ids.length) * 100) + '%"></i></span></span></button>';
       }).join('');
       [].forEach.call(list.querySelectorAll('[data-b]'), function(c){ c.onclick = function(){ styleTap = true; openBinder(c.getAttribute('data-b')); renderBinder(); window.scrollTo(0, 0); }; });
       if(askFirst) list.querySelector('[data-ask]').onclick = openAskArtist;
@@ -6102,17 +6130,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('prog-txt').textContent = have + '/' + list.length;
     var pct = Math.round(have / list.length * 100);
     document.getElementById('prog-pct').textContent = pct + ' %';
-    document.getElementById('prog-bar').style.width = crans(pct) + '%';
+    document.getElementById('prog-bar').style.setProperty('--p', crans(pct) + '%');
     // la demande d'artiste en première case : toutes les cartes, chaque style et chaque groupe (le groupe est prérempli)
     var askKind = b.k === 'all' ? 'all' : b.kind === 'Styles' ? 'style' : b.kind === 'Groupes' ? 'band' : null;
     var askSlot = askKind ? '<button type="button" class="slot ask" id="ask-slot"><span class="sw"><span class="img"><span class="ask-in"><b aria-hidden="true">+</b><span>' + (askKind === 'band' ? 'Il manque quelqu\'un ?' : 'Il manque un artiste ?') + '</span><small>' + (tk ? 'Ticket prioritaire ×' + tk : 'Propose-le') + '</small></span></span></span><span class="cap">Ta demande</span></button>' : '';
     document.getElementById('grid').innerHTML = askSlot + list.map(function(c){
       var r = placed(c.id);
-      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span style="position:relative">N° ' + pos[c.id] + '</span><small style="position:relative">' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
+      if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span>N° ' + pos[c.id] + '</span><small>' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
-        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (total(c.id) > 1 ? '<span class="count">×' + total(c.id) + '</span>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg>5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
-        '</span></span><span class="cap">' + pos[c.id] + ' · ' + esc(c.who) + '</span></button>';
+        (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg>5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
+        '</span></span><span class="cap"><span>' + pos[c.id] + ' · ' + esc(c.who) + '</span>' + (total(c.id) > 1 ? '<b class="count num">×' + total(c.id) + '</b>' : '') + '</span></button>';
     }).join('');
     [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
     if(askSlot) document.getElementById('ask-slot').onclick = function(){ openAskArtist();
@@ -6256,7 +6284,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var dup = n - 1, next = RARITIES[i+1], cost = fuseCost(x.k), ok = dup >= cost, fill = Math.min(dup, cost);
     return '<div class="fzv-col' + (ok ? ' ready' : '') + '" style="--fc:' + next.color + '"><button type="button" class="fzv' + (ok ? ' ready' : '') + '" data-from="' + x.k + '" data-left="' + (cost - dup) + '" aria-label="' + (ok ? 'Transformer ' + cost + ' ' + x.label + ' en 1 ' + next.label : fill + ' doublons ' + x.label + ' sur ' + cost + ' pour 1 ' + next.label) + '">' +
       '<span class="fzv-cap">Transfo</span><svg class="flame" viewBox="0 0 16 22" aria-hidden="true"><path fill="currentColor" d="M8 1c3 5 5 8 5 12a5 5 0 0 1-10 0c0-2 1-4 2-5 0 2 1 3 2 3 0-4 0-7 1-10z"/></svg>' +
-      '<span class="fzv-bar" style="--n:' + cost + '" aria-hidden="true"><i style="height:' + (fill / cost * 100).toFixed(1) + '%"></i></span><b class="num">' + fill + '/' + cost + '</b><small>→ ' + next.label + '</small></button></div>';
+      '<span class="fzv-bar" style="--n:' + cost + '" aria-hidden="true"><i style="--f:' + (fill / cost).toFixed(3) + '"></i></span><b class="num">' + fill + '/' + cost + '</b><small>→ ' + next.label + '</small></button></div>';
   }
   // maîtrise : en-tête du bloc des raretés (les 5 raretés, possédées ou non), couronne quand tout est réuni
   function masteryHead(id){
@@ -6266,7 +6294,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // l'artiste : présentation, coup spécial, fiche (arcane, instrument, style, classeurs où il se range)
   function artistBlock(c){
     var bs = BINDERS.filter(function(b){ return b.kind !== 'Collection' && (b.ids || []).indexOf(c.id) !== -1; }).map(binderLabel);
-    return '<section class="artist" aria-label="L\'artiste">' + ((BIOS_LONG[c.id] || BIOS[c.id]) ? '<p class="bio">' + esc(BIOS_LONG[c.id] || BIOS[c.id]) + '</p>' : '') +
+    return '<section class="artist" aria-label="L\'artiste">' + ((BIOS_LONG[c.id] || BIOS[c.id]) ? '<p class="bio parch">' + esc(BIOS_LONG[c.id] || BIOS[c.id]) + '</p>' : '') +
       (MOVES[c.id] ? '<div class="move-in"><span class="mv-ico">' + icon('<path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/>', 22) + '</span><span><small>Coup spécial</small><b>' + esc(MOVES[c.id][0]) + '</b><p>' + esc(MOVES[c.id][1]) + '</p></span></div>' : '') +
       '<dl class="facts"><div><dt>Arcane</dt><dd>' + esc(c.num) + ' · ' + esc(c.title) + '</dd></div><div><dt>Instrument</dt><dd>' + esc(c.inst) + '</dd></div>' +
         '<div><dt>Style</dt><dd>' + esc(c.genre) + '</dd></div><div><dt>Classeurs</dt><dd>' + (bs.length ? bs.map(esc).join(', ') : '—') + '</dd></div></dl></section>';
@@ -6277,20 +6305,26 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     askConfirm({eyebrow:'Transformation', title:'Transformer tes doublons ?', text:cost + ' doublons ' + lab + ' de ' + card(id).who + ' fondent en 1 ' + next.label + '. Tu gardes toujours un exemplaire ' + lab + '.', yes:'Transformer', no:'Garder mes doublons'},
       function(){ forgeFx(id, from, function(){ fuse(id, from); }); });
   }
-  // forge : les doublons convergent en cercle, fondent au centre dans un éclat de la couleur de la rareté visée, puis la révélation
+  // forge : les doublons convergent en cercle, fondent au centre dans un éclat de la couleur de la rareté visée, puis la révélation ;
+  // mouvement réduit : une image fixe (surtitre, une carte, halo) le temps d'un souffle
   function forgeFx(id, from, then){
-    if(reduce || !Element.prototype.animate){ then(); return; }
-    var next = RARITIES[rank(from) + 1].k, n = Math.min(fuseCost(from), 8), fx = document.createElement('div'), R = Math.min(innerWidth, innerHeight) * .32;
-    fx.className = 'forge'; fx.style.setProperty('--fc', COLORS[next]);
+    if(!reduce && !Element.prototype.animate){ then(); return; }
+    var next = RARITIES[rank(from) + 1].k, n = reduce ? 1 : Math.min(fuseCost(from), 8), fx = document.createElement('div'), R = Math.min(innerWidth, innerHeight) * .3;
+    fx.className = 'forge' + (reduce ? ' still' : ''); fx.style.setProperty('--fc', COLORS[next]); fx.style.setProperty('--fs', Math.round(Math.max(innerWidth, innerHeight) * 1.2) + 'px');
+    fx.innerHTML = '<b class="rays"></b>';
     for(var i = 0; i < n; i++){ var im = document.createElement('img'); im.src = img(id, from); im.alt = ''; fx.appendChild(im); }
-    var flash = document.createElement('i'); fx.appendChild(flash); document.body.appendChild(fx);
+    var flash = document.createElement('i'), head = document.createElement('p'); fx.appendChild(flash);
+    head.innerHTML = '<span class="eyebrow">Transformation</span><b>' + rarity(from).label + ' → ' + rarity(next).label + '</b>'; fx.appendChild(head); document.body.appendChild(fx);
+    SFX.rumble(600); buzz([20, 60, 20, 60, 60]);
+    if(reduce){ setTimeout(function(){ fx.remove(); then(); }, 900); return; }
     [].forEach.call(fx.querySelectorAll('img'), function(im, k){
       var a = k / n * Math.PI * 2 - Math.PI / 2, at = 'translate(' + Math.cos(a) * R + 'px,' + Math.sin(a) * R + 'px) rotate(' + (k % 2 ? 14 : -14) + 'deg) scale(.8)';
       im.animate([{transform:at, opacity:0}, {transform:at, opacity:1, offset:.25}, {transform:'translate(0,0) rotate(0) scale(.5)', opacity:1, offset:.85}, {transform:'translate(0,0) scale(.3)', opacity:0}],
         {duration:1100, delay:k * 40, easing:'cubic-bezier(.5,0,.3,1)', fill:'forwards'});
     });
-    flash.animate([{transform:'scale(0)', opacity:0}, {transform:'scale(0)', opacity:0, offset:.7}, {transform:'scale(14)', opacity:.9, offset:.85}, {transform:'scale(22)', opacity:0}], {duration:1500, fill:'forwards'});
-    SFX.rumble(600); buzz([20, 60, 20, 60, 60]);
+    flash.animate([{transform:'scale(0)', opacity:0}, {transform:'scale(.06)', opacity:0, offset:.55}, {transform:'scale(.22)', opacity:1, offset:.68}, {transform:'scale(1)', opacity:.95, offset:.84}, {transform:'scale(1)', opacity:0}], {duration:1500, fill:'forwards'});
+    fx.querySelector('.rays').animate([{transform:'rotate(0) scale(.5)', opacity:0}, {transform:'rotate(10deg) scale(.5)', opacity:0, offset:.6}, {transform:'rotate(30deg) scale(1)', opacity:.75, offset:.82}, {transform:'rotate(45deg) scale(1)', opacity:0}], {duration:1500, fill:'forwards'});
+    head.animate([{opacity:0, transform:'translateY(10px)'}, {opacity:1, transform:'none', offset:.14}, {opacity:1, offset:.66}, {opacity:0, offset:.82}, {opacity:0}], {duration:1500, fill:'forwards'});
     setTimeout(function(){ fx.remove(); then(); }, 1450);
   }
   function fuse(id, from){
@@ -6344,9 +6378,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // banc d'essai des sons (?sons) : chaque son attendu (fiche : sons.html), livré ou non, à écouter
   if(/[?&]sons\b/.test(location.search)){
     var CUE_LIST = ["music-main", "intro", "reveal-commune-1", "reveal-commune-2", "reveal-rare-1", "reveal-rare-2", "reveal-holo-1", "reveal-holo-2", "reveal-signature-1", "reveal-signature-2", "reveal-legendaire-1", "reveal-legendaire-2", "reveal-legendaire-3", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete-1", "binder-complete-2", "mastery-1", "mastery-2", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify", "trade-scan", "trade-code", "trade-join", "trade-add", "trade-remove", "trade-partner", "trade-ready", "trade-done", "trade-cancel", "meet-bonus", "title", "zoom", "nope"];
-    var sb = document.createElement('div'); sb.style.cssText = 'position:fixed;inset:0;z-index:var(--z-fatal);overflow:auto;background:#0c0b0a;padding:20px 16px;font:14px Inter,sans-serif;color:#f3f0ea';
-    sb.innerHTML = '<h2 style="margin:0 0 6px">Banc d\'essai des sons</h2><p style="color:#a49e94;margin:0 0 14px">' + Object.keys(SOUNDS).length + ' / ' + CUE_LIST.length + ' livrés. Touche un son pour l\'écouter.</p>' +
-      CUE_LIST.map(function(c){ var ok = !!SOUNDS[c]; return '<button type="button" data-c="' + c + '" style="display:flex;justify-content:space-between;width:100%;min-height:44px;margin:0 0 6px;padding:0 14px;border:0;border-radius:8px;background:#161412;color:' + (ok ? '#f4b243' : '#6d675e') + ';font:600 14px Inter;cursor:pointer"><span>' + c + '</span><span>' + (ok ? 'livré' : 'manquant') + '</span></button>'; }).join('');
+    var sb = document.createElement('div'); sb.className = 'snd-bench';
+    sb.innerHTML = '<h2>Banc d\'essai des sons</h2><p>' + Object.keys(SOUNDS).length + ' / ' + CUE_LIST.length + ' livrés. Touche un son pour l\'écouter.</p>' +
+      CUE_LIST.map(function(c){ var ok = !!SOUNDS[c]; return '<button type="button" data-c="' + c + '"' + (ok ? ' class="ok"' : '') + '><span>' + c + '</span><span>' + (ok ? 'livré' : 'manquant') + '</span></button>'; }).join('');
     document.body.appendChild(sb);
     sb.addEventListener('click', function(e){ var b = e.target.closest('[data-c]'); if(!b) return; var c = b.getAttribute('data-c'); sndInit();
       if(c === 'music-main'){ musicStart(); musicApply(); } else snd(c); });
@@ -6390,7 +6424,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     onbShow('<h2>Qu\'est-ce qui passe dans tes écouteurs ?</h2><p>Choisis 1 à 3 univers : on compose ton premier paquet avec.</p>' +
       '<div class="tiles">' + STYLE_TILES.map(function(t){ return '<button type="button" class="tile" data-s="' + t[0] + '" aria-pressed="false" style="--ti:url(' + img(t[1], 'commune') + ')"><b>' + esc(t[2]) + '</b><small>' + esc(t[3]) + '</small></button>'; }).join('') +
       '<button type="button" class="tile any" data-s="" aria-pressed="false"><b>Aucune idée · Surprends-moi</b></button></div>' +
-      '<button type="button" class="btn block stick" id="onb-pack" disabled>Choisis au moins un univers</button>');
+      '<div class="stick"><button type="button" class="btn block" id="onb-pack" disabled>Choisis au moins un univers</button></div>');
     var go = document.getElementById('onb-pack');
     function paint(){ [].forEach.call(onbEl.querySelectorAll('.tile'), function(b){ var k = b.getAttribute('data-s'); b.setAttribute('aria-pressed', String(k ? sel.indexOf(k) !== -1 : any)); });
       go.disabled = !sel.length && !any; go.textContent = any ? 'Surprends-moi' : sel.length ? 'Composer mon paquet (' + sel.length + '/3)' : 'Choisis au moins un univers'; }

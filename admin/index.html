@@ -77,6 +77,13 @@
   .part, #player-detail{scroll-margin-top:calc(var(--tabs-h) + var(--anch-h) + 12px)}
   @media (min-width:641px){ .anchors{position:sticky; top:var(--tabs-h); z-index:2; background:var(--bg); margin:0; padding:10px 0; border-bottom:1px solid var(--border)} }
   .page-title{margin:22px 0 0}
+  /* fiche joueur (#joueurs/<id>) : vue à part, sans la liste ni les autres sections ; à partir de 1100 px, la liste reste à gauche en version courte */
+  .pl-solo .anchors, .pl-solo .part:not(#s-liste), .pl-solo #s-liste > .card:first-child{display:none}
+  @media (min-width:1100px){
+    .pl-solo #s-liste{display:grid; grid-template-columns:320px minmax(0, 1fr); gap:16px; align-items:start}
+    .pl-solo #s-liste > .card:first-child{display:block; position:sticky; top:calc(var(--tabs-h) + 14px); max-height:calc(100vh - var(--tabs-h) - 28px); overflow-y:auto; margin:14px 0}
+    .pl-solo .pl-t th:not(:first-child):not(:last-child), .pl-solo .pl-t td:not(:first-child):not(:last-child){display:none}
+  }
   .todo{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border)} .todo b{font:800 1.3rem var(--display); color:var(--gold); margin-right:8px; display:inline-block; min-width:1.4em; text-align:right}
   /* menu du compte, en haut à droite */
   .menu{position:relative} .menu > summary{cursor:pointer; list-style:none; padding:6px 0; min-height:44px; display:flex; align-items:center; gap:6px} .menu > summary::-webkit-details-marker{display:none} .menu > summary .ic{color:var(--gold)}
@@ -118,6 +125,7 @@
   .red-zone{margin-top:18px; border:1px solid var(--err-line); border-radius:10px; padding:12px}
   .back{margin:0 0 12px}
   tr.dirty td{background:var(--warn-bg)}
+  .m-only{display:none} .mus-th{width:46px}
   .filters{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 10px} .filters > *{flex:1 1 180px}
   .steps{padding-left:18px; font-size:.88rem; line-height:1.5} .steps li{margin:6px 0}
   .qr img{display:block; width:190px; height:190px}
@@ -140,7 +148,15 @@
     table.cards-m td[data-l]::before{content:attr(data-l); position:absolute; left:0; top:9px; width:37%; font:500 .7rem/1.25 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
     table.cards-m td:empty{display:none}
     .table-wrap{overflow:visible}
-    .pl-t td:nth-child(6), .pl-t td:nth-child(8), .pl-t td:nth-child(9){display:none}   /* liste des joueurs : création, variantes et paquets restent sur la fiche ordinateur */
+    .pl-t td:nth-child(6), .pl-t td:nth-child(8), .pl-t td:nth-child(9){display:none}
+    /* musiciens : vignette et ligne courte ; toucher la ligne déplie les champs de ce musicien et « Enregistrer » */
+    table.mus-t tr[data-id]{display:grid; grid-template-columns:44px minmax(0, 1fr); gap:0 12px; align-items:center}
+    table.mus-t tr[data-id] > td{grid-column:1 / -1; width:auto!important}   /* la colonne N° garde sa largeur fixe sur ordinateur seulement */
+    table.mus-t tr[data-id] > td.mus-th{grid-column:1; grid-row:1; padding:4px 0}
+    table.mus-t tr[data-id] > td.m-only{display:block; grid-column:2; grid-row:1; padding:0}
+    table.mus-t tr[data-id]:not(.open) > td:not(.mus-th):not(.m-only){display:none}
+    .mus-open{width:100%; justify-content:space-between; gap:10px; text-align:left; background:none; color:var(--text); box-shadow:none; padding:6px 0; margin:0; font:inherit; text-transform:none; letter-spacing:0}
+    .mus-open > span:first-child{flex:1; min-width:0; overflow-wrap:anywhere} .mus-open .ic{color:var(--gold); transition:transform .2s} .mus-open[aria-expanded="true"] .ic{transform:rotate(180deg)}   /* liste des joueurs : création, variantes et paquets restent sur la fiche ordinateur */
   }
 </style>
 </head>
@@ -154,10 +170,11 @@
   <!-- ============ CONNEXION ============ -->
   <section id="v-login" class="card" hidden style="max-width:440px">
     <h2>Connexion</h2>
+    <p class="muted note">Accès réservé à l'équipe, sur invitation.</p>
     <form id="login-form" method="post" action="#" novalidate>
     <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="username">
-    <label for="password">Mot de passe (12 caractères minimum)</label><input id="password" name="password" type="password" autocomplete="current-password">
-    <div class="row" style="margin-top:14px"><button id="btn-login" type="submit" class="fit">Se connecter</button><button id="btn-signup" type="button" class="ghost fit">Créer le compte</button></div>
+    <label for="password">Mot de passe</label><input id="password" name="password" type="password" autocomplete="current-password">
+    <div class="row" style="margin-top:14px"><button id="btn-login" type="submit" class="fit">Se connecter</button></div>
     </form>
     <p id="login-msg" class="msg"></p>
   </section>
@@ -288,11 +305,6 @@ $('btn-login').onclick = async () => {
   if(error) return say($('login-msg'), frErr(error.message));
   route();
 };
-$('btn-signup').onclick = async () => {
-  const { error } = await sb.auth.signUp({ email: $('email').value.trim(), password: $('password').value, options: { emailRedirectTo: location.href.split('#')[0] } });
-  if(error) return say($('login-msg'), frErr(error.message));
-  say($('login-msg'), 'Compte créé. Confirme ton adresse avec le lien reçu par e-mail, puis connecte-toi.', true);
-};
 async function startEnroll(){
   const { data: f } = await sb.auth.mfa.listFactors();
   for(const x of (f.all || [])) if(x.status !== 'verified') await sb.auth.mfa.unenroll({ factorId: x.id });
@@ -374,10 +386,12 @@ function go(p, s = '', force = false){
 }
 async function render(){
   const [p, s] = parseHash(), parts = PAGES[p].parts;
+  // #joueurs/<id> : la fiche seule (sans la liste ni les autres sections) ; sur grand écran, la liste reste à gauche
+  const solo = p === 'joueurs' && !!s && !parts.some(x => x[0] === s), page = $('page'), was = page.classList.contains('pl-solo');
+  page.classList.toggle('pl-solo', solo);
   let fresh = false;
   if(cur !== p){
     cur = p; fresh = true; playersP = null; paintNav();
-    const page = $('page');
     // pages du menu du compte : pas d'onglet actif, leur titre dit où l'on est
     page.innerHTML = (PAGES[p].menu ? `<h2 class="page-title">${parts[0][1]}</h2>` : '')
       + (parts.length > 1 && !PAGES[p].flat ? `<nav class="anchors" aria-label="Sections">${parts.map(x => `<button data-go="${p}/${x[0]}">${x[1]}</button>`).join('')}</nav>` : '')
@@ -387,16 +401,21 @@ async function render(){
       try { await f(el); } catch(e){ el.innerHTML = `<p class="err">${esc(frErr(e.message || e))}</p>`; } }));
     if(cur !== p) return;
   }
-  if(p === 'joueurs' && s && !parts.some(x => x[0] === s)){ const pl = (await allPlayers()).find(x => x.id === s); if(pl) return player(pl, fresh); }
+  bars();
+  if(solo){ const pl = (await allPlayers()).find(x => x.id === s); if(pl) return player(pl, fresh); page.classList.remove('pl-solo'); bars(); }
+  // retour à la liste : la ligne du joueur quitté reste en vue
+  const left = was && !solo && document.querySelector('tr.click[aria-current]');
   if(p === 'joueurs' && $('player-detail')){ $('player-detail').innerHTML = ''; markRow(null); }
   if(s && $('s-' + s)) reach($('s-' + s), fresh);
+  else if(left) left.scrollIntoView({ block: 'center' });
 }
 window.addEventListener('popstate', () => { if(!$('v-app').hidden) render(); });
+// libellés posés une fois par ligne : les lignes ajoutées après coup (pages suivantes du journal) sont prises aussi
 function labelTables(root){
-  root.querySelectorAll('table:not(.cards-m)').forEach(t => {
+  root.querySelectorAll('table').forEach(t => {
     const head = t.rows[0] && [...t.rows[0].cells].every(c => c.tagName === 'TH') ? [...t.rows[0].cells].map(c => c.textContent.trim()) : null;
     if(!head) return;
-    [...t.rows].slice(1).forEach(r => [...r.cells].forEach((c, i) => { if(head[i] && c.colSpan === 1) c.dataset.l = head[i]; }));
+    [...t.rows].slice(1).filter(r => !r.dataset.lab).forEach(r => { r.dataset.lab = '1'; [...r.cells].forEach((c, i) => { if(head[i] && c.colSpan === 1) c.dataset.l = head[i]; }); });
     t.classList.add('cards-m');
   });
 }
@@ -762,7 +781,7 @@ async function gameSettings(el){
   const settings = await sb.from('settings').select('*').then(must), setting = k => (settings.find(s => s.key === k) || {}).value;
   el.innerHTML = `<div class="card"><h3>Réglages de jeu</h3>
     <p class="muted note">Doublons consommés par palier de transformation (le joueur garde toujours un exemplaire). Défaut exponentiel : 3, 6, 12, 24.</p>
-    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}" for="fz-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input id="fz-${r}" data-fuse="${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
+    <div class="row">${FUSE_TIERS.map((r, i) => `<div class="fit"><label class="r-${r}" for="fz-${r}">${RLABEL[r]} → ${RLABEL[RARITIES[i + 1]]}</label><input id="fz-${r}" type="number" min="1" value="${esc(setting('fusion_cost_' + r))}"></div>`).join('')}</div>
     <div class="row"><div class="fit"><label for="set-ppd">Points de paquet par jour (un paquet, standard ou mini, = 2)</label><input id="set-ppd" type="number" min="1" value="${esc(setting('pack_points_per_day'))}"></div>
       <div class="fit"><label for="set-welcome">Paquet de bienvenue, en points (0 = désactivé)</label><input id="set-welcome" type="number" min="0" value="${esc(setting('welcome_bonus_points'))}"></div></div>
     <div class="row"><div class="fit"><label for="set-dph">Rappel du paquet du jour, heure de Paris (−1 = désactivé)</label><input id="set-dph" type="number" min="-1" max="23" value="${esc(setting('daily_push_hour'))}"></div>
@@ -770,23 +789,33 @@ async function gameSettings(el){
       <div class="fit"><label for="set-budget">Notifications par jour et par joueur, au plus</label><input id="set-budget" type="number" min="0" max="5" value="${esc(setting('push_daily_budget'))}"></div></div>
     <label for="set-why">Motif (obligatoire)</label><input id="set-why">
     <div class="row" style="margin-top:10px"><button id="set-go" class="fit">Enregistrer</button></div><p id="set-msg" class="msg"></p></div>`;
+  // chaque réglage : clé, champ, nom court, valeur envoyée (bornes d'origine) ; seules les valeurs changées partent, dans cet ordre
+  const KEYS = [...FUSE_TIERS.map((r, i) => ['fusion_cost_' + r, 'fz-' + r, 'Transformation ' + RLABEL[r] + ' → ' + RLABEL[RARITIES[i + 1]], v => v]),
+    ['pack_points_per_day', 'set-ppd', 'Points de paquet par jour', v => v], ['welcome_bonus_points', 'set-welcome', 'Paquet de bienvenue', v => v],
+    ['daily_push_hour', 'set-dph', 'Heure du rappel', v => Math.max(-1, Math.min(23, v))], ['pack_catchup_days', 'set-catchup', 'Jours en réserve', v => Math.max(1, Math.min(30, v || 1))],
+    ['push_daily_budget', 'set-budget', 'Notifications par jour', v => Math.max(0, v || 0)]];
+  const saved = Object.fromEntries(KEYS.map(([k]) => [k, Number(setting(k))]));
+  const value = ([, id, , f]) => f(parseInt($(id).value, 10));
+  const changed = () => KEYS.filter(x => !Object.is(value(x), saved[x[0]]));
+  const upd = () => { const n = changed().length; $('set-go').disabled = !n; $('set-go').textContent = n ? 'Enregistrer (' + n + ')' : 'Rien à enregistrer'; };
+  el.querySelectorAll('input[type=number]').forEach(i => i.addEventListener('input', upd)); upd();
   $('set-go').onclick = async () => {
-    const why = $('set-why').value.trim(), nums = [...el.querySelectorAll('input[type=number]')];
+    const why = $('set-why').value.trim(), nums = [...el.querySelectorAll('input[type=number]')], todo = changed();
+    if(!todo.length) return upd();
     const bad = nums.find(i => i.value.trim() === '' || isNaN(+i.value) || (i.min !== '' && +i.value < +i.min) || (i.max !== '' && +i.value > +i.max));
     if(bad){ bad.focus(); return say($('set-msg'), 'Valeur manquante ou hors limites : « ' + (bad.closest('div').querySelector('label') || {}).textContent + ' ».'); }
     if(!why){ $('set-why').focus(); return say($('set-msg'), 'Indique d\'abord un motif.'); }
-    if(!await ask('Enregistrer les réglages de jeu ?', 'Ils s\'appliquent tout de suite à tous les joueurs. Motif : ' + why, 'Enregistrer')) return;
-    let a = { error: null };
-    for (const inp of el.querySelectorAll('[data-fuse]')) {
-      a = await sb.rpc('admin_set_setting', { p_key: 'fusion_cost_' + inp.dataset.fuse, p_value: parseInt(inp.value, 10), p_reason: why });
-      if (a.error) break;
+    if(!await ask('Enregistrer ' + (todo.length > 1 ? 'ces ' + todo.length + ' réglages' : 'ce réglage') + ' ?', todo.map(x => x[2] + ' : ' + saved[x[0]] + ' → ' + value(x)).join(' · ') + '. Ils s\'appliquent tout de suite à tous les joueurs. Motif : ' + why, 'Enregistrer')) return;
+    const done = []; let err = null, stop = null;
+    for(const x of todo){
+      const v = value(x), r = await sb.rpc('admin_set_setting', { p_key: x[0], p_value: v, p_reason: why });
+      if(r.error){ err = r.error; stop = x; break; }
+      saved[x[0]] = v; $(x[1]).value = v; done.push(x[2]);
     }
-    let b = a.error ? a : await sb.rpc('admin_set_setting', { p_key: 'pack_points_per_day', p_value: parseInt($('set-ppd').value, 10), p_reason: why });
-    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'welcome_bonus_points', p_value: parseInt($('set-welcome').value, 10), p_reason: why });
-    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'daily_push_hour', p_value: Math.max(-1, Math.min(23, parseInt($('set-dph').value, 10))), p_reason: why });
-    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'pack_catchup_days', p_value: Math.max(1, Math.min(30, parseInt($('set-catchup').value, 10) || 1)), p_reason: why });
-    if (!b.error) b = await sb.rpc('admin_set_setting', { p_key: 'push_daily_budget', p_value: Math.max(0, parseInt($('set-budget').value, 10) || 0), p_reason: why });
-    say($('set-msg'), (a.error || b.error) ? 'Enregistrement interrompu, une partie des réglages est peut-être passée : recharge la page pour voir les valeurs actuelles. ' + frErr((a.error || b.error).message) : 'Réglages enregistrés et inscrits au journal.', !(a.error || b.error));
+    const rest = todo.slice(done.length + 1).map(x => x[2]);
+    say($('set-msg'), err ? 'Arrêt sur « ' + stop[2] + ' » : ' + frErr(err.message) + (done.length ? ' Enregistrés : ' + done.join(', ') + '.' : ' Rien n\'a été enregistré.') + (rest.length ? ' Pas envoyés : ' + rest.join(', ') + '.' : '')
+      : (done.length > 1 ? done.length + ' réglages enregistrés' : 'Réglage enregistré') + ' et inscrit' + (done.length > 1 ? 's' : '') + ' au journal : ' + done.join(', ') + '.', !err);
+    setTimeout(upd);   // après la garde anti double clic : le bouton suit de nouveau les changements
   };
 }
 
@@ -830,6 +859,8 @@ document.addEventListener('click', async e => {
 });
 
 // ---------------------------------------------------------------- catalogue
+// téléphone : ligne courte en lecture (nom, groupe, état) qui déplie l'édition de ce seul musicien
+const musSum = m => `<span><b>${esc(m.name)}</b><br><span class="muted">${esc(m.band)}</span></span><span class="pill${m.active ? '' : ' warn-pill'}">${m.active ? 'actif' : 'inactif'}</span>${ic('down')}`;
 // numéro d'arcane (chiffres romains) → nombre, pour trier les visuels comme l'album
 const romanValue = n => { const v = {I:1,V:5,X:10,L:50,C:100}; let t = 0; for(let i = 0; i < n.length; i++){ const a = v[n[i]] || 0, b = v[n[i + 1]] || 0; t += a < b ? -a : a; } return t; };
 async function catalogTab(el){
@@ -859,12 +890,13 @@ async function catalogTab(el){
       <div class="fit"><button class="ghost" id="cat-reset">Effacer</button></div>
     </div>
     <p class="muted note">Chaque modification est inscrite au journal ; une ligne modifiée et pas encore enregistrée est surlignée. Décocher « Actif » retire l'artiste des paquets. Les visuels se remplacent pour l'instant dans le dépôt (<code>proto/cards/</code>).</p>
-    <div class="table-wrap"><table><tr><th></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
-    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td style="width:46px"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}">${cardImg(m.id, variants(m.id)[0])}</button></td>
+    <div class="table-wrap"><table class="mus-t"><tr><th></th><th class="m-only"></th><th>Musicien</th><th>Groupe</th><th>Titre d'arcane</th><th>N°</th><th>Sous-genre</th><th>Actif</th><th></th></tr>
+    ${catalog.musicians.map(m => `<tr data-id="${esc(m.id)}"><td class="mus-th"><button class="thumb" data-view="${esc(m.id)}" aria-label="Voir les visuels de ${esc(m.name)}">${cardImg(m.id, variants(m.id)[0])}</button></td>
+      <td class="m-only"><button type="button" class="mus-open" aria-expanded="false">${musSum(m)}</button></td>
       <td><input data-f="name" value="${esc(m.name)}"></td><td><input data-f="band" value="${esc(m.band)}"></td><td><input data-f="arcana_title" value="${esc(m.arcana_title)}"></td>
       <td style="width:80px"><input data-f="arcana_number" value="${esc(m.arcana_number)}"></td><td><input data-f="subgenre" value="${esc(m.subgenre)}"></td>
       <td><label class="hit"><input data-f="active" type="checkbox" ${m.active ? 'checked' : ''} aria-label="Actif"></label></td><td><button class="ghost save">Enregistrer</button><span class="msg" style="display:block"></span></td></tr>`).join('')}
-    <tr id="cat-none" hidden><td colspan="8" class="muted">Aucun musicien ne correspond.</td></tr>
+    <tr id="cat-none" hidden><td colspan="9" class="muted">Aucun musicien ne correspond.</td></tr>
     </table></div></div>`;
   // recherche et filtres : masquent les lignes (les saisies en cours restent) et limitent la visionneuse à la sélection
   const norm = t => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -908,12 +940,15 @@ async function catalogTab(el){
   // ligne modifiée : surlignée et bouton en or jusqu'à l'enregistrement
   const dirty = (tr, on) => { tr.classList.toggle('dirty', on); tr.querySelector('.save').classList.toggle('ghost', !on); };
   el.querySelectorAll('tr[data-id]').forEach(tr => tr.addEventListener('input', () => dirty(tr, true)));
+  el.querySelectorAll('.mus-open').forEach(b => b.onclick = () => { const tr = b.closest('tr'), on = !tr.classList.contains('open');
+    el.querySelectorAll('tr.open').forEach(x => { x.classList.remove('open'); x.querySelector('.mus-open').setAttribute('aria-expanded', 'false'); });
+    tr.classList.toggle('open', on); b.setAttribute('aria-expanded', String(on)); });
   el.querySelectorAll('tr[data-id] .save').forEach(btn => btn.onclick = async () => {
     const tr = btn.closest('tr'), patch = {}, m = tr.querySelector('.msg'), mu = catalog.musicians.find(x => x.id === tr.dataset.id) || {};
     tr.querySelectorAll('[data-f]').forEach(i => patch[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value.trim());
     if(mu.active && !patch.active && !await ask('Désactiver ' + (patch.name || mu.name) + ' ?', 'Ses cartes ne sortent plus des paquets. Les joueurs gardent celles qu\'ils ont.', 'Désactiver')) return;
     const r = await sb.from('musicians').update(patch).eq('id', tr.dataset.id).select();
-    if(r.error) say(m, frErr(r.error.message)); else if(!r.data.length) say(m, 'Refusé (droits).'); else { say(m, 'Enregistré', true); dirty(tr, false); Object.assign(mu, patch); }
+    if(r.error) say(m, frErr(r.error.message)); else if(!r.data.length) say(m, 'Refusé (droits).'); else { say(m, 'Enregistré', true); dirty(tr, false); Object.assign(mu, patch); tr.querySelector('.mus-open').innerHTML = musSum(mu); }
   });
 }
 
@@ -1125,25 +1160,36 @@ function logDetail(o){
       : Array.isArray(v) ? v.length + ' élément' + (v.length > 1 ? 's' : '') : v && typeof v === 'object' ? JSON.stringify(v) : v;
     return `<span class="muted">${esc(LOG_KEYS[k] || k)} :</span> ${esc(String(val).slice(0, 120))}`; }).join('<br>');
 }
+// lu par pages de 200 (plage de lignes), « Voir les 200 suivantes » ajoute la page suivante sous les filtres en cours
+const LOG_PAGE = 200;
 async function log(el){
-  const [rows, players] = await Promise.all([sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(200).then(must), allPlayers()]);
+  const page = from => sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).range(from, from + LOG_PAGE - 1).then(must);
+  const [rows, players] = await Promise.all([page(0), allPlayers()]);
+  if(!rows.length){ el.innerHTML = '<div class="card"><h3>Journal des actions admin</h3><p class="muted" style="margin:0">Aucune action pour l\'instant : chaque geste sur un joueur, un réglage ou le catalogue s\'inscrira ici avec son motif.</p></div>'; return; }
   const name = id => (players.find(p => p.id === id) || {}).username;
-  const actions = [...new Set(rows.map(r => r.action))].sort();
-  el.innerHTML = `<div class="card"><h3>Journal des actions admin</h3>
-    ${rows.length ? `<div class="filters"><div><label for="lg-a">Action</label><select id="lg-a"><option value="">Toutes</option>${actions.map(a => `<option>${esc(a)}</option>`).join('')}</select></div>
-      <div><label for="lg-q">Joueur ou motif</label><input id="lg-q" type="search" autocomplete="off" placeholder="Pseudo, motif"></div></div>
-    <p class="muted note">Les ${rows.length} dernières actions.</p>
-    <div class="table-wrap"><table><tr><th>Date</th><th>Action</th><th>Joueur</th><th>Détail</th><th>Motif</th></tr>
-    ${rows.map(r => `<tr data-a="${esc(r.action)}" data-q="${esc(((name(r.target_user) || '') + ' ' + (r.reason || '')).toLowerCase())}"><td>${fmt(r.created_at)}</td><td><span class="pill">${esc(r.action)}</span></td>
+  const row = r => `<tr data-a="${esc(r.action)}" data-q="${esc(((name(r.target_user) || '') + ' ' + (r.reason || '')).toLowerCase())}"><td>${fmt(r.created_at)}</td><td><span class="pill">${esc(r.action)}</span></td>
       <td>${r.target_user ? (name(r.target_user) ? `<a class="pl-link" href="#joueurs/${esc(r.target_user)}" data-go="joueurs/${esc(r.target_user)}"><b>${esc(name(r.target_user))}</b></a>` : `<span class="muted">${esc(r.target_user.slice(0, 8))} (supprimé ?)</span>`) : '—'}</td>
-      <td style="font-size:.82rem">${logDetail(r.payload)}</td><td>${esc(r.reason)}</td></tr>`).join('')}
-    <tr id="lg-none" hidden><td colspan="5" class="muted">Aucune action ne correspond.</td></tr></table></div>`
-    : '<p class="muted" style="margin:0">Aucune action pour l\'instant : chaque geste sur un joueur, un réglage ou le catalogue s\'inscrira ici avec son motif.</p>'}</div>`;
-  if(!rows.length) return;
+      <td style="font-size:.82rem">${logDetail(r.payload)}</td><td>${esc(r.reason)}</td></tr>`;
+  el.innerHTML = `<div class="card"><h3>Journal des actions admin</h3>
+    <div class="filters"><div><label for="lg-a">Action</label><select id="lg-a"></select></div>
+      <div><label for="lg-q">Joueur ou motif</label><input id="lg-q" type="search" autocomplete="off" placeholder="Pseudo, motif"></div></div>
+    <p class="muted note" id="lg-n"></p>
+    <div class="table-wrap"><table><tr><th>Date</th><th>Action</th><th>Joueur</th><th>Détail</th><th>Motif</th></tr>
+    <tr id="lg-none" hidden><td colspan="5" class="muted">Aucune action ne correspond.</td></tr></table></div>
+    <div class="row" style="margin-top:12px"><button class="ghost fit" id="lg-more">Voir les ${LOG_PAGE} suivantes</button></div><p class="msg" id="lg-msg"></p></div>`;
+  const all = [];
   const filter = () => { const a = $('lg-a').value, q = $('lg-q').value.trim().toLowerCase(); let n = 0;
     el.querySelectorAll('tr[data-a]').forEach(tr => { tr.hidden = !((!a || tr.dataset.a === a) && (!q || tr.dataset.q.includes(q))); n += !tr.hidden; });
     $('lg-none').hidden = n > 0; };
+  // ajoute une page : lignes, actions du filtre (le choix en cours reste), compteur, bouton tant qu'une page pleine laisse supposer une suite
+  const add = list => { all.push(...list); $('lg-none').insertAdjacentHTML('beforebegin', list.map(row).join(''));
+    const a = $('lg-a').value; $('lg-a').innerHTML = '<option value="">Toutes</option>' + [...new Set(all.map(r => r.action))].sort().map(x => `<option>${esc(x)}</option>`).join(''); $('lg-a').value = a;
+    $('lg-n').textContent = `Les ${all.length} dernières actions.`; $('lg-more').hidden = list.length < LOG_PAGE; filter(); };
+  add(rows);
   $('lg-a').addEventListener('change', filter); $('lg-q').addEventListener('input', filter);
+  $('lg-more').onclick = async () => {
+    try { add(await page(all.length)); $('lg-msg').textContent = ''; } catch(e){ say($('lg-msg'), frErr(e.message || e)); }
+  };
 }
 
 // ---------------------------------------------------------------- mon compte

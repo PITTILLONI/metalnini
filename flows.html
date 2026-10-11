@@ -400,13 +400,13 @@
 
 <a class="skip" href="#contenu">Aller au contenu</a>
 
-<div class="era" role="note"><p><b>14 septembre 2026</b>Version de conception (antérieure au prototype) : le jeu réel est dans le <a href="proto/">prototype</a>.</p></div>
+<div class="era" role="note"><p><b>Mise à jour 2026-10-10</b>Flows A, B, E et G alignés sur le <a href="proto/">prototype</a> (G devient la Fosse ; radar et géolocalisation abandonnés). Les autres restent de la version de conception (14 septembre 2026).</p></div>
 
 <header class="wrap head">
   <p class="eyebrow">Document de travail : conception</p>
   <h1>User flows</h1>
-  <p class="tagline">Les 8 parcours clés de Metalnini, détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes — plus l'architecture des boucles de rétention qui les relie.</p>
-  <p class="meta">Basé sur concept.html (onglet Architecture) · Motion : Rive · Aucun visuel de carte requis à ce stade</p>
+  <p class="tagline">Les 8 parcours clés de Metalnini (A, B, E et G d'après le prototype), détaillés au niveau nécessaire pour wireframer : étapes, branches, états limites et décisions encore ouvertes, plus l'architecture des boucles de rétention qui les relie.</p>
+  <p class="meta">Conception : concept.html (onglet Architecture) · A, B, E, G : d'après proto/index.html · Motion : GSAP en place, Rive à venir</p>
 
   <ul class="legend" aria-label="Types d'étape">
     <li class="l-screen"><strong>Écran</strong>Une vue à maquetter</li>
@@ -421,12 +421,12 @@
   <div class="nav-inner">
     <a href="#principes">Principes</a>
     <a href="#flow-a">A · Onboarding</a>
-    <a href="#flow-b">B · Pack</a>
+    <a href="#flow-b">B · Paquet</a>
     <a href="#flow-c">C · Évolution</a>
     <a href="#flow-d">D · Concert</a>
-    <a href="#flow-e">E · Découverte échange</a>
+    <a href="#flow-e">E · Échange</a>
     <a href="#flow-f">F · Récompense</a>
-    <a href="#flow-g">G · Échange & rencontre</a>
+    <a href="#flow-g">G · Fosse</a>
     <a href="#flow-h">H · Missions</a>
     <a href="#motion">Animation</a>
     <a href="#retention">Rétention</a>
@@ -461,152 +461,177 @@
     </div>
     <div class="principle">
       <h4>Une récompense garantie n'est jamais otage d'un formulaire</h4>
-      <p>Quand une récompense est promise comme certaine (complétion de classeur, palier, première rencontre), elle est attribuée dès que la condition est remplie — pas après avoir rempli un questionnaire ou passé un écran optionnel.</p>
+      <p>Quand une récompense est promise comme certaine (complétion de classeur, palier, première rencontre), elle est attribuée dès que la condition est remplie : pas après avoir rempli un questionnaire ou passé un écran optionnel.</p>
     </div>
   </div>
 </section>
 
 <!-- ============ FLOW A ============ -->
 <section id="flow-a" class="wrap">
-  <p class="eyebrow">Flow A</p>
-  <h2>Onboarding → premier pack</h2>
-  <p class="flow-sub">Le parcours le plus critique : c'est là que se perd la majorité des nouveaux arrivants.</p>
+  <p class="eyebrow">Flow A · aligné sur le prototype le 2026-10-10</p>
+  <h2>Onboarding : premier paquet</h2>
+  <p class="flow-sub">On joue d'abord, on sauvegarde ensuite. Quatre écrans courts avant la première carte, tous facultatifs sauf le choix des univers.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Objectif</dt><dd>Passer de l'installation à « j'ai des cartes à moi » en moins de deux minutes.</dd></div>
-    <div class="fact"><dt>Déclencheur</dt><dd>Première ouverture de l'app.</dd></div>
-    <div class="fact"><dt>Sortie réussie</dt><dd>L'utilisateur est sur sa Collection, avec des cartes dedans et une raison d'y revenir.</dd></div>
+    <div class="fact"><dt>Objectif</dt><dd>Passer de la première ouverture à « j'ai des cartes à moi » sans créer de compte.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Première ouverture de l'app, sans compte ni paquet de bienvenue sur l'appareil.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Les cartes de bienvenue sont rangées dans le classeur, puis sauvegardées par un compte.</dd></div>
   </dl>
 
   <ol class="flow">
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
       <h4>Accroche</h4>
-      <p>Une phrase, un bouton. Pas de carrousel de cinq slides à swiper : la promesse se démontre en jouant, pas en la lisant.</p>
-    </li>
-
-    <li class="step" data-type="decision">
-      <span class="tag">Décision — compte requis ?</span>
-      <h4>Non. On joue d'abord, on sauvegarde ensuite.</h4>
-      <p>Demander un compte avant toute valeur reçue est le premier point de chute d'un onboarding. Le compte est proposé à l'étape 7, une fois les cartes obtenues.</p>
-    </li>
-
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran</span>
-      <h4>Choix des sous-genres</h4>
-      <p>Grille de 6 à 8 tuiles. Sélection multiple, 2 minimum. C'est ce qui conditionne la suite : artistes proposés, composition du pack, feed d'accueil.</p>
-    </li>
-
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran</span>
-      <h4>Choix des artistes</h4>
-      <p>Liste filtrée par les sous-genres choisis. 3 à 5 artistes. Bouton de validation désactivé sous 3 sélections, avec un compteur explicite plutôt qu'un bouton mort sans explication.</p>
+      <p>Logo or gravé, éventail de trois cartes, une phrase : « Le rock et le metal en cartes à collectionner ». Bouton « Ouvrir mon premier paquet », mention « Gratuit, et sans compte pour commencer ».</p>
       <ul class="branches">
-        <li><b>Échappatoire</b>« Je ne sais pas encore » → pré-sélection des artistes les plus collectionnés du ou des sous-genres choisis. Un utilisateur indécis ne doit jamais rester coincé sur cet écran.</li>
-        <li><b>Sous-genre de niche</b>Si trop peu d'artistes disponibles, le dire (« encore peu d'artistes ici ») plutôt que d'afficher une grille vide.</li>
+        <li><b>Déjà un compte</b>« Déjà un compte ? Connexion » ouvre l'écran de connexion et saute tout l'onboarding.</li>
       </ul>
     </li>
-
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Univers</h4>
+      <p>« Qu'est-ce qui passe dans tes écouteurs ? » : 11 tuiles de style, chacune ancrée sur des groupes connus (« Nirvana, Foo Fighters, Soundgarden »). 1 à 3 univers ; le bouton dit ce qui manque (« Choisis au moins un univers ») puis « Composer mon paquet (2/3) ».</p>
+      <ul class="branches">
+        <li><b>Surprends-moi</b>« Aucune idée · Surprends-moi » remplace la sélection : pas besoin d'être metalleux pour choisir.</li>
+        <li><b>Quatrième univers</b>Refusé avec un clin d'œil : « Trois univers max. T'es éclectique, on a compris. »</li>
+      </ul>
+    </li>
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran · facultatif</span>
+      <h4>Groupes du moment</h4>
+      <p>« Tes groupes du moment ? » : jusqu'à 5 groupes ou artistes, tapés librement. Ils servent à choisir les prochaines cartes du jeu (visibles dans l'admin) et partent au serveur une fois le compte créé.</p>
+      <ul class="branches">
+        <li><b>Passer</b>Rien n'est gardé, on passe au cri.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran · facultatif</span>
+      <h4>Cri</h4>
+      <p>« Pousse ton cri » : le même enregistreur que le profil (6 secondes max). Le cri reste sur l'appareil et part au serveur à la première connexion.</p>
+      <ul class="branches">
+        <li><b>Plus tard</b>« Il t'attendra dans ton profil ». Le premier cri enregistré rapporte ensuite une carte cadeau.</li>
+      </ul>
+    </li>
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Composition du pack de bienvenue</h4>
-      <p>Contenu garanti, non aléatoire : au moins une carte Rare, et au moins une carte d'un artiste explicitement choisi à l'étape précédente. Un premier pack entièrement composé de communes d'artistes inconnus annulerait tout le bénéfice du choix des goûts.</p>
+      <h4>Paquet de bienvenue tiré par le serveur</h4>
+      <p>Tiré avant tout compte et rattaché à un jeton : les cartes viennent des univers choisis. En cas d'échec réseau, le bouton devient « Réessayer » avec « Le serveur a raté son stage diving. Réessaie. »</p>
     </li>
-
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Reveal du pack de bienvenue</h4>
-      <p>Même écran que le Flow B, version simplifiée : aucun doublon possible, aucun résumé d'échange. Le seul but est le plaisir de la découverte.</p>
+      <h4>Révélation du paquet de bienvenue</h4>
+      <p>Même révélation que le paquet du jour (Flow B), titrée « Ton paquet de bienvenue » ; toutes les cartes sont nouvelles.</p>
     </li>
-
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran</span>
-      <h4>Atterrissage sur la Collection</h4>
-      <p>Les cartes sont déjà en place dans leur classeur, avec les emplacements vides visibles autour. Un nudge discret : « plus que X cartes pour compléter [thème] ». La sensation de progression doit exister avant même la deuxième session.</p>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Rangement guidé</h4>
+      <p>Les cartes attendent dans le bac « À ranger ». Le coach dit : « Touche une carte : elle file à sa place dans ton classeur. »</p>
     </li>
-
     <li class="step" data-type="decision">
-      <span class="tag">Décision — créer le compte ?</span>
-      <h4>Proposé ici, jamais imposé</h4>
+      <span class="tag">Décision · créer le compte ?</span>
+      <h4>Proposé une fois les cartes rangées, jamais imposé</h4>
+      <p>« Tes cartes sont à toi. Crée ton compte pour ne pas les perdre : un pseudo, un e-mail, c'est tout. »</p>
       <ul class="branches">
-        <li><b>Créer</b>Email / Apple / Google. Confirmation que les cartes sont désormais sauvegardées.</li>
-        <li><b>Plus tard</b>Autorisé. Un bandeau discret et persistant signale que les cartes ne sont pas encore sauvegardées — informatif, pas culpabilisant, et jamais un blocage.</li>
+        <li><b>Créer</b>À la première connexion, le paquet de bienvenue est réclamé avec son jeton (les cartes déjà rangées restent rangées), puis le cri et les groupes du moment partent au serveur.</li>
+        <li><b>Plus tard</b>Autorisé. Un bandeau reste sur l'accueil tant que les cartes ne sont pas sauvegardées.</li>
       </ul>
     </li>
-
     <li class="step" data-type="ecran">
-      <span class="tag">Écran — optionnel</span>
-      <h4>Amorce Live</h4>
-      <p>« Tu vas voir un concert bientôt ? » Skippable en un geste. Présenté seulement après la création de compte, ou repoussé à la deuxième session : c'est une troisième demande d'engagement, elle ne doit pas s'empiler sur les deux précédentes.</p>
+      <span class="tag">Écran</span>
+      <h4>Installer l'app</h4>
+      <p>Feuille proposée après la connexion, adaptée à l'appareil (bouton du navigateur, trois étapes dans Safari, ou passage par Safari depuis un autre navigateur iPhone). Un paquet est offert à la première ouverture depuis l'icône.</p>
+      <ul class="branches">
+        <li><b>Plus tard</b>La feuille revient au plus 3 fois, tous les 3 jours ; un bandeau « Mets Metalnini sur ton écran d'accueil · Un paquet offert » reste sur l'accueil.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="notif">
+      <span class="tag">Notif · app installée</span>
+      <h4>Notifications</h4>
+      <p>Au premier lancement depuis l'icône : un écran montre ce qu'elles apportent (paquet du jour, cadeaux du Grand Architecte), « Deux notifications par jour au plus », puis la demande d'autorisation. Un paquet offert si l'appareil s'abonne.</p>
+      <ul class="branches">
+        <li><b>Plus tard</b>Rien n'est perdu ; l'option reste dans les réglages.</li>
+      </ul>
     </li>
   </ol>
 
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Abandon en cours de route</b> — reprise à l'étape exacte au prochain lancement, choix déjà faits conservés.</li>
-      <li><b>Pas de réseau au moment du reveal</b> — le pack est attribué avant l'animation ; si la connexion tombe, l'animation est rejouable et rien n'est perdu.</li>
-      <li><b>Réinstallation sans compte</b> — les cartes sont perdues. C'est le coût assumé du mode invité, et la raison pour laquelle le bandeau de sauvegarde existe.</li>
-    </ul>
-  </div>
-
-  <div class="block open">
-    <h3>À trancher</h3>
-    <ul>
-      <li><b>Taille du pack de bienvenue</b> — 5 ou 7 cartes ? Dépend du volume de contenu disponible au lancement : un pack généreux sur un catalogue mince rend la suite décevante.</li>
-      <li><b>Amorce Live en fin d'onboarding ou en session 2 ?</b> — arbitrage entre installer tôt la mécanique concert et ne pas saturer la première session.</li>
+      <li><b>Compte existant</b> : la connexion réclame aussi un jeton de bienvenue gardé dans le compte.</li>
+      <li><b>Réseau coupé au tirage</b> : le paquet n'est pas tiré, le bouton propose de réessayer ; rien n'est perdu.</li>
+      <li><b>Réinstallation sans compte</b> : les cartes de l'appareil sont perdues : c'est la raison du bandeau de sauvegarde.</li>
     </ul>
   </div>
 </section>
 
 <!-- ============ FLOW B ============ -->
 <section id="flow-b" class="wrap">
-  <p class="eyebrow">Flow B</p>
-  <h2>Ouverture de pack</h2>
-  <p class="flow-sub">La boucle la plus fréquente, et le moment le plus chargé émotionnellement de l'app.</p>
+  <p class="eyebrow">Flow B · aligné sur le prototype le 2026-10-10</p>
+  <h2>Paquet du jour : déchirure, révélation, rangement</h2>
+  <p class="flow-sub">La boucle la plus fréquente. Un paquet par jour, au choix Standard ou Mini, déchiré du doigt, révélé carte par carte, puis rangé dans le classeur.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Objectif</dt><dd>Un moment court, rejouable, et jamais frustrant — même quand le tirage est mauvais.</dd></div>
-    <div class="fact"><dt>Entrées</dt><dd>Bannière Accueil · onglet Packs · notification « pack gratuit disponible ».</dd></div>
-    <div class="fact"><dt>Sortie réussie</dt><dd>Résumé lu, et au moins une action proposée derrière (échange d'un doublon, classeur à finir).</dd></div>
+    <div class="fact"><dt>Objectif</dt><dd>Un moment court et rejouable, jamais frustrant, même quand le tirage est mauvais.</dd></div>
+    <div class="fact"><dt>Entrées</dt><dd>Onglet Paquets · notification du paquet du jour · cadeau de l'admin · récompense d'épreuve.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Cartes rangées, classeurs qui avancent, et une transformation possible si les doublons suffisent.</dd></div>
   </dl>
 
   <ol class="flow">
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Packs disponibles</h4>
-      <p>Pack gratuit (avec le temps restant avant le prochain), packs payants, packs événementiels. Le compteur affiche une disponibilité réelle — pas une fausse urgence de rareté.</p>
-    </li>
-
-    <li class="step" data-type="decision">
-      <span class="tag">Décision — pack payant ?</span>
-      <h4>Deux chemins</h4>
+      <h4>Accueil : « Ton paquet est prêt »</h4>
+      <p>Rang et pseudo dans l'en-tête, carrousel des paquets (Mosh Pack et paquets de style), nom et accroche du paquet. Un paquet par jour, remis à minuit (heure de Paris) ; les jours d'absence restent en réserve (7 par défaut).</p>
       <ul class="branches">
-        <li><b>Payant</b>Écran de confirmation : prix, nombre de cartes, et le contenu <i>garanti</i> annoncé clairement. Pas de formulation en « chances de… » qui laisse croire à mieux que la réalité.</li>
-        <li><b>Gratuit</b>Ouverture directe, sans étape intermédiaire.</li>
+        <li><b>Plusieurs paquets en attente</b>« Tout ouvrir · N paquets d'un coup » les tire en série et montre toutes les cartes d'un coup.</li>
       </ul>
     </li>
-
+    <li class="step" data-type="decision">
+      <span class="tag">Décision · format</span>
+      <h4>Standard ou Mini</h4>
+      <p>Interrupteur en relief à deux positions : Standard, 5 cartes ; Mini, 2 cartes avec de meilleures chances. Une fois le paquet tiré, le format est verrouillé : « Ton paquet est déjà tiré : ses cartes sont à toi », avec « L'ouvrir » ou le mettre de côté (ses cartes attendent dans « À ranger »).</p>
+    </li>
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Tirage</h4>
-      <p>Contenu déterminé côté serveur et figé avant l'animation (voir Principes).</p>
+      <h4>Tirage côté serveur</h4>
+      <p>Contenu décidé avant l'animation. Une carte maudite peut se glisser à la place d'une carte (environ 7 % des paquets) ; la carte secrète n'apparaît qu'après l'avoir demandée.</p>
     </li>
-
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Déchirure<span class="rive">Motion · GSAP</span></h4>
+      <p>« Glisse pour l'éventrer » : on glisse vers la droite (ou on touche) pour déchirer le sachet. Ouverture spéciale quand il contient une Légendaire.</p>
+    </li>
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Reveal<span class="rive">Motion · Rive</span></h4>
-      <p>Cartes révélées une par une au tap, avec « Tout révéler » accessible en permanence — un joueur qui ouvre son dixième pack ne doit pas subir l'animation complète. C'est le seul endroit de l'app où les effets riches (foil, shimmer, grain) sont autorisés.</p>
-    </li>
-
-    <li class="step" data-type="ecran">
-      <span class="tag">Écran</span>
-      <h4>Résumé post-ouverture</h4>
-      <p>Trois blocs : nouvelles cartes, doublons, progression. Sur chaque nouvelle carte, l'impact chiffré sur le classeur concerné (« +12 % sur Early Years »). Sur chaque doublon, un bouton direct « Proposer en échange ».</p>
+      <h4>Révélation<span class="rive">Motion · GSAP</span></h4>
+      <p>Carte par carte, mise en scène croissante selon la rareté (vibrations, attente, rayons, tampon), avec une phrase mi-argot mi-concert (« Commune. Même le roadie en a une. »), doublon et triplé compris. Une seule vanne de fin de paquet ; l'extrait audio officiel peut partir en fin de révélation (réglable).</p>
       <ul class="branches">
-        <li><b>Doublon</b>Marqué « disponible à l'échange » immédiatement, visible par les autres fans (Flow E). La transaction elle-même attend une rencontre en présentiel (Flow G) — l'échange n'est plus possible à distance.</li>
-        <li><b>Classeur complété</b>Enchaîne sur le Flow F (récompense) plutôt que de rester sur le résumé.</li>
-        <li><b>Classeur presque complet</b>Nudge visuel sur le résumé uniquement. Aucune notification derrière.</li>
+        <li><b>Carte maudite</b>« Une carte maudite s'est glissée dans ton paquet. Déchire-la pour lever la malédiction. » Elle va dans l'onglet « À déchirer ».</li>
+        <li><b>Passer</b>Un bouton permet de sauter la mise en scène.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Rangement<span class="rive">Motion · GSAP</span></h4>
+      <p>« Ranger dans le classeur » dès la dernière carte. Dans le bac « À ranger », chaque carte touchée file en arc vers sa case ; « Tout ranger » affiche les moments forts en grand, puis le bilan « Tout est rangé · Nickel ».</p>
+      <ul class="branches">
+        <li><b>Classeur complété</b>« Plié. Ta récompense t'attend dans Metal Corner » : la récompense se réclame dans Épreuves.</li>
+        <li><b>Maîtrise</b>Les 5 raretés d'un musicien réunies : même principe, récompense dans Metal Corner.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="decision">
+      <span class="tag">Décision · transformation</span>
+      <h4>Doublons : garder ou transformer</h4>
+      <p>Dans la fiche carte, un cierge se remplit d'un cran par doublon. Plein, il propose « Transformer » : 3 doublons de Commune donnent 1 Rare, puis 6, 12 et 24 pour les raretés suivantes ; on garde toujours un exemplaire. Confirmation « Transformer tes doublons ? », puis animation de forge.</p>
+      <ul class="branches">
+        <li><b>Garder mes doublons</b>Rien ne bouge ; ils restent disponibles pour un échange (Flow E).</li>
+      </ul>
+    </li>
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Paquet ouvert : « Le merch est fermé »</h4>
+      <p>Le titre devient « Ouverture dans … » (compte à rebours jusqu'à minuit). Les offres de la boutique s'affichent : 1 paquet à 1,49 €, 3 paquets à 2,99 €, et « Ou gagne-en sans payer : épreuves, slam, concerts ».</p>
+      <ul class="branches">
+        <li><b>Achat</b>Paiement Stripe ; au retour, « Paiement reçu » et le paquet est crédité par le serveur.</li>
       </ul>
     </li>
   </ol>
@@ -614,17 +639,15 @@
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>App fermée pendant le reveal</b> — au retour : « tu as un pack non ouvert ». Le tirage étant déjà fait, rien ne change en attendant.</li>
-      <li><b>Paiement échoué</b> — le pack n'est pas consommé, message explicite, retour à l'écran Packs sans perte.</li>
-      <li><b>Pack entièrement composé de doublons</b> — le cas le plus frustrant possible. L'écran de résumé doit avoir un traitement digne plutôt qu'une liste de cartes déjà possédées.</li>
+      <li><b>App fermée pendant la révélation</b> : le tirage est déjà enregistré ; les cartes attendent dans « À ranger ».</li>
+      <li><b>Que des Communes ou que des doublons</b> : une phrase dédiée (« Que des doublons. Tu collectionnes les échos ? »), et les doublons nourrissent la transformation.</li>
+      <li><b>Paiement refusé ou abandonné</b> : aucun paquet n'est consommé ; un remboursement se fait à la main dans Stripe.</li>
     </ul>
   </div>
-
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Que deviennent les doublons non échangés ?</b> — ils s'accumulent sans usage aujourd'hui. Faut-il une contrepartie (monnaie d'échange, fragments convertibles en pack) ? C'est le principal trou du concept sur cette boucle, et il conditionne le traitement du pack 100 % doublons.</li>
-      <li><b>Un doublon a-t-il une valeur propre ?</b> — par exemple une deuxième copie affichable dans un classeur personnalisé, ou strictement rien en dehors de l'échange.</li>
+      <li><b>Avis juridique sur les paquets payants</b> : la boutique est ouverte depuis le 2026-10-06 ; aucun avis n'est consigné dans CLAUDE.md. [À PRÉCISER]</li>
     </ul>
   </div>
 </section>
@@ -637,7 +660,7 @@
 
   <dl class="facts">
     <div class="fact"><dt>Objectif</dt><dd>Faire ressentir que la collection est vivante et connectée au réel.</dd></div>
-    <div class="fact"><dt>Déclencheur</dt><dd>Sortie d'album, clip, date de concert, anniversaire — détecté éditorialement.</dd></div>
+    <div class="fact"><dt>Déclencheur</dt><dd>Sortie d'album, clip, date de concert, anniversaire : détecté éditorialement.</dd></div>
     <div class="fact"><dt>Sortie réussie</dt><dd>L'utilisateur comprend <i>quel fait réel</i> a fait bouger sa carte.</dd></div>
   </dl>
 
@@ -645,7 +668,7 @@
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Détection de l'événement</h4>
-      <p>Curation manuelle et/ou flux externe. Le rythme de ce flow dépend entièrement de la capacité éditoriale — c'est une charge opérationnelle continue, pas une fonctionnalité qu'on livre une fois.</p>
+      <p>Curation manuelle et/ou flux externe. Le rythme de ce flow dépend entièrement de la capacité éditoriale : c'est une charge opérationnelle continue, pas une fonctionnalité qu'on livre une fois.</p>
     </li>
 
     <li class="step" data-type="systeme">
@@ -656,12 +679,12 @@
 
     <li class="step" data-type="notif">
       <span class="tag">Notification</span>
-      <h4>« Ta carte [Artiste] a changé »</h4>
+      <h4>« Ta carte [Artiste] a changé »</h4>
       <p>Une notification par événement, jamais groupée en rafale. Si plusieurs cartes évoluent le même jour, une seule notification agrégée.</p>
     </li>
 
     <li class="step" data-type="decision">
-      <span class="tag">Décision — ouverture depuis la notif ?</span>
+      <span class="tag">Décision · ouverture depuis la notif ?</span>
       <h4>La notification ne doit pas être le seul chemin</h4>
       <ul class="branches">
         <li><b>Oui</b>Ouverture directe sur l'écran d'évolution.</li>
@@ -672,7 +695,7 @@
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
       <h4>Évolution<span class="rive">Motion · Rive</span></h4>
-      <p>Avant / après animé, et surtout : le fait réel déclencheur affiché explicitement (« Album <i>X</i> sorti le 12 mars »). C'est cette mention qui distingue un FOMO authentique d'un effet de manche.</p>
+      <p>Avant / après animé, et surtout : le fait réel déclencheur affiché explicitement (« Album <i>X</i> sorti le 12 mars »). C'est cette mention qui distingue un FOMO authentique d'un effet de manche.</p>
     </li>
 
     <li class="step" data-type="ecran">
@@ -682,7 +705,7 @@
     </li>
 
     <li class="step" data-type="action">
-      <span class="tag">Action — optionnelle</span>
+      <span class="tag">Action · optionnelle</span>
       <h4>Partage</h4>
       <p>Capture partageable. Aucune incitation répétée, aucun bonus lié au partage.</p>
     </li>
@@ -691,17 +714,17 @@
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Événement annulé ou infirmé</b> (concert reporté, annonce démentie) — il faut un chemin de retour arrière éditorial, sinon une carte reste figée sur un fait faux.</li>
-      <li><b>Utilisateur inactif depuis longtemps</b> — plusieurs évolutions en attente : les présenter en une séquence groupée, pas en huit écrans successifs.</li>
+      <li><b>Événement annulé ou infirmé</b> (concert reporté, annonce démentie) : il faut un chemin de retour arrière éditorial, sinon une carte reste figée sur un fait faux.</li>
+      <li><b>Utilisateur inactif depuis longtemps</b> : plusieurs évolutions en attente : les présenter en une séquence groupée, pas en huit écrans successifs.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Une carte qui évolue laisse-t-elle un trou dans son classeur ?</b> — si une carte Artiste devient une carte Album, l'emplacement Artiste redevient-il vide (et donc le classeur incomplet), ou les deux coexistent-elles ? C'est la décision la plus structurante de ce flow : elle touche directement la complétion, donc le Flow F.</li>
-      <li><b>Plusieurs exemplaires de la même carte</b> — toutes évoluent, ou une seule ? Lié à la question des doublons du Flow B.</li>
-      <li><b>L'évolution est-elle réversible ?</b> — un collectionneur peut préférer garder l'état d'origine de sa carte.</li>
+      <li><b>Une carte qui évolue laisse-t-elle un trou dans son classeur ?</b> : si une carte Artiste devient une carte Album, l'emplacement Artiste redevient-il vide (et donc le classeur incomplet), ou les deux coexistent-elles ? C'est la décision la plus structurante de ce flow : elle touche directement la complétion, donc le Flow F.</li>
+      <li><b>Plusieurs exemplaires de la même carte</b> : toutes évoluent, ou une seule ? Lié à la question des doublons du Flow B.</li>
+      <li><b>L'évolution est-elle réversible ?</b> : un collectionneur peut préférer garder l'état d'origine de sa carte.</li>
     </ul>
   </div>
 </section>
@@ -710,7 +733,7 @@
 <section id="flow-d" class="wrap">
   <p class="eyebrow">Flow D</p>
   <h2>Concert : billet → avatar</h2>
-  <p class="flow-sub">Le flow qui relie l'app au vécu réel. Sa contrainte principale : ne rien demander pendant le concert. La détection se fait par le billet, pas par un croisement artistes suivis + agenda externe — plus simple, et le billet sert directement de preuve.</p>
+  <p class="flow-sub">Le flow qui relie l'app au vécu réel. Sa contrainte principale : ne rien demander pendant le concert. La détection se fait par le billet, pas par un croisement artistes suivis + agenda externe : plus simple, et le billet sert directement de preuve.</p>
 
   <dl class="facts">
     <div class="fact"><dt>Objectif</dt><dd>Transformer un concert vécu en progression, sans parasiter le concert lui-même.</dd></div>
@@ -722,11 +745,11 @@
     <li class="step" data-type="action">
       <span class="tag">Action</span>
       <h4>Import du billet<span class="rive" data-tier="2">Motion · Rive</span></h4>
-      <p>Scan du QR/code-barres via l'appareil photo — billet électronique affiché à l'écran ou billet physique imprimé, même mécanique dans les deux cas.</p>
+      <p>Scan du QR/code-barres via l'appareil photo : billet électronique affiché à l'écran ou billet physique imprimé, même mécanique dans les deux cas.</p>
     </li>
 
     <li class="step" data-type="decision">
-      <span class="tag">Décision — le code est-il exploitable ?</span>
+      <span class="tag">Décision · le code est-il exploitable ?</span>
       <h4>Un billet non lisible ne bloque jamais</h4>
       <ul class="branches">
         <li><b>Code lu</b>Artiste, date et lieu détectés automatiquement.</li>
@@ -737,24 +760,24 @@
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
       <h4>Check-in confirmé</h4>
-      <p>Confirmation courte, plus deux options indépendantes : « Visible aux autres fans ce soir » (opt-in, <b>désactivé par défaut</b> — seul point d'entrée du Flow G côté concert) et une géolocalisation ponctuelle du jour même, optionnelle.</p>
+      <p>Confirmation courte, plus deux options indépendantes : « Visible aux autres fans ce soir » (opt-in, <b>désactivé par défaut</b> ; point d'entrée de la rencontre en concert, abandonnée) et une géolocalisation ponctuelle du jour même, optionnelle.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Deux niveaux de preuve</h4>
-      <p>Le billet scanné suffit comme preuve <b>standard</b> (carnet, XP avatar). La géolocalisation ponctuelle du jour, si activée, apporte la preuve <b>renforcée</b> qui conditionne la carte Live exclusive — un billet peut être scanné sans y être allé, la géoloc du jour limite ce cas sans l'exclure.</p>
+      <p>Le billet scanné suffit comme preuve <b>standard</b> (carnet, XP avatar). La géolocalisation ponctuelle du jour, si activée, apporte la preuve <b>renforcée</b> qui conditionne la carte Live exclusive : un billet peut être scanné sans y être allé, la géoloc du jour limite ce cas sans l'exclure.</p>
     </li>
 
     <li class="step" data-type="systeme">
-      <span class="tag">Système — pendant le concert</span>
+      <span class="tag">Système · pendant le concert</span>
       <h4>Rien à faire</h4>
       <p>Aucune notification, aucun écran à consulter, aucune action à réaliser. Si la jauge d'ambiance par capteurs se révèle fiable, elle tourne passivement ; sinon, il ne se passe littéralement rien dans l'app pendant le show, et c'est volontaire.</p>
     </li>
 
     <li class="step" data-type="notif">
-      <span class="tag">Notification — le lendemain</span>
-      <h4>« Raconte ton show »</h4>
+      <span class="tag">Notification · le lendemain</span>
+      <h4>« Raconte ton show »</h4>
       <p>Envoyée le lendemain matin, jamais à la sortie du concert. Une seule relance maximum, puis silence.</p>
     </li>
 
@@ -767,7 +790,7 @@
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Attribution d'XP et de contenu</h4>
-      <p>XP réparti sur les trois sources de l'avatar, et carte Live exclusive si le niveau de preuve renforcé est atteint. L'attribution se fait <b>au check-in</b>, pas à la rédaction du compte-rendu — la récompense ne doit pas être conditionnée au remplissage d'un formulaire.</p>
+      <p>XP réparti sur les trois sources de l'avatar, et carte Live exclusive si le niveau de preuve renforcé est atteint. L'attribution se fait <b>au check-in</b>, pas à la rédaction du compte-rendu : la récompense ne doit pas être conditionnée au remplissage d'un formulaire.</p>
     </li>
 
     <li class="step" data-type="ecran">
@@ -780,66 +803,98 @@
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Concert annulé après import du billet</b> — l'entrée doit pouvoir être retirée du carnet, avec l'XP associé.</li>
-      <li><b>Billet à un nom différent</b> (revente, cadeau, place offerte) — le check-in reste possible, c'est la personne qui scanne qui fait la preuve, pas le nom sur le billet.</li>
-      <li><b>Compte-rendu jamais rempli</b> — l'entrée reste au carnet avec les informations factuelles. Un carnet rempli de brouillons vides serait pire que des entrées minimales assumées.</li>
-      <li><b>Festival sur plusieurs jours</b> — un billet par jour ou par festival selon la billetterie ; le carnet doit gérer les deux lectures.</li>
+      <li><b>Concert annulé après import du billet</b> : l'entrée doit pouvoir être retirée du carnet, avec l'XP associé.</li>
+      <li><b>Billet à un nom différent</b> (revente, cadeau, place offerte) : le check-in reste possible, c'est la personne qui scanne qui fait la preuve, pas le nom sur le billet.</li>
+      <li><b>Compte-rendu jamais rempli</b> : l'entrée reste au carnet avec les informations factuelles. Un carnet rempli de brouillons vides serait pire que des entrées minimales assumées.</li>
+      <li><b>Festival sur plusieurs jours</b> : un billet par jour ou par festival selon la billetterie ; le carnet doit gérer les deux lectures.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Fiabilité de la jauge d'ambiance</b> — dépend d'un spike technique non réalisé. Tout le flow est conçu pour rester valable si elle n'existe jamais.</li>
-      <li><b>Formats de billetterie à couvrir en priorité</b> — la fiabilité de la lecture automatique du code dépend de la diversité des billetteries à supporter (PDF, wallet, appli tierce, papier) ; à cadrer avant développement plutôt qu'à découvrir en production.</li>
+      <li><b>Fiabilité de la jauge d'ambiance</b> : dépend d'un spike technique non réalisé. Tout le flow est conçu pour rester valable si elle n'existe jamais.</li>
+      <li><b>Formats de billetterie à couvrir en priorité</b> : la fiabilité de la lecture automatique du code dépend de la diversité des billetteries à supporter (PDF, wallet, appli tierce, papier) ; à cadrer avant développement plutôt qu'à découvrir en production.</li>
     </ul>
   </div>
 </section>
 
 <!-- ============ FLOW E ============ -->
 <section id="flow-e" class="wrap">
-  <p class="eyebrow">Flow E</p>
-  <h2>Découverte d'échange</h2>
-  <p class="flow-sub"><b style="color:var(--text)">Décision actée : l'échange ne se fait qu'en présentiel.</b> Pas d'offre envoyée à un inconnu puis acceptée des heures plus tard ailleurs — deux fans doivent être physiquement réunis au même moment. Coût assumé : moins de partenaires d'échange accessibles à tout instant qu'un système à distance ; contrepartie : ça rapproche l'app du vécu réel de collection plutôt que d'une marketplace déguisée, et supprime tout le sujet colis/litige à distance. Ce flow ne fait donc que la <b style="color:var(--text)">préparation</b> — la transaction se conclut dans le Flow G.</p>
+  <p class="eyebrow">Flow E · aligné sur le prototype le 2026-10-10</p>
+  <h2>Échange : code ou QR, sur place ou à distance</h2>
+  <p class="flow-sub">Depuis le 2026-09-28, l'échange se fait sur place ou à distance : un code de 6 caractères, son QR ou son lien ouvre une session en direct à deux. Il remplace la « découverte d'échange » à distance et l'échange en présentiel uniquement.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Objectif</dt><dd>Savoir avec qui échanger la prochaine fois qu'on le croise, pas conclure une transaction ici.</dd></div>
-    <div class="fact"><dt>Entrées</dt><dd>Doublon après un pack (Flow B) · recherche d'une carte manquante · profil d'un autre fan · fil de guilde.</dd></div>
-    <div class="fact"><dt>Sortie réussie</dt><dd>Une carte repérée à demander, ou un fan cible identifié — aucune collection modifiée à ce stade.</dd></div>
+    <div class="fact"><dt>Objectif</dt><dd>Conclure un échange équilibré entre deux fans, en direct, sans argent.</dd></div>
+    <div class="fact"><dt>Entrées</dt><dd>Metal Corner, rubrique Potes : « Mon QR », « Scanner », « + » de Tes échanges · invitation d'un pote (« te propose un échange ») · lien d'échange.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Les deux collections changent ensemble, la carte bonus tombe au premier échange avec ce fan, et il peut devenir un pote.</dd></div>
   </dl>
 
   <ol class="flow">
+    <li class="step" data-type="decision">
+      <span class="tag">Décision · Mon QR</span>
+      <h4>Que veux-tu faire ?</h4>
+      <p>« Mon QR » demande d'abord quoi faire, puis montre le QR adapté.</p>
+      <ul class="branches">
+        <li><b>Échanger des cartes</b>« Maintenant, côte à côte ou à distance » : ouvre une session d'échange.</li>
+        <li><b>Devenir potes</b>Code de pote, sans échange.</li>
+        <li><b>L'inviter dans ma bande</b>Pour un concert de ses talons.</li>
+      </ul>
+    </li>
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Recherche</h4>
-      <p>Par carte recherchée, par fan, ou par guilde. Chaque fan affiche ses doublons « disponibles à l'échange » et ses cartes « recherchées ».</p>
+      <h4>Montre ce code</h4>
+      <p>QR dans un cadre gravé et code de 6 caractères (« ABC 234 »). « Ton pote le scanne depuis son Metal Corner. Pas à côté de toi ? Envoie-lui le lien. » Bouton « Envoyer le lien » (partage, ou lien copié), puis « En attente de ton pote… ».</p>
     </li>
-
     <li class="step" data-type="action">
-      <span class="tag">Action</span>
-      <h4>Ajout à sa liste de souhaits, ou repérage d'un fan cible</h4>
-      <p>Pas de proposition envoyée : juste de quoi se souvenir avec qui échanger. Un membre de sa propre guilde, plus susceptible d'être croisé en concert, est mis en avant.</p>
+      <span class="tag">Action · l'autre fan</span>
+      <h4>Scanner ou taper le code</h4>
+      <p>Scanner universel : l'app reconnaît seule un QR d'échange, de pote, de bande, de slam ou de pit. À défaut, « Ou tape son code », en précisant Échange, Pote ou Bande. Un lien d'échange reçu ouvre directement la session.</p>
     </li>
-
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Composition en direct, à deux</h4>
+      <p>Les deux téléphones montrent la même session en temps réel : « Tu donnes » et « Tu reçois », chacun avec sa cote indicative. « + Ajouter » ouvre son classeur trié par intérêt pour le pote (demandées, nouvelles pour lui, raretés qu'il n'a pas) ; « Voir son classeur et demander » permet de demander une de ses cartes, qui remonte en tête chez lui.</p>
+      <ul class="branches">
+        <li><b>Changement</b>Une carte posée ou retirée, et tout le monde revalide.</li>
+        <li><b>Réduire</b>L'échange reste ouvert dans une pastille au-dessus de la barre d'onglets ; on le reprend plus tard.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="decision">
+      <span class="tag">Décision · valider</span>
+      <h4>Double validation</h4>
+      <p>« Valider l'échange ». Une alerte en rouge prévient si on donne son dernier exemplaire ou si un classeur complet ne le serait plus (« Valider quand même » ou « Je réfléchis »). Sans aucune carte posée : « Pose au moins une carte, sinon c'est juste un câlin. »</p>
+    </li>
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
-      <h4>Aucune transaction, aucun verrouillage de carte</h4>
-      <p>Contrairement à un système d'échange à distance, rien n'est engagé ici : une carte "recherchée" par dix fans peut toujours être proposée à n'importe lequel d'entre eux, selon qui est croisé en premier.</p>
+      <h4>Échange tout ou rien</h4>
+      <p>Le serveur conclut l'échange d'un bloc, lié à la version validée des deux côtés : les deux collections changent ensemble, ou aucune. Au premier échange avec ce fan, une carte bonus est attribuée.</p>
+    </li>
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Échange conclu</h4>
+      <p>Ce qu'on donne part, ce qu'on reçoit arrive (« Nouvelle » sur les cartes inédites, « Bonus » sur la carte de rencontre). Le cri du pote résonne : « Le cri de X résonne dans le pit. » Au premier échange, le titre « Metal Corner » se débloque.</p>
+      <ul class="branches">
+        <li><b>Ranger dans le classeur</b>Les cartes reçues attendent dans « À ranger ».</li>
+        <li><b>Suivre X</b>Le partenaire rejoint ses potes (s'il ne l'était pas déjà).</li>
+      </ul>
     </li>
   </ol>
 
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Carte recherchée par personne dans son entourage géographique</b> — reste possible, mais sans échange à distance en secours ; assumé comme la limite du choix du présentiel.</li>
-      <li><b>Fan indésirable</b> — blocage et signalement accessibles depuis le profil, pas enfouis dans les réglages.</li>
+      <li><b>Partenaire parti ou session expirée</b> : « Échange annulé · Rien n'a bougé dans vos collections. »</li>
+      <li><b>Carte secrète posée</b> : avertissement avant de l'ajouter à l'échange.</li>
+      <li><b>Cartes perso</b> : elles s'échangent comme les autres ; les cartes maudites, non.</li>
     </ul>
   </div>
-
-  <div class="block open">
-    <h3>À trancher</h3>
+  <div class="block">
+    <h3>Ce qui ne s'est pas fait</h3>
     <ul>
-      <li><b>Visibilité des cartes "recherchées" par les guildes</b> — mise en avant systématique des membres de guilde dans la recherche, ou simple filtre optionnel ?</li>
+      <li><b>Découverte à distance, exécution en présentiel</b> : remplacée le 2026-09-28 par l'échange à distance.</li>
+      <li><b>Liste de souhaits, guildes, recherche de fans</b> : non construites ; on demande une carte dans la session, en voyant le classeur du pote.</li>
     </ul>
   </div>
 </section>
@@ -866,113 +921,118 @@
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
       <h4>Interstitiel de récompense<span class="rive">Motion · Rive</span></h4>
-      <p>Dans l'esprit du reveal de pack mais plus court — c'est un aboutissement, pas une découverte. Classeur complété : carte Collector cosmétique + badge de profil. Palier d'avatar : déblocage cosmétique, et parfois un pack gratuit.</p>
+      <p>Dans l'esprit du reveal de pack mais plus court : c'est un aboutissement, pas une découverte. Classeur complété : carte Collector cosmétique + badge de profil. Palier d'avatar : déblocage cosmétique, et parfois un pack gratuit.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Mise à jour durable</h4>
-      <p>Le classeur bascule dans « collections complétées », le badge s'installe en continu sur le profil public et la fiche avatar.</p>
+      <p>Le classeur bascule dans « collections complétées », le badge s'installe en continu sur le profil public et la fiche avatar.</p>
     </li>
 
     <li class="step" data-type="systeme">
       <span class="tag">Règle</span>
       <h4>Aucune récompense sur un classeur personnalisé</h4>
-      <p>Un classeur défini par l'utilisateur lui-même — parfois réduit à une seule carte — rendrait la récompense triviale à exploiter. Seuls les classeurs officiels comptent.</p>
+      <p>Un classeur défini par l'utilisateur lui-même (parfois réduit à une seule carte) rendrait la récompense triviale à exploiter. Seuls les classeurs officiels comptent.</p>
     </li>
   </ol>
 
   <div class="block">
     <h3>États limites</h3>
     <ul>
-      <li><b>Plusieurs récompenses déclenchées d'un coup</b> — mises en file et présentées en une seule séquence enchaînée, jamais en quatre interstitiels successifs à fermer un par un.</li>
-      <li><b>Récompense déclenchée pendant un autre flow</b> (échange, concert) — elle s'affiche à la fin du flow en cours, pas par-dessus.</li>
+      <li><b>Plusieurs récompenses déclenchées d'un coup</b> : mises en file et présentées en une seule séquence enchaînée, jamais en quatre interstitiels successifs à fermer un par un.</li>
+      <li><b>Récompense déclenchée pendant un autre flow</b> (échange, concert) : elle s'affiche à la fin du flow en cours, pas par-dessus.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Un classeur officiel qui s'agrandit après complétion</b> — si une nouvelle carte est ajoutée au thème, le classeur repasse-t-il à « en cours » ? Reprendre un badge déjà obtenu serait très mal vécu ; garder le badge tout en rouvrant le classeur est probablement le compromis, mais ça reste à acter.</li>
-      <li><b>Une carte échangée après complétion</b> — un classeur complété peut-il redevenir incomplet si son propriétaire échange une carte ? Sinon, il faut verrouiller les cartes des classeurs complétés.</li>
+      <li><b>Un classeur officiel qui s'agrandit après complétion</b> : si une nouvelle carte est ajoutée au thème, le classeur repasse-t-il à « en cours » ? Reprendre un badge déjà obtenu serait très mal vécu ; garder le badge tout en rouvrant le classeur est probablement le compromis, mais ça reste à acter.</li>
+      <li><b>Une carte échangée après complétion</b> : un classeur complété peut-il redevenir incomplet si son propriétaire échange une carte ? Sinon, il faut verrouiller les cartes des classeurs complétés.</li>
     </ul>
   </div>
 </section>
 
 <!-- ============ FLOW G ============ -->
 <section id="flow-g" class="wrap">
-  <p class="eyebrow">Flow G</p>
-  <h2>Échange & rencontre en présentiel</h2>
-  <p class="flow-sub">Le seul endroit où une transaction d'échange se conclut, et le seul flow où l'app met des gens en relation physiquement. Deux points d'entrée — un concert, ou n'importe où via un radar de proximité — pour la même mécanique de fond. Ses garde-fous ne sont pas négociables.</p>
+  <p class="eyebrow">Flow G · aligné sur le prototype le 2026-10-10</p>
+  <h2>La Fosse : slam, circle pit, pogo, concerts</h2>
+  <p class="flow-sub"><b style="color:var(--text)">Radar de proximité et géolocalisation : abandonnés.</b> Le flow de conception « rencontre en présentiel » n'a pas été construit. Sa place est prise par la Fosse, une rubrique de Metal Corner (depuis le 2026-10-02) où l'on joue avec ses potes, à distance comme en concert.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Objectif</dt><dd>Transformer le fait de croiser un autre fan en échange conclu et en progression concrète.</dd></div>
-    <div class="fact"><dt>Pré-requis</dt><dd>Visibilité activée — check-in concert (Flow D) <i>ou</i> radar de proximité, désactivé par défaut dans les deux cas.</dd></div>
-    <div class="fact"><dt>Sortie réussie</dt><dd>Un échange conclu sur place, ou une rencontre confirmée des deux côtés.</dd></div>
+    <div class="fact"><dt>Objectif</dt><dd>Faire jouer les potes ensemble : rameuter, porter, courir, pogoter, et garder la trace de ses concerts.</dd></div>
+    <div class="fact"><dt>Entrées</dt><dd>Metal Corner, rubrique Fosse · notification d'un pote (slam, pit, pogo, souvenir) · lien ?slam=, ?pit=, ?bande= · QR.</dd></div>
+    <div class="fact"><dt>Sortie réussie</dt><dd>Une danse jouée à plusieurs, des points de fosse au rang, une carte gagnée ou un concert enrichi.</dd></div>
   </dl>
 
   <ol class="flow">
-    <li class="step" data-type="decision">
-      <span class="tag">Décision — quel point d'entrée ?</span>
-      <h4>Même mécanique, deux contextes</h4>
-      <ul class="branches">
-        <li><b>« Fans présents ce soir » (concert)</b>Liste limitée aux fans ayant eux aussi activé l'option pour ce même concert. Pseudo, avatar, cartes recherchées.</li>
-        <li><b>Radar de proximité (partout, à tout moment)</b>Fans à quelques mètres détectés en Bluetooth basse consommation — <b>pas de GPS</b>, portée radio seulement. Répond directement à « qui a l'app autour de moi », en dehors des concerts aussi (festival, disquaire, chez un pote). Même garde-fous que la liste concert.</li>
-      </ul>
-      <p class="note"><b>Aucune position précise n'est affichée</b> dans les deux cas — seulement le fait d'être présent ou à proximité.</p>
-    </li>
-
-    <li class="step" data-type="action">
-      <span class="tag">Action</span>
-      <h4>Proposer une session</h4>
-      <p>Tap sur un fan de la liste (concert ou radar) → demande de session envoyée. Deux issues possibles depuis là : ouvrir un échange, ou simplement confirmer « on s'est croisés ».</p>
-    </li>
-
-    <li class="step" data-type="systeme">
-      <span class="tag">Système</span>
-      <h4>Confirmation mutuelle requise</h4>
-      <p>Rien ne se valide unilatéralement, dans aucun des deux cas. Une confirmation à sens unique permettrait de marquer quelqu'un sans son accord.</p>
-    </li>
-
     <li class="step" data-type="ecran">
       <span class="tag">Écran</span>
-      <h4>Composition en direct, à deux<span class="rive">Motion · Rive</span></h4>
-      <p>Session acceptée → les deux téléphones affichent la <b>même transaction en temps réel</b> : chacun ajoute les cartes qu'il offre, un indicateur d'équilibre de rareté purement indicatif aide à juger, confirmation simultanée des deux côtés. Échange atomique — les deux collections changent ensemble, ou aucune. Pas d'offre envoyée puis attente d'une réponse plus tard : les deux fans sont là, l'échange se conclut dans l'instant.</p>
+      <h4>En ce moment</h4>
+      <p>En tête de la Fosse : les gestes qui attendent chez les potes, tous jeux confondus (relever, porter, entrer, courir, récupérer). Trois lignes, puis « Voir les autres ».</p>
     </li>
-
-    <li class="step" data-type="systeme">
-      <span class="tag">Système</span>
-      <h4>Carte bonus de connexion<span class="rive" data-tier="2">Motion · Rive</span></h4>
-      <p>La première rencontre confirmée avec un fan donné (échange conclu, ou simple « on s'est croisés ») débloque une carte bonus garantie et fait progresser le titre « Metal Corner ». Une seule fois par personne rencontrée, tous contextes confondus : sinon la mécanique devient une course à la collecte de contacts.</p>
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Les danses</h4>
+      <p>Une carte illustrée par danse (pogo, circle pit, slam). La toucher ouvre sa salle en plein écran : illustration, ce qui est en cours, « Comment ça marche » en étapes, bouton principal fixé en bas.</p>
     </li>
-
-    <li class="step" data-type="systeme">
-      <span class="tag">Système</span>
-      <h4>Fin de la fenêtre de présence</h4>
-      <p>La liste concert disparaît à la fin de l'événement ; le radar se vide dès qu'un fan sort de portée ou désactive l'option. Aucun historique de présence ou de proximité n'est conservé. Seuls persistent le résultat de l'échange et la carte bonus, dans la Collection et le carnet.</p>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Slam</h4>
+      <p>Un slam par jour. On plonge, puis « Appeler la foule » partage le lien ; qui l'ouvre devient pote du slammeur et peut le porter. « Porte-moi » demande à un pote, « Renfort » relaie le slam (boule de neige).</p>
+      <ul class="branches">
+        <li><b>Atterrissage</b>5 porteurs en 2 h : récompense pour le slammeur (Rare minimum, paquet ou ticket) et pour les porteurs (3 récompensés par jour), plus des points de fosse.</li>
+        <li><b>Écrasé</b>Pas assez de porteurs à temps : rien à gagner.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="action">
+      <span class="tag">Action</span>
+      <h4>Circle pit</h4>
+      <p>L'ouvreur choisit un morceau ; le pit reste ouvert 15 minutes pour rameuter. Chaque coureur fait une course de 20 s (« Démarrer ») en dessinant des cercles du doigt dans le sens inverse des aiguilles ; la précision fait le score, chaque course accélère le pit.</p>
+      <ul class="branches">
+        <li><b>Fin du pit</b>Palier selon les courses et la précision moyenne (Brouillon, Carré, Implacable) ; gains par paliers et points de fosse.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="decision">
+      <span class="tag">Décision · mise</span>
+      <h4>Pogo</h4>
+      <p>L'ouvreur choisit la rareté de la mise ; entrer retire de sa collection une carte de cette rareté tirée au hasard. L'encart « À gagner » annonce la prime, les cartes en jeu et les points. Pogo ouvert 10 minutes, manches de 15 s : renvoyer les danseurs à gauche ou à droite (« ‹ Gauche » / « Droite › ») ; 4 coups pris, on est à terre.</p>
+      <ul class="branches">
+        <li><b>Relève</b>Un danseur resté debout ou relevé dans ce pogo peut relever qui est à terre, une fois par pogo.</li>
+        <li><b>Ramassage</b>Dès 3 danseurs : à terre sans relève, la mise est perdue et ramassée ; le meilleur danseur resté debout gagne une carte de la rareté misée (prime). Sous 3 danseurs, chacun récupère sa mise.</li>
+      </ul>
+    </li>
+    <li class="step" data-type="notif">
+      <span class="tag">Notif</span>
+      <h4>Rameuter</h4>
+      <p>Une feuille liste les potes de l'app : « Appeler » envoie une notification directe, une fois par pote et par événement ; puis « Partager le lien ». Le pote appelé voit la danse dans sa Fosse.</p>
+    </li>
+    <li class="step" data-type="ecran">
+      <span class="tag">Écran</span>
+      <h4>Tes concerts</h4>
+      <p>« J'y étais, j'y vais » : concerts passés ou à venir, billet PDF lu sur le téléphone (gardé dans l'app si on le souhaite, lisible par soi seul). Toucher un talon ouvre la fiche du concert : objectifs (défis photo ou vidéo de 10 s), souvenirs, ticket de vestiaire pour sa bande.</p>
+      <ul class="branches">
+        <li><b>Bande</b>Code ou lien ?bande= ; défis en bande et bonus de bande, membres devenus potes à la validation du talon.</li>
+        <li><b>Talon validé</b>3 points de rang, plus 1 par membre de bande (jusqu'à 5), et une carte Rare de l'artiste une fois.</li>
+      </ul>
     </li>
   </ol>
 
   <div class="block">
-    <h3>Garde-fous à ne jamais casser</h3>
+    <h3>Ce qui a été abandonné</h3>
     <ul>
-      <li><b>Opt-in, désactivé par défaut</b> — apparaître dans la liste ou sur le radar est toujours un acte volontaire.</li>
-      <li><b>Réciproque</b> — on ne voit que ceux qui peuvent aussi nous voir. Pas d'observateur invisible.</li>
-      <li><b>Éphémère</b> — la liste, le radar et les données de présence disparaissent avec l'événement ou la portée radio.</li>
-      <li><b>Jamais de position précise</b> — « présent à ce concert » ou « à quelques mètres », jamais une distance exacte ni une direction.</li>
-      <li><b>Pas de GPS pour le radar</b> — Bluetooth à courte portée uniquement ; ce n'est pas un suivi de localisation.</li>
-      <li><b>Blocage et signalement accessibles depuis la liste ou le radar eux-mêmes</b>, en un geste.</li>
-      <li><b>Désactivation immédiate</b> — couper la visibilité doit retirer instantanément des vues des autres, dans les deux contextes.</li>
+      <li><b>Radar de proximité (Bluetooth)</b> : abandonné, non construit.</li>
+      <li><b>Liste « Fans présents ce soir » et géolocalisation du jour</b> : abandonnées, non construites.</li>
+      <li><b>« On s'est croisés »</b> : remplacé par les potes (après un échange, par code, depuis une bande ou la fosse).</li>
     </ul>
   </div>
-
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Ce flow doit être challengé par un tiers compétent</b> sur la sécurité et la vie privée avant tout développement — au même titre que les autres risques du concept, et d'autant plus que le radar de proximité généralise le risque au-delà du seul contexte concert. Les garde-fous ci-dessus sont un point de départ, pas une validation.</li>
-      <li><b>Taille de la liste sur un gros festival</b> — plusieurs centaines de fans présents rendrait la liste inutilisable telle quelle : filtrer par carte recherchée, par guilde, ou plafonner ?</li>
-      <li><b>Contraintes techniques du Bluetooth en arrière-plan</b> (permissions iOS/Android, consommation batterie) — à valider par un spike technique avant de committer sur le radar de proximité comme mécanisme central de découverte d'échange.</li>
-      <li><b>Timeout de la session de composition en direct</b> — si un des deux fans quitte l'écran ou s'éloigne en cours de composition, la session doit expirer proprement plutôt que rester ouverte indéfiniment.</li>
+      <li><b>Danses suivantes</b> : wall of death, stage dive, crowd kill (demande du propriétaire) ; mécaniques à proposer d'abord.</li>
+      <li><b>Fluidité du pogo sur iPhone</b> : à vérifier sur l'appareil du propriétaire.</li>
+      <li><b>Limite de lancements</b> : illimités pour le circle pit et le pogo le temps de roder les danses.</li>
     </ul>
   </div>
 </section>
@@ -1005,7 +1065,7 @@
     <li class="step" data-type="systeme">
       <span class="tag">Système</span>
       <h4>Mission complétée → récompense immédiate<span class="rive">Motion · Rive</span></h4>
-      <p>XP avatar systématique, parfois un pack gratuit ou un cosmétique. <b>Jamais de tirage aléatoire</b> en récompense de mission — ce serait rouvrir la question loot-box pour une mécanique censée renforcer le sentiment de maîtrise, pas le brouiller.</p>
+      <p>XP avatar systématique, parfois un pack gratuit ou un cosmétique. <b>Jamais de tirage aléatoire</b> en récompense de mission : ce serait rouvrir la question loot-box pour une mécanique censée renforcer le sentiment de maîtrise, pas le brouiller.</p>
     </li>
 
     <li class="step" data-type="systeme">
@@ -1027,7 +1087,7 @@
         </ul>
       </div>
       <div class="mission-card" data-cat="echange">
-        <span class="cat">Échange (présentiel)</span>
+        <span class="cat">Échange</span>
         <ul>
           <li>Conclure un échange</li>
           <li>Échanger avec 3 fans différents ce mois-ci</li>
@@ -1039,7 +1099,7 @@
         <ul>
           <li>Importer un billet et check-in (Flow D)</li>
           <li>Remplir son carnet le lendemain</li>
-          <li>Confirmer une rencontre "on s'est croisés" (Flow G)</li>
+          <li>Confirmer une rencontre « on s'est croisés » (abandonné avec le radar)</li>
         </ul>
       </div>
       <div class="mission-card" data-cat="social">
@@ -1065,21 +1125,21 @@
         </ul>
       </div>
     </div>
-    <p class="note" style="margin-top:14px"><b>Catégorie "Achat réel"</b> : suppose un partenariat marchand pour une confirmation fiable ; à défaut, une preuve déclarative (photo de reçu) reste falsifiable — à ne jamais associer à une récompense dont la valeur inciterait à la triche.</p>
+    <p class="note" style="margin-top:14px"><b>Catégorie « Achat réel »</b> : suppose un partenariat marchand pour une confirmation fiable ; à défaut, une preuve déclarative (photo de reçu) reste falsifiable, à ne jamais associer à une récompense dont la valeur inciterait à la triche.</p>
   </div>
 
   <div class="block">
     <h3>Anti-pattern à respecter</h3>
     <ul>
-      <li><b>Une mission doit rester une bonne expérience même sans la récompense.</b> « Va à un concert » passe ce test ; « envoie un message à 10 inconnus » non. Écarter toute mission dont le seul but perçu serait la récompense.</li>
+      <li><b>Une mission doit rester une bonne expérience même sans la récompense.</b> « Va à un concert » passe ce test ; « envoie un message à 10 inconnus » non. Écarter toute mission dont le seul but perçu serait la récompense.</li>
     </ul>
   </div>
 
   <div class="block open">
     <h3>À trancher</h3>
     <ul>
-      <li><b>Missions personnalisées ou pool curaté commun ?</b> — personnaliser selon les sous-genres suivis et l'activité récente serait plus pertinent mais plus complexe à livrer pour un MVP ; un pool curaté avec assignation simple (1 quotidienne + 1 hebdo + 1 saisonnière) est probablement le socle réaliste.</li>
-      <li><b>Nombre de missions actives en parallèle</b> — 2 ou 3 ? Arbitrage entre variété et lisibilité du bandeau Accueil.</li>
+      <li><b>Missions personnalisées ou pool curaté commun ?</b> : personnaliser selon les sous-genres suivis et l'activité récente serait plus pertinent mais plus complexe à livrer pour un MVP ; un pool curaté avec assignation simple (1 quotidienne + 1 hebdo + 1 saisonnière) est probablement le socle réaliste.</li>
+      <li><b>Nombre de missions actives en parallèle</b> : 2 ou 3 ? Arbitrage entre variété et lisibilité du bandeau Accueil.</li>
     </ul>
   </div>
 </section>
@@ -1088,35 +1148,35 @@
 <section id="motion" class="wrap">
   <p class="eyebrow">Production</p>
   <h2>Carte des animations</h2>
-  <p class="flow-sub">Tous les endroits clés où une animation porte le moment plutôt que de le décorer — classés par le soin qu'ils demandent, pas par ordre d'apparition. <b style="color:var(--text)">Motion : Rive</b> partout (voir <a href="concept.html#da">la direction artistique</a>) ; le reste reste du polish d'interface standard, sans state machine dédiée.</p>
+  <p class="flow-sub">Tous les endroits clés où une animation porte le moment plutôt que de le décorer : classés par le soin qu'ils demandent, pas par ordre d'apparition. <b style="color:var(--text)">Motion : Rive</b> partout (voir <a href="concept.html#da">la direction artistique</a>) ; le reste reste du polish d'interface standard, sans state machine dédiée.</p>
 
   <div class="block">
     <h3 class="lvl-1">Niveau 1 : séquences majeures (state machine, plusieurs variables exposées)</h3>
     <ul>
-      <li><a href="#flow-b">Flow B</a> <b>Reveal de pack</b> — rareté et type de carte pilotent la scène ; c'est le seul endroit où les effets riches (foil, shimmer, grain) sont autorisés.</li>
-      <li><a href="#flow-c">Flow C</a> <b>Évolution de carte</b> — avant/après ; doit rester lisible même joué en rafale pour un utilisateur qui revient après une absence avec plusieurs évolutions en attente.</li>
-      <li><a href="#flow-f">Flow F</a> <b>Récompense de complétion / palier avatar</b> — dans l'esprit du reveal mais plus court : c'est un aboutissement, pas une découverte.</li>
-      <li><a href="#flow-g">Flow G</a> <b>Composition en direct, à deux</b> — le swap atomique vu simultanément sur les deux téléphones ; c'est la conclusion physique d'une vraie rencontre, ça mérite le même soin que le reveal de pack.</li>
-      <li><a href="#flow-h">Flow H</a> <b>Mission complétée</b> — probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.</li>
+      <li><a href="#flow-b">Flow B</a> <b>Reveal de pack</b> : rareté et type de carte pilotent la scène ; c'est le seul endroit où les effets riches (foil, shimmer, grain) sont autorisés.</li>
+      <li><a href="#flow-c">Flow C</a> <b>Évolution de carte</b> : avant/après ; doit rester lisible même joué en rafale pour un utilisateur qui revient après une absence avec plusieurs évolutions en attente.</li>
+      <li><a href="#flow-f">Flow F</a> <b>Récompense de complétion / palier avatar</b> : dans l'esprit du reveal mais plus court : c'est un aboutissement, pas une découverte.</li>
+      <li><a href="#flow-e">Flow E</a> <b>Composition en direct, à deux</b> : le swap atomique vu simultanément sur les deux téléphones ; c'est la conclusion physique d'une vraie rencontre, ça mérite le même soin que le reveal de pack.</li>
+      <li><a href="#flow-h">Flow H</a> <b>Mission complétée</b> : probablement une variante courte de l'interstitiel du Flow F plutôt qu'un artboard entièrement nouveau, à confirmer une fois le Flow F construit.</li>
     </ul>
   </div>
 
   <div class="block">
     <h3 class="lvl-2">Niveau 2 : confirmations & feedback courts</h3>
     <ul>
-      <li><a href="#flow-d">Flow D</a> <b>Scan de billet réussi</b> — feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.</li>
-      <li><a href="#flow-d">Flow D</a> <b>Barre XP qui se remplit</b> au retour du carnet — motif réutilisable partout où l'XP change (concert, mission, palier).</li>
-      <li><a href="#flow-g">Flow G</a> <b>Carte bonus de connexion</b> ("Metal Corner") — version allégée du reveal, une seule carte.</li>
-      <li><a href="#flow-b">Flow B</a> <b>Nouvelle carte qui "atterrit" en Collection</b>, avec highlight, à la fermeture du résumé post-ouverture.</li>
-      <li><a href="#flow-g">Flow G</a> <b>Blips du radar de proximité</b> — fans qui apparaissent/disparaissent à l'écran ; de l'ambiance plus qu'un moment fort.</li>
-      <li><b>Waveform du cri enregistré</b> (profil) — cosmétique, mais colle directement à la ligne édito "drôle" du positionnement (voir <a href="concept.html#concept">le concept</a>).</li>
+      <li><a href="#flow-d">Flow D</a> <b>Scan de billet réussi</b> : feedback de détection instantané ; la confiance dans un geste caméra en dépend directement.</li>
+      <li><a href="#flow-d">Flow D</a> <b>Barre XP qui se remplit</b> au retour du carnet : motif réutilisable partout où l'XP change (concert, mission, palier).</li>
+      <li><a href="#flow-e">Flow E</a> <b>Carte bonus de connexion</b> (« Metal Corner ») : version allégée du reveal, une seule carte.</li>
+      <li><a href="#flow-b">Flow B</a> <b>Nouvelle carte qui « atterrit » en Collection</b>, avec highlight, à la fermeture du résumé post-ouverture.</li>
+      <li><b>Blips du radar de proximité</b> : abandonné avec le radar.</li>
+      <li><b>Waveform du cri enregistré</b> (profil) : cosmétique, mais colle directement à la ligne édito « drôle » du positionnement (voir <a href="concept.html#concept">le concept</a>).</li>
     </ul>
   </div>
 
   <div class="block">
     <h3>Niveau 3 : micro-interactions</h3>
     <ul>
-      <li>Sélection des tuiles sous-genre/artiste (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation — du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.</li>
+      <li>Sélection des tuiles sous-genre/artiste (onboarding), nudges de classeur presque complet, transitions entre les 5 sections de navigation : du polish d'interface standard, pas de state machine Rive dédiée à prévoir pour ceux-là.</li>
     </ul>
   </div>
 </section>
@@ -1125,7 +1185,7 @@
 <section id="retention" class="wrap">
   <p class="eyebrow">Mécaniques transverses</p>
   <h2>Boucles de rétention</h2>
-  <p class="flow-sub">Une boucle = déclencheur → action → récompense → investissement. Ici, "hyper efficace" ne veut pas dire plus de pression : la communauté cible déteste explicitement le marketing malhonnête (voir <a href="concept.html#concept">le concept</a>), donc le levier n'est jamais l'urgence fabriquée. C'est <b>l'empilement de boucles authentiques à des cadences différentes</b> qui fait qu'il existe presque toujours une vraie raison de revenir.</p>
+  <p class="flow-sub">Une boucle = déclencheur → action → récompense → investissement. Ici, « hyper efficace » ne veut pas dire plus de pression : la communauté cible déteste explicitement le marketing malhonnête (voir <a href="concept.html#concept">le concept</a>), donc le levier n'est jamais l'urgence fabriquée. C'est <b>l'empilement de boucles authentiques à des cadences différentes</b> qui fait qu'il existe presque toujours une vraie raison de revenir.</p>
 
   <div class="loops">
     <div class="loop-card" data-tier="quotidienne">
@@ -1165,10 +1225,10 @@
     </div>
 
     <div class="loop-card" data-tier="sociale">
-      <span class="cadence">En présentiel, entre deux comptes</span>
+      <span class="cadence">Entre deux comptes, sur place ou à distance</span>
       <h4>Échange</h4>
-      <div class="loop-row"><b>Déclencheur</b>Un fan détecté à proximité — concert ou radar (Flow G).</div>
-      <div class="loop-row"><b>Action</b>Ouvrir une session, composer en direct à deux.</div>
+      <div class="loop-row"><b>Déclencheur</b>Un pote croisé ou un lien d'échange reçu (Flow E).</div>
+      <div class="loop-row"><b>Action</b>Ouvrir une session par code ou QR, composer en direct à deux.</div>
       <div class="loop-row"><b>Récompense</b>Carte manquante obtenue, dans l'instant.</div>
       <div class="loop-row"><b>Investissement</b>Réputation d'échangeur, relation de confiance.</div>
     </div>
@@ -1186,30 +1246,30 @@
   <p style="margin-top:14px; max-width:66ch; font-size:0.85rem; color:var(--muted)">La boucle <b style="color:var(--text)">Missions</b> n'a pas de cadence propre : elle recycle la progression des quatre autres en lui donnant une direction visible, plutôt que d'ajouter un cycle indépendant à gérer.</p>
 
   <p style="margin-top:22px; max-width:66ch; font-size:0.9rem; color:var(--muted)">
-    <b style="color:var(--text); font-weight:500">La boucle "actu artiste réelle" est celle qui différencie le plus Metalnini</b> — aucun concurrent de collection pure ne peut la répliquer sans le même travail éditorial continu. C'est elle qui mérite le plus d'investissement produit avant d'optimiser les boucles plus génériques. La <b style="color:var(--text); font-weight:500">boucle d'échange</b> a une propriété propre aux mécaniques sociales : un échange conclu retient potentiellement deux comptes à la fois, pas un seul.
+    <b style="color:var(--text); font-weight:500">La boucle « actu artiste réelle » est celle qui différencie le plus Metalnini</b> : aucun concurrent de collection pure ne peut la répliquer sans le même travail éditorial continu. C'est elle qui mérite le plus d'investissement produit avant d'optimiser les boucles plus génériques. La <b style="color:var(--text); font-weight:500">boucle d'échange</b> a une propriété propre aux mécaniques sociales : un échange conclu retient potentiellement deux comptes à la fois, pas un seul.
   </p>
 
   <div class="block">
     <h3>Budget de notifications. La gouvernance qui empêche le cumul de devenir du spam</h3>
     <p style="font-size:0.9rem; color:var(--muted); max-width:66ch; margin:0 0 14px">Empiler des boucles authentiques ne dispense pas d'arbitrer : c'est le <i>cumul</i> de plusieurs boucles qui notifient le même jour, pas une boucle isolée, qui produirait le spam que cette communauté sanctionnerait.</p>
-    <p style="font-size:0.85rem; color:var(--muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues — au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
+    <p style="font-size:0.85rem; color:var(--muted); max-width:66ch; margin:0 0 10px"><b style="color:var(--text)">Budget cible : 1 à 2 notifications non sollicitées par jour</b>, toutes boucles confondues : au-delà, la suivante attend le lendemain. Priorité en cas de concurrence le même jour :</p>
     <ol class="priority">
-      <li><b>Session d'échange proposée à proximité</b> (Flow G) — time-critique, le fan est là <i>maintenant</i>, contrairement à tout le reste de cette liste.</li>
-      <li><b>Actu artiste réelle</b> (Flow C) — le fait le plus rare et le plus fort après la proximité en direct.</li>
-      <li><b>Carnet de concert à remplir</b> (Flow D) — une seule relance, le lendemain matin.</li>
+      <li><b>Session d'échange proposée à proximité</b> (conception, abandonnée avec le radar) : time-critique, le fan est là <i>maintenant</i>, contrairement à tout le reste de cette liste.</li>
+      <li><b>Actu artiste réelle</b> (Flow C) : le fait le plus rare et le plus fort après la proximité en direct.</li>
+      <li><b>Carnet de concert à remplir</b> (Flow D) : une seule relance, le lendemain matin.</li>
       <li><b>Mission proche d'être complétée / nouvelle mission dispo</b> (Flow H).</li>
       <li><b>Nudge hebdomadaire classeur/guilde</b>.</li>
-      <li><b>Pack quotidien disponible</b> — poussé (demande produit explicite), mais toujours en dernier : jamais dupliqué le même jour qu'une autre notification de cette liste.</li>
+      <li><b>Pack quotidien disponible</b> : poussé (demande produit explicite), mais toujours en dernier : jamais dupliqué le même jour qu'une autre notification de cette liste.</li>
     </ol>
-    <p class="note" style="margin-top:14px">Règle générale : plusieurs faits le même jour pour un même utilisateur produisent une seule notification agrégée (déjà acté en Flow C), jamais une rafale — les rangs 4 à 6 ci-dessus sont les candidats naturels à ce regroupement quand plusieurs tombent le même jour.</p>
+    <p class="note" style="margin-top:14px">Règle générale : plusieurs faits le même jour pour un même utilisateur produisent une seule notification agrégée (déjà acté en Flow C), jamais une rafale : les rangs 4 à 6 ci-dessus sont les candidats naturels à ce regroupement quand plusieurs tombent le même jour.</p>
   </div>
 
   <div class="block">
     <h3>Ce qui retient après une absence</h3>
     <ul>
-      <li><b>Retour de boucle, pas punition</b> — les évolutions manquées pendant une absence se présentent groupées au retour (Flow C) plutôt que d'être perdues. Cohérent avec l'anti-pattern déjà posé : pas de streak punitif.</li>
-      <li><b>C'est l'investissement accumulé qui rappelle</b>, pas une mécanique de manque — collection, avatar, réputation de guilde et d'échangeur sont autant de raisons concrètes de revenir, sans qu'aucune n'ait besoin d'être agressive individuellement.</li>
-      <li><b>Effet de propagation externe</b> — les moments de récompense déjà partageables (évolution, complétion de classeur) sont aussi la seule boucle qui ramène potentiellement de nouveaux utilisateurs depuis l'extérieur de l'app : un bénéfice secondaire à garder en tête, pas un objectif à part du MVP.</li>
+      <li><b>Retour de boucle, pas punition</b> : les évolutions manquées pendant une absence se présentent groupées au retour (Flow C) plutôt que d'être perdues. Cohérent avec l'anti-pattern déjà posé : pas de streak punitif.</li>
+      <li><b>C'est l'investissement accumulé qui rappelle</b>, pas une mécanique de manque : collection, avatar, réputation de guilde et d'échangeur sont autant de raisons concrètes de revenir, sans qu'aucune n'ait besoin d'être agressive individuellement.</li>
+      <li><b>Effet de propagation externe</b> : les moments de récompense déjà partageables (évolution, complétion de classeur) sont aussi la seule boucle qui ramène potentiellement de nouveaux utilisateurs depuis l'extérieur de l'app : un bénéfice secondaire à garder en tête, pas un objectif à part du MVP.</li>
     </ul>
   </div>
 </section>
@@ -1227,15 +1287,15 @@
     </div>
     <div class="recap-row">
       <div>B</div>
-      <div><b>Que deviennent les doublons non échangés ?</b> Sans réponse, la boucle la plus fréquente de l'app accumule des cartes sans usage.</div>
+      <div><b>Tranché dans le prototype</b> : les doublons nourrissent la transformation (3, 6, 12, 24 doublons par palier), voir Flow B.</div>
     </div>
     <div class="recap-row">
-      <div>—</div>
+      <div>Tous</div>
       <div><b>Binder unique filtrable ou classeurs distincts par sous-genre ?</b> Point déjà ouvert dans l'architecture ; il faut le trancher avant de wireframer la Collection.</div>
     </div>
     <div class="recap-row">
       <div>F</div>
-      <div><b>Un classeur complété peut-il redevenir incomplet ?</b> (carte échangée, thème agrandi) — et que devient le badge ?</div>
+      <div><b>Un classeur complété peut-il redevenir incomplet ?</b> (carte échangée, thème agrandi), et que devient le badge ?</div>
     </div>
     <div class="recap-row">
       <div>D</div>
@@ -1243,15 +1303,15 @@
     </div>
     <div class="recap-row">
       <div>A</div>
-      <div><b>Taille du pack de bienvenue</b> et <b>moment de l'amorce Live</b> (fin d'onboarding ou session 2).</div>
+      <div><b>Tranché dans le prototype</b> : paquet de bienvenue tiré sur les univers choisis, pas d'amorce Live dans l'onboarding (voir Flow A).</div>
     </div>
     <div class="recap-row">
       <div>G</div>
-      <div><b>Contraintes Bluetooth du radar de proximité</b> (permissions OS, batterie) à valider par un spike technique, et <b>lisibilité de la liste sur un gros festival</b> — plus une revue sécurité/vie privée par un tiers compétent, désormais élargie au-delà du seul contexte concert.</div>
+      <div><b>Sans objet</b> : radar de proximité abandonné ; G décrit désormais la Fosse (danses suivantes et limites de lancement, voir Flow G).</div>
     </div>
     <div class="recap-row">
       <div>H</div>
-      <div><b>Missions personnalisées ou pool curaté commun ?</b> Et <b>combien de missions actives en parallèle</b> (2 ou 3) — arbitrage entre variété et lisibilité du bandeau Accueil.</div>
+      <div><b>Missions personnalisées ou pool curaté commun ?</b> Et <b>combien de missions actives en parallèle</b> (2 ou 3) : arbitrage entre variété et lisibilité du bandeau Accueil.</div>
     </div>
   </div>
 </section>
@@ -1261,7 +1321,7 @@
 <div class="wrap">
   <footer>
     <nav class="site-nav" aria-label="Pages du projet"><a href="index.html">Pitch</a><a href="concept.html">Concept</a><a href="flows.html" aria-current="page">Flows</a><a href="sons.html">Sons</a><a href="proto/">Prototype</a></nav>
-    Document de travail Metalnini — user flows. Complète <a href="index.html">la page de pitch</a> et <a href="concept.html#architecture">le document concept</a>.<br>
+    Document de travail Metalnini : user flows. Complète <a href="index.html">la page de pitch</a> et <a href="concept.html#architecture">le document concept</a>.<br>
     Prochaine étape naturelle : trancher les décisions ci-dessus, puis wireframer les écrans en basse fidélité.
   </footer>
 </div>

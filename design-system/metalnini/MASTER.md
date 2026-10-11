@@ -19,7 +19,8 @@ Deux couches, jamais mélangées sur un même élément :
   - `.relief` et `.relief.ink` : boutons en relief, en or ou à l'encre.
   - `notch(pct, n)` : jauge à crans, arrondie vers le bas.
   - `.gframe` : cadre à coins gravés.
-  - `.seal` : sceau de rareté.
+  - `.seal` : sceau de rareté en cire (bord coulé irrégulier, empreinte en creux, lettre gravée, ombre pleine courte ; classe `.wax` réutilisable, couleur `--sc` tirée des jetons `--r-*`).
+  - `.parch` : parchemin des textes longs (bio de la fiche carte, fiche du style), dégradés CSS sur fond os, encre sombre, filet simple, contraste AA.
   - `.fzv-col` : cierge de transformation.
   - `showLoot()` : écran du butin (coffre, récompense, pastilles).
 - Écrans passés à la signature :
