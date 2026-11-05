@@ -148,6 +148,12 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
 
+## Demande de joueurs (2026-11-05) : Anders Fridén et Björn Gelotte (In Flames)
+- Demande : « Björn Gelotte/Anders Fridén » ; consigne du propriétaire : deux cartes, même classeur de groupe In Flames, arcanes consécutifs.
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée contre l'un ou l'autre ; aucun lien avec des groupes haineux.
+- Non retenu : le différend sur les droits d'auteur avec l'ancien chanteur Henke Forss et les piques échangées avec Jesper Strömblad, simples conflits professionnels ([Blabbermouth](https://blabbermouth.net/news/ex-in-flames-singer-henke-forss-says-hes-been-trying-for-over-10-years-to-get-proper-songwriting-credit), [Loudwire](https://loudwire.com/in-flames-henke-forss-battle-songwriting-royalties/)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, cartes « Only for the Weak », LXXXVI, et « Colony », LXXXVII, Death metal mélodique).
+
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).
 - **Varg Vikernes** (Burzum) : condamné en 1994 en Norvège à 21 ans de prison pour le meurtre d'Øystein « Euronymous » Aarseth et des incendies d'églises ; condamné en 2014 en France pour incitation à la haine raciale (6 mois avec sursis et amende) ([Wikipedia](https://en.wikipedia.org/wiki/Varg_Vikernes), [Loudwire](https://loudwire.com/burzum-varg-vikernes-guilty-inciting-racial-hatred-exalting-war-crimes/)).
