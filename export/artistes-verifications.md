@@ -148,6 +148,12 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
 
+## Demande de joueurs (2026-11-05) : Cory Brandan (Norma Jean)
+- Demande : « Norma Jean ». Figure retenue : Cory Brandan (Putman), chanteur depuis 2005.
+- Juin 2020 : il publie un GIF « BLAH BLAH BLAH BLAH » légendé « Roll credits » en pleine mobilisation Black Lives Matter, perçu comme une moquerie du mouvement ; tweet effacé, critiques d'autres musiciens (dont Jesse Barnett, Stick To Your Guns), deux excuses publiques dont une longue (« inappropriately derisive », besoin de s'informer), comptes personnels supprimés ([Blabbermouth](https://blabbermouth.net/news/norma-jeans-cory-brandan-apologizes-for-insensitive-post-mocking-black-lives-matter), [MetalSucks](https://www.metalsucks.net/2020/06/04/norma-jeans-cory-brandan-issues-lengthier-apology-for-anti-black-lives-matter-message/), [Alternative Press](https://www.altpress.com/norma-jean-cory-brandan-black-lives-matter-tweet/)).
+- Rien d'autre trouvé : aucune condamnation, aucune accusation de violences, aucun lien avec des groupes haineux.
+- Conclusion : cas limite (propos unique, excusé), rendu au propriétaire. Recommandation de l'agent : l'ajouter si le propriétaire juge les excuses suffisantes.
+
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).
 - **Varg Vikernes** (Burzum) : condamné en 1994 en Norvège à 21 ans de prison pour le meurtre d'Øystein « Euronymous » Aarseth et des incendies d'églises ; condamné en 2014 en France pour incitation à la haine raciale (6 mois avec sursis et amende) ([Wikipedia](https://en.wikipedia.org/wiki/Varg_Vikernes), [Loudwire](https://loudwire.com/burzum-varg-vikernes-guilty-inciting-racial-hatred-exalting-war-crimes/)).
