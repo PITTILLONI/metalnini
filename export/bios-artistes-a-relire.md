@@ -162,6 +162,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **buckethead** — Né Brian Carroll en Californie en 1969, il joue caché derrière un masque blanc inspiré d'Halloween 4 et un seau de poulet frit. Après Bucketheadland (1992) et des projets avec Praxis ou Les Claypool, il tient la guitare de Guns N' Roses de 2000 à 2004. Soothsayer (Crime Slunk Scene, 2006) et Jordan, rendu célèbre par Guitar Hero II, sont ses morceaux les plus connus. Sa série des Pikes, lancée en 2011, dépasse les 800 albums.
 
+**lindberg** — Il fonde At the Gates à Göteborg en 1990, après le groupe Grotesque. Slaughter of the Soul (1995), avec Blinded by Fear, devient un modèle du death metal mélodique, puis le groupe se sépare en 1996. Revenu sur scène en 2008, il enregistre encore At War with Reality (2014) et The Nightmare of Being (2021). Il chante aussi dans Disfear et Lock Up. Il meurt d'un cancer en septembre 2025, à 52 ans.
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
