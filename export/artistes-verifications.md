@@ -148,6 +148,13 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
 
+## Demande de joueurs (2026-11-05) : Neige (Alcest)
+- Demande : « Alcest ». Figure retenue : Neige (Stéphane Paut), fondateur, chanteur et guitariste.
+- Au début des années 2000, il joue dans Peste Noire, groupe de black metal dont le leader Famine affiche des positions d'extrême droite (imagerie raciste, salut nazi rapporté par un ancien membre) ; Famine joue aussi de la guitare sur la première démo d'Alcest. Neige quitte Peste Noire vers 2006 ([Wikipedia, Neige](https://en.wikipedia.org/wiki/Neige_(musician)), [Wikipedia, Peste Noire](https://en.wikipedia.org/wiki/Peste_Noire)).
+- Neige s'en est démarqué publiquement : il dit ne partager en rien les idées de Famine, n'a écrit aucun texte du groupe, et qualifie de regrettables ses anciennes collaborations ambiguës ([Wikipedia](https://en.wikipedia.org/wiki/Neige_(musician)), [Louder](https://www.loudersound.com/features/how-alcest-invented-blackgaze-bringing-spirituality-to-black-metal)).
+- Aucun propos haineux de Neige ni d'Alcest trouvé ; aucune condamnation.
+- Conclusion : cas limite (lien ancien avec un groupe d'extrême droite, distance prise depuis), rendu au propriétaire. Recommandation de l'agent : l'ajouter (Alcest, pionnier du blackgaze), si le propriétaire est d'accord.
+
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).
 - **Varg Vikernes** (Burzum) : condamné en 1994 en Norvège à 21 ans de prison pour le meurtre d'Øystein « Euronymous » Aarseth et des incendies d'églises ; condamné en 2014 en France pour incitation à la haine raciale (6 mois avec sursis et amende) ([Wikipedia](https://en.wikipedia.org/wiki/Varg_Vikernes), [Loudwire](https://loudwire.com/burzum-varg-vikernes-guilty-inciting-racial-hatred-exalting-war-crimes/)).
