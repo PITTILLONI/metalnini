@@ -34,7 +34,7 @@
     --z-detail:50; --z-flyer:55; --z-dupfx:56; --z-deal:60;       /* fiche carte, carte qui file au rangement, doublons, tirage en série */
     --z-screen:70; --z-game:72; --z-quiz:74; --z-pub:75; --z-pub-sheet:78;   /* plein écran (salle, échange, pseudo), jeu (pit, conclusion, onboarding), blind test, profil public et sa feuille */
     --z-sheet:80; --z-toast:85;                                   /* feuilles du bas, notifications */
-    --z-overlay:90; --z-capture:92; --z-confirm:93; --z-system:95; --z-fatal:999;   /* zoom, butin, rideau ; caméra ; confirmation ; forge, visionneuse ; écran de secours */
+    --z-overlay:90; --z-capture:92; --z-confirm:93; --z-system:95; --z-fatal:999;   /* butin, rideau ; caméra ; confirmation ; forge, visionneuse, zoom (au-dessus du bilan) ; écran de secours */
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html{color-scheme:dark; overflow-x:hidden; overflow-x:clip; overscroll-behavior:none}
@@ -558,7 +558,7 @@
   .rc{display:grid; grid-template-columns:40px 1fr; align-items:center; gap:4px 12px; padding:12px 0 2px; border-top:1px solid var(--border)} .rc:first-child{padding-top:0; border-top:0}   /* lignes sans cadre : la modale est déjà cerclée */
   .rc-ico{grid-row:span 2; width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--gold); border-radius:50%; background:var(--ink); color:var(--gold-hi)}
   .rc-t{font:600 .9rem var(--mono); color:var(--text)} .rc-t b{font:800 1.4rem/1 var(--display); color:var(--gold-hi)}
-  .rc-cards{display:flex; gap:4px; align-items:center} .rc-cards img{width:30px; aspect-ratio:2/3; object-fit:cover; border-radius:3px; box-shadow:0 0 0 1px rgba(235,154,38,.35)} .rc-cards i{font:700 .72rem var(--mono); color:var(--muted); font-style:normal; margin-left:4px}
+  .rc-cards{display:flex; gap:4px; align-items:center} .rc-cards button{padding:0; border:0; background:none; cursor:zoom-in} .rc-cards img{display:block; width:30px; aspect-ratio:2/3; object-fit:cover; border-radius:3px; box-shadow:0 0 0 1px rgba(235,154,38,.35)} .rc-cards .rc-more{min-width:30px; font:700 .72rem var(--mono); color:var(--muted); margin-left:4px}
   .rc-names{font:500 .78rem var(--mono); color:var(--gold-hi)}
   #trade-start .bsheet-in{max-height:86dvh; overflow-y:auto} #trade-start .tr-go{margin-top:12px}
   .ts-card{display:flex; align-items:center; gap:12px; margin:0 0 12px; padding:10px 12px; border:1px solid rgba(235,154,38,.45); border-radius:12px; background:rgba(235,154,38,.06)} .ts-card:empty{display:none}
@@ -833,10 +833,12 @@
   .pcard{position:relative} .pcard .pin{cursor:zoom-in}
   .zoom-go{position:absolute; right:-8px; bottom:-8px; z-index:2; width:44px; height:44px; background:rgba(10,8,7,.85)}
   /* carte en plein écran : la plus grande possible entre les zones de sécurité, un toucher referme */
-  .zoom{position:fixed; inset:0; z-index:var(--z-overlay); display:flex; align-items:center; justify-content:center; background:rgba(5,4,4,.96); padding:calc(64px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); cursor:zoom-out; animation:dfin .18s ease-out}
+  .zoom{position:fixed; inset:0; z-index:var(--z-system); display:flex; align-items:center; justify-content:center; background:rgba(5,4,4,.96); padding:calc(64px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); cursor:zoom-out; animation:dfin .18s ease-out}
   .zoom[hidden]{display:none}
   .zoom img{display:block; max-width:100%; max-height:100%; aspect-ratio:2/3; object-fit:contain; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.7)}
   .zoom-x{position:absolute; top:calc(12px + env(safe-area-inset-top)); right:16px}
+  .zoom-nav{position:absolute; top:50%; margin-top:-23px; background:rgba(10,8,7,.7)} #zoom-prev{left:4px} #zoom-next{right:4px}
+  .zoom-n{position:absolute; left:0; right:0; bottom:calc(4px + env(safe-area-inset-bottom)); margin:0; text-align:center; font:600 .8rem var(--mono); color:var(--muted)}
   .glow{position:absolute; inset:-14px; border-radius:22px; pointer-events:none; opacity:0; transition:none}
   .flip.on + .glow{opacity:1; transition:opacity .6s ease .35s}
   .glow[data-r="rare"]{box-shadow:0 0 38px 6px color-mix(in srgb, var(--r-rare) 55%, transparent)}
@@ -1988,6 +1990,9 @@
 <div class="zoom" id="zoom" hidden role="dialog" aria-modal="true" aria-label="Carte en plein écran">
   <button type="button" class="icon-btn zoom-x" id="zoom-x" aria-label="Fermer le plein écran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
   <img id="zoom-img" alt="">
+  <button type="button" class="icon-btn zoom-nav" id="zoom-prev" aria-label="Carte précédente" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg></button>
+  <button type="button" class="icon-btn zoom-nav" id="zoom-next" aria-label="Carte suivante" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg></button>
+  <p class="zoom-n num" id="zoom-n" aria-live="polite" hidden></p>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Navigation">
@@ -3749,7 +3754,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     [].forEach.call(document.querySelectorAll('#tr-give .tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r');
       setItem(m, r, give.filter(function(x){ return x.m === m && x.r === r; })[0].n - 1); }; });
     [].forEach.call(document.querySelectorAll('#tr-get .tr-card'), function(b){ b.onclick = function(){ var m = b.getAttribute('data-m'), r = b.getAttribute('data-r');
-      openZoom(img(m, r), card(m).who + ', ' + rarity(r).label); }; });
+      openZoom([{src:img(m, r), alt:card(m).who + ', ' + rarity(r).label}], 0, this); }; });
     document.getElementById('tr-ok').onclick = tradeConfirm;
     if(!pickEl.hidden) renderPick();
   }
@@ -6005,24 +6010,30 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // fin de « Tout ranger » : le bilan en grand
   // bilan : une ligne par catégorie (icône, nombre, libellé) et les miniatures des cartes concernées (6 au plus, puis « +N »)
   function showRecap(){
-    var L = dealLog, kImgs = function(keys){ return keys.map(function(k){ var p = k.split('|'); return img(p[0], p[1]); }); };
+    var L = dealLog, shot = function(id, r){ return {src:img(id, r), alt:card(id).who + ', ' + rarity(r).label}; },
+      kImgs = function(keys){ return keys.map(function(k){ var p = k.split('|'); return shot(p[0], p[1]); }); };
     var rows = [
       {n:L.fresh.length, one:'nouvelle carte', many:'nouvelles cartes', ico:'<path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6"/>', imgs:kImgs(L.fresh)},
       {n:L.up.length, one:'montée en grade', many:'montées en grade', ico:'<path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/>', imgs:kImgs(L.up)},
       {n:L.dup.length, one:'doublon', many:'doublons', ico:'<path d="M12 4l-8 4l8 4l8 -4l-8 -4"/><path d="M4 12l8 4l8 -4"/><path d="M4 16l8 4l8 -4"/>', imgs:kImgs(L.dup)},
       {n:L.comps.length, one:'classeur complété', many:'classeurs complétés', ico:'<path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"/><path d="M19 16h-12a2 2 0 0 0 -2 2"/><path d="M9 8h6"/>', names:L.comps.map(binderLabel),
         claims:L.comps.map(function(b){ return {key:'binder:' + b.k, title:'Classeur plié : ' + binderLabel(b)}; })},
-      {n:L.mast.length, one:'maîtrise', many:'maîtrises', ico:'<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', imgs:L.mast.map(function(c){ return img(c.id, 'legendaire'); }),
+      {n:L.mast.length, one:'maîtrise', many:'maîtrises', ico:'<path fill="currentColor" stroke="none" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/>', imgs:L.mast.map(function(c){ return shot(c.id, 'legendaire'); }),
         claims:L.mast.map(function(c){ return {key:'mastery:' + c.id, title:'Maîtrise : ' + c.who}; })}
     ].filter(function(x){ return x.n > 0; });
     if(!rows.length) return;
+    // les miniatures s'ouvrent en grand : une seule galerie pour tout le bilan, « +N » ouvre la première carte cachée
+    var gallery = [];
+    rows.forEach(function(x){ if(x.imgs){ x.at = gallery.length; gallery = gallery.concat(x.imgs); } });
     document.getElementById('recap-rows').innerHTML = rows.map(function(x){
       return '<div class="rc"><span class="rc-ico">' + icon(x.ico, 22) + '</span><span class="rc-t"><b class="num">' + x.n + '</b> ' + (x.n > 1 ? x.many : x.one) + '</span>' +
-        (x.imgs ? '<span class="rc-cards">' + x.imgs.slice(0, 6).map(function(u){ return '<img src="' + u + '" alt="" loading="lazy">'; }).join('') + (x.imgs.length > 6 ? '<i>+' + (x.imgs.length - 6) + '</i>' : '') + '</span>'
+        (x.imgs ? '<span class="rc-cards">' + x.imgs.slice(0, 6).map(function(o, i){ return '<button type="button" data-z="' + (x.at + i) + '" aria-label="Voir en grand : ' + esc(o.alt) + '"><img src="' + o.src + '" alt="" loading="lazy"></button>'; }).join('') +
+          (x.imgs.length > 6 ? '<button type="button" class="rc-more" data-z="' + (x.at + 6) + '" aria-label="Voir les ' + (x.imgs.length - 6) + ' autres en grand">+' + (x.imgs.length - 6) + '</button>' : '') + '</span>'
           : '<span class="rc-names">' + x.names.map(esc).join(' · ') + '</span>') +
         // récompense à prendre tout de suite (en ligne) : le bilan se ferme et elle arrive
         (x.claims ? x.claims.filter(function(o){ return ONLINE && state.claims && !state.claims[o.key]; }).map(function(o){
           return '<button type="button" class="rc-claim" data-key="' + o.key + '" data-title="' + esc(o.title) + '">' + icon('<path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1l0 -2"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/>', 16) + '<span>' + esc(o.title.split(' : ')[1]) + '</span><b>Récupérer</b></button>'; }).join('') : '') + '</div>'; }).join('');
+    [].forEach.call(document.querySelectorAll('#recap-rows [data-z]'), function(b){ b.onclick = function(){ openZoom(gallery, +b.getAttribute('data-z'), b); }; });
     [].forEach.call(document.querySelectorAll('#recap-rows .rc-claim'), function(b){ b.onclick = function(){
       document.getElementById('deal-recap').hidden = true; claimObjective({key:b.getAttribute('data-key'), title:b.getAttribute('data-title')}, b); }; });
     document.getElementById('deal-recap').hidden = false;
@@ -6268,8 +6279,8 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(pc){ setTarget(pc, document.getElementById('pin'), r);
       pc.addEventListener('pointermove', function(e){ var rr = pc.getBoundingClientRect(); parallax(clamp(((e.clientX - rr.left) / rr.width - .5) * 2), clamp(((e.clientY - rr.top) / rr.height - .5) * 2)); });
       pc.addEventListener('pointerdown', askMotion);
-      document.getElementById('pin').addEventListener('click', function(){ openZoom(img(id, r), c.who + ', ' + rarity(r).label); });
-      document.getElementById('zoom-go').addEventListener('click', function(){ openZoom(img(id, r), c.who + ', ' + rarity(r).label); }); } else clearTarget();
+      document.getElementById('pin').addEventListener('click', function(){ openZoom([{src:img(id, r), alt:c.who + ', ' + rarity(r).label}]); });
+      document.getElementById('zoom-go').addEventListener('click', function(){ openZoom([{src:img(id, r), alt:c.who + ', ' + rarity(r).label}]); }); } else clearTarget();
   }
   // transformation : paliers exponentiels, ×2 à chaque rareté (3, 6, 12, 24 doublons par défaut) ; en ligne, le serveur fixe les coûts
   var FUSE_COSTS = null;
@@ -6367,12 +6378,26 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function closeDetail(){ stopListen(); sheet.hidden = true; clearTarget(); if(!document.getElementById('v-binder').hidden) renderBinder(); }
   document.getElementById('sheet-close').addEventListener('click', closeDetail);
   sheet.addEventListener('click', function(e){ if(e.target === sheet) closeDetail(); });
-  // plein écran depuis la fiche : toucher la carte ou l'icône ; un toucher n'importe où, la croix ou Échap referment
-  var zoomEl = document.getElementById('zoom');
-  function openZoom(src, alt){ snd('zoom'); var im = document.getElementById('zoom-img'); im.src = src; im.alt = alt; zoomEl.hidden = false; document.getElementById('zoom-x').focus(); }
-  function closeZoom(){ zoomEl.hidden = true; var g = document.getElementById('zoom-go'); if(g) g.focus(); }
-  zoomEl.addEventListener('click', closeZoom);
-  document.addEventListener('keydown', function(e){ if(e.key !== 'Escape') return; if(!zoomEl.hidden) closeZoom(); else if(!sheet.hidden) closeDetail(); });
+  // plein écran : une carte (fiche) ou une galerie (bilan de « Tout ranger » : flèches, glisser, ← →) ;
+  // un toucher hors des flèches, la croix ou Échap referment, le focus revient d'où on venait
+  var zoomEl = document.getElementById('zoom'), zoomList = [], zoomAt = 0, zoomFrom = null;
+  function showZoom(i){
+    zoomAt = (i + zoomList.length) % zoomList.length; var o = zoomList[zoomAt], im = document.getElementById('zoom-img'), many = zoomList.length > 1;
+    im.src = o.src; im.alt = o.alt;
+    document.getElementById('zoom-prev').hidden = document.getElementById('zoom-next').hidden = document.getElementById('zoom-n').hidden = !many;
+    document.getElementById('zoom-n').textContent = (zoomAt + 1) + ' / ' + zoomList.length;
+  }
+  function openZoom(list, i, from){ snd('zoom'); zoomList = list; zoomFrom = from || document.getElementById('zoom-go'); showZoom(i || 0); zoomEl.hidden = false; document.getElementById('zoom-x').focus(); }
+  function closeZoom(){ zoomEl.hidden = true; if(zoomFrom && document.contains(zoomFrom)) zoomFrom.focus(); zoomFrom = null; }
+  function stepZoom(d){ if(zoomList.length > 1){ snd('tap', .5); showZoom(zoomAt + d); } }
+  zoomEl.addEventListener('click', function(e){ var n = e.target.closest('.zoom-nav'); if(n){ stepZoom(n.id === 'zoom-next' ? 1 : -1); return; } closeZoom(); });
+  var zoomX0 = null;
+  zoomEl.addEventListener('touchstart', function(e){ zoomX0 = e.touches[0].clientX; }, {passive:true});
+  zoomEl.addEventListener('touchend', function(e){ if(zoomX0 === null) return; var dx = e.changedTouches[0].clientX - zoomX0; zoomX0 = null;
+    if(Math.abs(dx) > 40 && zoomList.length > 1){ e.preventDefault(); stepZoom(dx < 0 ? 1 : -1); } });
+  document.addEventListener('keydown', function(e){
+    if(!zoomEl.hidden && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){ stepZoom(e.key === 'ArrowRight' ? 1 : -1); return; }
+    if(e.key !== 'Escape') return; if(!zoomEl.hidden) closeZoom(); else if(!sheet.hidden) closeDetail(); });
 
   // ---------- Réglages ----------
   // banc d'essai des sons (?sons) : chaque son attendu (fiche : sons.html), livré ou non, à écouter

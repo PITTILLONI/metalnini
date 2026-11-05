@@ -189,6 +189,14 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   const toastTxt = seen.join(' | ');
   check('complétion du classeur Blink-182 annoncée', /Classeur complété.*Blink-182/.test(toastTxt), toastTxt);
   check('tout ranger : bilan en grand à la fin', !d3.getElementById('deal-recap').hidden && /nouvelle/.test(d3.getElementById('recap-rows').textContent), d3.getElementById('recap-rows').textContent);
+  { const th = d3.querySelectorAll('#recap-rows [data-z]'), zm = d3.getElementById('zoom'), zn = d3.getElementById('zoom-n');
+    th[0].click(); await sleep(20);
+    const n = (zn.textContent.match(/\/ (\d+)/) || [])[1];
+    check('tout ranger : miniature du bilan ouverte en grand', !zm.hidden && /^1 \//.test(zn.textContent) && n > 1, zn.textContent);
+    d3.getElementById('zoom-next').click(); await sleep(20);
+    check('tout ranger : carte suivante dans le plein écran', /^2 \//.test(zn.textContent) && !zm.hidden, zn.textContent);
+    d3.getElementById('zoom-x').click(); await sleep(20);
+    check('tout ranger : plein écran refermé, bilan toujours là', zm.hidden && !d3.getElementById('deal-recap').hidden); }
   d3.querySelector('.tabbar [data-v="binder"]').click(); await sleep(30);
   { d3.querySelector('#binder-kinds [data-kind="Groupes"]').click(); await sleep(20);
     const pc = d3.querySelector('#binder-list [data-b="g-blink"]');
