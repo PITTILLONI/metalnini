@@ -77,3 +77,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | m-anselmo (carte maudite) | [Phil_Anselmo_2011_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Phil_Anselmo_2011_%28cropped%29.jpg) | MarkScottAustinTX | CC BY-SA 2.0 |
 | durst | [13-06-07_RaR_LB_Fred_Durst_09.jpg](https://commons.wikimedia.org/wiki/File:13-06-07_RaR_LB_Fred_Durst_09.jpg) | Achim Raschka | CC BY-SA 4.0 |
 | buckethead | [Buckethead_live_2016.jpg](https://commons.wikimedia.org/wiki/File:Buckethead_live_2016.jpg) | Ringerfan23 | CC BY-SA 4.0 |
+| shomo | [Caleb_Shomo_-_Reload_Festival_2018_13_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Caleb_Shomo_-_Reload_Festival_2018_13_%28cropped%29.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |

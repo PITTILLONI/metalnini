@@ -148,6 +148,12 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
 
+## Demande de joueurs (2026-11-05) : Caleb Shomo (Beartooth)
+- Demande : « Beartooth ». Figure retenue : Caleb Shomo, fondateur, chanteur et auteur du groupe.
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée ; aucun lien avec des groupes haineux.
+- Non retenu : en 2026, il a lui-même été la cible de propos homophobes après son coming out (il en est la victime, pas l'auteur) ([Blabbermouth](https://blabbermouth.net/news/beartooths-caleb-shomo-i-am-a-proudly-gay-man), [Loudwire](https://loudwire.com/beartooth-caleb-shomo-comes-out-gay/)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « In Between », LXXXIV, Metalcore).
+
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).
 - **Varg Vikernes** (Burzum) : condamné en 1994 en Norvège à 21 ans de prison pour le meurtre d'Øystein « Euronymous » Aarseth et des incendies d'églises ; condamné en 2014 en France pour incitation à la haine raciale (6 mois avec sursis et amende) ([Wikipedia](https://en.wikipedia.org/wiki/Varg_Vikernes), [Loudwire](https://loudwire.com/burzum-varg-vikernes-guilty-inciting-racial-hatred-exalting-war-crimes/)).
