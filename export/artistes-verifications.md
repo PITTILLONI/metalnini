@@ -153,6 +153,7 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Juin 2020 : il publie un GIF « BLAH BLAH BLAH BLAH » légendé « Roll credits » en pleine mobilisation Black Lives Matter, perçu comme une moquerie du mouvement ; tweet effacé, critiques d'autres musiciens (dont Jesse Barnett, Stick To Your Guns), deux excuses publiques dont une longue (« inappropriately derisive », besoin de s'informer), comptes personnels supprimés ([Blabbermouth](https://blabbermouth.net/news/norma-jeans-cory-brandan-apologizes-for-insensitive-post-mocking-black-lives-matter), [MetalSucks](https://www.metalsucks.net/2020/06/04/norma-jeans-cory-brandan-issues-lengthier-apology-for-anti-black-lives-matter-message/), [Alternative Press](https://www.altpress.com/norma-jean-cory-brandan-black-lives-matter-tweet/)).
 - Rien d'autre trouvé : aucune condamnation, aucune accusation de violences, aucun lien avec des groupes haineux.
 - Conclusion : cas limite (propos unique, excusé), rendu au propriétaire. Recommandation de l'agent : l'ajouter si le propriétaire juge les excuses suffisantes.
+- Décision du propriétaire (2026-11-05) : « ajouter ». Carte préparée par l'agent.
 
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).

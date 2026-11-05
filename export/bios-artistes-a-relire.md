@@ -162,6 +162,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **buckethead** — Né Brian Carroll en Californie en 1969, il joue caché derrière un masque blanc inspiré d'Halloween 4 et un seau de poulet frit. Après Bucketheadland (1992) et des projets avec Praxis ou Les Claypool, il tient la guitare de Guns N' Roses de 2000 à 2004. Soothsayer (Crime Slunk Scene, 2006) et Jordan, rendu célèbre par Guitar Hero II, sont ses morceaux les plus connus. Sa série des Pikes, lancée en 2011, dépasse les 800 albums.
 
+**brandan** — Ancien d'Eso-Charis, il remplace Josh Scogin au chant de Norma Jean pour O God, the Aftermath (2005), dont la pochette est nommée aux Grammy Awards. Suivent Redeemer (2006) et The Anti Mother (2008), avec Robots 3 Humans 0. Il tient le micro sur tous les albums depuis, de Meridional (2010) à Deathrattle Sing for Me (2022). Son chant hurlé, porté par des riffs dissonants et des rythmes cassés, fait de Norma Jean une référence du metalcore chaotique.
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
