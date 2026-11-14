@@ -366,5 +366,37 @@
   "duree": "0,2 à 0,4 s",
   "intention": "Non, gentiment : deux notes descendantes étouffées. Jamais un buzzer agressif.",
   "priorite": "P2"
+ },
+ {
+  "id": "pit-bouscule",
+  "famille": "Jeu",
+  "moment": "Circle pit : on percute un coureur sans tomber.",
+  "duree": "0,2 à 0,4 s",
+  "intention": "Choc d'épaules étouffé, cuir et souffle, sec. 2 ou 3 variantes.",
+  "priorite": "P1"
+ },
+ {
+  "id": "pit-chute",
+  "famille": "Jeu",
+  "moment": "Circle pit : le joueur tombe.",
+  "duree": "0,5 à 0,8 s",
+  "intention": "Corps qui heurte le sol de la fosse, foule qui fait « ooh ». Pas comique.",
+  "priorite": "P1"
+ },
+ {
+  "id": "pit-releve",
+  "famille": "Jeu",
+  "moment": "Circle pit : on se relève, ou on relève quelqu'un.",
+  "duree": "0,4 à 0,7 s",
+  "intention": "Main tendue, tape dans le dos, petit cri d'encouragement de la foule.",
+  "priorite": "P1"
+ },
+ {
+  "id": "pit-foule",
+  "famille": "Jeu",
+  "moment": "Circle pit : un pote attiré entre dans le cercle.",
+  "duree": "0,8 à 1,2 s",
+  "intention": "La foule qui gronde et applaudit, montée courte.",
+  "priorite": "P1"
  }
 ]
