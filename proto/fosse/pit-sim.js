@@ -34,12 +34,17 @@
 
   function create(o){
     var cfg = merge(o.cfg), rand = rng(o.seed || 1), sim = { cfg: cfg, rand: rand, n: 0, t: 0, end: Math.round((o.runS || 40) * HZ), over: false, acc: 0,
-      me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false, downT: 0, taps: 0, laps: 0 }, npcs: [], friends: [], ghosts: [] };
+      me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false, downT: 0, taps: 0, laps: 0 }, npcs: [], friends: [], ghosts: [],
+      bpm: o.bpm > 0 ? o.bpm : null, beats: 0, beatHits: 0, groove: 0, lifts: 0, pulls: 0, middleN: 0, trace: { v: 1, hz: 10, p: [], e: [] } };
     for(var i = 0; i < cfg.npc; i++) sim.npcs.push({ a: rand(), r: 0.5 + rand() * 0.38, v: 0.4 + rand() * 0.5, down: false, downT: 0, touch: false, hold: 0 });
     (o.friends || []).forEach(function(f){ sim.friends.push({ id: f.id, name: f.name, a: rand(), r: 0.97, pulled: false, hold: 0 }); });
     (o.ghosts || []).forEach(function(g){ if(g && ghostAt(g.trace, 0)) sim.ghosts.push(g); });
+    record(sim);
     return sim;
   }
+
+  var KEEP = { fall: 1, up: 1, lift: 1, pull: 1, lap: 1 };
+  function record(sim){ var me = sim.me; sim.trace.p.push([Math.round(me.a * 1000), Math.round(me.r * 100), me.down ? 1 : 0]); }
 
   function knockDown(sim){ var me = sim.me; me.down = true; me.downT = sim.t; me.taps = 0; me.v = 0; }
   function fallChance(c, me){ return Math.min(1, (c.fallBase + (1 - me.stamina) * c.fallTired) * (me.zone === 'middle' ? c.middleRisk : 1)); }
@@ -97,9 +102,27 @@
       if(!me.down && me.zone === 'edge' && angDiff(me.a, f.a) < c.pullAngle){ f.hold += DT; if(f.hold >= c.pullHoldS - 1e-9){ f.pulled = true; add('pull', f.id); } }
       else f.hold = 0; });
 
+    // rythme : dans le groove = lancé (v ≥ groove × vmax) et debout ; avec un tempo, on compte les battements tenus
+    var grooving = !me.down && me.v >= c.groove * c.vmax;
+    if(grooving) sim.groove++;
+    if(sim.bpm){ var beatMs = 60000 / sim.bpm; if(Math.floor((t + 1e-6) / beatMs) > sim.beats){ sim.beats++; if(grooving) sim.beatHits++; add('beat'); } }
+    if(!me.down && me.zone === 'middle') sim.middleN++;
+    ev.forEach(function(e){ if(e.type === 'lift') sim.lifts++; else if(e.type === 'pull') sim.pulls++;
+      if(KEEP[e.type]) sim.trace.e.push([Math.round(e.t), e.type]); });
+
     sim.n++; sim.t = sim.n * STEP_MS;
+    if(sim.n % (HZ / sim.trace.hz) === 0) record(sim);
     if(sim.n >= sim.end) sim.over = true;
     return ev;
+  }
+
+  // score sur 100 : tours, relevés, potes attirés, secondes au milieu, rythme (0 à 1)
+  function score(st, c){ var w = (c || DEFAULTS).pts;
+    return Math.min(100, Math.round(st.laps * w.lap + st.lifts * w.lift + st.pulls * w.pull + st.middleS * w.middleS + st.rhythm * w.rhythm)); }
+  function result(sim){
+    var st = { laps: sim.me.laps, lifts: sim.lifts, pulls: sim.pulls, middleS: Math.round(sim.middleN / HZ),
+      rhythm: sim.bpm ? (sim.beats ? sim.beatHits / sim.beats : 0) : (sim.n ? sim.groove / sim.n : 0) }, k = sim.cfg.circle;
+    return { score: score(st, sim.cfg), circle: st.laps * k.lap + st.lifts * k.lift + st.pulls * k.pull, trace: sim.trace, stats: st };
   }
 
   // aides (tests et banc) : placer un coureur de la foule, le mettre à terre, distance au joueur
@@ -114,7 +137,7 @@
     return ev;
   }
 
-  var PitSim = { DEFAULTS: DEFAULTS, HZ: HZ, create: create, step: step, advance: advance, ghostAt: ghostAt,
+  var PitSim = { DEFAULTS: DEFAULTS, HZ: HZ, create: create, step: step, advance: advance, ghostAt: ghostAt, score: score, result: result,
     knockDown: knockDown, place: place, forceNpcDown: forceNpcDown, dist: dist };
   if(typeof module !== 'undefined' && module.exports) module.exports = PitSim; else window.PitSim = PitSim;
 })();

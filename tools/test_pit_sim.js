@@ -59,5 +59,25 @@ for(let seed = 1; seed <= 200; seed++){
 }
 check('milieu plus risqué : plus de chutes au milieu (' + fallsMid + ') que sur la piste (' + fallsTrack + ')', fallsMid > fallsTrack);
 
+// ---------- Task 3 : score, cercle, trace, fantômes ----------
+const C = PitSim.DEFAULTS;
+check('score : formule', PitSim.score({ laps:5, lifts:2, pulls:1, middleS:6, rhythm:.5 }, C) === 61);
+check('score : plafonné à 100', PitSim.score({ laps:50, lifts:0, pulls:0, middleS:0, rhythm:1 }, C) === 100);
+s = fresh({ runS:4, bpm:null }); run(s, GAS, 2); run(s, IDLE, 2); let r3 = PitSim.result(s);
+check('rythme sans tempo : part du temps lancé', r3.stats.rhythm > 0.4 && r3.stats.rhythm < 0.52);
+s = fresh({ runS:4, bpm:120 }); run(s, GAS, 2); run(s, IDLE, 2); r3 = PitSim.result(s);
+check('rythme avec tempo : battements tenus', Math.abs(r3.stats.rhythm - 0.5) < 0.01);
+s = fresh({ runS:40, cfg:{ npc:24 }, friends:[{ id:'f1', name:'P' }] }); const path3 = [];
+for(let i = 0; i < 40 * 120; i++){ PitSim.step(s, i % 900 < 600 ? GAS : { throttle:.3, lateral:(i % 1800 < 900 ? 1 : -1), tap:i % 7 === 0 }); path3.push({ t:s.t, a:s.me.a, r:s.me.r }); }
+r3 = PitSim.result(s);
+check('cercle : laps + 2 × relevés + 3 × potes', r3.circle === r3.stats.laps + 2 * r3.stats.lifts + 3 * r3.stats.pulls && r3.stats.laps > 10);
+check('trace : 40 s de course < 20 000 caractères (' + JSON.stringify(r3.trace).length + ')', JSON.stringify(r3.trace).length < 20000);
+const at = path3[147], g3 = PitSim.ghostAt(r3.trace, at.t);
+check('fantôme : ghostAt rejoue la trace', !!g3 && Math.abs(g3.a - at.a) < 0.01 && Math.abs(g3.r - at.r) < 0.02);
+check('fantôme : trace invalide → null', [null, {}, { v:2, hz:10, p:[[0, 70, 0]] }, { v:1, hz:10, p:'x' }, { v:1, hz:10, p:[] }].every(t => PitSim.ghostAt(t, 0) === null)
+  && PitSim.create({ seed:1, runS:40, ghosts:[{ id:'g', trace:{ v:2 } }, { id:'h', trace:r3.trace }] }).ghosts.length === 1);
+s = fresh({ runS:40, bpm:null }); run(s, GAS, 40); r3 = PitSim.result(s);
+check('sans fantôme ni pote, 100 atteignable', r3.score === 100 && s.over);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);
