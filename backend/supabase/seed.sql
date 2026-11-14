@@ -79,7 +79,9 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('honeycutt', 'Matt Honeycutt', 'Kublai Khan TX', 'Boomslang', 'LXXIX', array['chant']::text[], 'Beatdown hardcore'),
   ('flynn', 'Robb Flynn', 'Machine Head', 'Davidian', 'LXXX', array['chant', 'guitare']::text[], 'Groove metal'),
   ('durst', 'Fred Durst', 'Limp Bizkit', 'Rollin''', 'LXXXI', array['chant']::text[], 'Nu metal'),
-  ('buckethead', 'Buckethead', 'Buckethead', 'Soothsayer', 'LXXXII', array['guitare']::text[], 'Metal avant-gardiste')
+  ('buckethead', 'Buckethead', 'Buckethead', 'Soothsayer', 'LXXXII', array['guitare']::text[], 'Metal avant-gardiste'),
+  ('friden', 'Anders Fridén', 'In Flames', 'Only for the Weak', 'LXXXVI', array['chant']::text[], 'Death metal mélodique'),
+  ('gelotte', 'Björn Gelotte', 'In Flames', 'Colony', 'LXXXVII', array['guitare']::text[], 'Death metal mélodique')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -472,7 +474,17 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('buckethead', 'rare', 'cards/buckethead-rare.jpg'),
   ('buckethead', 'holo', 'cards/buckethead-holo.jpg'),
   ('buckethead', 'signature', 'cards/buckethead-signature.jpg'),
-  ('buckethead', 'legendaire', 'cards/buckethead-legendaire.jpg')
+  ('buckethead', 'legendaire', 'cards/buckethead-legendaire.jpg'),
+  ('friden', 'commune', 'cards/friden-commune.jpg'),
+  ('friden', 'rare', 'cards/friden-rare.jpg'),
+  ('friden', 'holo', 'cards/friden-holo.jpg'),
+  ('friden', 'signature', 'cards/friden-signature.jpg'),
+  ('friden', 'legendaire', 'cards/friden-legendaire.jpg'),
+  ('gelotte', 'commune', 'cards/gelotte-commune.jpg'),
+  ('gelotte', 'rare', 'cards/gelotte-rare.jpg'),
+  ('gelotte', 'holo', 'cards/gelotte-holo.jpg'),
+  ('gelotte', 'signature', 'cards/gelotte-signature.jpg'),
+  ('gelotte', 'legendaire', 'cards/gelotte-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -505,7 +517,8 @@ insert into public.binders (id, kind, label, sort) values
   ('g-rhcp', 'band', 'Red Hot Chili Peppers', 26),
   ('g-lp', 'band', 'Linkin Park', 27),
   ('g-soad', 'band', 'System of a Down', 28),
-  ('g-gojira', 'band', 'Gojira', 29)
+  ('g-gojira', 'band', 'Gojira', 29),
+  ('g-inflames', 'band', 'In Flames', 30)
 on conflict (id) do update set kind = excluded.kind, label = excluded.label, sort = excluded.sort;
 
 insert into public.binder_members (binder_id, musician_id) values
@@ -587,6 +600,8 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'flynn'),
   ('all', 'durst'),
   ('all', 'buckethead'),
+  ('all', 'friden'),
+  ('all', 'gelotte'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -602,6 +617,8 @@ insert into public.binder_members (binder_id, musician_id) values
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
+  ('hardcore', 'friden'),
+  ('hardcore', 'gelotte'),
   ('prog', 'keenan'),
   ('prog', 'duplantier'),
   ('prog', 'joe-duplantier'),
@@ -721,6 +738,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'honeycutt'),
   ('voix', 'flynn'),
   ('voix', 'durst'),
+  ('voix', 'friden'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -747,6 +765,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('guitaristes', 'heafy'),
   ('guitaristes', 'flynn'),
   ('guitaristes', 'buckethead'),
+  ('guitaristes', 'gelotte'),
   ('bassistes', 'hoppus'),
   ('bassistes', 'lemmy'),
   ('bassistes', 'araya'),
@@ -784,7 +803,9 @@ insert into public.binder_members (binder_id, musician_id) values
   ('g-soad', 'tankian'),
   ('g-soad', 'malakian'),
   ('g-gojira', 'duplantier'),
-  ('g-gojira', 'joe-duplantier')
+  ('g-gojira', 'joe-duplantier'),
+  ('g-inflames', 'friden'),
+  ('g-inflames', 'gelotte')
 on conflict do nothing;
 
 delete from public.binder_members where (binder_id, musician_id) not in (values
@@ -866,6 +887,8 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'flynn'),
   ('all', 'durst'),
   ('all', 'buckethead'),
+  ('all', 'friden'),
+  ('all', 'gelotte'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -881,6 +904,8 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('hardcore', 'ramos'),
   ('hardcore', 'corpsegrinder'),
   ('hardcore', 'white-gluz'),
+  ('hardcore', 'friden'),
+  ('hardcore', 'gelotte'),
   ('prog', 'keenan'),
   ('prog', 'duplantier'),
   ('prog', 'joe-duplantier'),
@@ -1000,6 +1025,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'honeycutt'),
   ('voix', 'flynn'),
   ('voix', 'durst'),
+  ('voix', 'friden'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -1026,6 +1052,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('guitaristes', 'heafy'),
   ('guitaristes', 'flynn'),
   ('guitaristes', 'buckethead'),
+  ('guitaristes', 'gelotte'),
   ('bassistes', 'hoppus'),
   ('bassistes', 'lemmy'),
   ('bassistes', 'araya'),
@@ -1063,7 +1090,9 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('g-soad', 'tankian'),
   ('g-soad', 'malakian'),
   ('g-gojira', 'duplantier'),
-  ('g-gojira', 'joe-duplantier'));
+  ('g-gojira', 'joe-duplantier'),
+  ('g-inflames', 'friden'),
+  ('g-inflames', 'gelotte'));
 
 insert into public.pack_types (id, label, size, binder_id) values
   ('mosh', 'Mosh Pack', 5, null),
