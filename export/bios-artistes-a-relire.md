@@ -168,6 +168,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **canizaro** — Il chante dans Born of Osiris depuis sa fondation en 2003 à Palatine, dans la banlieue de Chicago. Signé chez Sumerian Records, le groupe sort The New Reign (2007), A Higher Place (2009) puis The Discovery (2011). Tomorrow We Die ∆live (2013), avec Machine, mêle ses cris graves aux claviers et aux riffs syncopés du djent. Le nom du groupe vient d'Osiris, dieu égyptien des morts.
 
+**shomo** — Ancien chanteur et claviériste d'Attack Attack!, il lance Beartooth à Columbus, dans l'Ohio, en 2012, d'abord comme projet personnel. Disgusting (2014), avec In Between, puis Aggressive (2016) et Disease (2018) installent le groupe chez Red Bull Records. Il écrit, joue et produit lui-même l'essentiel des albums. Ses textes parlent sans détour de dépression et d'anxiété.
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.

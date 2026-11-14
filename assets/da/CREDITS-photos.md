@@ -80,3 +80,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | friden | [20170615-155-Nova_Rock_2017-In_Flames-Anders_Fridén.jpg](https://commons.wikimedia.org/wiki/File:20170615-155-Nova_Rock_2017-In_Flames-Anders_Frid%C3%A9n.jpg) | Alfred Nitsch | CC BY-SA 4.0 |
 | gelotte | [Björn_Gelotte_2023_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Bj%C3%B6rn_Gelotte_2023_%28cropped%29.jpg) | S. Bollmann | Attribution |
 | canizaro | [Born_of_Osiris_-_Reload_Festival_2024_07.jpg](https://commons.wikimedia.org/wiki/File:Born_of_Osiris_-_Reload_Festival_2024_07.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |
+| shomo | [Caleb_Shomo_-_Reload_Festival_2018_13_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Caleb_Shomo_-_Reload_Festival_2018_13_%28cropped%29.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |
