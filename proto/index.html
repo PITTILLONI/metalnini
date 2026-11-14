@@ -2143,7 +2143,7 @@ const api = {
   async pitCancel(id){ return must(await sb.rpc('pit_cancel', { p_pit: id })); },
   async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
   async pitRunStart(id){ return must(await sb.rpc('pit_run_start', { p_pit: id })); },
-  async pitRunFinish(id, score){ return must(await sb.rpc('pit_run_finish', { p_pit: id, p_score: score })); },
+  async pitRunFinish(id, score, trace, circle){ return must(await sb.rpc('pit_run_finish', trace ? { p_pit: id, p_score: score, p_trace: trace, p_circle: circle || 0 } : { p_pit: id, p_score: score })); },
   async fosseCall(k, id, to){ return must(await sb.rpc('fosse_call', { p_kind: k, p_event: id, p_to: to })); },
   async fosseCalled(k, id){ return must(await sb.rpc('fosse_called', { p_kind: k, p_event: id })); },
   async pogoFeed(){ return must(await sb.rpc('pogo_feed')); },
