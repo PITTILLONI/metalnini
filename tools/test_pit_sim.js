@@ -115,5 +115,16 @@ s = fresh({ runS:4, bpm:null }); check('tempo arrivé avant le premier battement
 s = fresh({ runS:4, bpm:null }); run(s, GAS, 1); const late = PitSim.setBpm(s, 120); run(s, GAS, 1);
 check('tempo arrivé en cours de route : battements comptés à partir de là', late === true && s.beats - s.beatBase === 2 && PitSim.result(s).stats.rhythm === 1);
 
+// ---------- Vue drone : projection ----------
+const PitProj = require(ROOT + 'pit-proj.js');
+const meP = { a:0.3, r:0.7 }; let cam = PitProj.camera(meP, 390, 664), pp = PitProj.project(cam, meP.a, meP.r);
+check('projection : le joueur est en bas au centre', Math.abs(pp.x - 195) < 1e-6 && Math.abs(pp.y - 0.78 * 664) < 1 && Math.abs(pp.scale - 1) < 1e-6 && pp.visible);
+pp = PitProj.project(cam, meP.a + 0.05, meP.r);
+check('projection : un coureur devant est plus haut et plus petit', pp.y < 0.78 * 664 && pp.scale < 1 && pp.visible);
+check('projection : le bord à droite, le milieu à gauche', PitProj.project(cam, meP.a, 0.97).x > 195 && PitProj.project(cam, meP.a, 0.3).x < 195);
+check('projection : derrière la caméra, invisible', PitProj.project(cam, meP.a - 0.08, meP.r).visible === false);
+cam = PitProj.camera(meP, 430, 932); pp = PitProj.project(cam, meP.a, meP.r);
+check('projection : changement de taille d\'écran', Math.abs(pp.x - 215) < 1e-6 && Math.abs(pp.y - 0.78 * 932) < 1);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);
