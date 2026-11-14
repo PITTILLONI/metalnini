@@ -145,6 +145,18 @@ const px = new Uint8ClampedArray([0,0,0,255, 255,255,255,255, 128,128,128,255]);
 const inRange = (v, a, b) => v >= Math.min(a, b) && v <= Math.max(a, b);
 check('bichromie : noir → encre, blanc → or, gris entre les deux', px[0] === 0x0d && px[1] === 0x0a && px[2] === 0x08 && px[4] === 0xf4 && px[5] === 0xb2 && px[6] === 0x43
   && inRange(px[8], 0x0d, 0xf4) && inRange(px[9], 0x0a, 0xb2) && inRange(px[10], 0x08, 0x43) && px[11] === 255);
+// ---------- Vue drone : lumières ----------
+const PitLight = require(ROOT + 'pit-light.js');
+const bm0 = PitLight.beams(0, { beatT:null, flashT:null, reduce:false }), bm2 = PitLight.beams(2000, { beatT:null, flashT:null, reduce:false });
+check('lumières : 3 faisceaux, rouge et or', bm0.length === 3 && bm0.filter(b => b.color === 0xb23a3a).length === 2 && bm0.filter(b => b.color === 0xeb9a26).length === 1);
+check('lumières : ils balaient', bm0.some((b, i) => Math.abs(b.angle - bm2[i].angle) > 0.05));
+const sumI = l => l.reduce((a, b) => a + b.intensity, 0);
+check('lumières : pulsation juste après un battement', sumI(PitLight.beams(1000, { beatT:0, flashT:null, reduce:false })) > sumI(PitLight.beams(1000, { beatT:400, flashT:null, reduce:false })));
+check('lumières : sans tempo, intensité stable', Math.abs(sumI(PitLight.beams(1000, { beatT:null, flashT:null, reduce:false })) - sumI(PitLight.beams(1300, { beatT:null, flashT:null, reduce:false }))) < 1e-9);
+const rq = { beatT:null, flashT:null, reduce:true }, rqF = { beatT:null, flashT:0, reduce:true };
+const dFast = Math.abs(PitLight.beams(500, { beatT:null, flashT:null, reduce:false })[0].angle - bm0[0].angle), dSlow = Math.abs(PitLight.beams(500, rq)[0].angle - PitLight.beams(0, rq)[0].angle);
+check('mouvement réduit : pas de flash, balayage 4 fois plus lent', Math.abs(sumI(PitLight.beams(800, rq)) - sumI(PitLight.beams(800, rqF))) < 1e-9 && Math.abs(dFast / dSlow - 4) < 0.05);
+
 (async () => {
   check('photo : adresse vide → null sans erreur', await PitPhoto.load(null, 'palette', 64) === null);
   PitPhoto._img = () => { const im = {}; setTimeout(() => im.onerror && im.onerror(new Error('403')), 5); return im; };
