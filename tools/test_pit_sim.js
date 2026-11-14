@@ -126,5 +126,18 @@ check('projection : derrière la caméra, invisible', PitProj.project(cam, meP.a
 cam = PitProj.camera(meP, 430, 932); pp = PitProj.project(cam, meP.a, meP.r);
 check('projection : changement de taille d\'écran', Math.abs(pp.x - 215) < 1e-6 && Math.abs(pp.y - 0.78 * 932) < 1);
 
+// ---------- Vue drone : corps et poses ----------
+const PitBodies = require(ROOT + 'pit-bodies.js');
+const lk1 = PitBodies.looks(7, 40), lk2 = PitBodies.looks(7, 40);
+check('allures : même graine, mêmes allures ; variété', JSON.stringify(lk1) === JSON.stringify(lk2) && lk1.length === 40
+  && new Set(lk1.map(l => l.build)).size >= 5 && new Set(lk1.map(l => l.hair)).size >= 6);
+const r0 = PitBodies.pose('run', 0), r5 = PitBodies.pose('run', 0.5);
+check('course : les pieds alternent', r0.lFoot[1] > r0.rFoot[1] && r5.rFoot[1] > r5.lFoot[1]);
+const dn = PitBodies.pose('down', 0);
+check('à terre : tout près du sol', Object.keys(dn).every(k => dn[k][1] < 0.25));
+const lf = PitBodies.pose('lift', 0.5), ch = PitBodies.pose('cheer', 0.3);
+check('relever : une main tendue vers l\'avant et vers le bas', lf.rHand[1] < lf.hip[1] && Math.abs(lf.rHand[0] - lf.hip[0]) > 0.15);
+check('bras levés : les deux mains au-dessus de la tête', ch.lHand[1] > ch.head[1] && ch.rHand[1] > ch.head[1]);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);
