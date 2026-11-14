@@ -162,6 +162,10 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **buckethead** — Né Brian Carroll en Californie en 1969, il joue caché derrière un masque blanc inspiré d'Halloween 4 et un seau de poulet frit. Après Bucketheadland (1992) et des projets avec Praxis ou Les Claypool, il tient la guitare de Guns N' Roses de 2000 à 2004. Soothsayer (Crime Slunk Scene, 2006) et Jordan, rendu célèbre par Guitar Hero II, sont ses morceaux les plus connus. Sa série des Pikes, lancée en 2011, dépasse les 800 albums.
 
+**friden** — Il chante d'abord dans Dark Tranquillity, sur Skydancer (1993), puis rejoint In Flames en 1995. The Jester Race (1996), Whoracle (1997) et Colony (1999) posent le son de Göteborg ; Clayman (2000), avec Only for the Weak, en fait l'un des groupes phares du death metal mélodique. Dès Reroute to Remain (2002), il ajoute des refrains chantés et de l'électronique. Il reste depuis la voix du groupe, aux côtés du guitariste Björn Gelotte.
+
+**gelotte** — Il entre dans In Flames en 1995 comme batteur et joue sur The Jester Race (1996) et Whoracle (1997). Il passe à la guitare sur Colony (1999), dont le morceau-titre porte ses harmonies à deux guitares avec Jesper Strömblad. Après le départ de Strömblad en 2010, il signe l'essentiel de la musique du groupe, de Sounds of a Playground Fading (2011) à Foregone (2023).
+
 **canizaro** — Il chante dans Born of Osiris depuis sa fondation en 2003 à Palatine, dans la banlieue de Chicago. Signé chez Sumerian Records, le groupe sort The New Reign (2007), A Higher Place (2009) puis The Discovery (2011). Tomorrow We Die ∆live (2013), avec Machine, mêle ses cris graves aux claviers et aux riffs syncopés du djent. Le nom du groupe vient d'Osiris, dieu égyptien des morts.
 
 # Fiches des styles (page d'un classeur) — à relire

@@ -148,6 +148,11 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
 
+## Demande de joueurs (2026-11-05) : Anders Fridén et Björn Gelotte (In Flames)
+- Demande : « Björn Gelotte/Anders Fridén » ; consigne du propriétaire : deux cartes, même classeur de groupe In Flames, arcanes consécutifs.
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée contre l'un ou l'autre ; aucun lien avec des groupes haineux.
+- Non retenu : le différend sur les droits d'auteur avec l'ancien chanteur Henke Forss et les piques échangées avec Jesper Strömblad, simples conflits professionnels ([Blabbermouth](https://blabbermouth.net/news/ex-in-flames-singer-henke-forss-says-hes-been-trying-for-over-10-years-to-get-proper-songwriting-credit), [Loudwire](https://loudwire.com/in-flames-henke-forss-battle-songwriting-royalties/)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, cartes « Only for the Weak », LXXXVI, et « Colony », LXXXVII, Death metal mélodique).
 ## Demande de joueurs (2026-11-05) : Ronnie Canizaro (Born of Osiris)
 - Demande : « Born of Osiris ». Figure retenue : Ronnie Canizaro, chanteur depuis la fondation (2003).
 - RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée contre lui ou le groupe ; aucun lien avec des groupes haineux ([Wikipedia](https://en.wikipedia.org/wiki/Born_of_Osiris)).
