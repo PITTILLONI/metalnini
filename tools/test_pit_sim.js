@@ -79,5 +79,17 @@ check('fantôme : trace invalide → null', [null, {}, { v:2, hz:10, p:[[0, 70, 
 s = fresh({ runS:40, bpm:null }); run(s, GAS, 40); r3 = PitSim.result(s);
 check('sans fantôme ni pote, 100 atteignable', r3.score === 100 && s.over);
 
+// ---------- Task 4 : tempo ----------
+const PitBeat = require(ROOT + 'pit-beat.js');
+function clicks(bpm, sec, sr){ const x = new Float32Array(sec * sr), step = Math.round(sr * 60 / bpm);
+  for(let i = 0; i < x.length; i += step) for(let j = 0; j < 200 && i + j < x.length; j++) x[i + j] = Math.sin(j * 0.6) * (1 - j / 200); return x; }
+const SR = 22050; let b4 = PitBeat.detect(clicks(120, 10, SR), SR);
+check('tempo : clics à 120 → ' + b4, b4 >= 118 && b4 <= 122);
+b4 = PitBeat.detect(clicks(90, 10, SR), SR);
+check('tempo : clics à 90 → ' + b4, b4 >= 88 && b4 <= 92);
+let seed4 = 7; const noise = new Float32Array(10 * SR).map(() => { seed4 ^= seed4 << 13; seed4 ^= seed4 >>> 17; seed4 ^= seed4 << 5; return (seed4 >>> 0) / 2147483648 - 1; });   // xorshift32
+check('tempo : bruit blanc → null', PitBeat.detect(noise, SR) === null);
+check('tempo : silence → null', PitBeat.detect(new Float32Array(10 * SR), SR) === null);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);
