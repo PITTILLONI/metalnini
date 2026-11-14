@@ -27,5 +27,37 @@ const d1 = fresh({ cfg:{ npc:24 } }), d2 = fresh({ cfg:{ npc:24 } });
 [d1, d2].forEach(x => { run(x, GAS, 3); run(x, { throttle:.6, lateral:-.5, tap:false }, 3); run(x, IDLE, 2); });
 check('déterminisme : même graine, mêmes entrées → même état', JSON.stringify(d1.me) === JSON.stringify(d2.me) && JSON.stringify(d1.npcs) === JSON.stringify(d2.npcs));
 
+// ---------- Task 2 : foule, chutes, relevés, potes attirés ----------
+const TAP = { throttle:0, lateral:0, tap:true };
+function has(ev, type){ return ev.some(e => e.type === type); }
+function onlyNpcAhead(seed){ const x = PitSim.create({ seed, runS:40, cfg:{ npc:1, npcFallPerS:0 } }); PitSim.place(x, 0, 0.05, 0.7); x.npcs[0].v = 0; return x; }
+let fell = false;
+for(let seed = 1; seed <= 3 && !fell; seed++){ s = onlyNpcAhead(seed); s.me.v = 1.2; s.me.stamina = 0; fell = has(run(s, GAS, 3), 'fall'); }
+check('chute : choc plein gaz endurance vide → fall dans les 3 s', fell);
+s = fresh(); PitSim.knockDown(s); let ev = [];
+for(let i = 0; i < 4; i++){ ev = ev.concat(PitSim.step(s, TAP), PitSim.step(s, IDLE)); }
+check('relève seul : upTaps touchers → up avant downS', has(ev, 'up') && !s.me.down && s.t < 1500);
+s = fresh(); PitSim.knockDown(s); const tDown = s.t; ev = run(s, IDLE, 1.49); const early = has(ev, 'up'); ev = run(s, IDLE, 0.02);
+check('relève seul : sans toucher → up à downS', !early && has(ev, 'up'));
+const sweep = { v:1, hz:10, p:Array.from({ length:41 }, (_, i) => [Math.round(i / 40 * 1000), 70, 0]), e:[] };
+s = fresh({ ghosts:[{ id:'g1', name:'Riffeuse', trace:sweep }] }); s.me.a = 0.25; PitSim.knockDown(s); ev = run(s, IDLE, 1.4);
+check('fantôme qui passe relève', has(ev, 'up') && ev.find(e => e.type === 'up').t < 1400);
+s = PitSim.create({ seed:1, runS:40, cfg:{ npc:1, npcFallPerS:0 } }); PitSim.place(s, 0, 0.03, 0.7); PitSim.forceNpcDown(s, 0);
+ev = []; k = 0; while(k++ < 600 && PitSim.dist(s, 0) > 0.07) ev = ev.concat(PitSim.step(s, { throttle:.3, lateral:0, tap:false }));
+ev = ev.concat(run(s, IDLE, 1));
+check('relever un npc : ralentir dessus → lift', ev.some(e => e.type === 'lift' && e.id === 0) && !s.npcs[0].down);
+s = PitSim.create({ seed:1, runS:40, cfg:{ npc:1, npcFallPerS:0 } }); PitSim.place(s, 0, 0.1, 0.7); PitSim.forceNpcDown(s, 0); s.me.v = 1.2;
+check('pas de relevé en passant vite', !has(run(s, GAS, 2), 'lift'));
+s = fresh({ friends:[{ id:'f1', name:'Pote' }] }); s.me.r = 0.97; s.me.a = s.friends[0].a; ev = run(s, IDLE, 0.6).concat(run(s, IDLE, 1));
+check('attirer un pote : au bord, 0.5 s → pull une seule fois', ev.filter(e => e.type === 'pull' && e.id === 'f1').length === 1 && s.friends[0].pulled && s.friends[0].r === 0.97);
+s = fresh(); ev = run(s, GAS, 2);
+check('tour : un tour complet → lap', ev.filter(e => e.type === 'lap').length === 1);
+let fallsTrack = 0, fallsMid = 0;
+for(let seed = 1; seed <= 200; seed++){
+  const a = PitSim.create({ seed, runS:40, cfg:{ npcFallPerS:0 } }); if(has(run(a, GAS, 4), 'fall')) fallsTrack++;
+  const b = PitSim.create({ seed, runS:40, cfg:{ npcFallPerS:0 } }); if(has(run(b, { throttle:1, lateral:-1, tap:false }, .5).concat(run(b, GAS, 3.5)), 'fall')) fallsMid++;
+}
+check('milieu plus risqué : plus de chutes au milieu (' + fallsMid + ') que sur la piste (' + fallsTrack + ')', fallsMid > fallsTrack);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);

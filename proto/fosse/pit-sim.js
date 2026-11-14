@@ -15,29 +15,97 @@
   function clamp(x, lo, hi){ return x < lo ? lo : x > hi ? hi : x; }
   function zoneOf(r){ return r < 0.45 ? 'middle' : r > 0.9 ? 'edge' : 'track'; }
 
+  function frac(x){ return x - Math.floor(x); }
+  function angDiff(a, b){ var d = frac(a - b); return d > 0.5 ? 1 - d : d; }
+  function distAR(a1, r1, a2, r2){ var t1 = a1 * 2 * Math.PI, t2 = a2 * 2 * Math.PI, dx = r1 * Math.cos(t1) - r2 * Math.cos(t2), dy = r1 * Math.sin(t1) - r2 * Math.sin(t2);
+    return Math.sqrt(dx * dx + dy * dy); }
+
+  // trace d'une course : { v:1, hz:10, p:[[a en millièmes de tour (cumulé), r en centièmes, à terre 0|1], …], e:[[t ms, type], …] }
+  function ghostAt(tr, tMs){
+    if(!tr || tr.v !== 1 || !(tr.hz > 0) || !Array.isArray(tr.p) || !tr.p.length) return null;
+    var x = tMs * tr.hz / 1000, i = Math.floor(x), p = tr.p, n = p.length;
+    if(!Array.isArray(p[0]) || p[0].length < 3) return null;
+    if(i >= n - 1) return { a: p[n - 1][0] / 1000, r: p[n - 1][1] / 100, down: !!p[n - 1][2] };
+    if(i < 0) i = 0;
+    var f = x - i, q = p[i], w = p[i + 1];
+    if(!Array.isArray(w)) return null;
+    return { a: (q[0] + (w[0] - q[0]) * f) / 1000, r: (q[1] + (w[1] - q[1]) * f) / 100, down: !!q[2] };
+  }
+
   function create(o){
     var cfg = merge(o.cfg), rand = rng(o.seed || 1), sim = { cfg: cfg, rand: rand, n: 0, t: 0, end: Math.round((o.runS || 40) * HZ), over: false, acc: 0,
-      me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false }, npcs: [] };
-    for(var i = 0; i < cfg.npc; i++) sim.npcs.push({ a: rand(), r: 0.5 + rand() * 0.38, v: 0.4 + rand() * 0.5, down: false, downT: 0 });
+      me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false, downT: 0, taps: 0, laps: 0 }, npcs: [], friends: [], ghosts: [] };
+    for(var i = 0; i < cfg.npc; i++) sim.npcs.push({ a: rand(), r: 0.5 + rand() * 0.38, v: 0.4 + rand() * 0.5, down: false, downT: 0, touch: false, hold: 0 });
+    (o.friends || []).forEach(function(f){ sim.friends.push({ id: f.id, name: f.name, a: rand(), r: 0.97, pulled: false, hold: 0 }); });
+    (o.ghosts || []).forEach(function(g){ if(g && ghostAt(g.trace, 0)) sim.ghosts.push(g); });
     return sim;
   }
 
+  function knockDown(sim){ var me = sim.me; me.down = true; me.downT = sim.t; me.taps = 0; me.v = 0; }
+  function fallChance(c, me){ return Math.min(1, (c.fallBase + (1 - me.stamina) * c.fallTired) * (me.zone === 'middle' ? c.middleRisk : 1)); }
+
   function step(sim, input){
     if(sim.over) return [];
-    var c = sim.cfg, me = sim.me, ev = [], th = clamp(input.throttle || 0, 0, 1);
-    me.v += (th * c.vmax - me.v) * Math.min(1, c.accel * DT);
-    me.a += me.v * DT;
-    me.r = clamp(me.r + clamp(input.lateral || 0, -1, 1) * c.lateral * DT, 0.05, 1);
+    var c = sim.cfg, me = sim.me, ev = [], rand = sim.rand, body2 = 2 * c.body, t = (sim.n + 1) * STEP_MS, i, p;
+    var add = function(type, id){ var e = { t: t, type: type }; if(id !== undefined) e.id = id; ev.push(e); };
+    if(me.down){
+      if(input.tap) me.taps++;
+      var helped = sim.ghosts.some(function(g){ var q = ghostAt(g.trace, t); return q && !q.down && distAR(q.a, q.r, me.a, me.r) < body2; });
+      if(me.taps >= c.upTaps || t - me.downT >= c.downS * 1000 - 1e-6 || helped){ me.down = false; add('up'); }
+    } else {
+      var th = clamp(input.throttle || 0, 0, 1);
+      me.v += (th * c.vmax - me.v) * Math.min(1, c.accel * DT);
+      me.r = clamp(me.r + clamp(input.lateral || 0, -1, 1) * c.lateral * DT, 0.05, 1);
+    }
     me.zone = zoneOf(me.r);
     var st = me.stamina - c.drain * Math.pow(me.v / c.vmax, 2) * (me.zone === 'middle' ? 1.5 : 1) * DT;
     if(me.zone === 'edge') st += c.regen * DT;
     if(me.v < 0.2 * c.vmax) st += c.regenSlow * DT;
     me.stamina = clamp(st, 0, 1);
-    for(var i = 0; i < sim.npcs.length; i++){ var p = sim.npcs[i]; if(!p.down) p.a += p.v * DT; }
+
+    for(i = 0; i < sim.npcs.length; i++){
+      p = sim.npcs[i];
+      if(p.down){ if(t - p.downT >= c.npcDownS * 1000) p.down = false; continue; }
+      p.a += p.v * DT;
+      if(rand() < c.npcFallPerS * DT){ p.down = true; p.downT = t; p.hold = 0; }
+    }
+    if(!me.down){
+      for(i = 0; i < sim.npcs.length; i++){
+        p = sim.npcs[i]; var d = distAR(me.a, me.r, p.a, p.r);
+        if(p.down){
+          // relever : lent tout près, on freine pour l'aider, liftHoldS plus tard il est debout
+          if(d < body2 * 1.5 && me.v < c.liftMaxV * c.vmax){ me.v *= 0.85; p.hold += DT;
+            if(p.hold >= c.liftHoldS - 1e-9){ p.down = false; p.hold = 0; add('lift', i); } }
+          else p.hold = 0;
+          continue;
+        }
+        if(d < body2){
+          if(!p.touch){ p.touch = true; add('bump', i);
+            if(Math.abs(me.v - p.v) > 0.5 * c.vmax && rand() < fallChance(c, me)){ knockDown(sim); me.downT = t; add('fall'); break; }
+            me.v *= 0.6; }
+          p.a += (me.a <= p.a ? 1 : -1) * (body2 - d) / (2 * Math.PI * Math.max(0.1, p.r));   // on le pousse hors de soi
+        } else p.touch = false;
+      }
+    }
+    // milieu : des coureurs le traversent, un choc lancé à pleine vitesse peut faire tomber
+    if(!me.down && me.zone === 'middle' && rand() < 0.5 * c.middleRisk * DT && me.v >= c.groove * c.vmax){
+      add('bump'); if(rand() < fallChance(c, me)){ knockDown(sim); me.downT = t; add('fall'); } }
+    if(!me.down) me.a += me.v * DT;
+    if(Math.floor(me.a) > me.laps){ me.laps = Math.floor(me.a); add('lap'); }
+
+    sim.friends.forEach(function(f){ if(f.pulled) return;
+      if(!me.down && me.zone === 'edge' && angDiff(me.a, f.a) < c.pullAngle){ f.hold += DT; if(f.hold >= c.pullHoldS - 1e-9){ f.pulled = true; add('pull', f.id); } }
+      else f.hold = 0; });
+
     sim.n++; sim.t = sim.n * STEP_MS;
     if(sim.n >= sim.end) sim.over = true;
     return ev;
   }
+
+  // aides (tests et banc) : placer un coureur de la foule, le mettre à terre, distance au joueur
+  function place(sim, i, a, r){ sim.npcs[i].a = a; sim.npcs[i].r = r; }
+  function forceNpcDown(sim, i){ var p = sim.npcs[i]; p.down = true; p.downT = sim.t + 1e9; p.hold = 0; }
+  function dist(sim, i){ var p = sim.npcs[i]; return distAR(sim.me.a, sim.me.r, p.a, p.r); }
 
   // temps réel écoulé : autant de pas qu'il en tient (plafonné, pour une app revenue de l'arrière-plan)
   function advance(sim, input, dtMs){
@@ -46,6 +114,7 @@
     return ev;
   }
 
-  var PitSim = { DEFAULTS: DEFAULTS, HZ: HZ, create: create, step: step, advance: advance };
+  var PitSim = { DEFAULTS: DEFAULTS, HZ: HZ, create: create, step: step, advance: advance, ghostAt: ghostAt,
+    knockDown: knockDown, place: place, forceNpcDown: forceNpcDown, dist: dist };
   if(typeof module !== 'undefined' && module.exports) module.exports = PitSim; else window.PitSim = PitSim;
 })();
