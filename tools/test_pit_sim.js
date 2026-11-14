@@ -139,5 +139,15 @@ const lf = PitBodies.pose('lift', 0.5), ch = PitBodies.pose('cheer', 0.3);
 check('relever : une main tendue vers l\'avant et vers le bas', lf.rHand[1] < lf.hip[1] && Math.abs(lf.rHand[0] - lf.hip[0]) > 0.15);
 check('bras levés : les deux mains au-dessus de la tête', ch.lHand[1] > ch.head[1] && ch.rHand[1] > ch.head[1]);
 
-console.log(fails ? fails + ' échec(s)' : 'tous OK');
-process.exit(fails ? 1 : 0);
+// ---------- Vue drone : photos ----------
+const PitPhoto = require(ROOT + 'pit-photo.js');
+const px = new Uint8ClampedArray([0,0,0,255, 255,255,255,255, 128,128,128,255]); PitPhoto.duotone(px);
+const inRange = (v, a, b) => v >= Math.min(a, b) && v <= Math.max(a, b);
+check('bichromie : noir → encre, blanc → or, gris entre les deux', px[0] === 0x0d && px[1] === 0x0a && px[2] === 0x08 && px[4] === 0xf4 && px[5] === 0xb2 && px[6] === 0x43
+  && inRange(px[8], 0x0d, 0xf4) && inRange(px[9], 0x0a, 0xb2) && inRange(px[10], 0x08, 0x43) && px[11] === 255);
+(async () => {
+  check('photo : adresse vide → null sans erreur', await PitPhoto.load(null, 'palette', 64) === null);
+  PitPhoto._img = () => { const im = {}; setTimeout(() => im.onerror && im.onerror(new Error('403')), 5); return im; };
+  check('photo : chargement en échec → null', await PitPhoto.load('https://x/y.jpg', 'palette', 64) === null);
+  console.log(fails ? fails + ' échec(s)' : 'tous OK'); process.exit(fails ? 1 : 0);
+})();
