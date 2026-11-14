@@ -4235,7 +4235,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var ghosts = [1, 2, 3].map(function(k){ var g = PitSim.create({seed:k, runS:40, cfg:{npc:0}}), i;
       for(i = 0; i < 40 * PitSim.HZ; i++) PitSim.step(g, {throttle:.6 + .1 * k, lateral:Math.sin(i / 300 + k) * .6, tap:true});
       return {id:'g' + k, name:['Riffeuse', 'Vega', 'Léa'][k - 1], trace:PitSim.result(g).trace}; });
-    var host = document.createElement('div'); host.className = 'pit-game'; document.body.appendChild(host); document.body.classList.add('playing');
+    var host = document.createElement('div'); host.className = 'pit-game'; host.style.zIndex = 999; document.body.appendChild(host);   // au-dessus de l'accueil et de la connexion document.body.classList.add('playing');
     var run = function(){ PitGame.start(host, {PIXI:P, seed:Date.now() >>> 0, runS:40, cfg:{}, me:{name:'Moi'}, ghosts:ghosts, friends:[{id:'f1', name:'Riffeuse'}, {id:'f2', name:'Vega'}],
       bpm:120, reduce:reduce, buzz:buzz, snd:snd, onEnd:function(r){ toast('Banc : <b>' + r.score + '</b> points, +' + r.circle + ' au cercle.'); run(); }}); };
     run();
