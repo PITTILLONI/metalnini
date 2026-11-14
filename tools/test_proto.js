@@ -561,7 +561,7 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   // 18 ter. Circle pit, nouveau moteur : PixiJS présent → PitGame lancé avec fantômes et potes ; fin, pote attiré, ancien serveur
   const tr9 = { v:1, hz:10, p:[[0, 70, 0], [100, 70, 0]], e:[] };
   const pit2 = { id:'p2', track:'morello', ends_at:pitEnd, over:false, host:false, host_name:'Ghosty', in:true, rewarded:true, claimed:false, rps:.35, run_s:40, circle:3, game:{ npc:12 },
-    runners:[{ id:'g1', name:'Ghosty', score:60, trace:tr9 }, { id:'g2', name:'Vieux', score:50, trace:null }, { id:'u1', name:'Moi', score:null, me:true }], tier:{ runners:2, aim:55, size:0, aim_tier:0, size_label:'Petit cercle', aim_label:'Brouillon', points:1 } };
+    runners:[{ id:'g1', name:'Ghosty', score:60, trace:tr9, avatar:'g1.jpg' }, { id:'g2', name:'Vieux', score:50, trace:null }, { id:'u1', name:'Moi', score:null, me:true }], tier:{ runners:2, aim:55, size:0, aim_tier:0, size_label:'Petit cercle', aim_label:'Brouillon', points:1 } };
   const pit2Copy = () => JSON.parse(JSON.stringify(pit2));
   let gameOpts = null, gameStopped = 0, finishArgs = [], call9 = null;
   w9.PIXI = {}; w9.PitSim = {}; w9.PitGame = { start: (host, o) => { gameOpts = o; return { stop: () => { gameStopped++; }, ready: Promise.resolve() }; } };
@@ -569,11 +569,13 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   fake9.pitJoin = async () => pit2Copy(); fake9.pitRunStart = async () => pit2Copy();
   fake9.pitRunFinish = async (id, sc, tr, ci) => { finishArgs.push([id, sc, tr, ci]); if(tr && finishArgs.length === 1 && w9.__oldServer) throw new Error('function pit_run_finish(uuid, integer, jsonb, integer) does not exist'); pit2.runners[2].score = sc; return pit2Copy(); };
   fake9.fosseCall = async (k, id, to) => { call9 = k + '|' + id + '|' + to; return true; };
+  const media9 = fake9.mediaUrl; fake9.mediaUrl = async (b, p) => b === 'avatars' ? 'u:' + p : media9(b, p);
   d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
   d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
   d9.getElementById('pit-start').click(); await sleep(3600);
   check('circle pit : nouveau jeu lancé avec fantômes et potes', !!gameOpts && gameOpts.runS === 40 && gameOpts.ghosts.length === 1 && gameOpts.ghosts[0].id === 'g1' && gameOpts.cfg.npc === 12
     && gameOpts.friends.length === 1 && gameOpts.friends[0].id === 'f1' && typeof gameOpts.seed === 'number' && !d9.getElementById('pit-mark'));
+  check('circle pit : adresses des photos passées au jeu', gameOpts.ghosts[0].avatar === 'u:g1.jpg' && gameOpts.friends[0].avatar === null && 'avatar' in gameOpts.me);
   gameOpts.onPull('f1'); await sleep(20);
   check('circle pit : pote attiré → Rameuter', call9 === 'pit|p2|f1');
   gameOpts.onEnd({ score:72, circle:5, trace:{ v:1, hz:10, p:[], e:[] }, stats:{} }); await sleep(60);

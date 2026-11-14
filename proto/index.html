@@ -2007,6 +2007,10 @@
 <script src="sounds/manifest.js"></script>
 <script src="fosse/pit-sim.js"></script>
 <script src="fosse/pit-beat.js"></script>
+<script src="fosse/pit-proj.js"></script>
+<script src="fosse/pit-bodies.js"></script>
+<script src="fosse/pit-photo.js"></script>
+<script src="fosse/pit-light.js"></script>
 <script src="fosse/pit-view.js"></script>
 <script type="module">
 // Connexion au serveur : joueur anonyme + pseudo, tirage et collection côté serveur. Clé publique uniquement.
@@ -4211,20 +4215,25 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   }
   // potes de l'app qui ne sont pas dans ce pit (6 au plus) : ils attendent au bord, on peut les attirer
   function pitGameFriends(st){ var here = {}; st.runners.forEach(function(r){ here[r.id] = true; });
-    return friendsList.filter(function(f){ return !here[f.friend_id]; }).slice(0, 6).map(function(f){ return {id:f.friend_id, name:f.username || 'Pote'}; }); }
+    return friendsList.filter(function(f){ return !here[f.friend_id]; }).slice(0, 6).map(function(f){ return {id:f.friend_id, name:f.username || 'Pote', avatar:f.avatar_path || null}; }); }
   // nouveau jeu : 3, 2, 1 (le tempo s'écoute pendant ce temps), puis PitGame ; échec de PixiJS = ancienne course
   function pitRunGame(st, P){
     var me = st.runners.filter(function(r){ return r.me; })[0] || {}, key = String(st.id) + (me.id || ''), seed = 0, i, n = 3, bpm = null;
     for(i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) >>> 0;
     var ghosts = st.runners.filter(function(r){ return !r.me && r.trace; }).map(function(r){ return {id:r.id, name:r.name, avatar:r.avatar, trace:r.trace}; });
-    var go = pitGo = {id:st.id}; document.body.classList.add('playing');
+    var friends = pitGameFriends(st), go = pitGo = {id:st.id}; document.body.classList.add('playing');
+    // photos : chemins du stockage résolus en adresses pendant le décompte ; ce qui n'arrive pas à temps part sans photo
+    var url = function(path){ return path ? avUrls[path] || null : null; };
+    ghosts.concat(friends).forEach(function(x){ if(x.avatar && !avUrls[x.avatar]) ONLINE.mediaUrl('avatars', x.avatar).then(function(u){ avUrls[x.avatar] = u; }).catch(function(){}); });
     pitIn.innerHTML = '<div class="pit-game" id="pit-game"><b class="pit-count num" id="pit-count">3</b></div>';
     var host = document.getElementById('pit-game'), cnt = document.getElementById('pit-count');
     trackBpm(st.track).then(function(x){ bpm = x; if(x && go.game && go.game.sim) PitSim.setBpm(go.game.sim, x); });   // tempo en retard : compté à partir de là
     pop(cnt, 2.2);
     go.tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); pop(cnt, 2.2); return; }
       clearInterval(go.tick); if(pitGo !== go) return; cnt.remove(); buzz(20); pitTrack(st.track);
-      go.game = PitGame.start(host, {PIXI:P, seed:seed, runS:st.run_s, cfg:st.game || {}, me:{name:state.username || 'Moi'}, ghosts:ghosts, friends:pitGameFriends(st), bpm:bpm,
+      var withUrl = function(x){ return {id:x.id, name:x.name, trace:x.trace, avatar:url(x.avatar)}; };
+      go.game = PitGame.start(host, {PIXI:P, seed:seed, runS:st.run_s, cfg:st.game || {}, me:{name:state.username || 'Moi', avatar:avatarSrc() || null},
+        ghosts:ghosts.map(withUrl), friends:friends.map(withUrl), bpm:bpm,
         reduce:reduce, buzz:buzz, snd:snd, onPull:function(fid){ ONLINE.fosseCall('pit', st.id, fid).catch(function(){}); },
         onEnd:function(r){ if(pitGo === go) pitRunEnd(r.score, r.trace, r.circle); }});
       go.game.ready.catch(function(){ if(pitGo !== go) return; go.game.stop(); go.game = null; pitRunLegacy(st); });
@@ -4234,9 +4243,9 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   if(/[?&]pitbanc\b/.test(location.search) && window.PitGame) loadLib(PIXI_LIB, 'PIXI').then(function(P){
     var ghosts = [1, 2, 3].map(function(k){ var g = PitSim.create({seed:k, runS:40, cfg:{npc:0}}), i;
       for(i = 0; i < 40 * PitSim.HZ; i++) PitSim.step(g, {throttle:.6 + .1 * k, lateral:Math.sin(i / 300 + k) * .6, tap:true});
-      return {id:'g' + k, name:['Riffeuse', 'Vega', 'Léa'][k - 1], trace:PitSim.result(g).trace}; });
+      return {id:'g' + k, name:['Riffeuse', 'Vega', 'Léa'][k - 1], trace:PitSim.result(g).trace, avatar:'cards/' + ['jinjer', 'flynn', 'spiritbox'][k - 1] + '-base.jpg'}; });   // photos d'essai : visages des cartes
     var host = document.createElement('div'); host.className = 'pit-game'; host.style.zIndex = 999; document.body.appendChild(host);   // au-dessus de l'accueil et de la connexion document.body.classList.add('playing');
-    var run = function(){ PitGame.start(host, {PIXI:P, seed:Date.now() >>> 0, runS:40, cfg:{}, me:{name:'Moi'}, ghosts:ghosts, friends:[{id:'f1', name:'Riffeuse'}, {id:'f2', name:'Vega'}],
+    var run = function(){ PitGame.start(host, {PIXI:P, seed:Date.now() >>> 0, runS:40, cfg:{}, me:{name:'Moi', avatar:'cards/durst-base.jpg'}, ghosts:ghosts, friends:[{id:'f1', name:'Lemmy', avatar:'cards/lemmy-base.jpg'}, {id:'f2', name:'Bucket'}],
       bpm:120, reduce:reduce, buzz:buzz, snd:snd, onEnd:function(r){ toast('Banc : <b>' + r.score + '</b> points, +' + r.circle + ' au cercle.'); run(); }}); };
     run();
   });
