@@ -95,6 +95,7 @@ check('tempo : silence → null', PitBeat.detect(new Float32Array(10 * SR), SR) 
 const vm = require('vm'), fs = require('fs'), box = { window:{}, Math, performance:{ now:() => 0 } };
 vm.runInNewContext(fs.readFileSync(ROOT + 'pit-view.js', 'utf8'), box);
 const PitGame = box.window.PitGame;
+check('affichage : chargé sans PixiJS ni DOM, PitGame expose start, inputFrom, anchorOn', typeof PitGame.start === 'function' && typeof PitGame.inputFrom === 'function' && typeof PitGame.anchorOn === 'function');
 const in1 = PitGame.inputFrom({ x:100, y:300 }, { x:145, y:210 });
 check('commandes : pouce vers le haut = gaz, côté = latéral', Math.abs(in1.throttle - 1) < 1e-9 && Math.abs(in1.lateral - 0.5) < 1e-9);
 const in2 = PitGame.inputFrom({ x:100, y:300 }, { x:0, y:400 });
