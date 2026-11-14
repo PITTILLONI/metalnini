@@ -51,6 +51,9 @@
     wrap.addEventListener('pointerdown', onDown); wrap.addEventListener('pointermove', onMove);
     wrap.addEventListener('pointerup', onUp); wrap.addEventListener('pointercancel', onUp);
 
+    // fin de course, une seule fois : score acquis rendu à l'appli
+    var ended = false;
+    function finish(){ if(ended) return; ended = true; var res = PitSim.result(sim); stop(); if(o.onEnd) o.onEnd(res); }
     function stop(){ if(stopped) return; stopped = true;
       wrap.removeEventListener('pointerdown', onDown); wrap.removeEventListener('pointermove', onMove);
       wrap.removeEventListener('pointerup', onUp); wrap.removeEventListener('pointercancel', onUp);
@@ -112,6 +115,9 @@
 
       app.ticker.add(function(tk){
         if(stopped) return;
+        try{ frame(tk); }catch(err){ finish(); }   // jamais de jeu figé : on termine la course avec ce qui est acquis
+      });
+      function frame(tk){
         var dt = tk.deltaMS, inp = st.down ? inputFrom(st.anchor, st.point) : { throttle: 0, lateral: 0 }, ev = [];
         inp.tap = false;
         if(tapPending){ tapPending = false; ev = ev.concat(PitSim.step(sim, { throttle: 0, lateral: 0, tap: true })); dt = Math.max(0, dt - 1000 / PitSim.HZ); }
@@ -145,8 +151,8 @@
           else { var msg = m.down ? 'À terre ! Tape vite pour te relever' : m.zone === 'edge' ? 'Au bord : tu souffles' : m.zone === 'middle' ? 'Au milieu : ça compte double' : t < 4000 ? cue.textContent : '';
             if(m.down !== fallen){ fallen = m.down; cue.classList.toggle('hot', m.down); }
             if(cue.textContent !== msg) cue.textContent = msg; } }
-        if(sim.over){ var res = PitSim.result(sim); stop(); o.onEnd && o.onEnd(res); }
-      });
+        if(sim.over) finish();
+      }
     }
     return { stop: stop, ready: ready, sim: sim };
   }

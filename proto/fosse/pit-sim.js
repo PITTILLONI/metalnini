@@ -21,6 +21,9 @@
     return Math.sqrt(dx * dx + dy * dy); }
 
   // trace d'une course : { v:1, hz:10, p:[[a en millièmes de tour (cumulé), r en centièmes, à terre 0|1], …], e:[[t ms, type], …] }
+  // trace utilisable : chaque point est un tableau de 3 nombres finis (une trace abîmée est ignorée en entier)
+  function validTrace(tr){ return !!tr && tr.v === 1 && tr.hz > 0 && Array.isArray(tr.p) && tr.p.length > 0 && tr.p.every(function(q){
+    return Array.isArray(q) && q.length >= 3 && isFinite(q[0]) && isFinite(q[1]) && isFinite(q[2]) && q[0] !== null && q[1] !== null && q[2] !== null; }); }
   function ghostAt(tr, tMs){
     if(!tr || tr.v !== 1 || !(tr.hz > 0) || !Array.isArray(tr.p) || !tr.p.length) return null;
     var x = tMs * tr.hz / 1000, i = Math.floor(x), p = tr.p, n = p.length;
@@ -35,10 +38,10 @@
   function create(o){
     var cfg = merge(o.cfg), rand = rng(o.seed || 1), sim = { cfg: cfg, rand: rand, n: 0, t: 0, end: Math.round((o.runS || 40) * HZ), over: false, acc: 0,
       me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false, downT: 0, taps: 0, laps: 0 }, npcs: [], friends: [], ghosts: [],
-      bpm: o.bpm > 0 ? o.bpm : null, beats: 0, beatHits: 0, groove: 0, lifts: 0, pulls: 0, middleN: 0, trace: { v: 1, hz: 10, p: [], e: [] } };
+      bpm: o.bpm > 0 ? o.bpm : null, beats: 0, beatBase: 0, beatHits: 0, groove: 0, lifts: 0, pulls: 0, middleN: 0, trace: { v: 1, hz: 10, p: [], e: [] } };
     for(var i = 0; i < cfg.npc; i++) sim.npcs.push({ a: rand(), r: 0.5 + rand() * 0.38, v: 0.4 + rand() * 0.5, down: false, downT: 0, touch: false, hold: 0 });
     (o.friends || []).forEach(function(f){ sim.friends.push({ id: f.id, name: f.name, a: rand(), r: 0.97, pulled: false, hold: 0 }); });
-    (o.ghosts || []).forEach(function(g){ if(g && ghostAt(g.trace, 0)) sim.ghosts.push(g); });
+    (o.ghosts || []).forEach(function(g){ if(g && validTrace(g.trace)) sim.ghosts.push(g); });
     record(sim);
     return sim;
   }
@@ -88,7 +91,7 @@
           if(!p.touch){ p.touch = true; add('bump', i);
             if(Math.abs(me.v - p.v) > 0.5 * c.vmax && rand() < fallChance(c, me)){ knockDown(sim); me.downT = t; add('fall'); break; }
             me.v *= 0.6; }
-          p.a += (me.a <= p.a ? 1 : -1) * (body2 - d) / (2 * Math.PI * Math.max(0.1, p.r));   // on le pousse hors de soi
+          p.a += (frac(p.a - me.a) < 0.5 ? 1 : -1) * (body2 - d) / (2 * Math.PI * Math.max(0.1, p.r));   // on le pousse hors de soi
         } else p.touch = false;
       }
     }
@@ -116,12 +119,16 @@
     return ev;
   }
 
+  // tempo arrivé pendant la course (écoute de l'extrait plus lente que le décompte) : battements comptés à partir de là
+  function setBpm(sim, bpm){ if(sim.bpm || !(bpm > 0) || sim.over) return false;
+    sim.bpm = bpm; sim.beats = sim.beatBase = Math.floor((sim.t + 1e-6) / (60000 / bpm)); return true; }
+
   // score sur 100 : tours, relevés, potes attirés, secondes au milieu, rythme (0 à 1)
   function score(st, c){ var w = (c || DEFAULTS).pts;
     return Math.min(100, Math.round(st.laps * w.lap + st.lifts * w.lift + st.pulls * w.pull + st.middleS * w.middleS + st.rhythm * w.rhythm)); }
   function result(sim){
     var st = { laps: sim.me.laps, lifts: sim.lifts, pulls: sim.pulls, middleS: Math.round(sim.middleN / HZ),
-      rhythm: sim.bpm ? (sim.beats ? sim.beatHits / sim.beats : 0) : (sim.n ? sim.groove / sim.n : 0) }, k = sim.cfg.circle;
+      rhythm: sim.bpm ? (sim.beats > sim.beatBase ? sim.beatHits / (sim.beats - sim.beatBase) : 0) : (sim.n ? sim.groove / sim.n : 0) }, k = sim.cfg.circle;
     return { score: score(st, sim.cfg), circle: st.laps * k.lap + st.lifts * k.lift + st.pulls * k.pull, trace: sim.trace, stats: st };
   }
 
@@ -137,7 +144,7 @@
     return ev;
   }
 
-  var PitSim = { DEFAULTS: DEFAULTS, HZ: HZ, create: create, step: step, advance: advance, ghostAt: ghostAt, score: score, result: result,
+  var PitSim = { DEFAULTS: DEFAULTS, HZ: HZ, create: create, step: step, advance: advance, ghostAt: ghostAt, score: score, result: result, setBpm: setBpm,
     knockDown: knockDown, place: place, forceNpcDown: forceNpcDown, dist: dist };
   if(typeof module !== 'undefined' && module.exports) module.exports = PitSim; else window.PitSim = PitSim;
 })();

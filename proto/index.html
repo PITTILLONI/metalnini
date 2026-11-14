@@ -4113,6 +4113,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.pitJoin(id).then(function(st){ pitShow(st); loadPits(); }, function(e){ toast(esc(e.message)); });
   }
   function pitShow(st){
+    if(window.PitGame) loadLib(PIXI_LIB, 'PIXI').catch(function(){});   // PixiJS chargé dès la salle d'attente : « Démarrer » ne l'attend pas
     if(!pit || pit.id !== st.id) pitIn.innerHTML = '';
     pit = st; pitEl.hidden = false;
     clearInterval(pitTimer); clearInterval(pitSync);
@@ -4189,13 +4190,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(pa.getAttribute('data-sig') !== ps){ pa.innerHTML = fosseAdd(runners); pa.setAttribute('data-sig', ps); bindFosseAdd(pa); }
     phaseIn(pitIn, 'lobby-' + st.id + (ran ? '-ran' : ''));
   }
-  // ma course : le nouveau jeu (PixiJS, fosse/pit-view.js) si la bibliothèque se charge, sinon l'ancienne course
+  // ma course : le nouveau jeu (PixiJS, fosse/pit-view.js) si la bibliothèque est déjà là, sinon l'ancienne course
+  // (on n'attend jamais le téléchargement : l'horloge du serveur part avec pitRunStart)
   function pitRunGo(){
     var b = document.getElementById('pit-start'); b.disabled = true;
     ONLINE.pitRunStart(pit.id).then(function(st){
       pit = st;
-      if(!window.PitGame || !window.PitSim) return pitRunLegacy(st);
-      loadLib(PIXI_LIB, 'PIXI').then(function(P){ pitRunGame(st, P); }, function(){ pitRunLegacy(st); });
+      if(window.PitGame && window.PitSim && window.PIXI) pitRunGame(st, window.PIXI); else pitRunLegacy(st);
     }, function(e){ b.disabled = false; toast(esc(e.message)); });
   }
   var PIXI_LIB = 'https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.js';
@@ -4219,7 +4220,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     var go = pitGo = {id:st.id}; document.body.classList.add('playing');
     pitIn.innerHTML = '<div class="pit-game" id="pit-game"><b class="pit-count num" id="pit-count">3</b></div>';
     var host = document.getElementById('pit-game'), cnt = document.getElementById('pit-count');
-    trackBpm(st.track).then(function(x){ bpm = x; });
+    trackBpm(st.track).then(function(x){ bpm = x; if(x && go.game && go.game.sim) PitSim.setBpm(go.game.sim, x); });   // tempo en retard : compté à partir de là
     pop(cnt, 2.2);
     go.tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); pop(cnt, 2.2); return; }
       clearInterval(go.tick); if(pitGo !== go) return; cnt.remove(); buzz(20); pitTrack(st.track);

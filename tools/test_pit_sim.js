@@ -103,5 +103,17 @@ const stt = { anchor:{ x:100, y:300 }, point:{ x:100, y:210 } };
 PitGame.anchorOn(stt, { x:300, y:500 }); const in3 = PitGame.inputFrom(stt.anchor, stt.point);
 check('pouce levé puis reposé ailleurs : ancre recalée, pas de saut', in3.throttle === 0 && in3.lateral === 0 && stt.down === true);
 
+// ---------- Relecture finale ----------
+const badTr = { v:1, hz:10, p:[[0, 70, 0], [1, 70, 0], null], e:[] };
+let thrown = null; s = fresh({ ghosts:[{ id:'bad', trace:badTr }] }); PitSim.knockDown(s);
+try { run(s, IDLE, 1); } catch(e){ thrown = e; }
+check('fantôme : trace abîmée (point null) ignorée, pas d\'erreur', !thrown && s.ghosts.length === 0);
+s = PitSim.create({ seed:1, runS:40, cfg:{ npc:1, npcFallPerS:0, fallBase:0, fallTired:0 } }); s.me.a = 5; PitSim.place(s, 0, 0.01, 0.7); s.npcs[0].v = 0; s.me.v = 1.2;
+PitSim.step(s, GAS);
+check('bousculade après plusieurs tours : le coureur devant est poussé en avant', s.npcs[0].a > 0.01);
+s = fresh({ runS:4, bpm:null }); check('tempo arrivé avant le premier battement : pris en compte', PitSim.setBpm(s, 120) === true && s.bpm === 120);
+s = fresh({ runS:4, bpm:null }); run(s, GAS, 1); const late = PitSim.setBpm(s, 120); run(s, GAS, 1);
+check('tempo arrivé en cours de route : battements comptés à partir de là', late === true && s.beats - s.beatBase === 2 && PitSim.result(s).stats.rhythm === 1);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);
