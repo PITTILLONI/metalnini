@@ -558,6 +558,39 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('pit-claim').click(); await sleep(60);
   check('circle pit : fin, points récupérés, écran fermé', pitClaimed === 'p1' && d9.getElementById('pit').hidden);
 
+  // 18 ter. Circle pit, nouveau moteur : PixiJS présent → PitGame lancé avec fantômes et potes ; fin, pote attiré, ancien serveur
+  const tr9 = { v:1, hz:10, p:[[0, 70, 0], [100, 70, 0]], e:[] };
+  const pit2 = { id:'p2', track:'morello', ends_at:pitEnd, over:false, host:false, host_name:'Ghosty', in:true, rewarded:true, claimed:false, rps:.35, run_s:40, circle:3, game:{ npc:12 },
+    runners:[{ id:'g1', name:'Ghosty', score:60, trace:tr9 }, { id:'g2', name:'Vieux', score:50, trace:null }, { id:'u1', name:'Moi', score:null, me:true }], tier:{ runners:2, aim:55, size:0, aim_tier:0, size_label:'Petit cercle', aim_label:'Brouillon', points:1 } };
+  const pit2Copy = () => JSON.parse(JSON.stringify(pit2));
+  let gameOpts = null, gameStopped = 0, finishArgs = [], call9 = null;
+  w9.PIXI = {}; w9.PitSim = {}; w9.PitGame = { start: (host, o) => { gameOpts = o; return { stop: () => { gameStopped++; }, ready: Promise.resolve() }; } };
+  fake9.pitFeed = async () => ({ live:[{ id:'p2', name:'Ghosty', track:'morello', ends_at:pitEnd, runners:2, in:true, ran:false }], done:[], opened_today:false, duration:900, run_s:40 });
+  fake9.pitJoin = async () => pit2Copy(); fake9.pitRunStart = async () => pit2Copy();
+  fake9.pitRunFinish = async (id, sc, tr, ci) => { finishArgs.push([id, sc, tr, ci]); if(tr && finishArgs.length === 1 && w9.__oldServer) throw new Error('function pit_run_finish(uuid, integer, jsonb, integer) does not exist'); pit2.runners[2].score = sc; return pit2Copy(); };
+  fake9.fosseCall = async (k, id, to) => { call9 = k + '|' + id + '|' + to; return true; };
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
+  d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
+  d9.getElementById('pit-start').click(); await sleep(3600);
+  check('circle pit : nouveau jeu lancé avec fantômes et potes', !!gameOpts && gameOpts.runS === 40 && gameOpts.ghosts.length === 1 && gameOpts.ghosts[0].id === 'g1' && gameOpts.cfg.npc === 12
+    && gameOpts.friends.length === 1 && gameOpts.friends[0].id === 'f1' && typeof gameOpts.seed === 'number' && !d9.getElementById('pit-mark'));
+  gameOpts.onPull('f1'); await sleep(20);
+  check('circle pit : pote attiré → Rameuter', call9 === 'pit|p2|f1');
+  gameOpts.onEnd({ score:72, circle:5, trace:{ v:1, hz:10, p:[], e:[] }, stats:{} }); await sleep(60);
+  check('circle pit : fin du nouveau jeu, score, trace et cercle envoyés', finishArgs.length === 1 && finishArgs[0][1] === 72 && finishArgs[0][3] === 5 && !!finishArgs[0][2] && /Ta course : <b>72<\/b>/.test(d9.getElementById('toast') ? d9.getElementById('toast').innerHTML : d9.body.innerHTML));
+  // ancien serveur : la fonction à 4 arguments manque → second envoi avec le score seul
+  pit2.runners[2].score = null; finishArgs = []; w9.__oldServer = true; gameOpts = null;
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
+  d9.getElementById('pit-start').click(); await sleep(3600);
+  gameOpts.onEnd({ score:40, circle:1, trace:{ v:1, hz:10, p:[], e:[] }, stats:{} }); await sleep(60);
+  check('circle pit : ancien serveur → score renvoyé seul', finishArgs.length === 2 && finishArgs[1][1] === 40 && finishArgs[1][2] === undefined && pit2.runners[2].score === 40);
+  // sans PitGame : l'ancienne course démarre
+  pit2.runners[2].score = null; delete w9.PitGame; finishArgs = [];
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
+  d9.getElementById('pit-start').click(); await sleep(60);
+  check('circle pit : repli sans PixiJS → ancienne course', d9.getElementById('pit-count').textContent === '3' && !!d9.getElementById('pit-mark'));
+  d9.getElementById('pit-x').click(); await sleep(20); delete w9.PIXI; delete w9.PitSim;
+
   // 18 quater. Pogo : un pote à terre à relever, entrer en misant, danser, ramassage, mission récupérée
   let pogoJoined = 0, pogoRun = null, pogoLifted = null, pogoClaimed = 0, pogoMission = null; const pogoEnd = new Date(Date.now() + 500e3).toISOString();
   const pogoSt = { id:'g1', rarity:'commune', track:'morello', ends_at:pogoEnd, over:false, cancelled:false, host:false, host_name:'Riffeuse', heat:2, run_s:1, hits:4, min_players:3,

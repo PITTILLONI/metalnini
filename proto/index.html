@@ -260,7 +260,9 @@
   .pit-song{font:600 .82rem/1.3 var(--mono); color:var(--muted)} .pit-song b{color:var(--text)}
   .pit-ring{position:relative; width:min(78vw, 300px); aspect-ratio:1; margin:8px auto 10px}
   .pit-ring::before{content:""; position:absolute; inset:9%; border-radius:50%; border:2px dashed rgba(244,178,67,.35)}
-  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite reverse}   /* un vrai pit tourne dans le sens inverse des aiguilles */
+  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite reverse}
+  #pit-lobby .pit-ring{width:min(calc(78vw * var(--pit-grow, 1)), calc(300px * var(--pit-grow, 1)), 92vw); transition:width .6s}   /* le cercle grossit sans déborder */
+  .pit-game{position:fixed; inset:0; display:grid; place-items:center; background:var(--ink)}   /* nouveau jeu : plein écran, canevas posé par fosse/pit-view.js */   /* un vrai pit tourne dans le sens inverse des aiguilles */
   .pit-slot{position:absolute; left:50%; top:50%; width:0; height:0; transform:rotate(var(--a)) translateY(calc(min(78vw, 300px) / -2 + 26px)) rotate(calc(-1 * var(--a)))}
   .pit-slot .pit-av{position:absolute; left:-20px; top:-20px; animation:pit-spin var(--spin, 14s) linear infinite}   /* le visage reste droit pendant que le cercle tourne */
   .pit-slot .pit-av.me{left:-26px; top:-26px}
@@ -2003,6 +2005,9 @@
 
 <script src="cards/manifest.js"></script>
 <script src="sounds/manifest.js"></script>
+<script src="fosse/pit-sim.js"></script>
+<script src="fosse/pit-beat.js"></script>
+<script src="fosse/pit-view.js"></script>
 <script type="module">
 // Connexion au serveur : joueur anonyme + pseudo, tirage et collection côté serveur. Clé publique uniquement.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm';   // version figée (même que l'admin)
@@ -4176,6 +4181,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('pit-note').textContent = ran ? 'Ta course est faite. Rameute du monde : chaque course compte pour tout le cercle.' :
       'Fais tourner le pit : dessine des cercles du doigt pendant ' + st.run_s + ' s, à la vitesse du cercle. Chaque course le fait accélérer.';
     var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', (1 / Math.max(.1, st.rps)).toFixed(1) + 's');
+    ob.parentNode.style.setProperty('--pit-grow', (1 + Math.min(.25, (st.circle || 0) / 200)).toFixed(3));   // le cercle grossit avec les courses
     var sig = runners.map(function(r){ return r.id + ':' + (r.score == null ? '' : r.score); }).join();
     if(ob.getAttribute('data-sig') !== sig){ ob.innerHTML = orbit; ob.setAttribute('data-sig', sig); hydrateAvatars(ob); }
     document.getElementById('pit-gauges').innerHTML = gauges;
@@ -4183,12 +4189,60 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(pa.getAttribute('data-sig') !== ps){ pa.innerHTML = fosseAdd(runners); pa.setAttribute('data-sig', ps); bindFosseAdd(pa); }
     phaseIn(pitIn, 'lobby-' + st.id + (ran ? '-ran' : ''));
   }
-  // ma course : 3, 2, 1, puis je fais tourner le pit : je dessine des cercles du doigt, dans le sens inverse des aiguilles,
-  // à la vitesse du cercle (zone de la jauge) ; la foule court à ma vitesse ; précision = part du temps passée dans la zone
+  // ma course : le nouveau jeu (PixiJS, fosse/pit-view.js) si la bibliothèque se charge, sinon l'ancienne course
   function pitRunGo(){
     var b = document.getElementById('pit-start'); b.disabled = true;
     ONLINE.pitRunStart(pit.id).then(function(st){
-      pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
+      pit = st;
+      if(!window.PitGame || !window.PitSim) return pitRunLegacy(st);
+      loadLib(PIXI_LIB, 'PIXI').then(function(P){ pitRunGame(st, P); }, function(){ pitRunLegacy(st); });
+    }, function(e){ b.disabled = false; toast(esc(e.message)); });
+  }
+  var PIXI_LIB = 'https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.js';
+  var TRACK_BPM = {};   // tempo saisi à la main (identifiant du morceau : BPM) quand l'extrait ne se laisse pas écouter
+  // tempo de l'extrait : saisi, sinon écouté (Web Audio), null si rien
+  function trackBpm(id){
+    if(TRACK_BPM[id]) return Promise.resolve(TRACK_BPM[id]);
+    return track(id).then(function(t){ var Ctx = window.AudioContext || window.webkitAudioContext; if(!t || !window.PitBeat || !window.fetch || !Ctx) return null;
+      return fetch(t.url).then(function(r){ return r.arrayBuffer(); }).then(function(buf){ var ctx = new Ctx();
+        return new Promise(function(ok, ko){ ctx.decodeAudioData(buf, ok, ko); }).then(function(a){ try{ ctx.close(); }catch(_){} return PitBeat.detect(a.getChannelData(0), a.sampleRate); }); }); })
+      .catch(function(){ return null; });
+  }
+  // potes de l'app qui ne sont pas dans ce pit (6 au plus) : ils attendent au bord, on peut les attirer
+  function pitGameFriends(st){ var here = {}; st.runners.forEach(function(r){ here[r.id] = true; });
+    return friendsList.filter(function(f){ return !here[f.friend_id]; }).slice(0, 6).map(function(f){ return {id:f.friend_id, name:f.username || 'Pote'}; }); }
+  // nouveau jeu : 3, 2, 1 (le tempo s'écoute pendant ce temps), puis PitGame ; échec de PixiJS = ancienne course
+  function pitRunGame(st, P){
+    var me = st.runners.filter(function(r){ return r.me; })[0] || {}, key = String(st.id) + (me.id || ''), seed = 0, i, n = 3, bpm = null;
+    for(i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) >>> 0;
+    var ghosts = st.runners.filter(function(r){ return !r.me && r.trace; }).map(function(r){ return {id:r.id, name:r.name, avatar:r.avatar, trace:r.trace}; });
+    var go = pitGo = {id:st.id}; document.body.classList.add('playing');
+    pitIn.innerHTML = '<div class="pit-game" id="pit-game"><b class="pit-count num" id="pit-count">3</b></div>';
+    var host = document.getElementById('pit-game'), cnt = document.getElementById('pit-count');
+    trackBpm(st.track).then(function(x){ bpm = x; });
+    pop(cnt, 2.2);
+    go.tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); pop(cnt, 2.2); return; }
+      clearInterval(go.tick); if(pitGo !== go) return; cnt.remove(); buzz(20); pitTrack(st.track);
+      go.game = PitGame.start(host, {PIXI:P, seed:seed, runS:st.run_s, cfg:st.game || {}, me:{name:state.username || 'Moi'}, ghosts:ghosts, friends:pitGameFriends(st), bpm:bpm,
+        reduce:reduce, buzz:buzz, snd:snd, onPull:function(fid){ ONLINE.fosseCall('pit', st.id, fid).catch(function(){}); },
+        onEnd:function(r){ if(pitGo === go) pitRunEnd(r.score, r.trace, r.circle); }});
+      go.game.ready.catch(function(){ if(pitGo !== go) return; go.game.stop(); go.game = null; pitRunLegacy(st); });
+    }, 700);
+  }
+  // banc d'essai (?pitbanc) : course hors ligne, 3 fantômes rejoués et 2 potes au bord, pour les captures et le réglage sur iPhone
+  if(/[?&]pitbanc\b/.test(location.search) && window.PitGame) loadLib(PIXI_LIB, 'PIXI').then(function(P){
+    var ghosts = [1, 2, 3].map(function(k){ var g = PitSim.create({seed:k, runS:40, cfg:{npc:0}}), i;
+      for(i = 0; i < 40 * PitSim.HZ; i++) PitSim.step(g, {throttle:.6 + .1 * k, lateral:Math.sin(i / 300 + k) * .6, tap:true});
+      return {id:'g' + k, name:['Riffeuse', 'Vega', 'Léa'][k - 1], trace:PitSim.result(g).trace}; });
+    var host = document.createElement('div'); host.className = 'pit-game'; document.body.appendChild(host); document.body.classList.add('playing');
+    var run = function(){ PitGame.start(host, {PIXI:P, seed:Date.now() >>> 0, runS:40, cfg:{}, me:{name:'Moi'}, ghosts:ghosts, friends:[{id:'f1', name:'Riffeuse'}, {id:'f2', name:'Vega'}],
+      bpm:120, reduce:reduce, buzz:buzz, snd:snd, onEnd:function(r){ toast('Banc : <b>' + r.score + '</b> points, +' + r.circle + ' au cercle.'); run(); }}); };
+    run();
+  });
+  // ancienne course : 3, 2, 1, puis je fais tourner le pit : je dessine des cercles du doigt, dans le sens inverse des aiguilles,
+  // à la vitesse du cercle (zone de la jauge) ; la foule court à ma vitesse ; précision = part du temps passée dans la zone
+  function pitRunLegacy(st){
+      var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
       var target = .5 + rps * 1.5;   // tours de doigt par seconde visés : de 0,95 (premier coureur) à 2 (cercle au plus vite)
       pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, ang:null, lastMove:0, v:0, spin:0, laps:0, combo:0, lapOk:true, dust:0}; document.body.classList.add('playing');
       pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><img class="pit-bg" src="fosse/pit.jpg" alt=""><div class="pit-orbit-c">' + crowdHtml(10).replace('class="crowd"', 'class="crowd pit-runners"') + '</div>' +
@@ -4242,15 +4296,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         })(go.t0);
       }, 700);
       go.tick = tick;
-    }, function(e){ b.disabled = false; toast(esc(e.message)); });
   }
-  function pitRunEnd(score){
+  // fin de course : score (et, nouveau jeu, trace et part du cercle) ; serveur pas encore à jour : on renvoie le score seul
+  function pitRunEnd(score, trace, circle){
     var id = pitGo.id; pitStop(); snd('reward'); pitIn.innerHTML = '';
-    ONLINE.pitRunFinish(id, score).then(function(st){ if(pit && pit.id === id){ pit = st; pitPaint(); } toast('Ta course : <b>' + score + ' %</b> de précision.'); },
-      function(e){ toast(esc(e.message)); pitRefresh(); });
+    var done = function(st){ if(pit && pit.id === id){ pit = st; pitPaint(); }
+      toast(trace ? 'Ta course : <b>' + score + '</b> points' + (circle ? ', +' + circle + ' au cercle.' : '.') : 'Ta course : <b>' + score + ' %</b> de précision.'); };
+    var fail = function(e){ toast(esc(e.message)); pitRefresh(); };
+    ONLINE.pitRunFinish(id, score, trace, circle).then(done, function(e){ if(!trace) return fail(e); ONLINE.pitRunFinish(id, score).then(done, fail); });
   }
   // fin ou abandon de ma course : animation, décompte et extrait coupés
-  function pitStop(){ crowdStop(pitIn); document.body.classList.remove('playing'); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
+  function pitStop(){ crowdStop(pitIn); document.body.classList.remove('playing'); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); if(pitGo.game) pitGo.game.stop(); pitGo = null; } stopListen(); }
   // l'extrait du morceau du pit pendant la course, musique du jeu coupée
   function pitTrack(id){
     var go = pitGo;
