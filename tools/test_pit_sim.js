@@ -91,5 +91,17 @@ let seed4 = 7; const noise = new Float32Array(10 * SR).map(() => { seed4 ^= seed
 check('tempo : bruit blanc → null', PitBeat.detect(noise, SR) === null);
 check('tempo : silence → null', PitBeat.detect(new Float32Array(10 * SR), SR) === null);
 
+// ---------- Task 6 : commandes de l'affichage ----------
+const vm = require('vm'), fs = require('fs'), box = { window:{}, Math, performance:{ now:() => 0 } };
+vm.runInNewContext(fs.readFileSync(ROOT + 'pit-view.js', 'utf8'), box);
+const PitGame = box.window.PitGame;
+const in1 = PitGame.inputFrom({ x:100, y:300 }, { x:145, y:210 });
+check('commandes : pouce vers le haut = gaz, côté = latéral', Math.abs(in1.throttle - 1) < 1e-9 && Math.abs(in1.lateral - 0.5) < 1e-9);
+const in2 = PitGame.inputFrom({ x:100, y:300 }, { x:0, y:400 });
+check('commandes : vers le bas = pas de gaz, bornes respectées', in2.throttle === 0 && in2.lateral === -1);
+const stt = { anchor:{ x:100, y:300 }, point:{ x:100, y:210 } };
+PitGame.anchorOn(stt, { x:300, y:500 }); const in3 = PitGame.inputFrom(stt.anchor, stt.point);
+check('pouce levé puis reposé ailleurs : ancre recalée, pas de saut', in3.throttle === 0 && in3.lateral === 0 && stt.down === true);
+
 console.log(fails ? fails + ' échec(s)' : 'tous OK');
 process.exit(fails ? 1 : 0);
