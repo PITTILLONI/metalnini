@@ -84,7 +84,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('gelotte', 'Björn Gelotte', 'In Flames', 'Colony', 'LXXXVII', array['guitare']::text[], 'Death metal mélodique'),
   ('canizaro', 'Ronnie Canizaro', 'Born of Osiris', 'Machine', 'LXXXIII', array['chant']::text[], 'Deathcore progressif'),
   ('shomo', 'Caleb Shomo', 'Beartooth', 'In Between', 'LXXXIV', array['chant']::text[], 'Metalcore'),
-  ('lindberg', 'Tomas Lindberg', 'At the Gates', 'Blinded by Fear', 'LXXXV', array['chant']::text[], 'Death metal mélodique')
+  ('lindberg', 'Tomas Lindberg', 'At the Gates', 'Blinded by Fear', 'LXXXV', array['chant']::text[], 'Death metal mélodique'),
+  ('neige', 'Neige', 'Alcest', 'Autre Temps', 'LXXXIX', array['chant', 'guitare']::text[], 'Blackgaze')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -502,7 +503,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('lindberg', 'rare', 'cards/lindberg-rare.jpg'),
   ('lindberg', 'holo', 'cards/lindberg-holo.jpg'),
   ('lindberg', 'signature', 'cards/lindberg-signature.jpg'),
-  ('lindberg', 'legendaire', 'cards/lindberg-legendaire.jpg')
+  ('lindberg', 'legendaire', 'cards/lindberg-legendaire.jpg'),
+  ('neige', 'commune', 'cards/neige-commune.jpg'),
+  ('neige', 'rare', 'cards/neige-rare.jpg'),
+  ('neige', 'holo', 'cards/neige-holo.jpg'),
+  ('neige', 'signature', 'cards/neige-signature.jpg'),
+  ('neige', 'legendaire', 'cards/neige-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -623,6 +629,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'canizaro'),
   ('all', 'shomo'),
   ('all', 'lindberg'),
+  ('all', 'neige'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -663,6 +670,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('alternatif', 'reuno'),
   ('alternatif', 'chino'),
   ('alternatif', 'buckethead'),
+  ('alternatif', 'neige'),
   ('poppunk', 'blink182'),
   ('poppunk', 'hoppus'),
   ('poppunk', 'hayley'),
@@ -766,6 +774,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'canizaro'),
   ('voix', 'shomo'),
   ('voix', 'lindberg'),
+  ('voix', 'neige'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -793,6 +802,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('guitaristes', 'flynn'),
   ('guitaristes', 'buckethead'),
   ('guitaristes', 'gelotte'),
+  ('guitaristes', 'neige'),
   ('bassistes', 'hoppus'),
   ('bassistes', 'lemmy'),
   ('bassistes', 'araya'),
@@ -919,6 +929,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'canizaro'),
   ('all', 'shomo'),
   ('all', 'lindberg'),
+  ('all', 'neige'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -959,6 +970,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('alternatif', 'reuno'),
   ('alternatif', 'chino'),
   ('alternatif', 'buckethead'),
+  ('alternatif', 'neige'),
   ('poppunk', 'blink182'),
   ('poppunk', 'hoppus'),
   ('poppunk', 'hayley'),
@@ -1062,6 +1074,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'canizaro'),
   ('voix', 'shomo'),
   ('voix', 'lindberg'),
+  ('voix', 'neige'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -1089,6 +1102,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('guitaristes', 'flynn'),
   ('guitaristes', 'buckethead'),
   ('guitaristes', 'gelotte'),
+  ('guitaristes', 'neige'),
   ('bassistes', 'hoppus'),
   ('bassistes', 'lemmy'),
   ('bassistes', 'araya'),

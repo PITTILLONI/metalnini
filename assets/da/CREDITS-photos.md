@@ -82,3 +82,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | canizaro | [Born_of_Osiris_-_Reload_Festival_2024_07.jpg](https://commons.wikimedia.org/wiki/File:Born_of_Osiris_-_Reload_Festival_2024_07.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |
 | shomo | [Caleb_Shomo_-_Reload_Festival_2018_13_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Caleb_Shomo_-_Reload_Festival_2018_13_%28cropped%29.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |
 | lindberg | [Tomas_Lindberg_2022_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Tomas_Lindberg_2022_%28cropped%29.jpg) | S. Bollmann | Attribution |
+| neige | [Alcest,_Stéphane_„Neige“_Paut_at_Party.San_Metal_Open_Air_2013_05_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Alcest,_St%C3%A9phane_%E2%80%9ENeige%E2%80%9C_Paut_at_Party.San_Metal_Open_Air_2013_05_(cropped).jpg) | Jonas Rogowski | CC BY-SA 3.0 |

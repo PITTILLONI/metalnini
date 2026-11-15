@@ -172,6 +172,8 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **lindberg** — Il fonde At the Gates à Göteborg en 1990, après le groupe Grotesque. Slaughter of the Soul (1995), avec Blinded by Fear, devient un modèle du death metal mélodique, puis le groupe se sépare en 1996. Revenu sur scène en 2008, il enregistre encore At War with Reality (2014) et The Nightmare of Being (2021). Il chante aussi dans Disfear et Lock Up. Il meurt d'un cancer en septembre 2025, à 52 ans.
 
+**neige** — Il fonde Alcest en 2000, d'abord en trio de black metal, puis en fait son projet personnel. Souvenirs d'un autre monde (2007) mêle black metal et shoegaze et ouvre la voie au blackgaze. Suivent Les Voyages de l'âme (2012), avec Autre Temps, Kodama (2016) et Les Chants de l'Aurore (2024), avec le batteur Winterhalter. Il chante en français, d'une voix claire, l'enfance et un monde rêvé.
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
