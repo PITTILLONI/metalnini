@@ -84,7 +84,8 @@ insert into public.musicians (id, name, band, arcana_title, arcana_number, instr
   ('gelotte', 'Björn Gelotte', 'In Flames', 'Colony', 'LXXXVII', array['guitare']::text[], 'Death metal mélodique'),
   ('canizaro', 'Ronnie Canizaro', 'Born of Osiris', 'Machine', 'LXXXIII', array['chant']::text[], 'Deathcore progressif'),
   ('shomo', 'Caleb Shomo', 'Beartooth', 'In Between', 'LXXXIV', array['chant']::text[], 'Metalcore'),
-  ('lindberg', 'Tomas Lindberg', 'At the Gates', 'Blinded by Fear', 'LXXXV', array['chant']::text[], 'Death metal mélodique')
+  ('lindberg', 'Tomas Lindberg', 'At the Gates', 'Blinded by Fear', 'LXXXV', array['chant']::text[], 'Death metal mélodique'),
+  ('moody', 'Ivan Moody', 'Five Finger Death Punch', 'The Bleeding', 'LXXXVIII', array['chant']::text[], 'Groove metal')
 on conflict (id) do update set name = excluded.name, band = excluded.band, arcana_title = excluded.arcana_title, arcana_number = excluded.arcana_number, instruments = excluded.instruments, subgenre = excluded.subgenre;
 
 insert into public.cards (musician_id, rarity, image_path) values
@@ -502,7 +503,12 @@ insert into public.cards (musician_id, rarity, image_path) values
   ('lindberg', 'rare', 'cards/lindberg-rare.jpg'),
   ('lindberg', 'holo', 'cards/lindberg-holo.jpg'),
   ('lindberg', 'signature', 'cards/lindberg-signature.jpg'),
-  ('lindberg', 'legendaire', 'cards/lindberg-legendaire.jpg')
+  ('lindberg', 'legendaire', 'cards/lindberg-legendaire.jpg'),
+  ('moody', 'commune', 'cards/moody-commune.jpg'),
+  ('moody', 'rare', 'cards/moody-rare.jpg'),
+  ('moody', 'holo', 'cards/moody-holo.jpg'),
+  ('moody', 'signature', 'cards/moody-signature.jpg'),
+  ('moody', 'legendaire', 'cards/moody-legendaire.jpg')
 on conflict do nothing;
 
 insert into public.binders (id, kind, label, sort) values
@@ -623,6 +629,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('all', 'canizaro'),
   ('all', 'shomo'),
   ('all', 'lindberg'),
+  ('all', 'moody'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -701,6 +708,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('thrash', 'lombardo'),
   ('thrash', 'blythe'),
   ('thrash', 'flynn'),
+  ('thrash', 'moody'),
   ('grunge', 'cobain'),
   ('grunge', 'cornell'),
   ('grunge', 'staley'),
@@ -766,6 +774,7 @@ insert into public.binder_members (binder_id, musician_id) values
   ('voix', 'canizaro'),
   ('voix', 'shomo'),
   ('voix', 'lindberg'),
+  ('voix', 'moody'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),
@@ -919,6 +928,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('all', 'canizaro'),
   ('all', 'shomo'),
   ('all', 'lindberg'),
+  ('all', 'moody'),
   ('metalcore', 'knocked-loose'),
   ('metalcore', 'isaac-hale'),
   ('metalcore', 'spiritbox'),
@@ -997,6 +1007,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('thrash', 'lombardo'),
   ('thrash', 'blythe'),
   ('thrash', 'flynn'),
+  ('thrash', 'moody'),
   ('grunge', 'cobain'),
   ('grunge', 'cornell'),
   ('grunge', 'staley'),
@@ -1062,6 +1073,7 @@ delete from public.binder_members where (binder_id, musician_id) not in (values
   ('voix', 'canizaro'),
   ('voix', 'shomo'),
   ('voix', 'lindberg'),
+  ('voix', 'moody'),
   ('batteurs', 'blink182'),
   ('batteurs', 'duplantier'),
   ('batteurs', 'jordison'),

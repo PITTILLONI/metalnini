@@ -82,3 +82,4 @@ https://x.com/paintedmoments_/status/2099923642205315490 <---- this is the link 
 | canizaro | [Born_of_Osiris_-_Reload_Festival_2024_07.jpg](https://commons.wikimedia.org/wiki/File:Born_of_Osiris_-_Reload_Festival_2024_07.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |
 | shomo | [Caleb_Shomo_-_Reload_Festival_2018_13_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Caleb_Shomo_-_Reload_Festival_2018_13_%28cropped%29.jpg) | Frank Schwichtenberg | CC BY-SA 4.0 |
 | lindberg | [Tomas_Lindberg_2022_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Tomas_Lindberg_2022_%28cropped%29.jpg) | S. Bollmann | Attribution |
+| moody | [Five_Finger_Death_Punch_-_2017153185638_2017-06-02_Rock_am_Ring_-_Sven_-_1D_X_II_-_0626_-_B70I6545_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Five_Finger_Death_Punch_-_2017153185638_2017-06-02_Rock_am_Ring_-_Sven_-_1D_X_II_-_0626_-_B70I6545_%28cropped%29.jpg) | Sven Mandel | CC BY-SA 4.0 |
