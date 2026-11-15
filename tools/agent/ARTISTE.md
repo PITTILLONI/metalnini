@@ -54,7 +54,7 @@ Traiter les demandes une par une. Une demande ne doit jamais rester « en prépa
 
 ## 3. La carte
 - Identifiant : nom de famille en minuscules sans accents (`durst`), ou prénom-nom s'il est pris.
-- Numéro d'arcane : le chiffre romain suivant le plus grand de `CARDS` (hors cartes perso et maudites).
+- Numéro d'arcane : le chiffre romain suivant le plus grand de `CARDS` (hors cartes perso et maudites), **en comptant aussi les branches `artiste/*` encore ouvertes** (`git fetch origin`, puis chercher les numéros dans `git diff origin/main...origin/artiste/<x> -- proto/index.html` pour chacune) : deux demandes préparées en même temps ne doivent jamais prendre le même numéro.
 - Titre d'arcane : le morceau le plus emblématique de l'artiste (celui de l'extrait audio).
 - Sous-genre : très précis (le public est expert) ; classeur de style le plus juste parmi ceux de `BINDERS`, plus les classeurs d'instrument (Les voix, batteurs, guitaristes, bassistes). En cas d'hésitation, le signaler dans la note.
 - Photo de référence : photo libre de Wikimedia Commons, visage net et reconnaissable, récente de préférence ; l'URL directe `upload.wikimedia.org`. Créditer dans `assets/da/CREDITS-photos.md` (même tableau : id, fichier lié, auteur, licence). Pas de photo libre : statut `review`, note qui le dit.
@@ -77,7 +77,7 @@ Sur le modèle exact des artistes déjà présents (par exemple `durst`) :
 - `proto/index.html` : `CARDS` (fin de liste), `BINDERS` (style et instruments), `MOVES` (titre court et une phrase : un fait marquant, vrai et sourçable), `BIOS` (une phrase : rôle, groupe, style, ville, année), `BIOS_LONG` (3 à 4 phrases factuelles : fondation, albums et morceaux clés, ce qui le distingue), `TRACKS` (identifiant iTunes du morceau du titre d'arcane, version studio : `https://itunes.apple.com/search?term=<artiste+titre>&entity=song&country=fr`, vérifier `trackName`, `artistName` et que `previewUrl` existe).
 - `ios/Packages/MetalniniKit/Sources/MetalniniKit/Catalog.swift` : musicien et classeurs, puis `python3 tools/gen_seed.py` (ne pas l'appliquer).
 - `export/bios-artistes-a-relire.md` : la bio longue, sur le modèle des précédentes.
-- `CLAUDE.md`, section « Où en est le projet » : une ligne datée (artiste, groupe, arcane, titre, sous-genre, classeurs ; « préparé par l'agent, bio à relire »), et le nombre de musiciens à jour.
+- **Ne pas toucher à `CLAUDE.md`** : chaque branche qui y ajoutait sa ligne entrait en conflit avec les autres et bloquait « Publier ». Le résumé va dans le message de commit et dans la note du statut `ready` (le journal de l'admin les garde).
 
 ## 6. Vérifier, pousser, rendre compte
 - `npm --prefix tools ci` puis `node tools/test_proto.js` : tout OK, aucune erreur JS. Sinon corriger.
