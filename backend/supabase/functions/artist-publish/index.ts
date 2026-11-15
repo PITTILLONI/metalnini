@@ -12,6 +12,24 @@ const gh = (path: string, init: RequestInit = {}) => fetch(REPO + path, { ...ini
 const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, content-type, apikey, x-client-info" };
 const reply = (body: unknown, status = 200) => Response.json(body, { status, headers: cors });
 
+// conflit avec main : reprise automatique par GitHub (.github/workflows/reprise-artiste.yml) ; la branche reprise/<branche>
+// part de main ; si la reprise a échoué, elle porte REPRISE_ECHEC.txt (la raison), qu'on montre puis qu'on efface
+async function reprise(branch: string): Promise<string> {
+  const rep = `reprise/${branch}`;
+  if ((await gh(`/git/ref/heads/${rep}`)).ok) {
+    const f = await gh(`/contents/REPRISE_ECHEC.txt?ref=${encodeURIComponent(rep)}`, { headers: { Accept: "application/vnd.github.raw+json" } });
+    if (!f.ok) return "mise à jour automatique depuis main en cours : reclique « Publier » dans 3 minutes";
+    const why = (await f.text()).trim();
+    await gh(`/git/refs/heads/${rep}`, { method: "DELETE" });
+    return `reprise automatique impossible : ${why}`;
+  }
+  const main = await gh("/git/ref/heads/main");
+  if (!main.ok) return `GitHub ${main.status} : main introuvable`;
+  const c = await gh("/git/refs", { method: "POST", body: JSON.stringify({ ref: `refs/heads/${rep}`, sha: (await main.json()).object.sha }) });
+  if (!c.ok) return `reprise impossible à lancer (GitHub ${c.status})`;
+  return "la branche avait pris du retard sur main : mise à jour automatique lancée, reclique « Publier » dans 3 minutes";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   const caller = createClient(URL, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
@@ -25,7 +43,7 @@ Deno.serve(async (req) => {
 
   // fusion de la branche de l'agent dans main (201 : fusionnée, 204 : déjà dedans)
   const m = await gh("/merges", { method: "POST", body: JSON.stringify({ base: "main", head: j.branch, commit_message: `${j.artist} ajouté (demande de joueurs, préparé par l'agent)` }) });
-  if (m.status === 409) return reply({ error: "conflit avec main : relance la demande pour que l'agent reparte de main" }, 409);
+  if (m.status === 409) return reply({ error: await reprise(j.branch) }, 409);
   if (m.status !== 201 && m.status !== 204) return reply({ error: `GitHub ${m.status} : ${(await m.text()).slice(0, 200)}` }, 502);
 
   // seed de main (rejouable : fiches, cartes, classeurs ; ne touche ni aux collections ni à l'activation)
