@@ -247,6 +247,7 @@
   .bulk-sum{margin:4px 0 14px; font:500 .86rem/1.4 var(--mono); color:var(--muted)} .bulk-sum b{color:var(--text)}
   .bulk-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin:0 0 16px}
   .bulk-grid figure{position:relative; margin:0; opacity:0; transform:translateY(10px) scale(.96); animation:bulk-in .35s ease-out forwards; animation-delay:var(--d)}
+  .bulk-grid button{display:block; width:100%; padding:0; border:0; background:none; cursor:zoom-in; border-radius:8px}
   .bulk-grid img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:8px; border:2px solid var(--rc)}
   .bulk-grid figcaption{margin-top:3px; font:600 .7rem/1.2 var(--mono); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .bulk-grid .count{position:absolute; top:5px; right:5px; padding:2px 7px; border-radius:6px; background:rgba(12,11,10,.88); border:1px solid rgba(235,154,38,.55); color:#fff; font:700 .8rem/1.2 var(--display)}
@@ -1201,12 +1202,12 @@
   .tray .cards button{flex:0 0 auto; width:46px; border:0; padding:0; background:none; cursor:pointer}
   .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc, var(--r-commune))}
   body.placing #v-binder .grid, body.placing #v-binder .matrix{padding-bottom:200px}
-  .flyer{position:fixed; z-index:var(--z-flyer); pointer-events:none; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
+  .flyer{position:fixed; z-index:var(--z-flyer); pointer-events:none; will-change:transform; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
   .flyer img{display:block; width:100%; height:100%; object-fit:cover}
   .slot.landed .img{animation:land .45s cubic-bezier(.2,1.6,.4,1)}
   @keyframes land{0%{transform:scale(1.18)}100%{transform:scale(1)}}
   .slot.landed .img::after{content:""; position:absolute; inset:0; box-shadow:inset 0 0 0 3px var(--gold), 0 0 28px 6px var(--gold); border-radius:8px; animation:ping .8s ease-out forwards}
-  @keyframes ping{to{box-shadow:inset 0 0 0 0 transparent, 0 0 60px 18px transparent}}
+  @keyframes ping{to{opacity:0; transform:scale(1.12)}}
   /* (9) doublons empilés dans le classeur */
   .slot .sw{position:relative; display:block}
   .slot .layers i{position:absolute; inset:0; border-radius:8px; background:#1a1310 var(--li) center/cover; box-shadow:0 3px 8px rgba(0,0,0,.6); border:1px solid rgba(235,154,38,.3)}
@@ -3156,7 +3157,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // une case par carte (musicien et rareté), ×N pour les doublons
     var tiles = []; got.forEach(function(d){ var t = tiles.filter(function(x){ return x.id === d.id && x.r === d.r; })[0]; if(t){ t.n++; t.isNew = t.isNew || d.isNew; } else tiles.push({id:d.id, r:d.r, isNew:d.isNew, n:1}); });
     document.getElementById('bulk-grid').innerHTML = tiles.map(function(d, i){ var c = card(d.id), x = rarity(d.r);
-      return '<figure style="--rc:' + x.color + '; --d:' + Math.min(i, 30) * 60 + 'ms"><img src="' + img(d.id, d.r) + '" alt="' + esc(c.who) + ', ' + x.label + (d.n > 1 ? ', ' + d.n + ' exemplaires' : '') + '" loading="lazy">' + (d.isNew ? '<span class="new">Nouvelle</span>' : '') + (d.n > 1 ? '<span class="count">×' + d.n + '</span>' : '') + '<figcaption>' + esc(c.who) + '</figcaption></figure>'; }).join('');
+      return '<figure style="--rc:' + x.color + '; --d:' + Math.min(i, 30) * 60 + 'ms"><button type="button" data-z="' + i + '" aria-label="Voir en grand"><img src="' + img(d.id, d.r) + '" alt="' + esc(c.who) + ', ' + x.label + (d.n > 1 ? ', ' + d.n + ' exemplaires' : '') + '" loading="lazy"></button>' + (d.isNew ? '<span class="new">Nouvelle</span>' : '') + (d.n > 1 ? '<span class="count">×' + d.n + '</span>' : '') + '<figcaption>' + esc(c.who) + '</figcaption></figure>'; }).join('');
+    // toucher une carte : en grand, avec les flèches vers les autres (on revient ici avant de ranger)
+    var gal = tiles.map(function(d){ return {src:img(d.id, d.r), alt:card(d.id).who + ', ' + rarity(d.r).label}; });
+    [].forEach.call(document.querySelectorAll('#bulk-grid [data-z]'), function(b){ b.onclick = function(){ openZoom(gal, +b.getAttribute('data-z'), b); }; });
+    if(tiles.length) document.getElementById('bulk-sum').innerHTML += '<br><small>Touche une carte pour la voir en grand.</small>';
     if(got.length) snd(rank(got[0].r) >= 3 ? 'reward' : 'gift');
     document.getElementById('bulk-place').hidden = !(state.toPlace || []).length; document.getElementById('bulk-close').hidden = false;
     this.disabled = false;
@@ -5923,7 +5928,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         fl.remove(); finishPlace(k);
         var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]'), up = !!before && rank(r) > rank(before);
         if(dealing){ (!before ? dealLog.fresh : up ? dealLog.up : dealLog.dup).push(k); }
-        if(s2) anim(function(g){ g.fromTo(s2.querySelector('.img'), {scale:1.14}, {scale:1, duration:.6, ease:'elastic.out(1, .45)', clearProps:'transform'}); });
+        // le rebond de la case est fait en CSS (landed, stacked, upgraded) : pas de seconde animation dessus
         if(s2 && !before){ s2.classList.add('landed'); SFX.land(); }
         else if(s2){
           var shown = up ? r : before;
@@ -6168,6 +6173,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function styleTrack(k){ var si = STYLE_INFO[k]; return si && si.play ? si.play.filter(function(id){ return TRACKS[id]; })[0] || null : null; }
   function openBinder(k){ var b = binderOf(k); state.binder = b.k; state.binderKind = b.kind; state.binderOpen = true; save(); }
   function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
+  // redessin d'une liste sans tout recréer : seules les cases qui ont changé sont remplacées (les images déjà décodées
+  // restent en place, le rangement ne saccade pas) ; les animations posées sur une case (landed, stacked…) la font remplacer
+  function patchKids(el, html){
+    var t = document.createElement('template'); t.innerHTML = html; var nu = t.content.children;
+    if(nu.length !== el.children.length){ el.innerHTML = html; return; }
+    for(var i = nu.length - 1; i >= 0; i--){ var o = el.children[i], n = nu[i]; if(!o.isEqualNode(n)) el.replaceChild(n, o); }
+  }
   function renderBinder(){
     var tk = ONLINE ? state.tickets || 0 : 0, aa = document.getElementById('aa-tk');   // ticket prioritaire : on le voit là où il sert
     aa.hidden = !tk; aa.textContent = 'Ticket prioritaire' + (tk > 1 ? ' ×' + tk : '') + ' · ta demande passe en tête';
@@ -6236,15 +6248,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // la demande d'artiste en première case : toutes les cartes, chaque style et chaque groupe (le groupe est prérempli)
     var askKind = b.k === 'all' ? 'all' : b.kind === 'Styles' ? 'style' : b.kind === 'Groupes' ? 'band' : null;
     var askSlot = askKind ? '<button type="button" class="slot ask" id="ask-slot"><span class="sw"><span class="img"><span class="ask-in"><b aria-hidden="true">+</b><span>' + (askKind === 'band' ? 'Il manque quelqu\'un ?' : 'Il manque un artiste ?') + '</span><small>' + (tk ? 'Ticket prioritaire ×' + tk : 'Propose-le') + '</small></span></span></span><span class="cap">Ta demande</span></button>' : '';
-    document.getElementById('grid').innerHTML = askSlot + list.map(function(c){
+    patchKids(document.getElementById('grid'), askSlot + list.map(function(c){
       var r = placed(c.id);
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span>N° ' + pos[c.id] + '</span><small>' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg>5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
         '</span></span><span class="cap"><span>' + pos[c.id] + ' · ' + esc(c.who) + '</span>' + (total(c.id) > 1 ? '<b class="count num">×' + total(c.id) + '</b>' : '') + '</span></button>';
-    }).join('');
-    [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
+    }).join(''));
+    [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.onclick = function(){ openDetail(s.getAttribute('data-id')); }; });
     if(askSlot) document.getElementById('ask-slot').onclick = function(){ openAskArtist();
       var nm = document.getElementById('as-name'), nt = document.getElementById('as-note');
       if(askKind === 'band'){ nm.value = binderLabel(b) + ' : '; nm.dispatchEvent(new Event('input')); }

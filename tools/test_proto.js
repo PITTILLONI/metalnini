@@ -97,11 +97,14 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('bac « À ranger » affiché avec les nouvelles cartes', !d.getElementById('tray').hidden && d.querySelectorAll('#tray-cards button').length === nNew && nNew > 0, nNew + ' à ranger');
   check('classeur « Toutes les cartes » ouvert', /Toutes les cartes/.test(d.getElementById('binder-title').textContent));
   // une carte touchée dans le bac : rangement pas à pas, la carte en grand attend un toucher
+  const keepK = d.querySelector('#tray-cards button').getAttribute('data-k').split('|')[0];
+  const other0 = [...d.querySelectorAll('#grid .slot[data-id]')].filter(s => s.getAttribute('data-id') !== keepK)[0];
   d.querySelector('#tray-cards button').click(); await sleep(700);
   check('rangement à l\'unité : la carte s\'affiche en grand et attend un toucher', !d.getElementById('dupfx').hidden && /Touche la carte/.test(d.getElementById('df-skip').textContent), d.getElementById('df-skip').textContent);
   await sleep(1500);
   check('rangement à l\'unité : rien ne part tout seul', !d.getElementById('dupfx').hidden);
   d.getElementById('dupfx').click(); await sleep(1400);
+  check('rangement fluide : les autres cases du classeur ne sont pas redessinées', !!other0 && d.contains(other0));
   // « Tout ranger d'un coup » : distribution automatique, sans écran par carte
   const left0 = (state().toPlace || []).length;
   d.getElementById('tray-all').click(); await sleep(400);
@@ -669,6 +672,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('tout ouvrir : bouton visible avec 3 paquets', !d9.getElementById('bulk-go').hidden && /3 paquets/.test(d9.getElementById('bulk-go').textContent));
   d9.getElementById('bulk-go').click(); await sleep(200);
   check('tout ouvrir : 3 paquets tirés, 15 cartes d\'un coup, la plus rare en premier', bulkCalls === 3 && d9.querySelectorAll('#bulk-grid figure').length === 5 && /×3/.test(d9.getElementById('bulk-grid').textContent) && /Holo/.test(d9.querySelector('#bulk-grid img').alt) && /15 cartes/.test(d9.getElementById('bulk-t').textContent));
+  d9.querySelectorAll('#bulk-grid [data-z]')[1].click(); await sleep(20);
+  check('tout ouvrir : toucher une carte l\'affiche en grand, flèches vers les autres', !d9.getElementById('zoom').hidden && d9.getElementById('zoom-n').textContent === '2 / 5' && /jinjer/.test(d9.getElementById('zoom-img').src) && !d9.getElementById('bulk').hidden);
+  d9.getElementById('zoom-next').click(); await sleep(20);
+  check('tout ouvrir : carte suivante en grand', d9.getElementById('zoom-n').textContent === '3 / 5');
+  d9.getElementById('zoom-x').click(); await sleep(20);
+  check('tout ouvrir : zoom fermé, on revient aux cartes avant de ranger', d9.getElementById('zoom').hidden && !d9.getElementById('bulk').hidden);
   d9.getElementById('bulk-close').click();
   fake9.packsLeft = async () => 0;
 
