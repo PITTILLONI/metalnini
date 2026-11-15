@@ -15,7 +15,7 @@ run(s, IDLE, 2);
 check('déplacement : lâcher → v décroît', s.me.v < 0.6);
 s = fresh(); run(s, GAS, 8); const tired = s.me.stamina;
 let k = 0; while(s.me.zone !== 'edge' && k++ < 1200) PitSim.step(s, { throttle:0, lateral:1, tap:false });
-run(s, IDLE, 4);
+run(s, { throttle:0, lateral:1, tap:false }, 4);
 check('endurance : plein gaz 8 s la vide sous 0.2, le bord la remonte', tired < 0.2 && s.me.zone === 'edge' && s.me.stamina > 0.8);
 s = fresh(); run(s, { throttle:.5, lateral:-1, tap:false }, 2);
 check('zones : lateral -1 mène au milieu', s.me.zone === 'middle');
@@ -48,14 +48,14 @@ ev = ev.concat(run(s, IDLE, 1));
 check('relever un npc : ralentir dessus → lift', ev.some(e => e.type === 'lift' && e.id === 0) && !s.npcs[0].down);
 s = PitSim.create({ seed:1, runS:40, cfg:{ npc:1, npcFallPerS:0 } }); PitSim.place(s, 0, 0.1, 0.7); PitSim.forceNpcDown(s, 0); s.me.v = 1.2;
 check('pas de relevé en passant vite', !has(run(s, GAS, 2), 'lift'));
-s = fresh({ friends:[{ id:'f1', name:'Pote' }] }); s.me.r = 0.97; s.me.a = s.friends[0].a; ev = run(s, IDLE, 0.6).concat(run(s, IDLE, 1));
+s = fresh({ friends:[{ id:'f1', name:'Pote' }] }); s.me.r = 0.97; s.me.a = s.friends[0].a; const EDGE = { throttle:0, lateral:1, tap:false }; ev = run(s, EDGE, 0.6).concat(run(s, EDGE, 1));
 check('attirer un pote : au bord, 0.5 s → pull une seule fois', ev.filter(e => e.type === 'pull' && e.id === 'f1').length === 1 && s.friends[0].pulled && s.friends[0].r === 0.97);
 s = fresh(); ev = run(s, GAS, 2);
 check('tour : un tour complet → lap', ev.filter(e => e.type === 'lap').length === 1);
 let fallsTrack = 0, fallsMid = 0;
 for(let seed = 1; seed <= 200; seed++){
   const a = PitSim.create({ seed, runS:40, cfg:{ npcFallPerS:0 } }); if(has(run(a, GAS, 4), 'fall')) fallsTrack++;
-  const b = PitSim.create({ seed, runS:40, cfg:{ npcFallPerS:0 } }); if(has(run(b, { throttle:1, lateral:-1, tap:false }, .5).concat(run(b, GAS, 3.5)), 'fall')) fallsMid++;
+  const b = PitSim.create({ seed, runS:40, cfg:{ npcFallPerS:0 } }); if(has(run(b, { throttle:1, lateral:-1, tap:false }, 4), 'fall')) fallsMid++;
 }
 check('milieu plus risqué : plus de chutes au milieu (' + fallsMid + ') que sur la piste (' + fallsTrack + ')', fallsMid > fallsTrack);
 
@@ -97,7 +97,7 @@ vm.runInNewContext(fs.readFileSync(ROOT + 'pit-view.js', 'utf8'), box);
 const PitGame = box.window.PitGame;
 check('affichage : chargé sans PixiJS ni DOM, PitGame expose start, inputFrom, anchorOn', typeof PitGame.start === 'function' && typeof PitGame.inputFrom === 'function' && typeof PitGame.anchorOn === 'function');
 const in1 = PitGame.inputFrom({ x:100, y:300 }, { x:145, y:210 });
-check('commandes : pouce vers le haut = gaz, côté = latéral', Math.abs(in1.throttle - 1) < 1e-9 && Math.abs(in1.lateral - 0.5) < 1e-9);
+check('commandes : pouce vers le haut = gaz, côté = voie (marge de 25 px)', Math.abs(in1.throttle - 1) < 1e-9 && Math.abs(in1.lateral - 20 / 65) < 1e-9 && PitGame.inputFrom({ x:100, y:300 }, { x:122, y:200 }).lateral === 0);
 const in2 = PitGame.inputFrom({ x:100, y:300 }, { x:0, y:400 });
 check('commandes : vers le bas = pas de gaz, bornes respectées', in2.throttle === 0 && in2.lateral === -1);
 const stt = { anchor:{ x:100, y:300 }, point:{ x:100, y:210 } };
@@ -157,6 +157,18 @@ check('lumières : sans tempo, intensité stable', Math.abs(sumI(PitLight.beams(
 const rq = { beatT:null, flashT:null, reduce:true }, rqF = { beatT:null, flashT:0, reduce:true };
 const dFast = Math.abs(PitLight.beams(500, { beatT:null, flashT:null, reduce:false })[0].angle - bm0[0].angle), dSlow = Math.abs(PitLight.beams(500, rq)[0].angle - PitLight.beams(0, rq)[0].angle);
 check('mouvement réduit : pas de flash, balayage 4 fois plus lent', Math.abs(sumI(PitLight.beams(800, rq)) - sumI(PitLight.beams(800, rqF))) < 1e-9 && Math.abs(dFast / dSlow - 4) < 0.05);
+
+// ---------- Jouabilité : voies et relève ----------
+s = fresh(); run(s, { throttle:.5, lateral:.3, tap:false }, 2); const rLane = s.me.r; run(s, { throttle:.5, lateral:0, tap:false }, 2);
+check('voies : pouce recentré → retour sur la piste', rLane > 0.75 && Math.abs(s.me.r - 0.7) < 0.01 && s.me.zone === 'track');
+s = fresh(); run(s, { throttle:.5, lateral:1, tap:false }, 3);
+check('voies : pouce à droite → on reste au bord', s.me.zone === 'edge' && Math.abs(s.me.r - 0.96) < 0.01);
+s = fresh(); PitSim.knockDown(s); ev = run(s, { throttle:1, lateral:0, tap:false }, 0.5);
+check('relève : pouce resté en haut depuis la chute ne relève pas', !has(ev, 'up'));
+s = fresh(); PitSim.knockDown(s); run(s, { throttle:.1, lateral:0, tap:false }, .05); ev = run(s, { throttle:.8, lateral:0, tap:false }, .2);
+check('relève : poussée franche vers le haut → debout', has(ev, 'up') && s.t < 400 && s.me.v > 0.3);
+s = fresh(); PitSim.knockDown(s); run(s, IDLE, .75);
+check('relève : progression visible (moitié du temps → 0,5)', Math.abs(s.me.upProgress - 0.5) < 0.02);
 
 (async () => {
   check('photo : adresse vide → null sans erreur', await PitPhoto.load(null, 'palette', 64) === null);

@@ -7,10 +7,11 @@
   var CROWD_LOOKS = 10, MAX_GHOSTS = 8, FANS = 60;
   function clamp(x, lo, hi){ return x < lo ? lo : x > hi ? hi : x; }
 
-  // pouce : l'écart à l'ancre donne les commandes (90 px pour le maximum)
+  // pouce : vers le haut = vitesse (90 px pour le maximum) ; sur le côté = voie, avec 25 px de marge pour ne pas dévier en courant
   function inputFrom(anchor, point){
     if(!anchor || !point) return { throttle: 0, lateral: 0 };
-    return { throttle: clamp((anchor.y - point.y) / 90, 0, 1), lateral: clamp((point.x - anchor.x) / 90, -1, 1) };
+    var dx = point.x - anchor.x;
+    return { throttle: clamp((anchor.y - point.y) / 90, 0, 1), lateral: Math.abs(dx) <= 25 ? 0 : clamp((dx - (dx > 0 ? 25 : -25)) / 65, -1, 1) };
   }
   // pouce posé (ou reposé ailleurs) : l'ancre se recale, pas de saut de vitesse
   function anchorOn(st, pt){ st.anchor = { x: pt.x, y: pt.y }; st.point = { x: pt.x, y: pt.y }; st.down = true; return st; }
@@ -64,7 +65,8 @@
       var dot = dotTex(PIXI, app), light = Light.layer(PIXI, app);
       var floor = new PIXI.Graphics(), shadows = new PIXI.Container(), bodies = new PIXI.Container(), dust = new PIXI.Container(), badges = new PIXI.Container();
       bodies.sortableChildren = true;
-      app.stage.addChild(floor, shadows, dust, bodies, light.container, badges);
+      var upRing = new PIXI.Graphics();   // à terre : anneau doré qui se remplit jusqu'à la relève
+      app.stage.addChild(floor, shadows, dust, bodies, light.container, badges, upRing);
 
       // allures : foule (10 allures cuites, partagées), moi, fantômes et potes (une chacun)
       var crowdLooks = Bodies.looks(o.seed ^ 0x5eed, CROWD_LOOKS), crowdBaked = crowdLooks.map(function(l){ return Bodies.bake(PIXI, app, l); });
@@ -113,7 +115,11 @@
         floor.clear(); floor.rect(0, 0, w, h).fill(0x0d0a08);
         var edge = ringPath(cam, 1.0, 64), mid = ringPath(cam, 0.45, 64), inner = ringPath(cam, 0.9, 64);
         if(edge.length > 2){ floor.poly([].concat.apply([], edge.map(function(p){ return [p.x, p.y]; })).concat([w, h, 0, h])).fill(0x15110f); }
-        if(mid.length > 2){ floor.poly([].concat.apply([], mid.map(function(p){ return [p.x, p.y]; }))).fill({ color: BLOOD, alpha: .14 }); }
+        var xy = function(pts){ return [].concat.apply([], pts.map(function(p){ return [p.x, p.y]; })); };
+        // voies : piste légèrement éclairée, bord teinté d'or, milieu de rouge
+        if(inner.length > 2 && mid.length > 2) floor.poly(xy(inner).concat(xy(mid.slice().reverse()))).fill({ color: BONE, alpha: .05 });
+        if(edge.length > 2 && inner.length > 2) floor.poly(xy(edge).concat(xy(inner.slice().reverse()))).fill({ color: GOLD, alpha: .09 });
+        if(mid.length > 2){ floor.poly(xy(mid)).fill({ color: BLOOD, alpha: .14 }); }
         [[inner, GOLD, .55, 3], [mid, BLOOD, .5, 2]].forEach(function(l){ var pts = l[0]; if(pts.length < 2) return;
           floor.moveTo(pts[0].x, pts[0].y); for(var k = 1; k < pts.length; k++) floor.lineTo(pts[k].x, pts[k].y); floor.stroke({ width: l[3], color: l[1], alpha: l[2] }); });
         // repères au sol tous les 1/48 de tour : ils défilent sous les pieds, d'où la vitesse
@@ -165,6 +171,10 @@
         dustT += dt; if(m.v >= c.groove * c.vmax && dustT > 40 && meP.visible){ dustT = 0; var dd = pool[dustI++ % pool.length]; dd.visible = true;
           dd.position.set(meP.x + (Math.random() - .5) * 30 * meP.scale, meP.y - 4); dd._life = 0; }
         for(k = 0; k < pool.length; k++){ var d2 = pool[k]; if(!d2.visible) continue; d2._life += dt; d2.y += dt * 0.05; d2.alpha = .5 * (1 - d2._life / 600); d2.scale.set(.5 + d2._life / 240); if(d2._life > 600) d2.visible = false; }
+        upRing.clear();
+        if(m.down && meP.visible){ var ur = 46 * meP.scale, uy = meP.y - 30 * meP.scale;
+          upRing.circle(meP.x, uy, ur).stroke({ width: 5, color: 0x15110f, alpha: .8 });
+          upRing.arc(meP.x, uy, ur, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(.02, m.upProgress)).stroke({ width: 5, color: GOLD_HI, cap: 'round' }); }
         light.draw(Light.beams(t, { beatT: beatAt == null ? null : t - beatAt, flashT: flashAt == null ? null : t - flashAt, reduce: !!o.reduce }), w, h, meP.visible ? meP : null);
         // texte : chrono réécrit à la seconde, le reste toutes les 100 ms
         hudT += dt; if(hudT > 100){ hudT = 0; var left = Math.max(0, Math.ceil((sim.end * 1000 / PitSim.HZ - t) / 1000));
@@ -172,7 +182,7 @@
           stBar.firstChild.style.transform = 'scaleX(' + m.stamina.toFixed(3) + ')'; stBar.classList.toggle('low', m.stamina < .25);
           var sc = String(PitSim.result(sim).score); if(scoreEl.textContent !== sc) scoreEl.textContent = sc;
           if(flashT > 0){ flashT -= 100; if(flashT <= 0) cue.classList.remove('hot'); }
-          else { var msg = m.down ? 'À terre ! Tape vite pour te relever' : m.zone === 'edge' ? 'Au bord : tu souffles' : m.zone === 'middle' ? 'Au milieu : ça compte double' : t < 4000 ? cue.textContent : '';
+          else { var msg = m.down ? 'À terre ! Pousse vers le haut !' : m.zone === 'edge' ? 'Au bord : tu souffles' : m.zone === 'middle' ? 'Au milieu : ça compte double' : t < 4000 ? cue.textContent : '';
             if(m.down !== fallen){ fallen = m.down; cue.classList.toggle('hot', m.down); }
             if(cue.textContent !== msg) cue.textContent = msg; } }
         if(sim.over) finish();

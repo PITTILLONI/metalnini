@@ -3,7 +3,7 @@
 (function(){
   var HZ = 120, DT = 1 / HZ, STEP_MS = 1000 / HZ, MAX_MS = 250;
   var DEFAULTS = { npc: 24, vmax: 1.2, accel: 2.5, lateral: 0.9, drain: 0.12, regen: 0.25, regenSlow: 0.05, body: 0.035,
-    fallBase: 0.15, fallTired: 0.6, middleRisk: 2, downS: 1.5, upTaps: 4, npcFallPerS: 0.02, npcDownS: 4,
+    fallBase: 0.15, fallTired: 0.6, middleRisk: 2, downS: 1.5, upTaps: 4, upPushS: 0.15, npcFallPerS: 0.02, npcDownS: 4,
     liftHoldS: 0.4, liftMaxV: 0.4, pullHoldS: 0.5, pullAngle: 10 / 360, groove: 0.6,
     pts: { lap: 4, lift: 6, pull: 8, middleS: 1, rhythm: 30 }, circle: { lap: 1, lift: 2, pull: 3 } };
 
@@ -13,6 +13,7 @@
   function merge(cfg){ var c = JSON.parse(JSON.stringify(DEFAULTS)); if(cfg) for(var k in cfg){
     if(cfg[k] && typeof cfg[k] === 'object' && c[k] && typeof c[k] === 'object') for(var j in cfg[k]) c[k][j] = cfg[k][j]; else c[k] = cfg[k]; } return c; }
   function clamp(x, lo, hi){ return x < lo ? lo : x > hi ? hi : x; }
+  var LANE = 0.7, EDGE_R = 0.96, MID_R = 0.3;   // voies : piste, bord (à droite), milieu (à gauche)
   function zoneOf(r){ return r < 0.45 ? 'middle' : r > 0.9 ? 'edge' : 'track'; }
 
   function frac(x){ return x - Math.floor(x); }
@@ -37,7 +38,7 @@
 
   function create(o){
     var cfg = merge(o.cfg), rand = rng(o.seed || 1), sim = { cfg: cfg, rand: rand, n: 0, t: 0, end: Math.round((o.runS || 40) * HZ), over: false, acc: 0,
-      me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false, downT: 0, taps: 0, laps: 0 }, npcs: [], friends: [], ghosts: [],
+      me: { a: 0, r: 0.7, v: 0, stamina: 1, zone: 'track', down: false, downT: 0, taps: 0, laps: 0, armed: false, push: 0, upProgress: 0 }, npcs: [], friends: [], ghosts: [],
       bpm: o.bpm > 0 ? o.bpm : null, beats: 0, beatBase: 0, beatHits: 0, groove: 0, lifts: 0, pulls: 0, middleN: 0, trace: { v: 1, hz: 10, p: [], e: [] } };
     for(var i = 0; i < cfg.npc; i++) sim.npcs.push({ a: rand(), r: 0.5 + rand() * 0.38, v: 0.4 + rand() * 0.5, down: false, downT: 0, touch: false, hold: 0 });
     (o.friends || []).forEach(function(f){ sim.friends.push({ id: f.id, name: f.name, a: rand(), r: 0.97, pulled: false, hold: 0 }); });
@@ -49,21 +50,27 @@
   var KEEP = { fall: 1, up: 1, lift: 1, pull: 1, lap: 1 };
   function record(sim){ var me = sim.me; sim.trace.p.push([Math.round(me.a * 1000), Math.round(me.r * 100), me.down ? 1 : 0]); }
 
-  function knockDown(sim){ var me = sim.me; me.down = true; me.downT = sim.t; me.taps = 0; me.v = 0; }
+  function knockDown(sim){ var me = sim.me; me.down = true; me.downT = sim.t; me.taps = 0; me.v = 0; me.armed = false; me.push = 0; me.upProgress = 0; }
   function fallChance(c, me){ return Math.min(1, (c.fallBase + (1 - me.stamina) * c.fallTired) * (me.zone === 'middle' ? c.middleRisk : 1)); }
 
   function step(sim, input){
     if(sim.over) return [];
     var c = sim.cfg, me = sim.me, ev = [], rand = sim.rand, body2 = 2 * c.body, t = (sim.n + 1) * STEP_MS, i, p;
     var add = function(type, id){ var e = { t: t, type: type }; if(id !== undefined) e.id = id; ev.push(e); };
+    var th = clamp(input.throttle || 0, 0, 1);
     if(me.down){
+      // se relever : touchers rapides, ou poussée franche vers le haut (pouce redescendu d'abord), ou relève seule, ou un fantôme qui passe
       if(input.tap) me.taps++;
+      if(th < 0.3) me.armed = true;
+      if(me.armed && th >= 0.6) me.push += DT; else me.push = 0;
+      me.upProgress = Math.min(1, Math.max(me.taps / c.upTaps, me.push / c.upPushS, (t - me.downT) / (c.downS * 1000)));
       var helped = sim.ghosts.some(function(g){ var q = ghostAt(g.trace, t); return q && !q.down && distAR(q.a, q.r, me.a, me.r) < body2; });
-      if(me.taps >= c.upTaps || t - me.downT >= c.downS * 1000 - 1e-6 || helped){ me.down = false; add('up'); }
+      if(me.upProgress >= 1 - 1e-6 || me.push >= c.upPushS - 1e-9 || helped){ me.down = false; me.v = 0.5 * th * c.vmax; add('up'); }
     } else {
-      var th = clamp(input.throttle || 0, 0, 1);
       me.v += (th * c.vmax - me.v) * Math.min(1, c.accel * DT);
-      me.r = clamp(me.r + clamp(input.lateral || 0, -1, 1) * c.lateral * DT, 0.05, 1);
+      // voie visée par le pouce : piste au centre, bord à droite, milieu à gauche ; pouce recentré = retour sur la piste
+      var lane = clamp(input.lateral || 0, -1, 1), target = lane > 0 ? LANE + lane * (EDGE_R - LANE) : LANE + lane * (LANE - MID_R), mx = c.lateral * DT;
+      me.r = clamp(me.r + clamp(target - me.r, -mx, mx), 0.05, 1);
     }
     me.zone = zoneOf(me.r);
     var st = me.stamina - c.drain * Math.pow(me.v / c.vmax, 2) * (me.zone === 'middle' ? 1.5 : 1) * DT;
