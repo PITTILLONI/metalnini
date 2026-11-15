@@ -586,12 +586,20 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('pit-start').click(); await sleep(3600);
   gameOpts.onEnd({ score:40, circle:1, trace:{ v:1, hz:10, p:[], e:[] }, stats:{} }); await sleep(60);
   check('circle pit : ancien serveur → score renvoyé seul', finishArgs.length === 2 && finishArgs[1][1] === 40 && finishArgs[1][2] === undefined && pit2.runners[2].score === 40);
-  // PixiJS pas encore chargé au moment de « Démarrer » : pas d'attente (l'horloge du serveur tourne), ancienne course tout de suite
-  pit2.runners[2].score = null; finishArgs = []; gameOpts = null; const pixi9 = w9.PIXI; delete w9.PIXI;
-  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
-  d9.getElementById('pit-start').click(); await sleep(60);
-  check('circle pit : PixiJS pas prêt → ancienne course sans attendre', !gameOpts && d9.getElementById('pit-count').textContent === '3' && !!d9.getElementById('pit-mark'));
-  w9.PIXI = pixi9;
+  // PixiJS pas encore chargé au moment de « Démarrer » : on l'attend (5 s au plus) avant de lancer l'horloge du serveur
+  pit2.runners[2].score = null; finishArgs = []; gameOpts = null; const pixi9 = w9.PIXI; delete w9.PIXI; let started9 = 0;
+  const rs9 = fake9.pitRunStart; fake9.pitRunStart = async () => { started9++; return pit2Copy(); };
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60); delete w9.PIXI;
+  d9.getElementById('pit-start').click(); await sleep(300);
+  check('circle pit : PixiJS en chargement → on attend sans lancer la course', started9 === 0 && !gameOpts && !d9.getElementById('pit-mark'));
+  w9.PIXI = pixi9; await sleep(3700);
+  check('circle pit : PixiJS arrivé pendant l\'attente → nouveau jeu', started9 === 1 && !!gameOpts && !d9.getElementById('pit-mark'));
+  // PixiJS qui n'arrive jamais : ancienne course au bout de 5 s
+  pit2.runners[2].score = null; gameOpts = null; started9 = 0;
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60); delete w9.PIXI;
+  d9.getElementById('pit-start').click(); await sleep(5300);
+  check('circle pit : PixiJS introuvable → ancienne course après 5 s', started9 === 1 && !gameOpts && !!d9.getElementById('pit-mark'));
+  fake9.pitRunStart = rs9; w9.PIXI = pixi9;
   // sans PitGame : l'ancienne course démarre
   pit2.runners[2].score = null; delete w9.PitGame; finishArgs = [];
   d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
