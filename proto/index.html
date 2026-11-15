@@ -247,6 +247,7 @@
   .bulk-sum{margin:4px 0 14px; font:500 .86rem/1.4 var(--mono); color:var(--muted)} .bulk-sum b{color:var(--text)}
   .bulk-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin:0 0 16px}
   .bulk-grid figure{position:relative; margin:0; opacity:0; transform:translateY(10px) scale(.96); animation:bulk-in .35s ease-out forwards; animation-delay:var(--d)}
+  .bulk-grid button{display:block; width:100%; padding:0; border:0; background:none; cursor:zoom-in; border-radius:8px}
   .bulk-grid img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:8px; border:2px solid var(--rc)}
   .bulk-grid figcaption{margin-top:3px; font:600 .7rem/1.2 var(--mono); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .bulk-grid .count{position:absolute; top:5px; right:5px; padding:2px 7px; border-radius:6px; background:rgba(12,11,10,.88); border:1px solid rgba(235,154,38,.55); color:#fff; font:700 .8rem/1.2 var(--display)}
@@ -260,7 +261,9 @@
   .pit-song{font:600 .82rem/1.3 var(--mono); color:var(--muted)} .pit-song b{color:var(--text)}
   .pit-ring{position:relative; width:min(78vw, 300px); aspect-ratio:1; margin:8px auto 10px}
   .pit-ring::before{content:""; position:absolute; inset:9%; border-radius:50%; border:2px dashed rgba(244,178,67,.35)}
-  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite reverse}   /* un vrai pit tourne dans le sens inverse des aiguilles */
+  .pit-orbit{position:absolute; inset:0; animation:pit-spin var(--spin, 14s) linear infinite reverse}
+  #pit-lobby .pit-ring{width:min(calc(78vw * var(--pit-grow, 1)), calc(300px * var(--pit-grow, 1)), 92vw); transition:width .6s}   /* le cercle grossit sans déborder */
+  .pit-game{position:fixed; inset:0; display:grid; place-items:center; background:var(--ink)}   /* nouveau jeu : plein écran, canevas posé par fosse/pit-view.js */   /* un vrai pit tourne dans le sens inverse des aiguilles */
   .pit-slot{position:absolute; left:50%; top:50%; width:0; height:0; transform:rotate(var(--a)) translateY(calc(min(78vw, 300px) / -2 + 26px)) rotate(calc(-1 * var(--a)))}
   .pit-slot .pit-av{position:absolute; left:-20px; top:-20px; animation:pit-spin var(--spin, 14s) linear infinite}   /* le visage reste droit pendant que le cercle tourne */
   .pit-slot .pit-av.me{left:-26px; top:-26px}
@@ -1199,12 +1202,12 @@
   .tray .cards button{flex:0 0 auto; width:46px; border:0; padding:0; background:none; cursor:pointer}
   .tray .cards img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 2px var(--rc, var(--r-commune))}
   body.placing #v-binder .grid, body.placing #v-binder .matrix{padding-bottom:200px}
-  .flyer{position:fixed; z-index:var(--z-flyer); pointer-events:none; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
+  .flyer{position:fixed; z-index:var(--z-flyer); pointer-events:none; will-change:transform; border-radius:6px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,.7); transition:transform .55s cubic-bezier(.4,0,.2,1)}
   .flyer img{display:block; width:100%; height:100%; object-fit:cover}
   .slot.landed .img{animation:land .45s cubic-bezier(.2,1.6,.4,1)}
   @keyframes land{0%{transform:scale(1.18)}100%{transform:scale(1)}}
   .slot.landed .img::after{content:""; position:absolute; inset:0; box-shadow:inset 0 0 0 3px var(--gold), 0 0 28px 6px var(--gold); border-radius:8px; animation:ping .8s ease-out forwards}
-  @keyframes ping{to{box-shadow:inset 0 0 0 0 transparent, 0 0 60px 18px transparent}}
+  @keyframes ping{to{opacity:0; transform:scale(1.12)}}
   /* (9) doublons empilés dans le classeur */
   .slot .sw{position:relative; display:block}
   .slot .layers i{position:absolute; inset:0; border-radius:8px; background:#1a1310 var(--li) center/cover; box-shadow:0 3px 8px rgba(0,0,0,.6); border:1px solid rgba(235,154,38,.3)}
@@ -2003,6 +2006,13 @@
 
 <script src="cards/manifest.js"></script>
 <script src="sounds/manifest.js"></script>
+<script src="fosse/pit-sim.js"></script>
+<script src="fosse/pit-beat.js"></script>
+<script src="fosse/pit-proj.js"></script>
+<script src="fosse/pit-bodies.js"></script>
+<script src="fosse/pit-photo.js"></script>
+<script src="fosse/pit-light.js"></script>
+<script src="fosse/pit-view.js"></script>
 <script type="module">
 // Connexion au serveur : joueur anonyme + pseudo, tirage et collection côté serveur. Clé publique uniquement.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm';   // version figée (même que l'admin)
@@ -2143,7 +2153,7 @@ const api = {
   async pitCancel(id){ return must(await sb.rpc('pit_cancel', { p_pit: id })); },
   async pitJoin(id){ return must(await sb.rpc('pit_join', { p_pit: id })); },
   async pitRunStart(id){ return must(await sb.rpc('pit_run_start', { p_pit: id })); },
-  async pitRunFinish(id, score){ return must(await sb.rpc('pit_run_finish', { p_pit: id, p_score: score })); },
+  async pitRunFinish(id, score, trace, circle){ return must(await sb.rpc('pit_run_finish', trace ? { p_pit: id, p_score: score, p_trace: trace, p_circle: circle || 0 } : { p_pit: id, p_score: score })); },
   async fosseCall(k, id, to){ return must(await sb.rpc('fosse_call', { p_kind: k, p_event: id, p_to: to })); },
   async fosseCalled(k, id){ return must(await sb.rpc('fosse_called', { p_kind: k, p_event: id })); },
   async pogoFeed(){ return must(await sb.rpc('pogo_feed')); },
@@ -3151,7 +3161,11 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // une case par carte (musicien et rareté), ×N pour les doublons
     var tiles = []; got.forEach(function(d){ var t = tiles.filter(function(x){ return x.id === d.id && x.r === d.r; })[0]; if(t){ t.n++; t.isNew = t.isNew || d.isNew; } else tiles.push({id:d.id, r:d.r, isNew:d.isNew, n:1}); });
     document.getElementById('bulk-grid').innerHTML = tiles.map(function(d, i){ var c = card(d.id), x = rarity(d.r);
-      return '<figure style="--rc:' + x.color + '; --d:' + Math.min(i, 30) * 60 + 'ms"><img src="' + img(d.id, d.r) + '" alt="' + esc(c.who) + ', ' + x.label + (d.n > 1 ? ', ' + d.n + ' exemplaires' : '') + '" loading="lazy">' + (d.isNew ? '<span class="new">Nouvelle</span>' : '') + (d.n > 1 ? '<span class="count">×' + d.n + '</span>' : '') + '<figcaption>' + esc(c.who) + '</figcaption></figure>'; }).join('');
+      return '<figure style="--rc:' + x.color + '; --d:' + Math.min(i, 30) * 60 + 'ms"><button type="button" data-z="' + i + '" aria-label="Voir en grand"><img src="' + img(d.id, d.r) + '" alt="' + esc(c.who) + ', ' + x.label + (d.n > 1 ? ', ' + d.n + ' exemplaires' : '') + '" loading="lazy"></button>' + (d.isNew ? '<span class="new">Nouvelle</span>' : '') + (d.n > 1 ? '<span class="count">×' + d.n + '</span>' : '') + '<figcaption>' + esc(c.who) + '</figcaption></figure>'; }).join('');
+    // toucher une carte : en grand, avec les flèches vers les autres (on revient ici avant de ranger)
+    var gal = tiles.map(function(d){ return {src:img(d.id, d.r), alt:card(d.id).who + ', ' + rarity(d.r).label}; });
+    [].forEach.call(document.querySelectorAll('#bulk-grid [data-z]'), function(b){ b.onclick = function(){ openZoom(gal, +b.getAttribute('data-z'), b); }; });
+    if(tiles.length) document.getElementById('bulk-sum').innerHTML += '<br><small>Touche une carte pour la voir en grand.</small>';
     if(got.length) snd(rank(got[0].r) >= 3 ? 'reward' : 'gift');
     document.getElementById('bulk-place').hidden = !(state.toPlace || []).length; document.getElementById('bulk-close').hidden = false;
     this.disabled = false;
@@ -4124,6 +4138,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     ONLINE.pitJoin(id).then(function(st){ pitShow(st); loadPits(); }, function(e){ toast(esc(e.message)); });
   }
   function pitShow(st){
+    if(window.PitGame) loadLib(PIXI_LIB, 'PIXI').catch(function(){});   // PixiJS chargé dès la salle d'attente : « Démarrer » ne l'attend pas
     if(!pit || pit.id !== st.id) pitIn.innerHTML = '';
     pit = st; pitEl.hidden = false;
     clearInterval(pitTimer); clearInterval(pitSync);
@@ -4192,6 +4207,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     document.getElementById('pit-note').textContent = ran ? 'Ta course est faite. Rameute du monde : chaque course compte pour tout le cercle.' :
       'Fais tourner le pit : dessine des cercles du doigt pendant ' + st.run_s + ' s, à la vitesse du cercle. Chaque course le fait accélérer.';
     var ob = document.getElementById('pit-orbit'); ob.style.setProperty('--spin', (1 / Math.max(.1, st.rps)).toFixed(1) + 's');
+    ob.parentNode.style.setProperty('--pit-grow', (1 + Math.min(.25, (st.circle || 0) / 200)).toFixed(3));   // le cercle grossit avec les courses
     var sig = runners.map(function(r){ return r.id + ':' + (r.score == null ? '' : r.score); }).join();
     if(ob.getAttribute('data-sig') !== sig){ ob.innerHTML = orbit; ob.setAttribute('data-sig', sig); hydrateAvatars(ob); }
     document.getElementById('pit-gauges').innerHTML = gauges;
@@ -4199,12 +4215,69 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     if(pa.getAttribute('data-sig') !== ps){ pa.innerHTML = fosseAdd(runners); pa.setAttribute('data-sig', ps); bindFosseAdd(pa); }
     phaseIn(pitIn, 'lobby-' + st.id + (ran ? '-ran' : ''));
   }
-  // ma course : 3, 2, 1, puis je fais tourner le pit : je dessine des cercles du doigt, dans le sens inverse des aiguilles,
-  // à la vitesse du cercle (zone de la jauge) ; la foule court à ma vitesse ; précision = part du temps passée dans la zone
+  // ma course : le nouveau jeu (PixiJS, fosse/pit-view.js), sinon l'ancienne course. Si PixiJS se télécharge encore,
+  // on l'attend 5 s au plus AVANT pitRunStart (l'horloge du serveur ne part qu'ensuite)
+  function pixiWait(ms){ if(window.PIXI || !window.PitGame) return Promise.resolve();
+    if(!document.querySelector('script[src="' + PIXI_LIB + '"]')) loadLib(PIXI_LIB, 'PIXI').catch(function(){});
+    return new Promise(function(ok){ var t0 = Date.now(), iv = setInterval(function(){ if(window.PIXI || Date.now() - t0 >= ms){ clearInterval(iv); ok(); } }, 100); }); }
   function pitRunGo(){
     var b = document.getElementById('pit-start'); b.disabled = true;
-    ONLINE.pitRunStart(pit.id).then(function(st){
-      pit = st; var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
+    if(!window.PIXI && window.PitGame) b.textContent = 'Chargement…';
+    pixiWait(5000).then(function(){ return ONLINE.pitRunStart(pit.id); }).then(function(st){
+      pit = st;
+      if(window.PitGame && window.PitSim && window.PIXI) pitRunGame(st, window.PIXI); else pitRunLegacy(st);
+    }, function(e){ b.disabled = false; b.textContent = 'Démarrer'; toast(esc(e.message)); });
+  }
+  var PIXI_LIB = 'https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.js';
+  var TRACK_BPM = {};   // tempo saisi à la main (identifiant du morceau : BPM) quand l'extrait ne se laisse pas écouter
+  // tempo de l'extrait : saisi, sinon écouté (Web Audio), null si rien
+  function trackBpm(id){
+    if(TRACK_BPM[id]) return Promise.resolve(TRACK_BPM[id]);
+    return track(id).then(function(t){ var Ctx = window.AudioContext || window.webkitAudioContext; if(!t || !window.PitBeat || !window.fetch || !Ctx) return null;
+      return fetch(t.url).then(function(r){ return r.arrayBuffer(); }).then(function(buf){ var ctx = new Ctx();
+        return new Promise(function(ok, ko){ ctx.decodeAudioData(buf, ok, ko); }).then(function(a){ try{ ctx.close(); }catch(_){} return PitBeat.detect(a.getChannelData(0), a.sampleRate); }); }); })
+      .catch(function(){ return null; });
+  }
+  // potes de l'app qui ne sont pas dans ce pit (6 au plus) : ils attendent au bord, on peut les attirer
+  function pitGameFriends(st){ var here = {}; st.runners.forEach(function(r){ here[r.id] = true; });
+    return friendsList.filter(function(f){ return !here[f.friend_id]; }).slice(0, 6).map(function(f){ return {id:f.friend_id, name:f.username || 'Pote', avatar:f.avatar_path || null}; }); }
+  // nouveau jeu : 3, 2, 1 (le tempo s'écoute pendant ce temps), puis PitGame ; échec de PixiJS = ancienne course
+  function pitRunGame(st, P){
+    var me = st.runners.filter(function(r){ return r.me; })[0] || {}, key = String(st.id) + (me.id || ''), seed = 0, i, n = 3, bpm = null;
+    for(i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) >>> 0;
+    var ghosts = st.runners.filter(function(r){ return !r.me && r.trace; }).map(function(r){ return {id:r.id, name:r.name, avatar:r.avatar, trace:r.trace}; });
+    var friends = pitGameFriends(st), go = pitGo = {id:st.id}; document.body.classList.add('playing');
+    // photos : chemins du stockage résolus en adresses pendant le décompte ; ce qui n'arrive pas à temps part sans photo
+    var url = function(path){ return path ? avUrls[path] || null : null; };
+    ghosts.concat(friends).forEach(function(x){ if(x.avatar && !avUrls[x.avatar]) ONLINE.mediaUrl('avatars', x.avatar).then(function(u){ avUrls[x.avatar] = u; }).catch(function(){}); });
+    pitIn.innerHTML = '<div class="pit-game" id="pit-game"><b class="pit-count num" id="pit-count">3</b></div>';
+    var host = document.getElementById('pit-game'), cnt = document.getElementById('pit-count');
+    trackBpm(st.track).then(function(x){ bpm = x; if(x && go.game && go.game.sim) PitSim.setBpm(go.game.sim, x); });   // tempo en retard : compté à partir de là
+    pop(cnt, 2.2);
+    go.tick = setInterval(function(){ n--; if(n > 0){ cnt.textContent = n; buzz(8); pop(cnt, 2.2); return; }
+      clearInterval(go.tick); if(pitGo !== go) return; cnt.remove(); buzz(20); pitTrack(st.track);
+      var withUrl = function(x){ return {id:x.id, name:x.name, trace:x.trace, avatar:url(x.avatar)}; };
+      go.game = PitGame.start(host, {PIXI:P, seed:seed, runS:st.run_s, cfg:st.game || {}, me:{name:state.username || 'Moi', avatar:avatarSrc() || null},
+        ghosts:ghosts.map(withUrl), friends:friends.map(withUrl), bpm:bpm,
+        reduce:reduce, buzz:buzz, snd:snd, onPull:function(fid){ ONLINE.fosseCall('pit', st.id, fid).catch(function(){}); },
+        onEnd:function(r){ if(pitGo === go) pitRunEnd(r.score, r.trace, r.circle); }});
+      go.game.ready.catch(function(){ if(pitGo !== go) return; go.game.stop(); go.game = null; pitRunLegacy(st); });
+    }, 700);
+  }
+  // banc d'essai (?pitbanc) : course hors ligne, 3 fantômes rejoués et 2 potes au bord, pour les captures et le réglage sur iPhone
+  if(/[?&]pitbanc\b/.test(location.search) && window.PitGame) loadLib(PIXI_LIB, 'PIXI').then(function(P){
+    var ghosts = [1, 2, 3].map(function(k){ var g = PitSim.create({seed:k, runS:40, cfg:{npc:0}}), i;
+      for(i = 0; i < 40 * PitSim.HZ; i++) PitSim.step(g, {throttle:.6 + .1 * k, lateral:Math.sin(i / 300 + k) * .6, tap:true});
+      return {id:'g' + k, name:['Riffeuse', 'Vega', 'Léa'][k - 1], trace:PitSim.result(g).trace, avatar:'cards/' + ['jinjer', 'flynn', 'spiritbox'][k - 1] + '-base.jpg'}; });   // photos d'essai : visages des cartes
+    var host = document.createElement('div'); host.className = 'pit-game'; host.style.zIndex = 999; document.body.appendChild(host);   // au-dessus de l'accueil et de la connexion document.body.classList.add('playing');
+    var run = function(){ PitGame.start(host, {PIXI:P, seed:Date.now() >>> 0, runS:40, cfg:{}, me:{name:'Moi', avatar:'cards/durst-base.jpg'}, ghosts:ghosts, friends:[{id:'f1', name:'Lemmy', avatar:'cards/lemmy-base.jpg'}, {id:'f2', name:'Bucket'}],
+      bpm:120, reduce:reduce, buzz:buzz, snd:snd, onEnd:function(r){ toast('Banc : <b>' + r.score + '</b> points, +' + r.circle + ' au cercle.'); run(); }}); };
+    run();
+  });
+  // ancienne course : 3, 2, 1, puis je fais tourner le pit : je dessine des cercles du doigt, dans le sens inverse des aiguilles,
+  // à la vitesse du cercle (zone de la jauge) ; la foule court à ma vitesse ; précision = part du temps passée dans la zone
+  function pitRunLegacy(st){
+      var me = st.runners.filter(function(r){ return r.me; })[0] || {}, rps = me.rps || st.rps, T = st.run_s * 1000;
       var target = .5 + rps * 1.5;   // tours de doigt par seconde visés : de 0,95 (premier coureur) à 2 (cercle au plus vite)
       pitGo = {id:st.id, raf:0, t0:0, on:0, last:0, down:false, ang:null, lastMove:0, v:0, spin:0, laps:0, combo:0, lapOk:true, dust:0}; document.body.classList.add('playing');
       pitIn.innerHTML = pitHead(st) + '<div class="pit-ring go" id="pit-track"><img class="pit-bg" src="fosse/pit.jpg" alt=""><div class="pit-orbit-c">' + crowdHtml(10).replace('class="crowd"', 'class="crowd pit-runners"') + '</div>' +
@@ -4258,15 +4331,17 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         })(go.t0);
       }, 700);
       go.tick = tick;
-    }, function(e){ b.disabled = false; toast(esc(e.message)); });
   }
-  function pitRunEnd(score){
+  // fin de course : score (et, nouveau jeu, trace et part du cercle) ; serveur pas encore à jour : on renvoie le score seul
+  function pitRunEnd(score, trace, circle){
     var id = pitGo.id; pitStop(); snd('reward'); pitIn.innerHTML = '';
-    ONLINE.pitRunFinish(id, score).then(function(st){ if(pit && pit.id === id){ pit = st; pitPaint(); } toast('Ta course : <b>' + score + ' %</b> de précision.'); },
-      function(e){ toast(esc(e.message)); pitRefresh(); });
+    var done = function(st){ if(pit && pit.id === id){ pit = st; pitPaint(); }
+      toast(trace ? 'Ta course : <b>' + score + '</b> points' + (circle ? ', +' + circle + ' au cercle.' : '.') : 'Ta course : <b>' + score + ' %</b> de précision.'); };
+    var fail = function(e){ toast(esc(e.message)); pitRefresh(); };
+    ONLINE.pitRunFinish(id, score, trace, circle).then(done, function(e){ if(!trace) return fail(e); ONLINE.pitRunFinish(id, score).then(done, fail); });
   }
   // fin ou abandon de ma course : animation, décompte et extrait coupés
-  function pitStop(){ crowdStop(pitIn); document.body.classList.remove('playing'); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); pitGo = null; } stopListen(); }
+  function pitStop(){ crowdStop(pitIn); document.body.classList.remove('playing'); if(pitGo){ cancelAnimationFrame(pitGo.raf); clearInterval(pitGo.tick); if(pitGo.game) pitGo.game.stop(); pitGo = null; } stopListen(); }
   // l'extrait du morceau du pit pendant la course, musique du jeu coupée
   function pitTrack(id){
     var go = pitGo;
@@ -5857,7 +5932,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
         fl.remove(); finishPlace(k);
         var s2 = document.querySelector('#grid .slot[data-id="' + id + '"]'), up = !!before && rank(r) > rank(before);
         if(dealing){ (!before ? dealLog.fresh : up ? dealLog.up : dealLog.dup).push(k); }
-        if(s2) anim(function(g){ g.fromTo(s2.querySelector('.img'), {scale:1.14}, {scale:1, duration:.6, ease:'elastic.out(1, .45)', clearProps:'transform'}); });
+        // le rebond de la case est fait en CSS (landed, stacked, upgraded) : pas de seconde animation dessus
         if(s2 && !before){ s2.classList.add('landed'); SFX.land(); }
         else if(s2){
           var shown = up ? r : before;
@@ -6102,6 +6177,13 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   function styleTrack(k){ var si = STYLE_INFO[k]; return si && si.play ? si.play.filter(function(id){ return TRACKS[id]; })[0] || null : null; }
   function openBinder(k){ var b = binderOf(k); state.binder = b.k; state.binderKind = b.kind; state.binderOpen = true; save(); }
   function binderDone(b){ return b.ids.filter(function(id){ return card(id); }).every(function(id){ return placed(id); }); }
+  // redessin d'une liste sans tout recréer : seules les cases qui ont changé sont remplacées (les images déjà décodées
+  // restent en place, le rangement ne saccade pas) ; les animations posées sur une case (landed, stacked…) la font remplacer
+  function patchKids(el, html){
+    var t = document.createElement('template'); t.innerHTML = html; var nu = t.content.children;
+    if(nu.length !== el.children.length){ el.innerHTML = html; return; }
+    for(var i = nu.length - 1; i >= 0; i--){ var o = el.children[i], n = nu[i]; if(!o.isEqualNode(n)) el.replaceChild(n, o); }
+  }
   function renderBinder(){
     var tk = ONLINE ? state.tickets || 0 : 0, aa = document.getElementById('aa-tk');   // ticket prioritaire : on le voit là où il sert
     aa.hidden = !tk; aa.textContent = 'Ticket prioritaire' + (tk > 1 ? ' ×' + tk : '') + ' · ta demande passe en tête';
@@ -6170,15 +6252,15 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
     // la demande d'artiste en première case : toutes les cartes, chaque style et chaque groupe (le groupe est prérempli)
     var askKind = b.k === 'all' ? 'all' : b.kind === 'Styles' ? 'style' : b.kind === 'Groupes' ? 'band' : null;
     var askSlot = askKind ? '<button type="button" class="slot ask" id="ask-slot"><span class="sw"><span class="img"><span class="ask-in"><b aria-hidden="true">+</b><span>' + (askKind === 'band' ? 'Il manque quelqu\'un ?' : 'Il manque un artiste ?') + '</span><small>' + (tk ? 'Ticket prioritaire ×' + tk : 'Propose-le') + '</small></span></span></span><span class="cap">Ta demande</span></button>' : '';
-    document.getElementById('grid').innerHTML = askSlot + list.map(function(c){
+    patchKids(document.getElementById('grid'), askSlot + list.map(function(c){
       var r = placed(c.id);
       if(!r) return '<button type="button" class="slot" data-id="' + c.id + '" aria-label="Case ' + pos[c.id] + ', ' + esc(firstInst(c)) + ', pas encore obtenue"><span class="sw"><span class="img"><span class="empty"><span>N° ' + pos[c.id] + '</span><small>' + esc(firstInst(c)) + '</small></span></span></span><span class="cap">' + pos[c.id] + ' · ???</span></button>';
       var extra = Math.min(3, total(c.id) - 1), layers = ''; for(var li = 0; li < extra; li++) layers += '<i style="--li:url(' + img(c.id, r) + ')"></i>';
       return '<button type="button" class="slot owned" data-id="' + c.id + '" data-r="' + r + '"><span class="sw">' + (layers ? '<span class="layers">' + layers + '</span>' : '') + '<span class="img"><img src="' + img(c.id, r) + '" alt="' + esc(c.who) + ', ' + rarity(r).label + '" loading="lazy">' +
         (state.fresh[c.id] ? '<i class="new-dot" aria-label="Nouveau"></i>' : '') + (mastered(c.id) ? '<span class="star" aria-label="Maîtrisé"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z"/></svg>5/5</span>' : '') + (fusable(c.id) ? '<span class="tf">Transformable</span>' : '') +
         '</span></span><span class="cap"><span>' + pos[c.id] + ' · ' + esc(c.who) + '</span>' + (total(c.id) > 1 ? '<b class="count num">×' + total(c.id) + '</b>' : '') + '</span></button>';
-    }).join('');
-    [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.addEventListener('click', function(){ openDetail(s.getAttribute('data-id')); }); });
+    }).join(''));
+    [].forEach.call(document.querySelectorAll('#grid .slot[data-id]'), function(s){ s.onclick = function(){ openDetail(s.getAttribute('data-id')); }; });
     if(askSlot) document.getElementById('ask-slot').onclick = function(){ openAskArtist();
       var nm = document.getElementById('as-name'), nt = document.getElementById('as-note');
       if(askKind === 'band'){ nm.value = binderLabel(b) + ' : '; nm.dispatchEvent(new Event('input')); }
@@ -6427,7 +6509,7 @@ if(window.metalniniOnline) window.metalniniOnline(api); else window.metalniniApi
   // ---------- Réglages ----------
   // banc d'essai des sons (?sons) : chaque son attendu (fiche : sons.html), livré ou non, à écouter
   if(/[?&]sons\b/.test(location.search)){
-    var CUE_LIST = ["music-main", "intro", "reveal-commune-1", "reveal-commune-2", "reveal-rare-1", "reveal-rare-2", "reveal-holo-1", "reveal-holo-2", "reveal-signature-1", "reveal-signature-2", "reveal-legendaire-1", "reveal-legendaire-2", "reveal-legendaire-3", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete-1", "binder-complete-2", "mastery-1", "mastery-2", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify", "trade-scan", "trade-code", "trade-join", "trade-add", "trade-remove", "trade-partner", "trade-ready", "trade-done", "trade-cancel", "meet-bonus", "title", "zoom", "nope"];
+    var CUE_LIST = ["music-main", "intro", "reveal-commune-1", "reveal-commune-2", "reveal-rare-1", "reveal-rare-2", "reveal-holo-1", "reveal-holo-2", "reveal-signature-1", "reveal-signature-2", "reveal-legendaire-1", "reveal-legendaire-2", "reveal-legendaire-3", "heartbeat", "rumble", "tear", "flip", "deal", "place", "place-new", "duplicate", "upgrade", "binder-complete-1", "binder-complete-2", "mastery-1", "mastery-2", "fusion", "tear-card", "gift", "reward", "tap", "select", "notify", "trade-scan", "trade-code", "trade-join", "trade-add", "trade-remove", "trade-partner", "trade-ready", "trade-done", "trade-cancel", "meet-bonus", "title", "zoom", "nope", "pit-bouscule", "pit-chute", "pit-releve", "pit-foule"];
     var sb = document.createElement('div'); sb.className = 'snd-bench';
     sb.innerHTML = '<h2>Banc d\'essai des sons</h2><p>' + Object.keys(SOUNDS).length + ' / ' + CUE_LIST.length + ' livrés. Touche un son pour l\'écouter.</p>' +
       CUE_LIST.map(function(c){ var ok = !!SOUNDS[c]; return '<button type="button" data-c="' + c + '"' + (ok ? ' class="ok"' : '') + '><span>' + c + '</span><span>' + (ok ? 'livré' : 'manquant') + '</span></button>'; }).join('');

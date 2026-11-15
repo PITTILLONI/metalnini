@@ -97,11 +97,14 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('bac « À ranger » affiché avec les nouvelles cartes', !d.getElementById('tray').hidden && d.querySelectorAll('#tray-cards button').length === nNew && nNew > 0, nNew + ' à ranger');
   check('classeur « Toutes les cartes » ouvert', /Toutes les cartes/.test(d.getElementById('binder-title').textContent));
   // une carte touchée dans le bac : rangement pas à pas, la carte en grand attend un toucher
+  const keepK = d.querySelector('#tray-cards button').getAttribute('data-k').split('|')[0];
+  const other0 = [...d.querySelectorAll('#grid .slot[data-id]')].filter(s => s.getAttribute('data-id') !== keepK)[0];
   d.querySelector('#tray-cards button').click(); await sleep(700);
   check('rangement à l\'unité : la carte s\'affiche en grand et attend un toucher', !d.getElementById('dupfx').hidden && /Touche la carte/.test(d.getElementById('df-skip').textContent), d.getElementById('df-skip').textContent);
   await sleep(1500);
   check('rangement à l\'unité : rien ne part tout seul', !d.getElementById('dupfx').hidden);
   d.getElementById('dupfx').click(); await sleep(1400);
+  check('rangement fluide : les autres cases du classeur ne sont pas redessinées', !!other0 && d.contains(other0));
   // « Tout ranger d'un coup » : distribution automatique, sans écran par carte
   const left0 = (state().toPlace || []).length;
   d.getElementById('tray-all').click(); await sleep(400);
@@ -558,6 +561,55 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   d9.getElementById('pit-claim').click(); await sleep(60);
   check('circle pit : fin, points récupérés, écran fermé', pitClaimed === 'p1' && d9.getElementById('pit').hidden);
 
+  // 18 ter. Circle pit, nouveau moteur : PixiJS présent → PitGame lancé avec fantômes et potes ; fin, pote attiré, ancien serveur
+  const tr9 = { v:1, hz:10, p:[[0, 70, 0], [100, 70, 0]], e:[] };
+  const pit2 = { id:'p2', track:'morello', ends_at:pitEnd, over:false, host:false, host_name:'Ghosty', in:true, rewarded:true, claimed:false, rps:.35, run_s:40, circle:3, game:{ npc:12 },
+    runners:[{ id:'g1', name:'Ghosty', score:60, trace:tr9, avatar:'g1.jpg' }, { id:'g2', name:'Vieux', score:50, trace:null }, { id:'u1', name:'Moi', score:null, me:true }], tier:{ runners:2, aim:55, size:0, aim_tier:0, size_label:'Petit cercle', aim_label:'Brouillon', points:1 } };
+  const pit2Copy = () => JSON.parse(JSON.stringify(pit2));
+  let gameOpts = null, gameStopped = 0, finishArgs = [], call9 = null;
+  w9.PIXI = {}; w9.PitSim = {}; w9.PitGame = { start: (host, o) => { gameOpts = o; return { stop: () => { gameStopped++; }, ready: Promise.resolve() }; } };
+  fake9.pitFeed = async () => ({ live:[{ id:'p2', name:'Ghosty', track:'morello', ends_at:pitEnd, runners:2, in:true, ran:false }], done:[], opened_today:false, duration:900, run_s:40 });
+  fake9.pitJoin = async () => pit2Copy(); fake9.pitRunStart = async () => pit2Copy();
+  fake9.pitRunFinish = async (id, sc, tr, ci) => { finishArgs.push([id, sc, tr, ci]); if(tr && finishArgs.length === 1 && w9.__oldServer) throw new Error('function pit_run_finish(uuid, integer, jsonb, integer) does not exist'); pit2.runners[2].score = sc; return pit2Copy(); };
+  fake9.fosseCall = async (k, id, to) => { call9 = k + '|' + id + '|' + to; return true; };
+  const media9 = fake9.mediaUrl; fake9.mediaUrl = async (b, p) => b === 'avatars' ? 'u:' + p : media9(b, p);
+  d9.querySelector('.tabbar [data-v="packs"]').click(); d9.getElementById('tab-corner').click(); await sleep(80);
+  d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
+  d9.getElementById('pit-start').click(); await sleep(3600);
+  check('circle pit : nouveau jeu lancé avec fantômes et potes', !!gameOpts && gameOpts.runS === 40 && gameOpts.ghosts.length === 1 && gameOpts.ghosts[0].id === 'g1' && gameOpts.cfg.npc === 12
+    && gameOpts.friends.length === 1 && gameOpts.friends[0].id === 'f1' && typeof gameOpts.seed === 'number' && !d9.getElementById('pit-mark'));
+  check('circle pit : adresses des photos passées au jeu', gameOpts.ghosts[0].avatar === 'u:g1.jpg' && gameOpts.friends[0].avatar === null && 'avatar' in gameOpts.me);
+  gameOpts.onPull('f1'); await sleep(20);
+  check('circle pit : pote attiré → Rameuter', call9 === 'pit|p2|f1');
+  gameOpts.onEnd({ score:72, circle:5, trace:{ v:1, hz:10, p:[], e:[] }, stats:{} }); await sleep(60);
+  check('circle pit : fin du nouveau jeu, score, trace et cercle envoyés', finishArgs.length === 1 && finishArgs[0][1] === 72 && finishArgs[0][3] === 5 && !!finishArgs[0][2] && /Ta course : <b>72<\/b>/.test(d9.getElementById('toast') ? d9.getElementById('toast').innerHTML : d9.body.innerHTML));
+  // ancien serveur : la fonction à 4 arguments manque → second envoi avec le score seul
+  pit2.runners[2].score = null; finishArgs = []; w9.__oldServer = true; gameOpts = null;
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
+  d9.getElementById('pit-start').click(); await sleep(3600);
+  gameOpts.onEnd({ score:40, circle:1, trace:{ v:1, hz:10, p:[], e:[] }, stats:{} }); await sleep(60);
+  check('circle pit : ancien serveur → score renvoyé seul', finishArgs.length === 2 && finishArgs[1][1] === 40 && finishArgs[1][2] === undefined && pit2.runners[2].score === 40);
+  // PixiJS pas encore chargé au moment de « Démarrer » : on l'attend (5 s au plus) avant de lancer l'horloge du serveur
+  pit2.runners[2].score = null; finishArgs = []; gameOpts = null; const pixi9 = w9.PIXI; delete w9.PIXI; let started9 = 0;
+  const rs9 = fake9.pitRunStart; fake9.pitRunStart = async () => { started9++; return pit2Copy(); };
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60); delete w9.PIXI;
+  d9.getElementById('pit-start').click(); await sleep(300);
+  check('circle pit : PixiJS en chargement → on attend sans lancer la course', started9 === 0 && !gameOpts && !d9.getElementById('pit-mark'));
+  w9.PIXI = pixi9; await sleep(3700);
+  check('circle pit : PixiJS arrivé pendant l\'attente → nouveau jeu', started9 === 1 && !!gameOpts && !d9.getElementById('pit-mark'));
+  // PixiJS qui n'arrive jamais : ancienne course au bout de 5 s
+  pit2.runners[2].score = null; gameOpts = null; started9 = 0;
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60); delete w9.PIXI;
+  d9.getElementById('pit-start').click(); await sleep(5300);
+  check('circle pit : PixiJS introuvable → ancienne course après 5 s', started9 === 1 && !gameOpts && !!d9.getElementById('pit-mark'));
+  fake9.pitRunStart = rs9; w9.PIXI = pixi9;
+  // sans PitGame : l'ancienne course démarre
+  pit2.runners[2].score = null; delete w9.PitGame; finishArgs = [];
+  d9.getElementById('pit-x').click(); await sleep(20); d9.querySelector('#pits [data-pit="p2"]').click(); await sleep(60);
+  d9.getElementById('pit-start').click(); await sleep(60);
+  check('circle pit : repli sans PixiJS → ancienne course', d9.getElementById('pit-count').textContent === '3' && !!d9.getElementById('pit-mark'));
+  d9.getElementById('pit-x').click(); await sleep(20); delete w9.PIXI; delete w9.PitSim;
+
   // 18 quater. Pogo : un pote à terre à relever, entrer en misant, danser, ramassage, mission récupérée
   let pogoJoined = 0, pogoRun = null, pogoLifted = null, pogoClaimed = 0, pogoMission = null; const pogoEnd = new Date(Date.now() + 500e3).toISOString();
   const pogoSt = { id:'g1', rarity:'commune', track:'morello', ends_at:pogoEnd, over:false, cancelled:false, host:false, host_name:'Riffeuse', heat:2, run_s:1, hits:4, min_players:3,
@@ -620,6 +672,12 @@ async function binderCards(doc) { let t = ''; for (const chip of doc.querySelect
   check('tout ouvrir : bouton visible avec 3 paquets', !d9.getElementById('bulk-go').hidden && /3 paquets/.test(d9.getElementById('bulk-go').textContent));
   d9.getElementById('bulk-go').click(); await sleep(200);
   check('tout ouvrir : 3 paquets tirés, 15 cartes d\'un coup, la plus rare en premier', bulkCalls === 3 && d9.querySelectorAll('#bulk-grid figure').length === 5 && /×3/.test(d9.getElementById('bulk-grid').textContent) && /Holo/.test(d9.querySelector('#bulk-grid img').alt) && /15 cartes/.test(d9.getElementById('bulk-t').textContent));
+  d9.querySelectorAll('#bulk-grid [data-z]')[1].click(); await sleep(20);
+  check('tout ouvrir : toucher une carte l\'affiche en grand, flèches vers les autres', !d9.getElementById('zoom').hidden && d9.getElementById('zoom-n').textContent === '2 / 5' && /jinjer/.test(d9.getElementById('zoom-img').src) && !d9.getElementById('bulk').hidden);
+  d9.getElementById('zoom-next').click(); await sleep(20);
+  check('tout ouvrir : carte suivante en grand', d9.getElementById('zoom-n').textContent === '3 / 5');
+  d9.getElementById('zoom-x').click(); await sleep(20);
+  check('tout ouvrir : zoom fermé, on revient aux cartes avant de ranger', d9.getElementById('zoom').hidden && !d9.getElementById('bulk').hidden);
   d9.getElementById('bulk-close').click();
   fake9.packsLeft = async () => 0;
 
