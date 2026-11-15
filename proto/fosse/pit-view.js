@@ -69,9 +69,10 @@
       app.stage.addChild(floor, shadows, dust, bodies, light.container, badges, upRing);
 
       // allures : foule (10 allures cuites, partagées), moi, fantômes et potes (une chacun)
-      var crowdLooks = Bodies.looks(o.seed ^ 0x5eed, CROWD_LOOKS), crowdBaked = crowdLooks.map(function(l){ return Bodies.bake(PIXI, app, l); });
-      var fanBaked = crowdLooks.slice(0, 4).map(function(l){ return Bodies.bake(PIXI, app, l, { front: true }); });
-      var ownLooks = Bodies.looks(o.seed ^ 0xface, 2 + sim.ghosts.length + sim.friends.length);
+      var crowdLooks = Bodies.looks(o.seed ^ 0x5eed, CROWD_LOOKS), crowdBaked = crowdLooks.map(function(l){ return Bodies.bake(PIXI, app, l, { only: ['run', 'down'] }); });   // seules poses de la foule
+      var fanBaked = crowdLooks.slice(0, 4).map(function(l){ return Bodies.bake(PIXI, app, l, { front: true, only: ['cheer'] }); });
+      var ownLooks = Bodies.looks(o.seed ^ 0xface, 1 + sim.friends.length), FRONT = { front: true, only: ['stand', 'cheer'] };
+      var freeTex = function(set){ for(var k in set) set[k].forEach(function(t){ t.destroy(true); }); };
       // un coureur affiché : son sprite, son ombre, sa phase de course ; pastille photo pour moi, les fantômes et les potes entrés
       function runner(baked, badgeTex, badgeSize){
         var s = new PIXI.Sprite(baked.run[0]); s.anchor.set(0.5, 1); bodies.addChild(s);
@@ -81,14 +82,16 @@
       }
       function initialTex(name){ return PIXI.Texture.from(Photo.initial(name, 96)); }
       function withPhoto(url, r){ Photo.load(url, style, 96).then(function(cv){ if(cv && !stopped && r.b) r.b.texture = PIXI.Texture.from(cv); }); }
-      var meR = runner(Bodies.bake(PIXI, app, ownLooks[0]), initialTex((o.me && o.me.name) || 'Moi'), 36); withPhoto(o.me && o.me.avatar, meR);
+      var meR = runner(Bodies.bake(PIXI, app, ownLooks[0], { only: ['run', 'down', 'lift', 'stand'] }), initialTex((o.me && o.me.name) || 'Moi'), 36); withPhoto(o.me && o.me.avatar, meR);
       var npcR = sim.npcs.map(function(p, k){ return runner(crowdBaked[k % CROWD_LOOKS]); });
-      var ghostR = sim.ghosts.map(function(g, k){ var r = runner(Bodies.bake(PIXI, app, ownLooks[1 + k]), initialTex(g.name)); r.s.alpha = 0.85; withPhoto(g.avatar, r); return r; });
+      // fantômes : allures de la foule (pas de cuisson en plus), reconnus à leur pastille photo
+      var ghostR = sim.ghosts.map(function(g, k){ var r = runner(crowdBaked[(k + 3) % CROWD_LOOKS], initialTex(g.name)); withPhoto(g.avatar, r); return r; });
       // potes au bord : vus de face, leur photo en visage ; une fois attirés, ils courent avec une pastille
-      var friendR = sim.friends.map(function(f, k){ var src = o.friends[k] || {}, look = ownLooks[1 + sim.ghosts.length + k];
-        var r = runner(Bodies.bake(PIXI, app, look, { front: true }), initialTex(f.name)); r.back = Bodies.bake(PIXI, app, look); r.front = r.baked;
-        Photo.load(src.avatar, style, 96).then(function(cv){ if(!cv || stopped) return; var t = PIXI.Texture.from(cv);
-          r.front = Bodies.bake(PIXI, app, look, { front: true, face: t }); if(r.b) r.b.texture = t; });
+      // de face, seulement debout et bras levés ; de dos (une fois attirés), une allure de la foule
+      var friendR = sim.friends.map(function(f, k){ var src = o.friends[k] || {}, look = ownLooks[1 + k];
+        var r = runner(Bodies.bake(PIXI, app, look, FRONT), initialTex(f.name)); r.back = crowdBaked[(k + 7) % CROWD_LOOKS]; r.front = r.baked;
+        Photo.load(src.avatar, style, 96).then(function(cv){ if(!cv || stopped) return; var t = PIXI.Texture.from(cv), old = r.front;
+          r.front = Bodies.bake(PIXI, app, look, { front: true, face: t, only: FRONT.only }); if(r.baked === old) r.baked = r.front; freeTex(old); if(r.b) r.b.texture = t; });
         return r; });
       var fans = []; for(i = 0; i < FANS; i++){ var fb = fanBaked[i % fanBaked.length], fs = new PIXI.Sprite(fb.cheer[i % 2]); fs.anchor.set(0.5, 1); bodies.addChild(fs);
         fans.push({ s: fs, baked: fb, a: i / FANS + (i % 3) * 0.004, r: 1.05 + (i % 3) * 0.035 }); }
@@ -144,8 +147,7 @@
         try{ frame(tk); }catch(err){ finish(); }   // jamais de jeu figé : on termine la course avec ce qui est acquis
       });
       function frame(tk){
-        var dt = tk.deltaMS, inp = st.down ? inputFrom(st.anchor, st.point) : { throttle: 0, lateral: 0 }, ev = [];
-        inp.tap = false;
+        var dt = tk.deltaMS, inp = st.down ? inputFrom(st.anchor, st.point) : { throttle: 0, lateral: null }, ev = [];
         if(tapPending){ tapPending = false; ev = ev.concat(PitSim.step(sim, { throttle: 0, lateral: 0, tap: true })); dt = Math.max(0, dt - 1000 / PitSim.HZ); }
         ev = ev.concat(PitSim.advance(sim, inp, dt));
         feedback(ev);
@@ -155,14 +157,14 @@
         var sx = 0, sy = 0; if(shakeT > 0){ shakeT -= dt; sx = (Math.random() - .5) * shakeA * 2; sy = (Math.random() - .5) * shakeA * 2; }
         app.stage.position.set(sx + (o.reduce ? 0 : Math.sin(t / 1700) * 4), sy + (o.reduce ? 0 : Math.sin(t / 2300) * 3));
         app.stage.rotation = o.reduce ? 0 : Math.sin(t / 2900) * 0.008;
-        var meKind = m.down ? 'down' : sim.npcs.some(function(p){ return p.down && p.hold > 0; }) ? 'lift' : m.v < 0.05 * c.vmax ? 'up' : 'run';
-        var meP = show(meR, m.a, m.r, cam, meKind, meKind === 'run' ? step(meR, m.v, dt) : meKind === 'up' ? 1 : Math.floor(t / 250), baseH, 1);
+        var meKind = m.down ? 'down' : sim.npcs.some(function(p){ return p.down && p.hold > 0; }) ? 'lift' : m.v < 0.05 * c.vmax ? 'stand' : 'run';
+        var meP = show(meR, m.a, m.r, cam, meKind, meKind === 'run' ? step(meR, m.v, dt) : Math.floor(t / 250), baseH, 1);
         sim.npcs.forEach(function(p, k2){ show(npcR[k2], p.a, p.r, cam, p.down ? 'down' : 'run', step(npcR[k2], p.down ? 0 : p.v, dt), baseH); });
         sim.ghosts.forEach(function(g, k2){ var q = PitSim.ghostAt(g.trace, t); if(q) show(ghostR[k2], q.a, q.r, cam, q.down ? 'down' : 'run', step(ghostR[k2], 0.9, dt), baseH); });
         sim.friends.forEach(function(f, k2){ var r = friendR[k2];
           if(f.pulled){ r.baked = r.back; show(r, f.a + (t / 1000) * .7, .8, cam, 'run', step(r, 0.7, dt), baseH); }
-          else { r.baked = r.front; var near = Math.abs(((m.a - f.a) % 1 + 1.5) % 1 - .5) < .08; if(r.b) r.b.visible = false;
-            var keepB = r.b; r.b = null; show(r, f.a, f.r, cam, near ? 'cheer' : 'up', near ? Math.floor(t / 300) : 1, baseH); r.b = keepB; } });
+          else { r.baked = r.front; var near = Math.abs(((m.a - f.a) % 1 + 1.5) % 1 - .5) < .08;
+            show(r, f.a, f.r, cam, near ? 'cheer' : 'stand', near ? Math.floor(t / 300) : 0, baseH); } });   // pastille gardée : on repère ses potes au bord
         var pulse = beatAt == null ? 1 : 1 + .1 * Math.exp(-(t - beatAt) / 140);
         for(k = 0; k < fans.length; k++){ var fn = fans[k], fp = Proj.project(cam, fn.a, fn.r);   // spectateurs fixes autour du pit : ils défilent quand on court
           fn.s.visible = fp.visible && fp.y > h * 0.12; if(!fn.s.visible) continue;
@@ -174,7 +176,7 @@
         upRing.clear();
         if(m.down && meP.visible){ var ur = 46 * meP.scale, uy = meP.y - 30 * meP.scale;
           upRing.circle(meP.x, uy, ur).stroke({ width: 5, color: 0x15110f, alpha: .8 });
-          upRing.arc(meP.x, uy, ur, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(.02, m.upProgress)).stroke({ width: 5, color: GOLD_HI, cap: 'round' }); }
+          upRing.moveTo(meP.x, uy - ur).arc(meP.x, uy, ur, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(.02, m.upProgress)).stroke({ width: 5, color: GOLD_HI, cap: 'round' }); }
         light.draw(Light.beams(t, { beatT: beatAt == null ? null : t - beatAt, flashT: flashAt == null ? null : t - flashAt, reduce: !!o.reduce }), w, h, meP.visible ? meP : null);
         // texte : chrono réécrit à la seconde, le reste toutes les 100 ms
         hudT += dt; if(hudT > 100){ hudT = 0; var left = Math.max(0, Math.ceil((sim.end * 1000 / PitSim.HZ - t) / 1000));
@@ -182,7 +184,7 @@
           stBar.firstChild.style.transform = 'scaleX(' + m.stamina.toFixed(3) + ')'; stBar.classList.toggle('low', m.stamina < .25);
           var sc = String(PitSim.result(sim).score); if(scoreEl.textContent !== sc) scoreEl.textContent = sc;
           if(flashT > 0){ flashT -= 100; if(flashT <= 0) cue.classList.remove('hot'); }
-          else { var msg = m.down ? 'À terre ! Pousse vers le haut !' : m.zone === 'edge' ? 'Au bord : tu souffles' : m.zone === 'middle' ? 'Au milieu : ça compte double' : t < 4000 ? cue.textContent : '';
+          else { var msg = m.down ? (m.armed ? 'À terre ! Pousse vers le haut !' : 'À terre ! Redescends le pouce, puis pousse !') : m.zone === 'edge' ? 'Au bord : tu souffles' : m.zone === 'middle' ? 'Au milieu : ça compte double' : t < 4000 ? cue.textContent : '';
             if(m.down !== fallen){ fallen = m.down; cue.classList.toggle('hot', m.down); }
             if(cue.textContent !== msg) cue.textContent = msg; } }
         if(sim.over) finish();

@@ -20,7 +20,7 @@
   function stand(){ return { head: [0, 0.92], neck: [0, 0.8], hip: [0, 0.5], lElbow: [-0.15, 0.62], rElbow: [0.15, 0.62], lHand: [-0.17, 0.46], rHand: [0.17, 0.46],
     lKnee: [-0.07, 0.25], rKnee: [0.07, 0.25], lFoot: [-0.08, 0], rFoot: [0.08, 0] }; }
 
-  // pose : kind = run | stumble | down | up | lift | cheer, phase de 0 à 1
+  // pose : kind = run | stumble | down | up | lift | cheer | stand, phase de 0 à 1
   function pose(kind, phase){
     var p = stand(), c = Math.cos(phase * Math.PI * 2), s = Math.sin(phase * Math.PI * 2), k;
     if(kind === 'run'){ var L = 0.14 * Math.max(0, c), R = 0.14 * Math.max(0, -c), bob = 0.02 * Math.abs(c);
@@ -40,10 +40,10 @@
   }
 
   // cuisson : une texture par image de chaque pose ; front = vu de face (visage = photo si fournie)
-  var FRAMES = { run: 8, stumble: 2, down: 1, up: 2, lift: 2, cheer: 2 };
+  var FRAMES = { run: 8, stumble: 2, down: 1, up: 2, lift: 2, cheer: 2, stand: 1 };
   function bake(PIXI, app, look, opts){
     opts = opts || {}; var H = 64, out = {}, kind, i, wide = [0.9, 1, 1.12, 1.25, 1.05, 0.95][look.build] || 1;
-    for(kind in FRAMES){ out[kind] = [];
+    for(kind in FRAMES){ if(opts.only && opts.only.indexOf(kind) < 0) continue; out[kind] = [];
       for(i = 0; i < FRAMES[kind]; i++) out[kind].push(frame(PIXI, app, look, pose(kind, i / FRAMES[kind]), H, wide, opts)); }
     return out;
   }

@@ -170,6 +170,21 @@ check('relève : poussée franche vers le haut → debout', has(ev, 'up') && s.t
 s = fresh(); PitSim.knockDown(s); run(s, IDLE, .75);
 check('relève : progression visible (moitié du temps → 0,5)', Math.abs(s.me.upProgress - 0.5) < 0.02);
 
+// ---------- Relecture vue drone ----------
+s = fresh({ friends:[{ id:'f9', name:'Pote' }] }); s.me.r = 0.96; s.me.v = 1.2; s.me.a = 0; s.friends[0].a = 0.42; s.friends[0].r = 0.97;
+ev = run(s, { throttle:0, lateral:null, tap:false }, 3);
+check('attirer un pote en jeu : au bord, on lâche le pouce un peu avant lui → pull', ev.some(e => e.type === 'pull') && s.me.zone === 'edge');
+s = fresh({ friends:[{ id:'f9', name:'Pote' }] }); s.me.r = 0.96; s.me.v = 1.2; s.me.a = 0; s.friends[0].a = 0.1;
+check('attirer un pote : en passant à pleine vitesse, rien', !run(s, { throttle:1, lateral:1, tap:false }, 0.5).some(e => e.type === 'pull'));
+// cuisson : seulement les poses demandées
+let gen = 0; const chain = () => new Proxy(function(){}, { get: (t, k) => k === 'destroy' ? () => {} : () => chain(), apply: () => chain() });
+const FAKE = { Container: function(){ this.addChild = () => {}; this.destroy = () => {}; }, Graphics: function(){ return chain(); }, Sprite: function(){ this.anchor = { set(){} }; this.position = { set(){} }; } };
+const fakeApp = { renderer: { generateTexture: () => { gen++; return {}; } } };
+const bk = PitBodies.bake(FAKE, fakeApp, PitBodies.looks(1, 1)[0], { front:true, only:['stand', 'cheer'] });
+check('cuisson : seulement les poses demandées (debout 1 + bras levés 2)', gen === 3 && bk.stand.length === 1 && bk.cheer.length === 2 && !bk.run);
+const sd = PitBodies.pose('stand', 0);
+check('debout : droit, pas accroupi', Math.abs(sd.head[1] - 0.92) < 1e-9 && sd.lFoot[1] === 0);
+
 (async () => {
   check('photo : adresse vide → null sans erreur', await PitPhoto.load(null, 'palette', 64) === null);
   PitPhoto._img = () => { const im = {}; setTimeout(() => im.onerror && im.onerror(new Error('403')), 5); return im; };

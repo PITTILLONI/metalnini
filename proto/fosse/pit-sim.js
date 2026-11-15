@@ -4,7 +4,7 @@
   var HZ = 120, DT = 1 / HZ, STEP_MS = 1000 / HZ, MAX_MS = 250;
   var DEFAULTS = { npc: 24, vmax: 1.2, accel: 2.5, lateral: 0.9, drain: 0.12, regen: 0.25, regenSlow: 0.05, body: 0.035,
     fallBase: 0.15, fallTired: 0.6, middleRisk: 2, downS: 1.5, upTaps: 4, upPushS: 0.15, npcFallPerS: 0.02, npcDownS: 4,
-    liftHoldS: 0.4, liftMaxV: 0.4, pullHoldS: 0.5, pullAngle: 10 / 360, groove: 0.6,
+    liftHoldS: 0.4, liftMaxV: 0.4, pullHoldS: 0.3, pullAngle: 15 / 360, groove: 0.6,
     pts: { lap: 4, lift: 6, pull: 8, middleS: 1, rhythm: 30 }, circle: { lap: 1, lift: 2, pull: 3 } };
 
   // générateur mulberry32 : même graine, même suite
@@ -69,7 +69,8 @@
     } else {
       me.v += (th * c.vmax - me.v) * Math.min(1, c.accel * DT);
       // voie visée par le pouce : piste au centre, bord à droite, milieu à gauche ; pouce recentré = retour sur la piste
-      var lane = clamp(input.lateral || 0, -1, 1), target = lane > 0 ? LANE + lane * (EDGE_R - LANE) : LANE + lane * (LANE - MID_R), mx = c.lateral * DT;
+      // pouce levé (lateral null) : on reste dans sa voie, pour souffler au bord ou y attirer un pote en freinant
+      var lane = clamp(input.lateral || 0, -1, 1), target = input.lateral == null ? me.r : lane > 0 ? LANE + lane * (EDGE_R - LANE) : LANE + lane * (LANE - MID_R), mx = c.lateral * DT;
       me.r = clamp(me.r + clamp(target - me.r, -mx, mx), 0.05, 1);
     }
     me.zone = zoneOf(me.r);
