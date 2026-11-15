@@ -170,6 +170,13 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Demande : « At The Gates ». Figure retenue : Tomas « Tompa » Lindberg, chanteur et fondateur, mort d'un cancer le 16 septembre 2025 ([Blabbermouth](https://blabbermouth.net/news/at-the-gates-vocalist-tomas-lindberg-dead-at-52)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Blinded by Fear », LXXXV, Death metal mélodique). Carte d'un artiste mort récemment : ton sobre dans la bio.
 
+## Demande de joueurs (2026-11-05) : Ivan Moody (Five Finger Death Punch)
+- Demande : « Ivan Moody » (précision du joueur : « Five Finger Death Punch »). Chanteur de Five Finger Death Punch (Ivan Greening).
+- 2014 : inculpé en Australie pour agression envers l'équipage d'un vol Qantas (QF553, Brisbane-Sydney, 22 février 2014 : propos menaçants envers une hôtesse, police fédérale à l'arrivée) ; issue judiciaire non trouvée ([Music Feeds](https://musicfeeds.com.au/?p=99676)).
+- 2015 : dans une demande de divorce, Holly Smith l'accuse de violences conjugales (coups, tentative d'étranglement) ; le manager Allen Kovac dit que la plainte a été classée le 14 juillet 2015 et que Moody nie avoir été marié avec elle ; sa sœur a obtenu une ordonnance d'éloignement contre lui, non démentie ([Loudwire](https://loudwire.com/five-finger-death-punch-manager-statement-ivan-moody/), [Louder](https://loudersound.com/news/5fdp-manager-slams-moody-assault-claims), [Metal Injection](https://metalinjection.net/latest-news/ivan-moodys-sister-has-a-restraining-order-against-him)).
+- Non retenu : ses problèmes d'alcool et ses concerts écourtés de 2017, sans violence envers autrui.
+- Conclusion : cas limite (accusations de violences reprises par la presse, plainte classée, pas de condamnation trouvée), rendu au propriétaire. Recommandation de l'agent : ne pas l'ajouter.
+- Décision du propriétaire (consigne « ajoute », 2026-11-15) : carte normale ajoutée. Une carte maudite n'est pas possible : aucun fait établi (ni condamnation ni aveu).
 ## Demande de joueurs (2026-11-05) : Neige (Alcest)
 - Demande : « Alcest ». Figure retenue : Neige (Stéphane Paut), fondateur, chanteur et guitariste.
 - Au début des années 2000, il joue dans Peste Noire, groupe de black metal dont le leader Famine affiche des positions d'extrême droite (imagerie raciste, salut nazi rapporté par un ancien membre) ; Famine joue aussi de la guitare sur la première démo d'Alcest. Neige quitte Peste Noire vers 2006 ([Wikipedia, Neige](https://en.wikipedia.org/wiki/Neige_(musician)), [Wikipedia, Peste Noire](https://en.wikipedia.org/wiki/Peste_Noire)).
