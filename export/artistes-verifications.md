@@ -148,12 +148,35 @@ Aucun fait sérieux trouvé dans les sources consultées. Notes de contexte entr
 - Non retenu : les critiques d'Axl Rose à son départ de Guns N' Roses (« comportement erratique », 2004), simple différend professionnel ([CityBeat](https://www.citybeat.com/?p=140709)).
 - Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Soothsayer », LXXXII, Metal avant-gardiste).
 
+## Demande de joueurs (2026-11-05) : Anders Fridén et Björn Gelotte (In Flames)
+- Demande : « Björn Gelotte/Anders Fridén » ; consigne du propriétaire : deux cartes, même classeur de groupe In Flames, arcanes consécutifs.
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée contre l'un ou l'autre ; aucun lien avec des groupes haineux.
+- Non retenu : le différend sur les droits d'auteur avec l'ancien chanteur Henke Forss et les piques échangées avec Jesper Strömblad, simples conflits professionnels ([Blabbermouth](https://blabbermouth.net/news/ex-in-flames-singer-henke-forss-says-hes-been-trying-for-over-10-years-to-get-proper-songwriting-credit), [Loudwire](https://loudwire.com/in-flames-henke-forss-battle-songwriting-royalties/)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, cartes « Only for the Weak », LXXXVI, et « Colony », LXXXVII, Death metal mélodique).
+
+## Demande de joueurs (2026-11-05) : Ronnie Canizaro (Born of Osiris)
+- Demande : « Born of Osiris ». Figure retenue : Ronnie Canizaro, chanteur depuis la fondation (2003).
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée contre lui ou le groupe ; aucun lien avec des groupes haineux ([Wikipedia](https://en.wikipedia.org/wiki/Born_of_Osiris)).
+- Non retenu : différends d'argent et de départ avec d'anciens guitaristes (Lee Evans, Jason Richardson, 2012-2013), simples conflits professionnels ([Metal Injection](https://metalinjection.net/latest-news/drama/born-of-osiris-dump-guitarist-in-dramatic-fashion)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Machine », LXXXIII, Deathcore progressif).
+
+## Demande de joueurs (2026-11-05) : Caleb Shomo (Beartooth)
+- Demande : « Beartooth ». Figure retenue : Caleb Shomo, fondateur, chanteur et auteur du groupe.
+- RAS : aucune condamnation, aucune accusation de racisme, de sexisme, d'homophobie, d'antisémitisme ni de violences trouvée ; aucun lien avec des groupes haineux.
+- Non retenu : en 2026, il a lui-même été la cible de propos homophobes après son coming out (il en est la victime, pas l'auteur) ([Blabbermouth](https://blabbermouth.net/news/beartooths-caleb-shomo-i-am-a-proudly-gay-man), [Loudwire](https://loudwire.com/beartooth-caleb-shomo-comes-out-gay/)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « In Between », LXXXIV, Metalcore).
+
+## Demande de joueurs (2026-11-05) : Tomas Lindberg (At the Gates)
+- Demande : « At The Gates ». Figure retenue : Tomas « Tompa » Lindberg, chanteur et fondateur, mort d'un cancer le 16 septembre 2025 ([Blabbermouth](https://blabbermouth.net/news/at-the-gates-vocalist-tomas-lindberg-dead-at-52)).
+- Conclusion : rien qui s'oppose à l'ajout (préparé par l'agent, carte « Blinded by Fear », LXXXV, Death metal mélodique). Carte d'un artiste mort récemment : ton sobre dans la bio.
+
 ## Demande de joueurs (2026-11-05) : Neige (Alcest)
 - Demande : « Alcest ». Figure retenue : Neige (Stéphane Paut), fondateur, chanteur et guitariste.
 - Au début des années 2000, il joue dans Peste Noire, groupe de black metal dont le leader Famine affiche des positions d'extrême droite (imagerie raciste, salut nazi rapporté par un ancien membre) ; Famine joue aussi de la guitare sur la première démo d'Alcest. Neige quitte Peste Noire vers 2006 ([Wikipedia, Neige](https://en.wikipedia.org/wiki/Neige_(musician)), [Wikipedia, Peste Noire](https://en.wikipedia.org/wiki/Peste_Noire)).
 - Neige s'en est démarqué publiquement : il dit ne partager en rien les idées de Famine, n'a écrit aucun texte du groupe, et qualifie de regrettables ses anciennes collaborations ambiguës ([Wikipedia](https://en.wikipedia.org/wiki/Neige_(musician)), [Louder](https://www.loudersound.com/features/how-alcest-invented-blackgaze-bringing-spirituality-to-black-metal)).
 - Aucun propos haineux de Neige ni d'Alcest trouvé ; aucune condamnation.
 - Conclusion : cas limite (lien ancien avec un groupe d'extrême droite, distance prise depuis), rendu au propriétaire. Recommandation de l'agent : l'ajouter (Alcest, pionnier du blackgaze), si le propriétaire est d'accord.
+- Décision du propriétaire (consigne « ajoute », 2026-11-15) : carte normale ajoutée (aucun fait établi, donc pas de carte maudite).
 
 # Partie 3 — Cartes maudites (2026-10-07, validées par le propriétaire)
 Règle : uniquement des faits établis (condamnation, plaidoyer de culpabilité, fait filmé et reconnu par l'intéressé), jamais d'accusation ; chaque fait cité sur la carte avec sa source. Flea et John Bonham restent des cartes normales (décision du propriétaire).
