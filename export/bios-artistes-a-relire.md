@@ -166,6 +166,12 @@ Validé par le propriétaire le 2026-10-02 : les 61 bios et les fiches de style.
 
 **gelotte** — Il entre dans In Flames en 1995 comme batteur et joue sur The Jester Race (1996) et Whoracle (1997). Il passe à la guitare sur Colony (1999), dont le morceau-titre porte ses harmonies à deux guitares avec Jesper Strömblad. Après le départ de Strömblad en 2010, il signe l'essentiel de la musique du groupe, de Sounds of a Playground Fading (2011) à Foregone (2023).
 
+**canizaro** — Il chante dans Born of Osiris depuis sa fondation en 2003 à Palatine, dans la banlieue de Chicago. Signé chez Sumerian Records, le groupe sort The New Reign (2007), A Higher Place (2009) puis The Discovery (2011). Tomorrow We Die ∆live (2013), avec Machine, mêle ses cris graves aux claviers et aux riffs syncopés du djent. Le nom du groupe vient d'Osiris, dieu égyptien des morts.
+
+**shomo** — Ancien chanteur et claviériste d'Attack Attack!, il lance Beartooth à Columbus, dans l'Ohio, en 2012, d'abord comme projet personnel. Disgusting (2014), avec In Between, puis Aggressive (2016) et Disease (2018) installent le groupe chez Red Bull Records. Il écrit, joue et produit lui-même l'essentiel des albums. Ses textes parlent sans détour de dépression et d'anxiété.
+
+**lindberg** — Il fonde At the Gates à Göteborg en 1990, après le groupe Grotesque. Slaughter of the Soul (1995), avec Blinded by Fear, devient un modèle du death metal mélodique, puis le groupe se sépare en 1996. Revenu sur scène en 2008, il enregistre encore At War with Reality (2014) et The Nightmare of Being (2021). Il chante aussi dans Disfear et Lock Up. Il meurt d'un cancer en septembre 2025, à 52 ans.
+
 # Fiches des styles (page d'un classeur) — à relire
 
 **metalcore** (Années 1980 à aujourd'hui) — Le hardcore naît de la scène punk américaine au début des années 1980 ; dans les années 1990, le metalcore le croise avec les riffs du metal. On les reconnaît à leurs breakdowns, ces passages ralentis et écrasants, aux cris, et côté metalcore à des refrains chantés.
