@@ -88,7 +88,7 @@ public enum Catalog {
         .init(id: "canizaro", name: "Ronnie Canizaro", band: "Born of Osiris", arcanaTitle: "Machine", arcanaNumber: "LXXXIII", instruments: [.chant], subgenre: "Deathcore progressif"),
         .init(id: "shomo", name: "Caleb Shomo", band: "Beartooth", arcanaTitle: "In Between", arcanaNumber: "LXXXIV", instruments: [.chant], subgenre: "Metalcore"),
         .init(id: "lindberg", name: "Tomas Lindberg", band: "At the Gates", arcanaTitle: "Blinded by Fear", arcanaNumber: "LXXXV", instruments: [.chant], subgenre: "Death metal mélodique"),
-        .init(id: "brandan", name: "Cory Brandan", band: "Norma Jean", arcanaTitle: "Robots 3 Humans 0", arcanaNumber: "LXXXVIII", instruments: [.chant], subgenre: "Mathcore"),
+        .init(id: "brandan", name: "Cory Brandan", band: "Norma Jean", arcanaTitle: "Robots 3 Humans 0", arcanaNumber: "XC", instruments: [.chant], subgenre: "Mathcore"),
     ]
 
     public static let binders: [Binder] = [
