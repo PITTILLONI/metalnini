@@ -1,0 +1,52 @@
+# Metalnini — reprise automatique d'une demande d'artiste quand « Publier » (admin) se heurte à un conflit avec main.
+# La fonction artist-publish crée la branche reprise/artiste/<id> (pointée sur main : ce fichier et le script viennent de main).
+# Ici : la branche de l'agent reçoit main (tools/agent/reprise.py : listes réunies, seed et galerie régénérées, numéros
+# d'arcane vérifiés), les tests du prototype passent, puis le résultat part sur main et le site se redéploie.
+# Le second clic sur « Publier » trouve la branche déjà dans main : il applique la seed, supprime la branche et prévient.
+# Échec : REPRISE_ECHEC.txt (la raison) est posé sur reprise/… ; « Publier » l'affiche à l'admin.
+name: Reprise d'une demande d'artiste
+
+on:
+  push:
+    branches: ['reprise/**']
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: reprise-artiste
+  cancel-in-progress: false
+
+jobs:
+  reprise:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fusion, tests, mise en ligne
+        run: |
+          set -u
+          REP="$GITHUB_REF_NAME"; BR="${REP#reprise/}"
+          git config user.name "metalnini-reprise"; git config user.email "actions@users.noreply.github.com"
+          cp tools/agent/reprise.py "$RUNNER_TEMP/reprise.py"   # le script de main, même pour une vieille branche
+          fail(){ git checkout -q -f "$GITHUB_SHA"; printf '%s\n' "$1" > REPRISE_ECHEC.txt; git add REPRISE_ECHEC.txt
+            git commit -q -m "Reprise de $BR impossible"; git push -q origin "HEAD:refs/heads/$REP"; echo "::error::$1"; exit 0; }
+          git fetch -q origin main "$BR" || fail "branche $BR introuvable"
+          git checkout -q -B "$BR" "origin/$BR"
+          OUT=$(python3 "$RUNNER_TEMP/reprise.py" origin/main) || fail "$OUT"
+          echo "$OUT"
+          npm --prefix tools install --no-audit --no-fund --loglevel=error || fail "installation des outils de test impossible"
+          node tools/test_proto.js > "$RUNNER_TEMP/tests.log" 2>&1 || true
+          if grep -q '^FAIL' "$RUNNER_TEMP/tests.log" || ! tail -1 "$RUNNER_TEMP/tests.log" | grep -q 'aucune erreur JS'; then
+            fail "tests du prototype en échec après la reprise : $(grep '^FAIL' "$RUNNER_TEMP/tests.log" | head -3 | tr '\n' ' ')$(tail -1 "$RUNNER_TEMP/tests.log")"; fi
+          git push -q origin "HEAD:refs/heads/main" || fail "main a bougé pendant la reprise : reclique « Publier »"
+          git push -q origin "HEAD:refs/heads/$BR" || true   # sans effet si la branche date d'avant un changement de workflow
+          git push -q origin --delete "$REP"
+          gh workflow run pages.yml --ref main   # un push fait par ce jeton ne relance pas le déploiement tout seul
+        env:
+          GH_TOKEN: ${{ github.token }}
