@@ -1259,9 +1259,10 @@
   .slot.upgraded .img{animation:upflip .65s cubic-bezier(.3,1.3,.5,1)}
   @keyframes upflip{0%{transform:perspective(700px) rotateY(100deg) scale(1.1)}100%{transform:none}}
   /* flammes gravées animées (Légendaire) : le noir de l'image disparaît par fusion, la chaleur fait onduler */
-  .flames{position:fixed; left:0; right:0; bottom:0; height:52vh; pointer-events:none; overflow:hidden; transform:translateY(105%); transition:transform .9s cubic-bezier(.2,.8,.2,1);
+  .flames{position:fixed; left:0; right:0; bottom:0; height:52vh; pointer-events:none; overflow:hidden; transform:translateY(105%); visibility:hidden; transition:transform .9s cubic-bezier(.2,.8,.2,1), visibility 0s .9s;
           -webkit-mask:linear-gradient(to top, #000 70%, transparent); mask:linear-gradient(to top, #000 70%, transparent)}
-  .flames.on{transform:translateY(0)}
+  .flames.on{transform:translateY(0); visibility:visible; transition:transform .9s cubic-bezier(.2,.8,.2,1), visibility 0s}
+  .flames:not(.on) i{animation-play-state:paused}   /* filtre #heat calculé sans GPU sur iPhone : il ne tourne que flammes affichées */
   .flames i{position:absolute; left:-10%; right:-10%; bottom:0; height:100%; background:url(cards/flames.jpg) 0 100%/auto 100% repeat-x; mix-blend-mode:screen; filter:url(#heat); transform-origin:50% 100%}
   .flames i:nth-child(1){animation:fl-a 3.2s ease-in-out infinite, drift 22s linear infinite}
   .flames i:nth-child(2){height:78%; opacity:.85; animation:fl-b 2.4s ease-in-out infinite, drift 15s linear infinite reverse; background-position:40% 100%}
