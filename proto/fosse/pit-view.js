@@ -75,7 +75,7 @@
       var freeTex = function(set){ for(var k in set) set[k].forEach(function(t){ t.destroy(true); }); };
       // un coureur affiché : son sprite, son ombre, sa phase de course ; pastille photo pour moi, les fantômes et les potes entrés
       function runner(baked, badgeTex, badgeSize){
-        var s = new PIXI.Sprite(baked.run[0]); s.anchor.set(0.5, 1); bodies.addChild(s);
+        var s = new PIXI.Sprite((baked.run || baked.stand)[0]); s.anchor.set(0.5, 1); bodies.addChild(s);   // potes au bord : seulement debout
         var sh = new PIXI.Sprite(light.glow); sh.anchor.set(0.5); sh.tint = 0x000000; shadows.addChild(sh);
         var b = null; if(badgeTex){ b = new PIXI.Sprite(badgeTex); b.anchor.set(0.5, 1); badges.addChild(b); }
         return { s: s, sh: sh, b: b, baked: baked, phase: Math.random(), bs: badgeSize || 30 };
